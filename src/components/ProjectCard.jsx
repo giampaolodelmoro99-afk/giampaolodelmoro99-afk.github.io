@@ -49,8 +49,15 @@ function ProjectCard({ title, description, tech, repo }) {
 
                 <Wrap gap="1">
                     {tech.map((t) => (
-                        <Tag.Root key={t} size="xs" colorPalette="green" variant="outline" borderRadius="full">
-                            <Tag.Label fontFamily="monospace" fontSize="2xs">{t}</Tag.Label>
+                        <Tag.Root
+                            key={t}
+                            size="xs"
+                            variant="outline"
+                            borderRadius="full"
+                            borderColor="#00FF41"
+                            color="#00FF41"
+                        >
+                            <Tag.Label fontFamily="monospace" fontSize="2xs" color="#00FF41">{t}</Tag.Label>
                         </Tag.Root>
                     ))}
                 </Wrap>
