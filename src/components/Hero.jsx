@@ -54,7 +54,7 @@ function Hero() {
                 color="#a0a0a0"
             >
                 Studente ITS Full Stack Developer
-                <Box as="span" display="block">in cerca di una prima esperienza</Box>
+                <Box as="span" display="block">in cerca di una prima esperienza lavorativa</Box>
             </Text>
         </SectionWrapper>
     );
