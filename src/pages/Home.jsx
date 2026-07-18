@@ -61,9 +61,9 @@ export default function Home() {
       <Window
         title="Benvenuto"
         sx={{
-        width: "100%",
-        maxWidth: 1000,
-        minHeight: { xs: "60vh", sm: "auto" },
+          width: "100%",
+          maxWidth: 1000,
+          minHeight: { xs: "60vh", sm: "auto" },
         }}
         onClose={() => setShutdown(true)}
       >
@@ -136,7 +136,7 @@ export default function Home() {
             sx={{
               fontSize: { xs: "clamp(13px, 4vw, 16px)", sm: 22 },
               lineHeight: 1.6,
-              marginBottom: { xs: "32px", sm: 0 },
+              marginBottom: "32px",
             }}
           >
             Studente ITS Full Stack Developer
@@ -146,7 +146,7 @@ export default function Home() {
 
           <Box
             sx={{
-              display: { xs: "flex", sm: "none" },
+              display: "flex",
               gap: "12px",
               justifyContent: "center",
               flexWrap: "wrap",
@@ -155,16 +155,9 @@ export default function Home() {
             <Button
               component={NavLink}
               to="/profilo"
-              sx={{ fontSize: 14, padding: "10px 26px" }}
+              sx={{ fontSize: 14, padding: "10px 24px" }}
             >
-              Profilo
-            </Button>
-            <Button
-              component={NavLink}
-              to="/contatti"
-              sx={{ fontSize: 14, padding: "10px 26px" }}
-            >
-              Contattami
+              Vai a Profilo &gt;
             </Button>
           </Box>
         </Box>

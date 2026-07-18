@@ -4,6 +4,27 @@ import { NavLink } from "react-router";
 import Window from "../components/Window";
 import { w95 } from "../theme/theme";
 
+function DownloadIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      shapeRendering="crispEdges"
+      aria-hidden="true"
+    >
+      <rect x="7" y="1" width="2" height="7" fill="currentColor" />
+      <rect x="5" y="6" width="2" height="2" fill="currentColor" />
+      <rect x="9" y="6" width="2" height="2" fill="currentColor" />
+      <rect x="6" y="8" width="4" height="1" fill="currentColor" />
+      <rect x="7" y="9" width="2" height="1" fill="currentColor" />
+      <rect x="1" y="11" width="2" height="4" fill="currentColor" />
+      <rect x="13" y="11" width="2" height="4" fill="currentColor" />
+      <rect x="1" y="14" width="14" height="1" fill="currentColor" />
+    </svg>
+  );
+}
+
 export default function Profilo() {
   return (
     <Box
@@ -11,17 +32,17 @@ export default function Profilo() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: { xs: "calc(100vh - 80px)" },
+        minHeight: { xs: "calc(100vh - 140px)" },
         padding: { xs: "12px", sm: "32px" },
       }}
     >
       <Window
         title="Profilo"
         sx={{
-        width: "100%",
-        maxWidth: 1000,
-        minHeight: { xs: "60vh", sm: "auto" },
-      }}
+          width: "100%",
+          maxWidth: 1000,
+          minHeight: { xs: "60vh", sm: "auto" },
+        }}
       >
         <Box
           sx={{
@@ -70,7 +91,7 @@ export default function Profilo() {
               sx={{
                 lineHeight: 1.7,
                 marginBottom: "16px",
-                fontSize: { xs: 14, sm: 22 },
+                fontSize: { xs: 14, sm: 16 },
               }}
             >
               Diplomato al Liceo Scientifico Buonarroti di Pisa con indirizzo
@@ -80,7 +101,7 @@ export default function Profilo() {
             </Box>
             <Box
               component="p"
-              sx={{ lineHeight: 1.7, fontSize: { xs: 14, sm: 22 } }}
+              sx={{ lineHeight: 1.7, fontSize: { xs: 14, sm: 16 } }}
             >
               La programmazione web è il mio ambiente: amo la complessità che
               sta dietro ogni riga di codice. Sono in costante evoluzione,
@@ -93,27 +114,43 @@ export default function Profilo() {
               display: "flex",
               gap: "12px",
               justifyContent: "center",
+              alignItems: "center",
               flexWrap: "wrap",
             }}
           >
             <Button
-              component="a"
-              href="/cv-gianpaolo-del-moro.pdf"
-              download
-              sx={{ fontSize: { xs: 14, sm: 16 }, padding: "10px 24px" }}
+              component={NavLink}
+              to="/"
+              sx={{ fontSize: 14, padding: "10px 24px" }}
             >
-              Scarica CV
+              &lt; Torna alla Home
             </Button>
+
+            <Box
+              sx={{
+                order: { xs: -1, sm: 0 },
+                width: { xs: "100%", sm: "auto" },
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                component="a"
+                href="/cv-gianpaolo-del-moro.pdf"
+                download
+                startIcon={<DownloadIcon />}
+                sx={{ fontSize: 14, padding: "10px 24px" }}
+              >
+                Scarica CV
+              </Button>
+            </Box>
+
             <Button
               component={NavLink}
               to="/stack"
-              sx={{
-                display: { xs: "inline-flex", sm: "none" },
-                fontSize: 14,
-                padding: "10px 24px",
-              }}
+              sx={{ fontSize: 14, padding: "10px 24px" }}
             >
-              Vai a Stack
+              Vai a Stack &gt;
             </Button>
           </Box>
         </Box>

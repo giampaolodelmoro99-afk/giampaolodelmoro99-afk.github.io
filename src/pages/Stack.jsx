@@ -1,14 +1,18 @@
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
 import { w95, sunken } from "../theme/theme";
 
-const skills = [
+const frontendSkills = [
   { name: "HTML", level: "Avanzato", percent: 90 },
   { name: "CSS", level: "Intermedio", percent: 65 },
   { name: "JavaScript", level: "Intermedio", percent: 65 },
   { name: "React", level: "Intermedio", percent: 65 },
+];
+
+const backendSkills = [
   { name: "PHP", level: "Intermedio", percent: 65 },
   { name: "SQL", level: "Intermedio", percent: 65 },
   { name: "Node.js", level: "Intermedio", percent: 65 },
@@ -60,15 +64,64 @@ function SkillBar({ name, level, percent }) {
   );
 }
 
-export default function Stack() {
+function SkillsPanel({ legend, skills }) {
   return (
-    <Box sx={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: {xs: "calc(100vh - 80px)"},
-      padding: { xs: "12px", sm: "32px" } }}>
-      <Window title="Stack" sx={{ width: "100%", maxWidth: 1000 }}>
+    <Box
+      component="fieldset"
+      sx={{
+        border: `1px solid ${w95.dark}`,
+        boxShadow: `1px 1px 0 ${w95.lightest} inset, -1px -1px 0 ${w95.lightest}`,
+        padding: { xs: "16px", sm: "24px" },
+        margin: 0,
+        marginBottom: "24px",
+      }}
+    >
+      <Box
+        component="legend"
+        sx={{
+          fontWeight: "bold",
+          padding: "0 12px",
+          fontSize: { xs: 14, sm: 30 },
+          marginX: "auto",
+          textAlign: "center",
+        }}
+      >
+        {legend}
+      </Box>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+          columnGap: "32px",
+          rowGap: "20px",
+        }}
+      >
+        {skills.map((skill) => (
+          <SkillBar key={skill.name} {...skill} />
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
+export default function Stack() {
+  const [step, setStep] = useState("frontend");
+  const isFrontend = step === "frontend";
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: { xs: "calc(100vh - 180px)" },
+        padding: { xs: "12px", sm: "32px" },
+      }}
+    >
+      <Window
+        title={isFrontend ? "Stack - Frontend" : "Stack - Backend"}
+        sx={{ width: "100%", maxWidth: 1000 }}
+      >
         <Box sx={{ padding: { xs: "4px", sm: "16px" } }}>
           <Box
             sx={{
@@ -81,55 +134,59 @@ export default function Stack() {
             Stack
           </Box>
 
-          <Box
-            component="fieldset"
-            sx={{
-              border: `1px solid ${w95.dark}`,
-              boxShadow: `1px 1px 0 ${w95.lightest} inset, -1px -1px 0 ${w95.lightest}`,
-              padding: { xs: "16px", sm: "24px" },
-              margin: 0,
-              marginBottom: "24px",
-            }}
-          >
-            <Box
-              component="legend"
-              sx={{
-                fontWeight: "bold",
-                padding: "0 12px",
-                fontSize: { xs: 14, sm: 30 },
-                marginX: "auto",
-                textAlign: "center",
-              }}
-            >
-              Installazione competenze in corso...
-            </Box>
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                columnGap: "32px",
-                rowGap: "20px",
-              }}
-            >
-              {skills.map((skill) => (
-                <SkillBar key={skill.name} {...skill} />
-              ))}
-            </Box>
-          </Box>
+          {isFrontend ? (
+            <SkillsPanel
+              legend="Installazione competenze frontend in corso..."
+              skills={frontendSkills}
+            />
+          ) : (
+            <SkillsPanel
+              legend="Installazione competenze backend in corso..."
+              skills={backendSkills}
+            />
+          )}
 
           <Box
             sx={{
-              display: { xs: "flex", sm: "none" },
+              display: "flex",
+              gap: "12px",
               justifyContent: "center",
+              flexWrap: "wrap",
             }}
           >
-            <Button
-              component={NavLink}
-              to="/progetti"
-              sx={{ fontSize: 14, padding: "10px 24px" }}
-            >
-              Vai a Progetti
-            </Button>
+            {isFrontend ? (
+              <>
+                <Button
+                  component={NavLink}
+                  to="/profilo"
+                  sx={{ fontSize: 14, padding: "10px 24px" }}
+                >
+                  &lt; Torna a Profilo
+                </Button>
+                <Button
+                  onClick={() => setStep("backend")}
+                  sx={{ fontSize: 14, padding: "10px 24px" }}
+                >
+                  Tecnologie backend &gt;
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={() => setStep("frontend")}
+                  sx={{ fontSize: 14, padding: "10px 24px" }}
+                >
+                  &lt; Tecnologie frontend
+                </Button>
+                <Button
+                  component={NavLink}
+                  to="/progetti"
+                  sx={{ fontSize: 14, padding: "10px 24px" }}
+                >
+                  Vai a Progetti &gt;
+                </Button>
+              </>
+            )}
           </Box>
         </Box>
       </Window>
