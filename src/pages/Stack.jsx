@@ -19,6 +19,13 @@ const backendSkills = [
   { name: "Laravel", level: "Intermedio", percent: 65 },
 ];
 
+const navButtonStyle = {
+  fontSize: { xs: 12, sm: 14 },
+  padding: { xs: "10px 8px", sm: "10px 24px" },
+  flex: { xs: "1 1 0", sm: "0 0 auto" },
+  whiteSpace: "nowrap",
+};
+
 function SkillBar({ name, level, percent }) {
   return (
     <Box>
@@ -114,7 +121,7 @@ export default function Stack() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: { xs: "calc(100vh - 180px)" },
+        minHeight: { xs: "calc(100vh - 100px)" },
         padding: { xs: "12px", sm: "32px" },
       }}
     >
@@ -149,9 +156,8 @@ export default function Stack() {
           <Box
             sx={{
               display: "flex",
-              gap: "12px",
+              gap: { xs: "8px", sm: "12px" },
               justifyContent: "center",
-              flexWrap: "wrap",
             }}
           >
             {isFrontend ? (
@@ -159,29 +165,23 @@ export default function Stack() {
                 <Button
                   component={NavLink}
                   to="/profilo"
-                  sx={{ fontSize: 14, padding: "10px 24px" }}
+                  sx={navButtonStyle}
                 >
                   &lt; Torna a Profilo
                 </Button>
-                <Button
-                  onClick={() => setStep("backend")}
-                  sx={{ fontSize: 14, padding: "10px 24px" }}
-                >
+                <Button onClick={() => setStep("backend")} sx={navButtonStyle}>
                   Tecnologie backend &gt;
                 </Button>
               </>
             ) : (
               <>
-                <Button
-                  onClick={() => setStep("frontend")}
-                  sx={{ fontSize: 14, padding: "10px 24px" }}
-                >
+                <Button onClick={() => setStep("frontend")} sx={navButtonStyle}>
                   &lt; Tecnologie frontend
                 </Button>
                 <Button
                   component={NavLink}
                   to="/progetti"
-                  sx={{ fontSize: 14, padding: "10px 24px" }}
+                  sx={navButtonStyle}
                 >
                   Vai a Progetti &gt;
                 </Button>
