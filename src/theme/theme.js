@@ -30,66 +30,69 @@ const theme = createTheme({
     shape: { borderRadius: 0 },
     components: {
         MuiCssBaseline: {
-        styleOverrides: `
-            @font-face {
-            font-family: "Pixelated MS Sans Serif";
-            src: url(${msSansSerif}) format("woff2");
-            font-weight: normal;
-            font-display: swap;
-            }
-            @font-face {
-            font-family: "Pixelated MS Sans Serif";
-            src: url(${msSansSerifBold}) format("woff2");
-            font-weight: bold;
-            font-display: swap;
-            }
-            body {
-            -webkit-font-smoothing: none;
-            }
-        `,
-    },
-    MuiButtonBase: {
-        defaultProps: { disableRipple: true },
-    },
-    MuiButton: {
-        styleOverrides: {
-        root: {
-            backgroundColor: w95.silver,
-            color: "#000000",
-            boxShadow: raised,
-            border: "none",
-            borderRadius: 0,
-            minWidth: 75,
-            minHeight: 23,
-            padding: "0 12px",
-            fontSize: 11,
-            "&:hover": {
-                backgroundColor: w95.silver,
-                boxShadow: raised,
+            styleOverrides: `
+                @font-face {
+                font-family: "Pixelated MS Sans Serif";
+                src: url(${msSansSerif}) format("woff2");
+                font-weight: normal;
+                font-display: swap;
+                }
+                @font-face {
+                font-family: "Pixelated MS Sans Serif";
+                src: url(${msSansSerifBold}) format("woff2");
+                font-weight: bold;
+                font-display: swap;
+                }
+                body {
+                -webkit-font-smoothing: none;
+                }
+                a, button {
+                touch-action: manipulation;
+                }
+            `,
+        },
+        MuiButtonBase: {
+            defaultProps: { disableRipple: true },
+        },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: w95.silver,
+                    color: "#000000",
+                    boxShadow: raised,
+                    border: "none",
+                    borderRadius: 0,
+                    minWidth: 75,
+                    minHeight: 23,
+                    padding: "0 12px",
+                    fontSize: 11,
+                    "&:hover": {
+                        backgroundColor: w95.silver,
+                        boxShadow: raised,
+                    },
+                    "&:active": {
+                        boxShadow: sunken,
+                        paddingTop: 2,
+                        paddingLeft: 14,
+                    },
+                    "&:focus-visible": {
+                        outline: "1px dotted #000000",
+                        outlineOffset: -5,
+                    },
+                },
             },
-            "&:active": {
-                boxShadow: sunken,
-                paddingTop: 2,
-                paddingLeft: 14,
-            },
-            "&:focus-visible": {
-                outline: "1px dotted #000000",
-                outlineOffset: -5,
+        },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: w95.silver,
+                    boxShadow: raised,
+                    borderRadius: 0,
+                    backgroundImage: "none",
+                },
             },
         },
     },
-    },
-    MuiPaper: {
-        styleOverrides: {
-            root: {
-            backgroundColor: w95.silver,
-            boxShadow: raised,
-            borderRadius: 0,
-            backgroundImage: "none",
-            },
-        },
-    },
-},
 });
 
 export default theme;
