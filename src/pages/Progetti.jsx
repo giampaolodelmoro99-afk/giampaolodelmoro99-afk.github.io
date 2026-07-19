@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
 import { w95, raised, sunken } from "../theme/theme";
+
+const navButtonStyle = {
+  fontSize: { xs: 12, sm: 14 },
+  padding: { xs: "10px 8px", sm: "10px 24px" },
+  flex: { xs: "1 1 0", sm: "0 0 auto" },
+  whiteSpace: "nowrap",
+};
 
 const nodeProjects = [
   {
@@ -163,6 +170,10 @@ export default function Progetti() {
   const [step, setStep] = useState("node");
   const isNode = step === "node";
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
+
   return (
     <Box sx={{ padding: { xs: "12px", sm: "32px" } }}>
       <Window
@@ -193,40 +204,25 @@ export default function Progetti() {
           <Box
             sx={{
               display: "flex",
-              gap: "12px",
+              gap: { xs: "8px", sm: "12px" },
               justifyContent: "center",
-              flexWrap: "wrap",
             }}
           >
             {isNode ? (
               <>
-                <Button
-                  component={NavLink}
-                  to="/stack"
-                  sx={{ fontSize: 14, padding: "10px 24px" }}
-                >
+                <Button component={NavLink} to="/stack" sx={navButtonStyle}>
                   &lt; Torna a Stack
                 </Button>
-                <Button
-                  onClick={() => setStep("laravel")}
-                  sx={{ fontSize: 14, padding: "10px 24px" }}
-                >
+                <Button onClick={() => setStep("laravel")} sx={navButtonStyle}>
                   Progetti Laravel &gt;
                 </Button>
               </>
             ) : (
               <>
-                <Button
-                  onClick={() => setStep("node")}
-                  sx={{ fontSize: 14, padding: "10px 24px" }}
-                >
+                <Button onClick={() => setStep("node")} sx={navButtonStyle}>
                   &lt; Progetti Node.js
                 </Button>
-                <Button
-                  component={NavLink}
-                  to="/contatti"
-                  sx={{ fontSize: 14, padding: "10px 24px" }}
-                >
+                <Button component={NavLink} to="/contatti" sx={navButtonStyle}>
                   Vai a Contatti &gt;
                 </Button>
               </>

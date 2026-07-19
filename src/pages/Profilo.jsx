@@ -4,6 +4,13 @@ import { NavLink } from "react-router";
 import Window from "../components/Window";
 import { w95 } from "../theme/theme";
 
+const navButtonStyle = {
+  fontSize: { xs: 12, sm: 14 },
+  padding: { xs: "10px 8px", sm: "10px 24px" },
+  flex: { xs: "1 1 0", sm: "0 0 auto" },
+  whiteSpace: "nowrap",
+};
+
 function DownloadIcon() {
   return (
     <svg
@@ -32,7 +39,7 @@ export default function Profilo() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: { xs: "calc(100vh - 140px)" },
+        minHeight: { xs: "calc(100vh - 80px)" },
         padding: { xs: "12px", sm: "32px" },
       }}
     >
@@ -112,17 +119,13 @@ export default function Profilo() {
           <Box
             sx={{
               display: "flex",
-              gap: "12px",
+              gap: { xs: "8px", sm: "12px" },
               justifyContent: "center",
               alignItems: "center",
               flexWrap: "wrap",
             }}
           >
-            <Button
-              component={NavLink}
-              to="/"
-              sx={{ fontSize: 14, padding: "10px 24px" }}
-            >
+            <Button component={NavLink} to="/" sx={navButtonStyle}>
               &lt; Torna alla Home
             </Button>
 
@@ -132,6 +135,7 @@ export default function Profilo() {
                 width: { xs: "100%", sm: "auto" },
                 display: "flex",
                 justifyContent: "center",
+                flex: { sm: "0 0 auto" },
               }}
             >
               <Button
@@ -139,17 +143,16 @@ export default function Profilo() {
                 href="/cv-gianpaolo-del-moro.pdf"
                 download
                 startIcon={<DownloadIcon />}
-                sx={{ fontSize: 14, padding: "10px 24px" }}
+                sx={{
+                  fontSize: { xs: 12, sm: 14 },
+                  padding: { xs: "10px 16px", sm: "10px 24px" },
+                }}
               >
                 Scarica CV
               </Button>
             </Box>
 
-            <Button
-              component={NavLink}
-              to="/stack"
-              sx={{ fontSize: 14, padding: "10px 24px" }}
-            >
+            <Button component={NavLink} to="/stack" sx={navButtonStyle}>
               Vai a Stack &gt;
             </Button>
           </Box>
