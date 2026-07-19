@@ -4,11 +4,29 @@ import { NavLink } from "react-router";
 import Window from "../components/Window";
 import { w95, sunken } from "../theme/theme";
 
+const email = ["giampaolo.delmoro99", "gmail.com"].join("@");
+
+const navButtonStyle = {
+  fontSize: { xs: 12, sm: 14 },
+  padding: { xs: "10px 8px", sm: "10px 24px" },
+  flex: { xs: "1 1 0", sm: "0 0 auto" },
+  whiteSpace: "nowrap",
+};
+
+const fieldStyle = {
+  display: "block",
+  boxShadow: sunken,
+  backgroundColor: w95.lightest,
+  fontSize: { xs: "clamp(12px, 3.6vw, 14px)", sm: 18 },
+  padding: "8px 12px",
+  overflowWrap: "break-word",
+};
+
 const contacts = [
   {
     label: "Email",
-    value: "giampaolo.delmoro99@gmail.com",
-    href: "mailto:giampaolo.delmoro99@gmail.com",
+    value: email,
+    href: "mailto:" + email,
   },
   {
     label: "GitHub",
@@ -17,9 +35,12 @@ const contacts = [
     external: true,
   },
   {
-    label: "Telefono",
-    value: "+39 389 989 6109",
-    href: "tel:+393899896109",
+    label: "Località",
+    value: "Pisa, Toscana",
+  },
+  {
+    label: "Disponibilità",
+    value: "Full-time",
   },
 ];
 
@@ -98,29 +119,28 @@ export default function Contatti() {
                 >
                   {label}:
                 </Box>
-                <Box
-                  component="a"
-                  href={href}
-                  target={external ? "_blank" : undefined}
-                  rel={external ? "noopener noreferrer" : undefined}
-                  sx={{
-                    display: "block",
-                    boxShadow: sunken,
-                    backgroundColor: w95.lightest,
-                    color: w95.navy,
-                    textDecoration: "none",
-                    fontSize: { xs: "clamp(12px, 3.6vw, 14px)", sm: 18 },
-                    padding: "8px 12px",
-                    overflowWrap: "break-word",
-                    "&:hover": { textDecoration: "underline" },
-                    "&:focus-visible": {
-                      outline: "1px dotted #000000",
-                      outlineOffset: -4,
-                    },
-                  }}
-                >
-                  {value}
-                </Box>
+                {href ? (
+                  <Box
+                    component="a"
+                    href={href}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noopener noreferrer" : undefined}
+                    sx={{
+                      ...fieldStyle,
+                      color: w95.navy,
+                      textDecoration: "none",
+                      "&:hover": { textDecoration: "underline" },
+                      "&:focus-visible": {
+                        outline: "1px dotted #000000",
+                        outlineOffset: -4,
+                      },
+                    }}
+                  >
+                    {value}
+                  </Box>
+                ) : (
+                  <Box sx={{ ...fieldStyle, color: "#000000" }}>{value}</Box>
+                )}
               </Box>
             ))}
           </Box>
@@ -128,23 +148,14 @@ export default function Contatti() {
           <Box
             sx={{
               display: "flex",
-              gap: "12px",
+              gap: { xs: "8px", sm: "12px" },
               justifyContent: "center",
-              flexWrap: "wrap",
             }}
           >
-            <Button
-              component={NavLink}
-              to="/progetti"
-              sx={{ fontSize: 14, padding: "10px 24px" }}
-            >
+            <Button component={NavLink} to="/progetti" sx={navButtonStyle}>
               &lt; Torna a Progetti
             </Button>
-            <Button
-              component={NavLink}
-              to="/"
-              sx={{ fontSize: 14, padding: "10px 24px" }}
-            >
+            <Button component={NavLink} to="/" sx={navButtonStyle}>
               Vai alla Home &gt;
             </Button>
           </Box>
