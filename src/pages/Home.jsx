@@ -3,7 +3,12 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
-import { sunken } from "../theme/theme";
+import {
+  w95,
+  sunken,
+  pageMinHeight,
+  navButtonStyle,
+} from "../theme/theme";
 
 export default function Home() {
   const [shutdown, setShutdown] = useState(false);
@@ -38,7 +43,7 @@ export default function Home() {
             sx={{
               fontSize: { xs: 11, sm: 14 },
               marginTop: "20px",
-              color: "#808080",
+              color: w95.dark,
             }}
           >
             (clicca ovunque per riaccendere)
@@ -52,10 +57,10 @@ export default function Home() {
     <Box
       sx={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
         padding: { xs: "12px", sm: "32px" },
-        minHeight: { xs: "calc(100vh - 80px)" },
+        minHeight: pageMinHeight,
       }}
     >
       <Window
@@ -69,7 +74,7 @@ export default function Home() {
       >
         <Box
           sx={{
-            padding: { xs: "20px 8px", sm: "48px 32px" },
+            padding: { xs: "4px", sm: "16px" },
             textAlign: "center",
             flex: 1,
             display: "flex",
@@ -155,7 +160,7 @@ export default function Home() {
             <Button
               component={NavLink}
               to="/profilo"
-              sx={{ fontSize: 14, padding: "10px 24px" }}
+              sx={navButtonStyle}
             >
               Vai a Profilo &gt;
             </Button>

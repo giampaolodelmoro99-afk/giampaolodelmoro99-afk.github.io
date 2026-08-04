@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { w95 } from "../theme/theme";
+import { w95, focusStyle } from "../theme/theme";
 
 function ComputerIcon() {
   return (
@@ -83,10 +84,68 @@ const icons = [
   { label: "Cestino", Icon: TrashIcon },
 ];
 
+const iconButtonStyle = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "4px",
+  width: 88,
+  padding: 0,
+  border: "none",
+  background: "none",
+  font: "inherit",
+  color: "inherit",
+  textAlign: "center",
+  cursor: "pointer",
+  position: "relative",
+  ...focusStyle,
+};
+
+const glyphStyle = {
+  position: "relative",
+  width: 34,
+  height: 34,
+  lineHeight: 0,
+};
+
+const ditherStyle = {
+  content: '""',
+  position: "absolute",
+  inset: 0,
+  backgroundImage: `linear-gradient(45deg, ${w95.navy} 25%, transparent 25%, transparent 75%, ${w95.navy} 75%), linear-gradient(45deg, ${w95.navy} 25%, transparent 25%, transparent 75%, ${w95.navy} 75%)`,
+  backgroundSize: "4px 4px",
+  backgroundPosition: "0 0, 2px 2px",
+};
+
+const labelStyle = {
+  color: w95.lightest,
+  fontSize: 12,
+  padding: "0 2px",
+  textShadow: "1px 1px #000000",
+};
+
+const selectedLabelStyle = {
+  color: w95.lightest,
+  fontSize: 12,
+  padding: "0 2px",
+  backgroundColor: w95.navy,
+  outline: `1px dotted ${w95.lightest}`,
+  outlineOffset: -1,
+  textShadow: "none",
+};
+
 export default function DesktopIcons() {
+  const [selected, setSelected] = useState(null);
+
+  useEffect(() => {
+    if (!selected) return;
+    const clear = () => setSelected(null);
+    document.addEventListener("click", clear);
+    return () => document.removeEventListener("click", clear);
+  }, [selected]);
+
   return (
     <Box
-      aria-hidden="true" 
       sx={{
         display: { xs: "none", md: "flex" },
         position: "fixed",
@@ -96,33 +155,34 @@ export default function DesktopIcons() {
         flexDirection: "column",
         flexWrap: "wrap",
         alignContent: "flex-start",
-        gap: "26px",
-        zIndex: 10, 
+        gap: "24px",
+        zIndex: 10,
         userSelect: "none",
       }}
     >
       {icons.map(({ label, Icon }) => (
         <Box
           key={label}
-          component="div" 
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "4px",
-            width: 90,
-            textAlign: "center",
-            cursor: "pointer",
-            position: "relative", 
-            "&:hover": {
-              cursor: "pointer", 
-            }
+          component="button"
+          type="button"
+          aria-label={`Icona desktop ${label}`}
+          aria-pressed={selected === label}
+          onClick={(event) => {
+            event.stopPropagation();
+            setSelected(label);
           }}
+          sx={iconButtonStyle}
         >
-          <Icon />
           <Box
-            sx={{ color: "#ffffff", fontSize: 12, textShadow: "1px 1px #000" }}
+            sx={
+              selected === label
+                ? { ...glyphStyle, "&::after": ditherStyle }
+                : glyphStyle
+            }
           >
+            <Icon />
+          </Box>
+          <Box sx={selected === label ? selectedLabelStyle : labelStyle}>
             {label}
           </Box>
         </Box>

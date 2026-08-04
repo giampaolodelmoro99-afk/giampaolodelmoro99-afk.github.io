@@ -2,16 +2,9 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
-import { w95, sunken } from "../theme/theme";
+import { w95, sunken, pageMinHeight, navButtonStyle } from "../theme/theme";
 
 const email = ["giampaolo.delmoro99", "gmail.com"].join("@");
-
-const navButtonStyle = {
-  fontSize: { xs: 12, sm: 14 },
-  padding: { xs: "10px 8px", sm: "10px 24px" },
-  flex: { xs: "1 1 0", sm: "0 0 auto" },
-  whiteSpace: "nowrap",
-};
 
 const fieldStyle = {
   display: "block",
@@ -49,9 +42,9 @@ export default function Contatti() {
     <Box
       sx={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
-        minHeight: { xs: "calc(100vh - 80px)" },
+        minHeight: pageMinHeight,
         padding: { xs: "12px", sm: "32px" },
       }}
     >
@@ -77,7 +70,7 @@ export default function Contatti() {
               textAlign: "center",
               fontSize: { xs: "clamp(26px, 8vw, 33px)", sm: 77 },
               fontWeight: "bold",
-              marginBottom: "8px",
+              marginBottom: "24px",
             }}
           >
             Contattami

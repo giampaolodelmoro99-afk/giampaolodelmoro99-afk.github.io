@@ -3,14 +3,14 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
-import { w95, raised, sunken } from "../theme/theme";
-
-const navButtonStyle = {
-  fontSize: { xs: 12, sm: 14 },
-  padding: { xs: "10px 8px", sm: "10px 24px" },
-  flex: { xs: "1 1 0", sm: "0 0 auto" },
-  whiteSpace: "nowrap",
-};
+import {
+  w95,
+  raised,
+  sunken,
+  pageMinHeight,
+  navButtonStyle,
+  titlebarStyle,
+} from "../theme/theme";
 
 const nodeProjects = [
   {
@@ -71,17 +71,8 @@ function ProjectCard({ name, description, tech, url }) {
         flexDirection: "column",
       }}
     >
-      <Box
-        sx={{
-          backgroundColor: w95.navy,
-          color: "#ffffff",
-          fontWeight: "bold",
-          fontSize: { xs: 12, sm: 14 },
-          padding: "4px 8px",
-          userSelect: "none",
-        }}
-      >
-        {name}
+      <Box sx={titlebarStyle}>
+        <Box>{name}</Box>
       </Box>
 
       <Box
@@ -118,7 +109,7 @@ function ProjectCard({ name, description, tech, url }) {
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          sx={{ fontSize: 13, alignSelf: "flex-start" }}
+          sx={{ alignSelf: "flex-start" }}
         >
           Apri su GitHub
         </Button>
@@ -175,10 +166,18 @@ export default function Progetti() {
   }, [step]);
 
   return (
-    <Box sx={{ padding: { xs: "12px", sm: "32px" } }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        minHeight: pageMinHeight,
+        padding: { xs: "12px", sm: "32px" },
+      }}
+    >
       <Window
         title={isNode ? "Progetti - Node.js" : "Progetti - Laravel"}
-        sx={{ maxWidth: 1100, mx: "auto" }}
+        sx={{ width: "100%", maxWidth: 1000 }}
       >
         <Box sx={{ padding: { xs: "4px", sm: "16px" } }}>
           <Box

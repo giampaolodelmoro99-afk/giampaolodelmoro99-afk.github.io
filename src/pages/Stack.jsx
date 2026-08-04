@@ -3,7 +3,13 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
-import { w95, sunken } from "../theme/theme";
+import {
+  w95,
+  pageMinHeight,
+  navButtonStyle,
+  progressBarStyle,
+  progressFillStyle,
+} from "../theme/theme";
 
 const frontendSkills = [
   { name: "HTML", level: "Avanzato", percent: 90 },
@@ -18,13 +24,6 @@ const backendSkills = [
   { name: "Node.js", level: "Intermedio", percent: 65 },
   { name: "Laravel", level: "Intermedio", percent: 65 },
 ];
-
-const navButtonStyle = {
-  fontSize: { xs: 12, sm: 14 },
-  padding: { xs: "10px 8px", sm: "10px 24px" },
-  flex: { xs: "1 1 0", sm: "0 0 auto" },
-  whiteSpace: "nowrap",
-};
 
 function SkillBar({ name, level, percent }) {
   return (
@@ -41,7 +40,7 @@ function SkillBar({ name, level, percent }) {
         <Box sx={{ fontWeight: "bold", fontSize: { xs: 14, sm: 16 } }}>
           {name}
         </Box>
-        <Box sx={{ fontSize: { xs: 11, sm: 12 }, color: "#333" }}>
+        <Box sx={{ fontSize: { xs: 11, sm: 12 }, color: w95.dark }}>
           {level} · {percent}%
         </Box>
       </Box>
@@ -51,21 +50,9 @@ function SkillBar({ name, level, percent }) {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={`${name}: ${level}, ${percent}%`}
-        sx={{
-          height: 20,
-          boxShadow: sunken,
-          backgroundColor: w95.lightest,
-          padding: "3px",
-          overflow: "hidden",
-        }}
+        sx={progressBarStyle}
       >
-        <Box
-          sx={{
-            height: "100%",
-            width: `${percent}%`,
-            backgroundImage: `repeating-linear-gradient(90deg, ${w95.navy} 0 10px, transparent 10px 13px)`,
-          }}
-        />
+        <Box sx={{ ...progressFillStyle, width: `${percent}%` }} />
       </Box>
     </Box>
   );
@@ -119,9 +106,9 @@ export default function Stack() {
     <Box
       sx={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
-        minHeight: { xs: "calc(100vh - 100px)" },
+        minHeight: pageMinHeight,
         padding: { xs: "12px", sm: "32px" },
       }}
     >

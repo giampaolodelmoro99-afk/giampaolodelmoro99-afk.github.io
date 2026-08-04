@@ -2,7 +2,16 @@ import { useState } from "react";
 import { NavLink } from "react-router";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import { w95, raised, sunken } from "../theme/theme";
+import {
+  w95,
+  raised,
+  sunken,
+  focusStyle,
+  titlebarStyle,
+  titlebarGlyphStyle,
+  controlMetrics,
+  scaleUi,
+} from "../theme/theme";
 
 const links = [
   { to: "/", label: "Home", end: true },
@@ -13,15 +22,29 @@ const links = [
 ];
 
 const linkStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
   backgroundColor: w95.silver,
-  color: "#000",
+  color: "#000000",
   textDecoration: "none",
-  fontSize: 14,
-  padding: "8px 20px",
+  fontSize: controlMetrics.fontSize,
+  minHeight: controlMetrics.minHeight,
+  padding: `0 ${controlMetrics.paddingX}px`,
   boxShadow: raised,
   whiteSpace: "nowrap",
-  "&:active": { boxShadow: sunken },
-  "&.active": { boxShadow: sunken, fontWeight: "bold" },
+  ...focusStyle,
+  "&:active": {
+    boxShadow: sunken,
+    paddingTop: `${controlMetrics.pressOffset}px`,
+    paddingLeft: `${controlMetrics.paddingX + controlMetrics.pressOffset}px`,
+  },
+  "&.active": {
+    boxShadow: sunken,
+    fontWeight: "bold",
+    paddingTop: `${controlMetrics.pressOffset}px`,
+    paddingLeft: `${controlMetrics.paddingX + controlMetrics.pressOffset}px`,
+  },
 };
 
 export default function Navbar() {
@@ -40,13 +63,16 @@ export default function Navbar() {
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          padding: { xs: "6px 10px", sm: "12px 16px" },
+          padding: {
+            xs: `${scaleUi(6)}px ${scaleUi(10)}px`,
+            sm: `${scaleUi(12)}px ${scaleUi(16)}px`,
+          },
         }}
       >
         <Box
           sx={{
             fontWeight: "bold",
-            fontSize: { xs: 16, sm: 24 },
+            fontSize: { xs: scaleUi(14), sm: scaleUi(16) },
             marginRight: "auto",
           }}
         >
@@ -80,10 +106,14 @@ export default function Navbar() {
             backgroundColor: w95.silver,
             boxShadow: raised,
             fontFamily: "inherit",
-            fontSize: { xs: 20, sm: 26 },
+            fontSize: { xs: scaleUi(20), sm: scaleUi(26) },
             fontWeight: "bold",
-            padding: { xs: "6px 14px", sm: "10px 18px" },
+            padding: {
+              xs: `${scaleUi(6)}px ${scaleUi(14)}px`,
+              sm: `${scaleUi(10)}px ${scaleUi(18)}px`,
+            },
             cursor: "pointer",
+            ...focusStyle,
             "&:active": { boxShadow: sunken },
           }}
         >
@@ -107,32 +137,18 @@ export default function Navbar() {
           },
         }}
       >
-        <Box
-          sx={{
-            backgroundColor: w95.navy,
-            color: "#fff",
-            fontWeight: "bold",
-            fontSize: 26,
-            padding: "10px 18px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          Menu
+        <Box sx={titlebarStyle}>
+          <Box>Menu</Box>
           <Box
             component="button"
             aria-label="Chiudi menu"
             onClick={() => setOpen(false)}
             sx={{
+              ...titlebarGlyphStyle,
+              ...focusStyle,
               border: "none",
-              backgroundColor: w95.silver,
-              boxShadow: raised,
+              padding: 0,
               fontFamily: "inherit",
-              fontSize: 12,
-              fontWeight: "bold",
-              width: 22,
-              height: 20,
               cursor: "pointer",
               "&:active": { boxShadow: sunken },
             }}

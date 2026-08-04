@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Content Security Policy (sito statico su GitHub Pages: niente header HTTP custom) -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'"
+    />
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
@@ -11,7 +17,7 @@
     <title>Gianpaolo Del Moro | Full Stack Developer</title>
     <meta
       name="description"
-      content="Portfolio di Gianpaolo Del Moro, studente ITS Full Stack Developer a Pisa. Progetti in Node.js, Laravel, React e PHP, in un'interfaccia in stile Windows 95."
+      content="Portfolio di Gianpaolo Del Moro, studente ITS Full Stack Developer a Pisa. Progetti in Node.js, Laravel, React , in un'interfaccia in stile Windows 95."
     />
     <meta name="author" content="Gianpaolo Del Moro" />
     <link rel="canonical" href="https://gianpaolodelmoro.it/" />

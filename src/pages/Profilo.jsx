@@ -2,14 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
-import { w95 } from "../theme/theme";
-
-const navButtonStyle = {
-  fontSize: { xs: 12, sm: 14 },
-  padding: { xs: "10px 8px", sm: "10px 24px" },
-  flex: { xs: "1 1 0", sm: "0 0 auto" },
-  whiteSpace: "nowrap",
-};
+import { w95, pageMinHeight, navButtonStyle } from "../theme/theme";
 
 function DownloadIcon() {
   return (
@@ -37,9 +30,9 @@ export default function Profilo() {
     <Box
       sx={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
-        minHeight: { xs: "calc(100vh - 80px)" },
+        minHeight: pageMinHeight,
         padding: { xs: "12px", sm: "32px" },
       }}
     >
@@ -143,10 +136,7 @@ export default function Profilo() {
                 href="/cv-gianpaolo-del-moro.pdf"
                 download
                 startIcon={<DownloadIcon />}
-                sx={{
-                  fontSize: { xs: 12, sm: 14 },
-                  padding: { xs: "10px 16px", sm: "10px 24px" },
-                }}
+                sx={{ whiteSpace: "nowrap" }}
               >
                 Scarica CV
               </Button>
