@@ -7,6 +7,7 @@ import {
   pageMinHeight,
   windowMaxWidth,
   navButtonStyle,
+  headingReset,
 } from "../theme/theme";
 
 function DownloadIcon() {
@@ -59,7 +60,9 @@ export default function Profilo() {
           }}
         >
           <Box
+            component="h1"
             sx={{
+              ...headingReset,
               textAlign: "center",
               fontSize: { xs: "clamp(26px, 8vw, 33px)", sm: 77 },
               fontWeight: "bold",
@@ -89,7 +92,9 @@ export default function Profilo() {
                 textAlign: "center",
               }}
             >
-              chi-sono.txt
+              <Box component="h2" sx={headingReset}>
+                chi-sono.txt
+              </Box>
             </Box>
             <Box
               component="p"

@@ -9,6 +9,7 @@ import {
   pageMinHeight,
   windowMaxWidth,
   navButtonStyle,
+  headingReset,
 } from "../theme/theme";
 
 export default function Home() {
@@ -84,7 +85,9 @@ export default function Home() {
           }}
         >
           <Box
+            component="h1"
             sx={{
+              ...headingReset,
               fontSize: { xs: "clamp(30px, 10vw, 44px)", sm: 77 },
               fontWeight: "bold",
               lineHeight: 1.2,
@@ -96,7 +99,7 @@ export default function Home() {
           >
             <Box component="span" sx={{ display: { xs: "block", sm: "inline" } }}>
               Gianpaolo
-            </Box>
+            </Box>{" "}
             <Box component="span" sx={{ display: { xs: "block", sm: "inline" } }}>
               Del Moro
             </Box>

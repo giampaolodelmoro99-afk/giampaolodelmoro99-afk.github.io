@@ -8,6 +8,7 @@ import {
   pageMinHeight,
   windowMaxWidth,
   navButtonStyle,
+  headingReset,
   progressBarStyle,
   progressFillStyle,
 } from "../theme/theme";
@@ -81,7 +82,9 @@ function SkillsPanel({ legend, skills }) {
           textAlign: "center",
         }}
       >
-        {legend}
+        <Box component="h2" sx={headingReset}>
+          {legend}
+        </Box>
       </Box>
       <Box
         sx={{
@@ -119,7 +122,9 @@ export default function Stack() {
       >
         <Box sx={{ padding: { xs: "4px", sm: "16px" } }}>
           <Box
+            component="h1"
             sx={{
+              ...headingReset,
               textAlign: "center",
               fontSize: { xs: "clamp(26px, 8vw, 33px)", sm: 77 },
               fontWeight: "bold",

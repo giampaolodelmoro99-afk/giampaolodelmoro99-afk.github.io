@@ -8,6 +8,7 @@ import {
   pageMinHeight,
   windowMaxWidth,
   navButtonStyle,
+  headingReset,
 } from "../theme/theme";
 
 const email = ["giampaolo.delmoro99", "gmail.com"].join("@");
@@ -72,7 +73,9 @@ export default function Contatti() {
           }}
         >
           <Box
+            component="h1"
             sx={{
+              ...headingReset,
               textAlign: "center",
               fontSize: { xs: "clamp(26px, 8vw, 33px)", sm: 77 },
               fontWeight: "bold",
@@ -104,7 +107,9 @@ export default function Contatti() {
                 textAlign: "center",
               }}
             >
-              rubrica.exe
+              <Box component="h2" sx={headingReset}>
+                rubrica.exe
+              </Box>
             </Box>
 
             {contacts.map(({ label, value, href, external }) => (

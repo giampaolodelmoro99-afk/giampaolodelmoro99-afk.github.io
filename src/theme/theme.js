@@ -23,6 +23,14 @@ export const focusStyle = {
     },
 };
 
+// I titoli sono h1/h2/h3 solo per la gerarchia del documento: questo azzera
+// margini e font di default del browser, così l'aspetto resta quello del div.
+export const headingReset = {
+    margin: 0,
+    fontSize: "inherit",
+    fontWeight: "inherit",
+};
+
 // Windows 95 girava a 640x480: font dei controlli 11px, pulsanti 23px
 // (rapporto 2.1). uiScale riporta quelle proporzioni su un viewport moderno:
 // è l'unico valore da cambiare per riscalare tutti i controlli.

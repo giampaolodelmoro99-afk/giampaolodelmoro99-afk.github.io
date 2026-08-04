@@ -10,6 +10,7 @@ import {
   pageMinHeight,
   windowMaxWidth,
   navButtonStyle,
+  headingReset,
   titlebarStyle,
 } from "../theme/theme";
 
@@ -73,7 +74,9 @@ function ProjectCard({ name, description, tech, url }) {
       }}
     >
       <Box sx={titlebarStyle}>
-        <Box>{name}</Box>
+        <Box component="h3" sx={headingReset}>
+          {name}
+        </Box>
       </Box>
 
       <Box
@@ -141,7 +144,9 @@ function ProjectsPanel({ legend, projects }) {
           textAlign: "center",
         }}
       >
-        {legend}
+        <Box component="h2" sx={headingReset}>
+          {legend}
+        </Box>
       </Box>
       <Box
         sx={{
@@ -182,7 +187,9 @@ export default function Progetti() {
       >
         <Box sx={{ padding: { xs: "4px", sm: "16px" } }}>
           <Box
+            component="h1"
             sx={{
+              ...headingReset,
               textAlign: "center",
               fontSize: { xs: "clamp(26px, 8vw, 33px)", sm: 77 },
               fontWeight: "bold",
