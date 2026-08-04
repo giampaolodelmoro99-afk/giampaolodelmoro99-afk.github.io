@@ -142,9 +142,12 @@ export default function Stack() {
 
           <Box
             sx={{
-              display: "flex",
+              display: "grid",
+              gridAutoFlow: "column",
+              gridAutoColumns: "1fr",
               gap: { xs: "8px", sm: "12px" },
-              justifyContent: "center",
+              width: "fit-content",
+              margin: "0 auto",
             }}
           >
             {isFrontend ? (
@@ -154,16 +157,16 @@ export default function Stack() {
                   to="/profilo"
                   sx={navButtonStyle}
                 >
-                  &lt; Torna a Profilo
+                  &lt; Tona a Profilo
                 </Button>
                 <Button onClick={() => setStep("backend")} sx={navButtonStyle}>
-                  Tecnologie backend &gt;
+                  Vai a Backend &gt;
                 </Button>
               </>
             ) : (
               <>
                 <Button onClick={() => setStep("frontend")} sx={navButtonStyle}>
-                  &lt; Tecnologie frontend
+                  &lt; Torna a Frontend
                 </Button>
                 <Button
                   component={NavLink}

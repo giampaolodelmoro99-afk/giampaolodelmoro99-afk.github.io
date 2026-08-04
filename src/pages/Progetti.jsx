@@ -205,6 +205,7 @@ export default function Progetti() {
               display: "flex",
               gap: { xs: "8px", sm: "12px" },
               justifyContent: "center",
+              flexWrap: "wrap",
             }}
           >
             {isNode ? (

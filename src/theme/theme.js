@@ -70,7 +70,8 @@ export const titlebarGlyphStyle = {
 };
 
 export const navButtonStyle = {
-    flex: { xs: "1 1 0", sm: "0 0 auto" },
+    flex: "0 0 auto",
+    width: "auto",
     whiteSpace: "nowrap",
 };
 

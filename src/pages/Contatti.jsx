@@ -143,6 +143,7 @@ export default function Contatti() {
               display: "flex",
               gap: { xs: "8px", sm: "12px" },
               justifyContent: "center",
+              flexWrap: "wrap",
             }}
           >
             <Button component={NavLink} to="/progetti" sx={navButtonStyle}>
