@@ -2,7 +2,13 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
-import { w95, sunken, pageMinHeight, navButtonStyle } from "../theme/theme";
+import {
+  w95,
+  sunken,
+  pageMinHeight,
+  windowMaxWidth,
+  navButtonStyle,
+} from "../theme/theme";
 
 const email = ["giampaolo.delmoro99", "gmail.com"].join("@");
 
@@ -52,7 +58,7 @@ export default function Contatti() {
         title="Contatti"
         sx={{
           width: "100%",
-          maxWidth: 1000,
+          maxWidth: windowMaxWidth,
           minHeight: { xs: "60vh", sm: "auto" },
         }}
       >

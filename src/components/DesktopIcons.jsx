@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { w95, focusStyle } from "../theme/theme";
+import {
+  w95,
+  focusStyle,
+  desktopIconsLeft,
+  desktopIconsWidth,
+  desktopIconsMinViewport,
+} from "../theme/theme";
 
 function ComputerIcon() {
   return (
@@ -89,7 +95,7 @@ const iconButtonStyle = {
   flexDirection: "column",
   alignItems: "center",
   gap: "4px",
-  width: 88,
+  width: desktopIconsWidth,
   padding: 0,
   border: "none",
   background: "none",
@@ -146,10 +152,11 @@ export default function DesktopIcons() {
 
   return (
     <Box
-      sx={{
-        display: { xs: "none", md: "flex" },
+      sx={(theme) => ({
+        display: "none",
+        [theme.breakpoints.up(desktopIconsMinViewport)]: { display: "flex" },
         position: "fixed",
-        left: 20,
+        left: desktopIconsLeft,
         top: 100,
         bottom: 20,
         flexDirection: "column",
@@ -158,7 +165,7 @@ export default function DesktopIcons() {
         gap: "24px",
         zIndex: 10,
         userSelect: "none",
-      }}
+      })}
     >
       {icons.map(({ label, Icon }) => (
         <Box

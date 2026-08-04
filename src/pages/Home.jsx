@@ -7,6 +7,7 @@ import {
   w95,
   sunken,
   pageMinHeight,
+  windowMaxWidth,
   navButtonStyle,
 } from "../theme/theme";
 
@@ -67,7 +68,7 @@ export default function Home() {
         title="Benvenuto"
         sx={{
           width: "100%",
-          maxWidth: 1000,
+          maxWidth: windowMaxWidth,
           minHeight: { xs: "60vh", sm: "auto" },
         }}
         onClose={() => setShutdown(true)}

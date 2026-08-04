@@ -2,7 +2,12 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
-import { w95, pageMinHeight, navButtonStyle } from "../theme/theme";
+import {
+  w95,
+  pageMinHeight,
+  windowMaxWidth,
+  navButtonStyle,
+} from "../theme/theme";
 
 function DownloadIcon() {
   return (
@@ -40,7 +45,7 @@ export default function Profilo() {
         title="Profilo"
         sx={{
           width: "100%",
-          maxWidth: 1000,
+          maxWidth: windowMaxWidth,
           minHeight: { xs: "60vh", sm: "auto" },
         }}
       >

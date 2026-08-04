@@ -1,6 +1,11 @@
 import Box from "@mui/material/Box";
 import Window from "./Window";
-import { pageMinHeight, progressBarStyle, progressFillStyle } from "../theme/theme";
+import {
+  pageMinHeight,
+  windowMaxWidth,
+  progressBarStyle,
+  progressFillStyle,
+} from "../theme/theme";
 
 export default function Loading() {
   return (
@@ -13,7 +18,7 @@ export default function Loading() {
         padding: { xs: "12px", sm: "32px" },
       }}
     >
-      <Window title="Attendere prego..." sx={{ width: "100%", maxWidth: 1000 }}>
+      <Window title="Attendere prego..." sx={{ width: "100%", maxWidth: windowMaxWidth }}>
         <Box sx={{ padding: { xs: "4px", sm: "16px" } }}>
           <Box
             sx={{

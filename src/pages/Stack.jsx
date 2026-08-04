@@ -6,6 +6,7 @@ import Window from "../components/Window";
 import {
   w95,
   pageMinHeight,
+  windowMaxWidth,
   navButtonStyle,
   progressBarStyle,
   progressFillStyle,
@@ -114,7 +115,7 @@ export default function Stack() {
     >
       <Window
         title={isFrontend ? "Stack - Frontend" : "Stack - Backend"}
-        sx={{ width: "100%", maxWidth: 1000 }}
+        sx={{ width: "100%", maxWidth: windowMaxWidth }}
       >
         <Box sx={{ padding: { xs: "4px", sm: "16px" } }}>
           <Box
@@ -142,12 +143,10 @@ export default function Stack() {
 
           <Box
             sx={{
-              display: "grid",
-              gridAutoFlow: "column",
-              gridAutoColumns: "1fr",
+              display: "flex",
               gap: { xs: "8px", sm: "12px" },
-              width: "fit-content",
-              margin: "0 auto",
+              justifyContent: "center",
+              flexWrap: "wrap",
             }}
           >
             {isFrontend ? (
@@ -157,7 +156,7 @@ export default function Stack() {
                   to="/profilo"
                   sx={navButtonStyle}
                 >
-                  &lt; Tona a Profilo
+                  &lt; Torna a Profilo
                 </Button>
                 <Button onClick={() => setStep("backend")} sx={navButtonStyle}>
                   Vai a Backend &gt;

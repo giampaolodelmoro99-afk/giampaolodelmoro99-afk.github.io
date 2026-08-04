@@ -124,6 +124,19 @@ const arrowRight = scrollbarArrow(
 
 const ditherTrack = `linear-gradient(45deg, ${w95.lightest} 25%, transparent 25%, transparent 75%, ${w95.lightest} 75%), linear-gradient(45deg, ${w95.lightest} 25%, transparent 25%, transparent 75%, ${w95.lightest} 75%)`;
 
+export const windowMaxWidth = 1000;
+
+// Le icone desktop sono fixed sul bordo sinistro, la finestra è centrata:
+// compaiono solo quando il margine libero accanto alla finestra le contiene
+// per intero, non a un breakpoint fisso. Margine = (viewport - windowMaxWidth) / 2,
+// e deve valere almeno left + larghezza colonna + stacco dalla finestra.
+export const desktopIconsLeft = 20;
+export const desktopIconsWidth = 88;
+const desktopIconsGap = 20;
+
+export const desktopIconsMinViewport =
+    windowMaxWidth + 2 * (desktopIconsLeft + desktopIconsWidth + desktopIconsGap);
+
 export const navbarHeight = { xs: 64, sm: 65 };
 
 export const pageMinHeight = {

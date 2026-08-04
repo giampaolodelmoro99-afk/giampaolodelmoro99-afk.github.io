@@ -8,6 +8,7 @@ import {
   raised,
   sunken,
   pageMinHeight,
+  windowMaxWidth,
   navButtonStyle,
   titlebarStyle,
 } from "../theme/theme";
@@ -177,7 +178,7 @@ export default function Progetti() {
     >
       <Window
         title={isNode ? "Progetti - Node.js" : "Progetti - Laravel"}
-        sx={{ width: "100%", maxWidth: 1000 }}
+        sx={{ width: "100%", maxWidth: windowMaxWidth }}
       >
         <Box sx={{ padding: { xs: "4px", sm: "16px" } }}>
           <Box
