@@ -11,7 +11,7 @@ Produzione: https://gianpaolodelmoro.it
 | Comando | Cosa fa |
 | --- | --- |
 | `npm run dev` | Dev server Vite |
-| `npm run build` | `vite build` **+ `cp dist/index.html dist/404.html`** (fallback SPA) |
+| `npm run build` | `vite build` **+ `cp dist/index.html dist/404.html`** (fallback SPA) **+ `node scripts/write-route-pages.mjs`** (una `index.html` per rotta, vedi *Pagine statiche per rotta*) |
 | `npm run preview` | Serve `dist/` come in produzione |
 | `npm run lint` | oxlint (config in `.oxlintrc.json`) |
 
@@ -32,6 +32,8 @@ src/
   pages/             Home, Profilo, Stack, Progetti, Contatti, NotFound
   assets/fonts/      woff2 importati da theme.js, non referenziati da CSS
 public/              servito da root assoluta: cv PDF, og-image, robots.txt, sitemap.xml
+scripts/
+  write-route-pages.mjs  post-build: legge sitemap.xml e scrive dist/<rotta>/index.html
 .github/workflows/deploy.yml
 ```
 
@@ -117,6 +119,20 @@ Le implementazioni sono **due** e vanno tenute allineate come palette: quella we
 
 Repo `giampaolodelmoro99-afk/giampaolodelmoro99-afk.github.io`: user site, servito da root. Dominio `gianpaolodelmoro.it` configurato in Settings → Pages (`build_type: workflow`, HTTPS forzato, certificato anche per `www`), **non** da un file `CNAME` nel repo.
 
+## Pagine statiche per rotta (SEO)
+
+`404.html` da solo **non basta**. GitHub Pages, per un path senza file corrispondente, serve sì il contenuto di `404.html` — e l'utente vede la pagina giusta, perché il router legge l'URL e monta il componente — ma lo serve con **status HTTP 404**. Googlebot guarda lo status prima del contenuto: con un 404 tratta l'URL come inesistente e non lo indicizza. Risultato: `/profilo`, `/stack`, `/progetti`, `/contatti` erano navigabili ma fuori dall'indice.
+
+La cura è che il file esista davvero, così Pages risponde 200. `scripts/write-route-pages.mjs` gira dopo `vite build` e scrive una copia di `dist/index.html` in `dist/<rotta>/index.html` per ogni rotta. Il contenuto è la stessa shell SPA di sempre: **nessun prerendering**, nessun Puppeteer, nessun HTML per-pagina da mantenere. Serve solo che il path risolva a un file.
+
+`dist/404.html` resta e continua a servire le rotte non previste (typo, URL vecchi), che devono restare 404 anche per i crawler.
+
+**Fonte unica delle rotte: `public/sitemap.xml`.** Lo script estrae i `<loc>`, ne prende il `pathname` e scarta la root (`/`, già coperta da `dist/index.html`). Non c'è nessun elenco di rotte nello script: la sitemap è già la lista canonica degli URL che vogliamo indicizzati, cioè esattamente l'insieme che ha bisogno del file statico, ed è XML banale da leggere — mentre ricavare le rotte da `App.jsx` vorrebbe dire parsare JSX (`path="*"` incluso) con una regex fragile. Se sitemap e rotte divergono, il posto giusto per accorgersene è la sitemap.
+
+Lo script fallisce la build (`throw`) se la sitemap non contiene nessun `<loc>` o se un path non è nella forma `/segmento[-kebab]`: meglio una build rossa che un deploy con le sottopagine di nuovo a 404.
+
+Si verifica con `npm run build` (esistenza dei file, lo script stampa quelli scritti) e con `npm run preview`. Lo status 404 reale si vede solo in produzione: `curl -I https://gianpaolodelmoro.it/profilo` deve rispondere `200`.
+
 ## Content Security Policy
 
 La CSP vive in un `<meta http-equiv="Content-Security-Policy">` in `index.html`, primo tag dopo `viewport` e **prima** di qualsiasi tag che carica risorse (favicon, script iniettati da Vite): il browser applica solo le direttive che legge prima di iniziare a caricare. È nel meta e non in un header HTTP perché GitHub Pages serve file statici e non permette header custom: non c'è nessun altro posto dove metterla.
@@ -144,12 +160,13 @@ Tutto il resto è chiuso: gli script sono solo i bundle propri (nessun inline, n
 
 ## Vincoli e trappole
 
-- **Non rimuovere `cp dist/index.html dist/404.html` dallo script `build`.** È l'unico fallback per i deep link: senza, GitHub Pages risponde 404 a tutto ciò che non è `/`.
+- **Non rimuovere `cp dist/index.html dist/404.html` dallo script `build`.** È il fallback per i deep link non previsti: senza, GitHub Pages risponde 404 a tutto ciò che non è `/`.
+- **Non rimuovere `node scripts/write-route-pages.mjs` dallo script `build`.** Senza, le sottopagine tornano a rispondere con status 404 (contenuto giusto, status sbagliato) e Google smette di indicizzarle. Vedi *Pagine statiche per rotta (SEO)*.
 - **Non aggiungere `base` in `vite.config.js`.** Il sito è servito da root; un base path romperebbe tutti gli asset in produzione.
 - **Non creare `public/CNAME`.** Il dominio vive nelle impostazioni Pages; un file in conflitto può far cadere il custom domain al deploy successivo.
 - Il dominio è hardcoded in tre punti da tenere allineati: `index.html` (canonical + OG + Twitter), `public/robots.txt`, `public/sitemap.xml`.
 - Ogni risorsa esterna nuova va aggiunta alla CSP in `index.html`, altrimenti passa in `dev` e viene bloccata in produzione. Vedi *Content Security Policy*.
-- Una rotta nuova va aggiunta in tre posti: `App.jsx` (prima di `path="*"`), array `links` in `Navbar.jsx`, `public/sitemap.xml`.
+- Una rotta nuova va aggiunta in tre posti: `App.jsx` (prima di `path="*"`), array `links` in `Navbar.jsx`, `public/sitemap.xml`. La sitemap non è più solo SEO: è la fonte da cui il build genera `dist/<rotta>/index.html`. Se la ometti la rotta funziona in `dev` e in `preview` ma in produzione risponde 404 ai crawler — è il bug che *Pagine statiche per rotta (SEO)* ha risolto.
 - L'email in `Contatti.jsx` è spezzata e ricomposta con `["giampaolo.delmoro99", "gmail.com"].join("@")`: offuscamento anti-bot voluto, non riscriverla come stringa letterale.
 - `Profilo.jsx` referenzia `/cv-gianpaolo-del-moro.pdf` con path assoluto: rinominare o spostare il file in `public/` rompe il download in produzione.
 - **Due grafie del nome, entrambe corrette.** GitHub ed email usano `giampaolo` (repo, username, URL progetti in `Progetti.jsx`, email in `Contatti.jsx`); dominio e CV usano `gianpaolo` (`gianpaolodelmoro.it`, `/cv-gianpaolo-del-moro.pdf`, canonical/OG in `index.html`, sitemap, robots). Non uniformare e non scrivere questi path a memoria: verificali sempre nel file.
