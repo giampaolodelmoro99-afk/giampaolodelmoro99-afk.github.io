@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
+import PageMeta from "../components/PageMeta";
 import {
   w95,
   sunken,
@@ -55,6 +56,10 @@ export default function Contatti() {
         padding: { xs: "12px", sm: "32px" },
       }}
     >
+      <PageMeta
+        title="Contatti | Gianpaolo Del Moro"
+        description="Contattami via email o su GitHub. Full Stack Developer in formazione a Pisa, disponibile full-time per una prima esperienza lavorativa."
+      />
       <Window
         title="Contatti"
         sx={{

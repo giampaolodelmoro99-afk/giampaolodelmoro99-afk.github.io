@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
+import PageMeta from "../components/PageMeta";
 import {
   w95,
   raised,
@@ -181,6 +182,10 @@ export default function Progetti() {
         padding: { xs: "12px", sm: "32px" },
       }}
     >
+      <PageMeta
+        title="Progetti — Node.js e Laravel | Gianpaolo Del Moro"
+        description="Progetti backend in Node.js/Express e Laravel: API RESTful, autenticazione JWT e Sanctum, database MariaDB e MySQL. Codice sorgente su GitHub."
+      />
       <Window
         title={isNode ? "Progetti - Node.js" : "Progetti - Laravel"}
         sx={{ width: "100%", maxWidth: windowMaxWidth }}

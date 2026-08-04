@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
+import PageMeta from "../components/PageMeta";
 import {
   w95,
   sunken,
@@ -11,6 +12,12 @@ import {
   navButtonStyle,
   headingReset,
 } from "../theme/theme";
+
+const meta = {
+  title: "Gianpaolo Del Moro | Full Stack Developer",
+  description:
+    "Portfolio di Gianpaolo Del Moro, studente ITS Full Stack Developer a Pisa. Progetti in Node.js, Laravel, React, in un'interfaccia in stile Windows 95.",
+};
 
 export default function Home() {
   const [shutdown, setShutdown] = useState(false);
@@ -32,6 +39,7 @@ export default function Home() {
           padding: "20px",
         }}
       >
+        <PageMeta {...meta} />
         <Box
           sx={{
             color: "#ffa500",
@@ -65,6 +73,7 @@ export default function Home() {
         minHeight: pageMinHeight,
       }}
     >
+      <PageMeta {...meta} />
       <Window
         title="Benvenuto"
         sx={{

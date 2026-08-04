@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
+import PageMeta from "../components/PageMeta";
 
 export default function NotFound() {
   const navigate = useNavigate();
@@ -30,6 +31,11 @@ export default function NotFound() {
         textAlign: "center",
       }}
     >
+      <PageMeta
+        title="Pagina non trovata | Gianpaolo Del Moro"
+        description="La pagina richiesta non esiste. Torna alla home del portfolio di Gianpaolo Del Moro."
+        canonical={null}
+      />
       <Box
         sx={{
           backgroundColor: "#c0c0c0",

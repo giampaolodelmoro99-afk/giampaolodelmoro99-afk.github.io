@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
+import PageMeta from "../components/PageMeta";
 import {
   w95,
   pageMinHeight,
@@ -116,6 +117,10 @@ export default function Stack() {
         padding: { xs: "12px", sm: "32px" },
       }}
     >
+      <PageMeta
+        title="Stack — tecnologie e competenze | Gianpaolo Del Moro"
+        description="Le tecnologie che uso: HTML, CSS, JavaScript e React lato frontend; PHP, SQL, Node.js e Laravel lato backend, con il livello raggiunto su ognuna."
+      />
       <Window
         title={isFrontend ? "Stack - Frontend" : "Stack - Backend"}
         sx={{ width: "100%", maxWidth: windowMaxWidth }}

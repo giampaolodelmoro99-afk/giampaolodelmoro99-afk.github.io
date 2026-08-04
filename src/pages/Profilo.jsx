@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router";
 import Window from "../components/Window";
+import PageMeta from "../components/PageMeta";
 import {
   w95,
   pageMinHeight,
@@ -42,6 +43,10 @@ export default function Profilo() {
         padding: { xs: "12px", sm: "32px" },
       }}
     >
+      <PageMeta
+        title="Profilo — chi sono | Gianpaolo Del Moro"
+        description="Diplomato al Liceo Scientifico Buonarroti di Pisa, indirizzo Scienze Applicate, oggi studente del corso ITS Full Stack Developer di Pisa."
+      />
       <Window
         title="Profilo"
         sx={{
