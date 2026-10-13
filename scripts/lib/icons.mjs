@@ -166,7 +166,7 @@ export function renderGlyphModule(glyphs, radioRows) {
     ([part, pixel]) => `    ${part}: ${JSON.stringify(rowsToPath(radioRows, pixel))},`,
   );
   return [
-    "// File generato da scripts/icons.mjs a partire da docs/design/gdm95/components/Icon/glyphs.json: non modificarlo a mano.",
+    "// File generato da scripts/icons.mjs a partire da src/components/Icon/glyphs.json: non modificarlo a mano.",
     "",
     `export const glyphNames = ${JSON.stringify(names)} as const;`,
     "",

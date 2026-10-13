@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import styles from "./TokenGallery.module.css";
 import { bevelTokens, colorTokens } from "./tokens";
 
@@ -6,7 +7,7 @@ const themes = [
   { id: "high-contrast", name: "Alto contrasto" },
 ] as const;
 
-function ThemeColumns({ render }: { render: (theme: (typeof themes)[number]) => React.ReactNode }) {
+function ThemeColumns({ render }: { render: (theme: (typeof themes)[number]) => ReactNode }) {
   return (
     <div className={styles.themes}>
       {themes.map((theme) => (
@@ -70,7 +71,7 @@ export function Typography() {
             <strong>Curriculum — Gianpaolo Del Moro</strong>
           </p>
           <p className={`${styles.sample} ${styles.document}`}>
-            Sviluppatore full stack in formazione a Pisa. <em>Documento</em> in IBM Plex Sans, con{" "}
+            Full Stack Developer in formazione a Pisa. <em>Documento</em> in IBM Plex Sans, con{" "}
             <strong>grassetto</strong> e righe lunghe al massimo 68 caratteri.
           </p>
         </>

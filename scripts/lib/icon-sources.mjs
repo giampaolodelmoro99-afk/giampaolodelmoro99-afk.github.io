@@ -26,7 +26,7 @@ export async function generatedModules(root) {
 
   /** @type {{ glyphs: Record<string, string[]>, radio: { rows: string[] } }} */
   const glyphSource = JSON.parse(
-    await readFile(resolve(root, "docs/design/gdm95/components/Icon/glyphs.json"), "utf8"),
+    await readFile(resolve(root, "src/components/Icon/glyphs.json"), "utf8"),
   );
 
   const options = { parser: "typescript", printWidth: 100 };
