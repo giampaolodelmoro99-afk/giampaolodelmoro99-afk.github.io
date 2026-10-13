@@ -38,8 +38,9 @@ for (const id of stories) {
         })),
       ).toEqual([]);
 
-      if (variant.input === "touch") {
-        const small = await page.locator("#storybook-root").evaluate((root, selector) => {
+      const minimum = variant.input === "touch" ? 44 : 24;
+      const small = await page.locator("#storybook-root").evaluate(
+        (root, [selector, size]) => {
           return [...root.querySelectorAll(selector)]
             .map((element) => {
               const style = getComputedStyle(element);
@@ -54,11 +55,15 @@ for (const id of stories) {
               };
             })
             .filter(({ hidden }) => !hidden)
-            .filter(({ width, height }) => width < 44 || height < 44)
+            .filter(({ width, height }) => width < size || height < size)
             .map(({ element, width, height }) => ({ element, width, height }));
-        }, interactive);
-        expect(small, "in modalità touch ogni controllo misura almeno 44×44 px").toEqual([]);
-      }
+        },
+        [interactive, minimum] as const,
+      );
+      expect(
+        small,
+        `ogni controllo misura almeno ${minimum}×${minimum} px (${variant.input})`,
+      ).toEqual([]);
     });
   }
 }

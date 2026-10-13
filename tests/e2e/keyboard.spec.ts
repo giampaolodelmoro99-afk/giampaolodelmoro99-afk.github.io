@@ -31,3 +31,18 @@ for (const [path, name] of [
     expect(ring.boxShadow).toContain("0px 0px 0px 6px");
   });
 }
+
+test("in forced-colors il focus da tastiera resta visibile con il colore di sistema", async ({
+  page,
+}) => {
+  await page.emulateMedia({ forcedColors: "active" });
+  await openPage(page, "/");
+  await page.keyboard.press("Tab");
+  const link = page.getByRole("link", { name: "English version" });
+  await expect(link).toBeFocused();
+  const outline = await link.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { style: style.outlineStyle, width: style.outlineWidth };
+  });
+  expect(outline).toEqual({ style: "dashed", width: "2px" });
+});

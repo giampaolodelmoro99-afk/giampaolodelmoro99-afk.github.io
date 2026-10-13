@@ -398,7 +398,10 @@
 /* ---------- Colori forzati (temi a contrasto del sistema) ---------- */
 
 @media (forced-colors: active) {
-  :root {
+  /* Fase 1A: anche [data-theme], così un sottoalbero con un tema proprio usa i colori di sistema. */
+  :root,
+  [data-theme] {
+    --color-pixel-outline: CanvasText;
     --color-desktop: Canvas;
     --color-desktop-text: CanvasText;
     --color-surface: ButtonFace;
