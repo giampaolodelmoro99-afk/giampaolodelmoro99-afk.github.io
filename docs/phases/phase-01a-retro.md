@@ -46,7 +46,19 @@
   - frontmatter dei quattro agenti con `disallowedTools: Write, Edit, NotebookEdit`;
   - hook `PreToolUse` sugli agenti con Bash (`.claude/hooks/readonly-bash.mjs`): ammette solo comandi di lettura e verifica (git `status`, `log`, `diff`, `show` e simili, build e test), blocca tutto il resto con exit code 2; regole in `scripts/lib/readonly-bash.mjs` con 34 test, compreso il hook eseguito davvero;
   - `deny` del progetto più larghe, valide anche per la sessione principale: `git checkout *`, `switch`, `restore`, `stash`, `reset`, `clean`, `worktree`, `git -C *`.
-  - **Verifica**: le regole `deny` funzionano già (un agente di prova è stato bloccato su `git -C`). Il hook degli agenti invece non è stato applicato nella stessa sessione in cui è nato, perché le definizioni degli agenti si caricano all'avvio. **Va ripetuta la prova dopo un riavvio di Claude Code** (vedi §9).
+  - **Verifica**: le regole `deny` hanno funzionato subito (un agente di prova è stato bloccato su `git -C`). Il hook invece non è scattato nella sessione in cui è stato creato: lo stesso agente ha eseguito `git add --dry-run README.md` e `npm run analyze`, che ha riscritto `build/` (poi ricostruita).
+  - **Causa confermata**: Claude Code carica le definizioni degli agenti all'avvio della sessione, quindi le modifiche al frontmatter valgono solo dopo un riavvio.
+  - **Esito dopo il riavvio** (14/10/2026): il `code-reviewer` ha provato gli stessi due comandi ed entrambi sono stati bloccati. Messaggi ricevuti:
+
+    ```
+    PreToolUse:Bash hook error: [node "$CLAUDE_PROJECT_DIR/.claude/hooks/readonly-bash.mjs"]: Bloccato (agente di sola lettura): comando non ammesso per un agente di sola lettura: git add --dry-run README.md
+    ```
+
+    ```
+    PreToolUse:Bash hook error: [node "$CLAUDE_PROJECT_DIR/.claude/hooks/readonly-bash.mjs"]: Bloccato (agente di sola lettura): comando non ammesso per un agente di sola lettura: npm run analyze
+    ```
+
+    Dopo il test il working tree era pulito, e `build/` aveva la stessa impronta SHA-256 di prima, senza `build/stats.html`.
 
 ## 4. Metriche
 
@@ -100,7 +112,7 @@ Riportate in AI_WORKFLOW.md §5 (Fase 1A).
 
 ## 9. Azioni per la fase successiva
 
-1. **Riavviare Claude Code e verificare il hook degli agenti**: chiedere al `code-reviewer` di eseguire `git add --dry-run README.md` e `npm run analyze` e controllare che siano bloccati ("agente di sola lettura").
+1. ~~Riavviare Claude Code e verificare il hook degli agenti~~: fatto il 14/10/2026, entrambi i comandi bloccati (§3).
 2. Push del branch e verifica della CI su GitHub (primo run con Storybook, i progetti `performance` e `storybook` e i runner `ubuntu-24.04`).
 3. QA su Android reale (QA_CHECKLIST §7).
 4. Merge `--no-ff` e tag `phase-01a`, poi branch `phase/01b-components` da `main` e plan mode partendo dall'appendice B del piano: per primi la nuova icona di Campo minato e la CSP per lo stile di React Aria.

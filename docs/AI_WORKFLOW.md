@@ -58,6 +58,7 @@ Come uso gli strumenti di Anthropic in questo progetto. È anche la fonte della 
 - **Misurare prima di dichiarare un rischio.** Il "chunk routeMap" da 4 kB sembrava fatto dei dizionari; l'analisi ha mostrato che era codice di React Router, e che dividere i dizionari avrebbe risparmiato solo 0,4 kB.
 - **Le review parallele trovano cose diverse.** Il security-auditor ha trovato il crash della preview con URL malformati, l'a11y-auditor la lacuna di forced-colors, il code-reviewer il controllo dei target touch fragile, il content-reviewer il piano non allineato. Nessuno dei quattro ha trovato tutto.
 - **Quando un test fallisce di un soffio, cercare la causa nello strumento.** 43,99997 px in Firefox erano un errore di conversione di Playwright: il valore del browser era 44, quindi è cambiato il metodo di misura e non la soglia.
+- **Dopo aver modificato agenti, skill o hook, riavviare Claude Code prima di usarli.** Le definizioni si caricano all'avvio della sessione: il hook di sola lettura degli agenti di review non è scattato finché la sessione non è stata riavviata.
 
 ## 6. Materiale per "Making of"
 
