@@ -70,7 +70,7 @@ I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither
 
 - **Classico**: palette del 95 con le deroghe del pacchetto (barra inattiva `#6a6a6a` con testo bianco, pulsanti della barra del titolo 24×24, focus a doppio anello).
 - **Alto contrasto** (`data-theme="high-contrast"`): nero, testo bianco, barra del titolo gialla, selezione ciano, link gialli, bordi pieni al posto dei bevel, font leggibile per l'interfaccia.
-- **`forced-colors: active`**: i token passano ai colori di sistema e i componenti disegnano bordi `ButtonText` dove spariscono i bevel.
+- **`forced-colors: active`**: i token passano ai colori di sistema (anche dentro un sottoalbero con `data-theme`, aggiunta della 1A, e con il contorno delle icone su `CanvasText`) e i componenti disegnano bordi `ButtonText` dove spariscono i bevel.
 
 | Ruolo                            | Font                                                    | Licenza     | File                                              |
 | -------------------------------- | ------------------------------------------------------- | ----------- | ------------------------------------------------- |

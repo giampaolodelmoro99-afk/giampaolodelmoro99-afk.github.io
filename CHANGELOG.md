@@ -6,6 +6,26 @@ Ogni fase si chiude con un tag `phase-NN` (che non fa partire il deploy). Le rel
 
 ## [Unreleased]
 
+## [phase-01a] - Fase 1A: fondamenta del design system GDM 95
+
+### Aggiunto
+
+- Pacchetto di consegna del design system GDM 95 in `docs/design/gdm95/` (riferimento approvato).
+- Token GDM 95: temi classico e alto contrasto, attributi `data-theme`, `data-font`, `data-input`, `data-motion`, alias desktop e touch, focus a doppio anello, `forced-colors`; token in più per i valori letterali del CSS di riferimento.
+- Font Pixel Operator (subset, CC0) e IBM Plex Sans (subset Latin1 ufficiali, OFL) con fallback metrici e preload dei due pesi di Pixel Operator.
+- 33 icone originali GDM 95, componenti `Icon` e `Glyph` con colori dai token; favicon col monogramma GDM.
+- Storybook 10 in `/storybook/` con CSP dedicata, noindex e `Disallow` in `robots.txt`; pagine Token e story di Icon e Glyph.
+- Test: token e Stylelint, registro degli asset con SHA-256, glifi dei font, dati delle icone, workflow; story fotografate e controllate con axe nei due temi, con mouse e touch; idratazione dopo `load` con CPU 4×; focus in alto contrasto e forced-colors.
+- `npm run analyze` (treemap del bundle), `npm run fonts`, `npm run icons`, `npm run preview -- --host`.
+- ADR-0011 sulle vulnerabilità accettate nelle dipendenze di sviluppo.
+
+### Modificato
+
+- Focus da tastiera: doppio anello al posto del contorno di 1 px; testo del desktop su `--color-desktop-text`.
+- Deploy solo con tag `vMAJOR.MINOR.PATCH`, con job di guardia; runner fissati a `ubuntu-24.04`.
+- La preview ascolta solo in loopback (127.0.0.1 e ::1) salvo `--host`, e risponde 400 agli URL malformati.
+- Documenti: LinkedIn non compare sul sito; app "Terminale" e "Campo minato" al posto dei nomi Microsoft.
+
 ## [phase-00] - Fase 0: Foundation
 
 ### Aggiunto
@@ -24,5 +44,6 @@ Ogni fase si chiude con un tag `phase-NN` (che non fa partire il deploy). Le rel
 
 - Il codice della v1 (MUI, JavaScript), consultabile solo dal tag `v1.0.0-legacy`.
 
-[Unreleased]: https://github.com/giampaolodelmoro99-afk/giampaolodelmoro99-afk.github.io/compare/phase-00...HEAD
+[Unreleased]: https://github.com/giampaolodelmoro99-afk/giampaolodelmoro99-afk.github.io/compare/phase-01a...HEAD
+[phase-01a]: https://github.com/giampaolodelmoro99-afk/giampaolodelmoro99-afk.github.io/compare/phase-00...phase-01a
 [phase-00]: https://github.com/giampaolodelmoro99-afk/giampaolodelmoro99-afk.github.io/compare/v1.0.0-legacy...phase-00

@@ -50,6 +50,15 @@ Come uso gli strumenti di Anthropic in questo progetto. È anche la fonte della 
 - **Screenshot solo nel container.** Le baseline generate sull'host differivano del 3% dal container della CI.
 - **Requisiti arrivati in corsa** (regola di merge, divieto di aggirare i controlli, pre-push) integrati subito nel piano salvato e nelle regole di Oxlint, con un controllo che le regole scattino davvero su un file di prova.
 
+### Fase 1A
+
+- **Un pacchetto di design preciso si adotta con un test, non a occhio.** Il test che confronta `tokens.css` con il pacchetto approvato garantisce che nessun valore cambi per sbaglio nelle fasi successive.
+- **Verificare i test in negativo resta indispensabile.** Il test axe in alto contrasto passava anche con il testo nero su nero: axe classifica come "incompleto" un testo dello stesso colore dello sfondo. È servito un controllo esplicito del contrasto.
+- **Le licenze vanno lette fino in fondo.** Il piano prevedeva un subset di IBM Plex Sans fatto da noi; la FAQ OFL lo considera una versione modificata, che non può usare il nome riservato "Plex". La soluzione (subset ufficiali di IBM) era già nella release.
+- **Misurare prima di dichiarare un rischio.** Il "chunk routeMap" da 4 kB sembrava fatto dei dizionari; l'analisi ha mostrato che era codice di React Router, e che dividere i dizionari avrebbe risparmiato solo 0,4 kB.
+- **Le review parallele trovano cose diverse.** Il security-auditor ha trovato il crash della preview con URL malformati, l'a11y-auditor la lacuna di forced-colors, il code-reviewer il controllo dei target touch fragile, il content-reviewer il piano non allineato. Nessuno dei quattro ha trovato tutto.
+- **Quando un test fallisce di un soffio, cercare la causa nello strumento.** 43,99997 px in Firefox erano un errore di conversione di Playwright: il valore del browser era 44, quindi è cambiato il metodo di misura e non la soglia.
+
 ## 6. Materiale per "Making of"
 
 Dalla Fase 3B la finestra "Making of" racconta:
