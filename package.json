@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "react-router dev",
-    "build": "react-router build && node scripts/postbuild.mjs",
+    "build": "react-router build && node scripts/postbuild.mjs && npm run build:storybook",
     "preview": "node scripts/preview.mjs",
     "typecheck": "react-router typegen && tsc --noEmit",
     "lint": "oxlint --type-aware && stylelint --allow-empty-input \"src/**/*.css\" \".storybook/**/*.css\"",
@@ -27,6 +27,8 @@
     "lhci:desktop": "lhci autorun --config=lighthouserc.desktop.json",
     "fonts": "node scripts/fonts.mjs",
     "icons": "node scripts/icons.mjs",
+    "build:site": "react-router build && node scripts/postbuild.mjs",
+    "build:storybook": "storybook build -o build/client/storybook --quiet && node scripts/postbuild-storybook.mjs",
     "storybook": "storybook dev -p 6006"
   },
   "dependencies": {
