@@ -15,18 +15,18 @@ Il riferimento approvato è il pacchetto di consegna **GDM 95** (Claude Design, 
 
 `src/styles/tokens.css` contiene **tutto** `docs/design/gdm95/tokens.css`, con gli stessi valori; le descrizioni di ogni token sono in `tokens.json` del pacchetto. Il test `src/styles/tokens.test.ts` verifica che nessun valore del pacchetto sia cambiato e che ogni `var()` usata nei CSS di `src/` sia definita.
 
-| Gruppo     | Token principali                                                                                                                                      | Note                                                                                             |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Colori     | superfici, testo, campi, documento, barra del titolo attiva e inattiva, selezione, link, errore, successo, tooltip, focus, `--color-pixel-*`          | Due temi, contrasti verificati: testo ≥ 4,5:1 nel classico e ≥ 7:1 in alto contrasto             |
-| Bevel      | `--bevel-raised`, `-sunken`, `-field`, `-window`, `-pressed`, `-default`, `-default-pressed`, `-status`, `-groove`, `-hover`, `-tab`                  | `box-shadow` inset a due livelli; in alto contrasto diventano bordi pieni                        |
-| Misure     | coppie `*-desktop` / `*-touch` e i loro **alias**                                                                                                     | I componenti leggono solo gli alias (vedi §3)                                                    |
-| Focus      | `--focus-width`, `--focus-halo-width`, `--focus-offset`, `--focus-offset-inset`, `--focus-style`, `--focus-halo`, `--focus-halo-inset`                | Doppio anello (§5)                                                                               |
-| Tipografia | `--font-family-ui` (alias), `-ui-pixel`, `-ui-readable`, `-document`, `-mono`; `--font-size-sm…2xl`, `-title`; pesi; interlinee; `--measure-document` | Il font pixel non scende mai sotto `--font-size-md` (16 px)                                      |
-| Spaziature | `--space-0` … `--space-6`, `--space-gutter`, `--space-safe-top`, `--space-safe-bottom`                                                                | In `rem`, seguono la dimensione del testo; gutter e safe-area includono `env(safe-area-inset-*)` |
-| Breakpoint | `--bp-xs` 320, `--bp-sm` 480, `--bp-md` 768, `--bp-lg` 1024, `--bp-xl` 1440                                                                           | Solo di riferimento: le `@media` usano gli stessi valori in px                                   |
-| Z-index    | `--z-desktop` 0, `--z-icons` 10, `--z-window` 100, `--z-taskbar` 1000, `--z-menu` 1100, `--z-tooltip` 1200, `--z-overlay` 2000                        | Le finestre usano offset dentro `--z-window`                                                     |
-| Movimento  | `--duration-instant/fast/base/slow`, `--easing-standard` (`steps(4, end)`)                                                                            | Azzerati da `prefers-reduced-motion` e da `data-motion="reduce"`                                 |
-| Forma      | `--radius-none`                                                                                                                                       | Il 95 non ha angoli arrotondati                                                                  |
+| Gruppo     | Token principali                                                                                                                                                | Note                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Colori     | superfici, testo, campi, documento, barra del titolo attiva e inattiva, selezione, link, errore, successo, tooltip, focus, `--color-pixel-*`                    | Due temi, contrasti verificati: testo ≥ 4,5:1 nel classico e ≥ 7:1 in alto contrasto             |
+| Bevel      | `--bevel-raised`, `-sunken`, `-field`, `-window`, `-pressed`, `-default`, `-default-pressed`, `-status`, `-groove`, `-hover`, `-tab`                            | `box-shadow` inset a due livelli; in alto contrasto diventano bordi pieni                        |
+| Misure     | coppie `*-desktop` / `*-touch` e i loro **alias**                                                                                                               | I componenti leggono solo gli alias (vedi §3)                                                    |
+| Focus      | `--focus-width`, `--focus-halo-width`, `--focus-offset`, `--focus-offset-inset`, `--focus-style`, `--focus-halo`, `--focus-halo-inset`                          | Doppio anello (§5)                                                                               |
+| Tipografia | `--font-family-ui` (alias), `-ui-pixel`, `-ui-readable`, `-document`, `-prose`, `-mono`; `--font-size-sm…2xl`, `-title`; pesi; interlinee; `--measure-document` | Il font pixel non scende mai sotto `--font-size-md` (16 px)                                      |
+| Spaziature | `--space-0` … `--space-6`, `--space-gutter`, `--space-safe-top`, `--space-safe-bottom`                                                                          | In `rem`, seguono la dimensione del testo; gutter e safe-area includono `env(safe-area-inset-*)` |
+| Breakpoint | `--bp-xs` 320, `--bp-sm` 480, `--bp-md` 768, `--bp-lg` 1024, `--bp-xl` 1440                                                                                     | Solo di riferimento: le `@media` usano gli stessi valori in px                                   |
+| Z-index    | `--z-desktop` 0, `--z-icons` 10, `--z-window` 100, `--z-taskbar` 1000, `--z-menu` 1100, `--z-tooltip` 1200, `--z-overlay` 2000                                  | Le finestre usano offset dentro `--z-window`                                                     |
+| Movimento  | `--duration-instant/fast/base/slow`, `--easing-standard` (`steps(4, end)`)                                                                                      | Azzerati da `prefers-reduced-motion` e da `data-motion="reduce"`                                 |
+| Forma      | `--radius-none`                                                                                                                                                 | Il 95 non ha angoli arrotondati                                                                  |
 
 **Aggiunte della Fase 1A** (non nel pacchetto: servono a togliere i valori letterali rimasti nel CSS di riferimento dei componenti, decisione D6 del piano):
 
@@ -42,6 +42,7 @@ Il riferimento approvato è il pacchetto di consegna **GDM 95** (Claude Design, 
 | `--menu-min-width`, `--start-menu-min-width`, `--start-menu-item-min-height`                 | 11rem; 15rem; 2.5rem                             | menu a comparsa e menu Start                                          |
 | `--dialog-width`, `--listbox-max-height`, `--statusbar-field-height`                         | 28rem; `min(20rem, 60vh)`; 1.5rem                | dialog, lista dei select, campi della barra di stato                  |
 | `--dither-selection`                                                                         | retino 2 px di `--color-selection`               | icona del desktop selezionata                                         |
+| `--font-family-prose`                                                                        | `var(--font-family-document)` (IBM Plex Sans)    | frasi e paragrafi, in ogni tema e con ogni `data-font` (§4)           |
 | `--bevel-thin-raised`, `--bevel-thin-separator`, `--bevel-taskbar-top`, `--bevel-group-line` | bevel di 1 px                                    | voci della barra dei menu, separatori, bordo della taskbar, group box |
 
 I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither-selection`, i bevel sottili) sono dichiarati su `:root, [data-theme]`, come `--focus-halo`: si ricalcolano dentro un contenitore con un tema diverso.
@@ -68,18 +69,19 @@ I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither
 
 ## 4. Temi e font
 
-- **Classico**: palette del 95 con le deroghe del pacchetto (barra inattiva `#6a6a6a` con testo bianco, pulsanti della barra del titolo 24×24, focus a doppio anello).
+- **Classico**: palette del 95 con le deroghe elencate in §9 (barra inattiva `#666666` con testo bianco, pulsanti della barra del titolo 24×24, focus a doppio anello).
 - **Alto contrasto** (`data-theme="high-contrast"`): nero, testo bianco, barra del titolo gialla, selezione ciano, link gialli, bordi pieni al posto dei bevel, font leggibile per l'interfaccia.
 - **`forced-colors: active`**: i token passano ai colori di sistema (anche dentro un sottoalbero con `data-theme`, aggiunta della 1A, e con il contorno delle icone su `CanvasText`) e i componenti disegnano bordi `ButtonText` dove spariscono i bevel.
 
-| Ruolo                            | Font                                                    | Licenza     | File                                              |
-| -------------------------------- | ------------------------------------------------------- | ----------- | ------------------------------------------------- |
-| Interfaccia e titoli (pixel)     | Pixel Operator regular e bold, subset                   | CC0 1.0     | `src/assets/fonts/pixel-operator-{400,700}.woff2` |
-| Interfaccia leggibile, documenti | IBM Plex Sans regular, bold, corsivo (Latin1 ufficiali) | SIL OFL 1.1 | `src/assets/fonts/IBMPlexSans-*-Latin1.woff2`     |
-| Codice e Terminale               | monospace di sistema                                    | –           | –                                                 |
+| Ruolo                                               | Font                                                    | Licenza     | File                                              |
+| --------------------------------------------------- | ------------------------------------------------------- | ----------- | ------------------------------------------------- |
+| Titoli, etichette e controlli (pixel)               | Pixel Operator regular e bold, subset                   | CC0 1.0     | `src/assets/fonts/pixel-operator-{400,700}.woff2` |
+| Frasi e paragrafi, interfaccia leggibile, documenti | IBM Plex Sans regular, bold, corsivo (Latin1 ufficiali) | SIL OFL 1.1 | `src/assets/fonts/IBMPlexSans-*-Latin1.woff2`     |
+| Codice e Terminale                                  | monospace di sistema                                    | –           | –                                                 |
 
 - `@font-face` in `src/styles/fonts.css`, con `font-display: swap` e fallback metrici (`"Pixel Operator Fallback"`, `"IBM Plex Sans Fallback"`) calcolati da `npm run fonts`.
-- Preload dei due pesi di Pixel Operator (6,3 kB); Plex si scarica solo quando serve.
+- **Regola d'uso (decisione del 13/10/2026).** Pixel Operator solo per **titoli, etichette e controlli** (`--font-family-ui`). Tutto il testo che si legge come frase o paragrafo usa **`--font-family-prose`** (IBM Plex Sans, interlinea `--line-height-body`), anche nel tema classico e anche con `data-font="pixel"`: a 16 px Pixel Operator rende come un Arial di circa 12,5 px, adatto alle etichette brevi ma non alla lettura. Esempi: la frase della home e i messaggi della 404 sono in prosa; titoli, link di navigazione, pulsanti e voci di menu restano in pixel.
+- Preload di **Pixel Operator bold** (titolo della home) e **IBM Plex Sans regular** (frase della home, elemento LCP): 24,1 kB, sotto il budget di 25. Pixel Operator regular (link) arriva dal CSS con il fallback metrico.
 - Dettagli, fonti e motivazioni: ADR-0010 e `ASSETS.md`. DotGothic16, usato nelle anteprime di Claude Design, non è nel sito.
 
 ## 5. Convenzioni CSS Modules e React Aria
@@ -135,3 +137,14 @@ Storybook 10 documenta il design system e serve i test visivi.
 - Pagine "Fondamenta": Introduzione e Token (colori e bevel dei due temi affiancati, tipografia), in `.storybook/docs/`.
 - Le pagine "Fondamenta" e le story di esempio sono documentazione in italiano: la regola "testi solo nei dizionari" vale per il sito, non per Storybook. I componenti ricevono comunque i testi dalle props o dai dizionari.
 - Le story con tag `visual` vengono fotografate in tema classico e alto contrasto, con input mouse e touch; tutte le story passano axe con il contrasto (TESTING.md §6).
+
+## 9. Scelte rispetto al 95 (deroghe)
+
+Le deroghe del pacchetto sono nel suo README ("Scelte rispetto al 95"). In più, decise dopo la consegna:
+
+| Token                                                           | Pacchetto                                         | Sito                                                          | Motivo                                                                                                                      |
+| --------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `--color-titlebar-inactive`, `--color-titlebar-inactive-border` | `#6a6a6a` (2,97:1 sul telaio `#c0c0c0`)           | **`#666666`** (3,16:1 sul telaio, 5,74:1 con il testo bianco) | WCAG 1.4.11 chiede 3:1 per i bordi dei componenti: `#6a6a6a` era appena sotto. Decisione del 13/10/2026 dopo l'a11y-auditor |
+| Font delle frasi                                                | Pixel Operator anche per i testi dell'interfaccia | IBM Plex Sans per frasi e paragrafi (`--font-family-prose`)   | Leggibilità (§4)                                                                                                            |
+
+Il test `src/styles/tokens.test.ts` conosce queste deroghe: verifica che il pacchetto abbia il valore originale e il sito quello nuovo. In F2A la finestra attiva avrà anche un segnale non cromatico (non basta la differenza di colore tra barra attiva e inattiva).

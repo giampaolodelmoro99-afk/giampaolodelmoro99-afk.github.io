@@ -19,9 +19,10 @@ La v1 usava "Pixelated MS Sans Serif", un font Microsoft: vietato. Serve un font
   - Motivo: la licenza ha il Reserved Font Name "Plex". Un subset fatto da noi sarebbe una versione modificata (OFL-FAQ 2.5-2.6) e non potrebbe chiamarsi "IBM Plex Sans". I file ufficiali non sono modificati.
 - **Caricamento**:
   - file nel repo, nessuna CDN e nessun `local()` per i webfont
-  - **preload** dei due pesi di Pixel Operator (regular e bold, 6,3 kB in tutto): il titolo della home è in grassetto e il testo in regular, entrambi al primo disegno. Plex non è in preload.
+  - **regola d'uso** (decisione del 13/10/2026): Pixel Operator solo per titoli, etichette e controlli; frasi e paragrafi in IBM Plex Sans tramite il token `--font-family-prose`, in ogni tema
+  - **preload** di Pixel Operator bold (titolo della home) e IBM Plex Sans regular (frase della home, elemento LCP): 24,1 kB. Pixel Operator regular arriva dal CSS. Tre varianti misurate con Lighthouse mobile: solo Pixel Operator (LCP 1,35 s, CLS 0,006), solo Plex (LCP 1,2 s, CLS 0,0003), Pixel bold più Plex (LCP 1,2 s, CLS 0): scelta l'ultima
   - `font-display: swap` con **fallback metrico**: facce `"Pixel Operator Fallback"` e `"IBM Plex Sans Fallback"` su `local("Arial")`, `local("Liberation Sans")` o `local("Arimo")`, con `size-adjust`, `ascent-override`, `descent-override` e `line-gap-override` calcolati da `npm run fonts`.
-  - misura del 13/10/2026: Lighthouse mobile 100, CLS 0.
+  - misura del 13/10/2026: Lighthouse mobile e desktop 100, CLS 0, LCP mobile 1,2 s (al limite del budget di PERFORMANCE_SEO.md).
 - **Registrazione** in ASSETS.md con fonte, autore, versione, licenza, SHA-256. Licenze in `src/assets/fonts/licenses/` (`OFL.txt`, `PixelOperator-LICENSE.txt`).
 
 ## Alternative considerate
@@ -35,7 +36,8 @@ La v1 usava "Pixelated MS Sans Serif", un font Microsoft: vietato. Serve un font
 
 ## Conseguenze
 
-- Font in preload: 6,3 kB (budget 25 kB in `.size-limit.js`). Plex: circa 21 kB per stile, scaricati solo quando servono.
+- Font in preload: 24,1 kB (budget 25 kB in `.size-limit.js`). Gli altri stili di Plex (bold, corsivo, circa 21 kB ciascuno) e Pixel Operator regular si scaricano dal CSS quando servono.
+- LCP mobile simulato a 1,2 s: i 21 kB di Plex sono nel percorso critico della frase della home. Se una pagina supera il budget, il piano B è `font-display: optional` per Plex, con un ADR.
 - Su sistemi senza Arial o font compatibili (per esempio Android, che ha Roboto) il fallback non è metrico: lo swap può causare un piccolo spostamento. Il preload lo rende raro.
 - Aggiornare Plex significa sostituire i file ufficiali e i loro SHA-256; aggiornare Pixel Operator significa sostituire gli originali in `fonts-src/` ed eseguire `npm run fonts`.
 

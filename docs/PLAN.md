@@ -42,6 +42,8 @@ Piano: [phase-01-plan.md](phases/phase-01-plan.md) §1–§10.
 
 Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconfermare in plan mode.
 
+- [ ] Sostituire le icone di Campo minato (16 e 32 px): il disegno attuale (erba e fiori) richiama "Prato fiorito". Nuova versione da Claude Design, SHA-256 in ASSETS.md, `npm run icons`, screenshot
+- [ ] CSP del sito e stile inserito a runtime da React Aria (`react-aria-pressable-style`), prima del primo componente nelle pagine
 - [ ] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
 
 ## 2A. Window manager desktop

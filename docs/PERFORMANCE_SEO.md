@@ -2,15 +2,15 @@
 
 ## 1. Budget
 
-| Metrica               | Budget             | Misura Fase 0 | Come si verifica |
-| --------------------- | ------------------ | ------------- | ---------------- |
-| JS iniziale (gzip)    | ≤ 115 kB           | 112 kB        | `npm run size`   |
-| CSS iniziale (gzip)   | ≤ 12 kB            | 1,3 kB        | `npm run size`   |
-| Font in preload       | ≤ 25 kB (dalla F1) | 6,3 kB (F1A)  | `npm run size`   |
-| LCP (mobile simulato) | ≤ 1,2 s            | 0,9 s         | Lighthouse CI    |
-| FCP (mobile simulato) | ≤ 1,0 s            | 0,9 s         | Lighthouse CI    |
-| TBT (mobile simulato) | ≤ 50 ms            | 0 ms          | Lighthouse CI    |
-| CLS                   | ≤ 0,01             | 0             | Lighthouse CI    |
+| Metrica               | Budget             | Misura Fase 0                          | Come si verifica |
+| --------------------- | ------------------ | -------------------------------------- | ---------------- |
+| JS iniziale (gzip)    | ≤ 115 kB           | 112 kB                                 | `npm run size`   |
+| CSS iniziale (gzip)   | ≤ 12 kB            | 1,3 kB                                 | `npm run size`   |
+| Font in preload       | ≤ 25 kB (dalla F1) | 24,1 kB (F1A)                          | `npm run size`   |
+| LCP (mobile simulato) | ≤ 1,2 s            | 0,9 s (F0); 1,2 s (F1A, frase in Plex) | Lighthouse CI    |
+| FCP (mobile simulato) | ≤ 1,0 s            | 0,9 s                                  | Lighthouse CI    |
+| TBT (mobile simulato) | ≤ 50 ms            | 0 ms                                   | Lighthouse CI    |
+| CLS                   | ≤ 0,01             | 0                                      | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
 

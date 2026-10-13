@@ -12,7 +12,7 @@ Ogni fase si chiude con un tag `phase-NN` (che non fa partire il deploy). Le rel
 
 - Pacchetto di consegna del design system GDM 95 in `docs/design/gdm95/` (riferimento approvato).
 - Token GDM 95: temi classico e alto contrasto, attributi `data-theme`, `data-font`, `data-input`, `data-motion`, alias desktop e touch, focus a doppio anello, `forced-colors`; token in più per i valori letterali del CSS di riferimento.
-- Font Pixel Operator (subset, CC0) e IBM Plex Sans (subset Latin1 ufficiali, OFL) con fallback metrici e preload dei due pesi di Pixel Operator.
+- Font Pixel Operator (subset, CC0) e IBM Plex Sans (subset Latin1 ufficiali, OFL) con fallback metrici; Pixel Operator per titoli, etichette e controlli, IBM Plex Sans per frasi e paragrafi (`--font-family-prose`); preload di Pixel Operator bold e Plex regular.
 - 33 icone originali GDM 95, componenti `Icon` e `Glyph` con colori dai token; favicon col monogramma GDM.
 - Storybook 10 in `/storybook/` con CSP dedicata, noindex e `Disallow` in `robots.txt`; pagine Token e story di Icon e Glyph.
 - Test: token e Stylelint, registro degli asset con SHA-256, glifi dei font, dati delle icone, workflow; story fotografate e controllate con axe nei due temi, con mouse e touch; idratazione dopo `load` con CPU 4×; focus in alto contrasto e forced-colors.
@@ -22,6 +22,8 @@ Ogni fase si chiude con un tag `phase-NN` (che non fa partire il deploy). Le rel
 ### Modificato
 
 - Focus da tastiera: doppio anello al posto del contorno di 1 px; testo del desktop su `--color-desktop-text`.
+- Barra del titolo inattiva `#666666` (3,16:1 sul telaio) al posto di `#6a6a6a` del pacchetto.
+- Agenti di review di sola lettura: niente strumenti di scrittura, hook che blocca i comandi Bash non di lettura, regole `deny` più larghe per git.
 - Deploy solo con tag `vMAJOR.MINOR.PATCH`, con job di guardia; runner fissati a `ubuntu-24.04`.
 - La preview ascolta solo in loopback (127.0.0.1 e ::1) salvo `--host`, e risponde 400 agli URL malformati.
 - Documenti: LinkedIn non compare sul sito; app "Terminale" e "Campo minato" al posto dei nomi Microsoft.
