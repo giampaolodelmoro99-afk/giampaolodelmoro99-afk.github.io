@@ -18,6 +18,13 @@ export const it = {
     languageNavLabel: "Lingua",
     switchLanguage: "English version",
   },
+  notFound: {
+    title: "Pagina non trovata | Gianpaolo Del Moro",
+    description: "La pagina richiesta non esiste.",
+    heading: "Pagina non trovata",
+    message: "La pagina richiesta non esiste o è stata spostata.",
+    home: "Torna alla home",
+  },
 };
 
 export type Dictionary = typeof it;

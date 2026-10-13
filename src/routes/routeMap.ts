@@ -10,6 +10,8 @@ export const routeMap = {
 
 export type RouteKey = keyof typeof routeMap;
 
+export const notFoundPath = "/404";
+
 function isRouteKey(key: string): key is RouteKey {
   return Object.hasOwn(routeMap, key);
 }
@@ -21,9 +23,10 @@ export function routePath(href: string): string {
 }
 
 export function prerenderPaths(): string[] {
-  const paths = routeKeys.flatMap((key) =>
-    locales.map((locale) => routePath(routeMap[key][locale])),
-  );
+  const paths = [
+    ...routeKeys.flatMap((key) => locales.map((locale) => routePath(routeMap[key][locale]))),
+    notFoundPath,
+  ];
   const invalid = paths.filter((path) => !/^\/([a-z0-9-]+(\/[a-z0-9-]+)*)?$/.test(path));
   if (paths.length === 0 || invalid.length > 0) {
     throw new Error(`routeMap non valida: ${invalid.join(", ") || "nessuna route"}`);

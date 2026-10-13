@@ -20,4 +20,11 @@ export const en: Dictionary = {
     languageNavLabel: "Language",
     switchLanguage: "Versione italiana",
   },
+  notFound: {
+    title: "Page not found | Gianpaolo Del Moro",
+    description: "The requested page does not exist.",
+    heading: "Page not found",
+    message: "The requested page does not exist or has been moved.",
+    home: "Back to the home page",
+  },
 };
