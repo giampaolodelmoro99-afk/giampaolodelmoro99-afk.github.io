@@ -24,11 +24,12 @@ body {
 }
 
 ::selection {
-  color: var(--color-text-inverse);
-  background: var(--color-accent);
+  color: var(--color-selection-text);
+  background: var(--color-selection);
 }
 
 :focus-visible {
-  outline: 1px dotted var(--color-focus);
-  outline-offset: 2px;
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
 }
