@@ -1,0 +1,43 @@
+MIT License (code only)
+
+Copyright (c) 2025-2026 Gianpaolo Del Moro
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+
+Personal content - All rights reserved / Contenuti personali - Tutti i diritti riservati
+
+The MIT License above applies to the source code only. It does NOT apply to
+the personal content of the website: texts, biography, project descriptions,
+case studies, CV (HTML and PDF), photos, images and any other material that
+describes Gianpaolo Del Moro (for example the content of src/content/, the
+i18n dictionaries' texts and docs/CONTENT.md). That content is
+Copyright (c) Gianpaolo Del Moro, all rights reserved, and may not be reused
+without written permission.
+
+La licenza MIT si applica solo al codice sorgente. I contenuti personali del
+sito (testi, biografia, descrizioni dei progetti, case study, CV in HTML e PDF,
+foto e immagini) restano di Gianpaolo Del Moro, con tutti i diritti riservati.
+
+Third-party assets (fonts, icons, sounds) keep their own licenses, listed in
+docs/ASSETS.md.
+
+"Windows" is a trademark of Microsoft Corporation. This project is not
+affiliated with, endorsed or sponsored by Microsoft.
