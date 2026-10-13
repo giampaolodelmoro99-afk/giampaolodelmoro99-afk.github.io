@@ -20,7 +20,7 @@ Il progetto è personale e segue un processo a fasi documentato. Queste regole v
    git merge --no-ff phase/NN-nome
    git tag -a phase-NN -m "Fase NN: nome"
    ```
-   I tag di fase usano il prefisso `phase-`. **Mai `v*`**: i tag `v*` fanno partire il deploy in produzione e sono riservati alle release.
+   I tag di fase usano il prefisso `phase-` (`phase-01a`, `phase-01b`…). **Mai `v*`**: i tag `vMAJOR.MINOR.PATCH` (es. `v1.2.3`) fanno partire il deploy in produzione e sono riservati alle release. I tag con suffisso, come `v1.0.0-legacy`, non pubblicano (DEPLOYMENT.md §3).
 
 Branch, merge, tag e push li fa solo il proprietario. Claude Code non li esegue (permessi negati in `.claude/settings.json`).
 
@@ -57,7 +57,7 @@ Formato `tipo: descrizione in italiano`, all'imperativo presente o alla terza pe
 | `docs`         | documentazione                                | `docs: aggiunge l'adr sulla modalità mobile`     |
 | `style`        | formattazione, nessun cambio di logica        | `style: riformatta i token`                      |
 | `refactor`     | ristrutturazione senza cambi di comportamento | `refactor: estrae il calcolo dello z-index`      |
-| `perf`         | prestazioni                                   | `perf: carica Prato fiorito in lazy`             |
+| `perf`         | prestazioni                                   | `perf: carica Campo minato in lazy`              |
 | `build` / `ci` | build e workflow                              | `ci: aggiunge lo shard e2e`                      |
 | `chore`        | manutenzione                                  | `chore: aggiorna le dipendenze`                  |
 

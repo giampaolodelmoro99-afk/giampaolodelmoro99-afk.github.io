@@ -19,7 +19,7 @@ env:
 jobs:
   quality:
     name: Lint, typecheck e test unitari
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -42,7 +42,7 @@ jobs:
 
   build:
     name: Build e prerender
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -60,7 +60,7 @@ jobs:
   prerender:
     name: HTML prerenderizzato e size-limit
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -78,7 +78,7 @@ jobs:
   e2e:
     name: E2E (shard ${{ matrix.shard }}/2)
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-noble
       options: --user 1001
@@ -109,7 +109,7 @@ jobs:
   lighthouse:
     name: Lighthouse ${{ matrix.preset }}
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
