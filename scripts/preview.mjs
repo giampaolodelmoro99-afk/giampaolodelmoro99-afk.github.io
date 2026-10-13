@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)), "build/client");
 const port = Number(process.env.PORT ?? 4173);
 
+/** @type {Record<string, string>} */
 const types = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -52,7 +53,7 @@ async function isDirectory(path) {
  */
 function send(res, file, status) {
   res.writeHead(status, {
-    "Content-Type": types[/** @type {keyof typeof types} */ (extname(file))] ?? "application/octet-stream",
+    "Content-Type": types[extname(file)] ?? "application/octet-stream",
     "Cache-Control": "no-cache",
   });
   createReadStream(file).pipe(res);

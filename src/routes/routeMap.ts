@@ -10,14 +10,20 @@ export const routeMap = {
 
 export type RouteKey = keyof typeof routeMap;
 
-export const routeKeys = Object.keys(routeMap) as RouteKey[];
+function isRouteKey(key: string): key is RouteKey {
+  return Object.hasOwn(routeMap, key);
+}
+
+export const routeKeys: RouteKey[] = Object.keys(routeMap).filter(isRouteKey);
 
 export function routePath(href: string): string {
   return href === "/" ? href : href.replace(/\/+$/, "");
 }
 
 export function prerenderPaths(): string[] {
-  const paths = routeKeys.flatMap((key) => locales.map((locale) => routePath(routeMap[key][locale])));
+  const paths = routeKeys.flatMap((key) =>
+    locales.map((locale) => routePath(routeMap[key][locale])),
+  );
   const invalid = paths.filter((path) => !/^\/([a-z0-9-]+(\/[a-z0-9-]+)*)?$/.test(path));
   if (paths.length === 0 || invalid.length > 0) {
     throw new Error(`routeMap non valida: ${invalid.join(", ") || "nessuna route"}`);

@@ -7,6 +7,7 @@ La v1 di gianpaolodelmoro.it (React 19, MUI, JavaScript) è stata rimossa da `ma
 La Fase 0 non porta feature. Prepara struttura, tooling, documentazione, CI, configurazione di Claude Code e uno scheletro minimo che dimostri che la pipeline funziona dall'inizio alla fine.
 
 Decisioni già prese con te durante la pianificazione:
+
 - **Deploy manuale.** Il deploy parte solo con `workflow_dispatch` o con un tag `v*`. La v1 resta online fino alla release della v2. La CI gira su `main` e `phase/*`.
 - **Mappatura degli URL della v1.** `/profilo`, `/stack`, `/progetti` e `/contatti` vanno mappati sulle route della v2. Dove possibile si tengono gli stessi percorsi italiani; dove cambiano, si generano pagine di reindirizzamento con canonical. Pianificata in Fase 3, verificata in Fase 7 insieme a sitemap e Google Search Console. Va in SPECS.md e in PLAN.md.
 - **Slug tradotti.** Per esempio `/progetti` ↔ `/en/projects`, gestiti con una mappa tipizzata delle route.
@@ -31,14 +32,15 @@ Decisioni già prese con te durante la pianificazione:
 
 ### 1.1 Soluzioni da riportare
 
-| Soluzione v1 | Come funzionava | Cosa diventa nella v2 |
-|---|---|---|
-| **CSP via meta tag** | `<meta http-equiv>` in `index.html`, subito dopo `viewport` e prima di qualsiasi risorsa. Policy: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'`. Le due aperture erano necessarie: `'unsafe-inline'` per emotion/MUI e `data:` per le frecce SVG della scrollbar. | Resta nel meta tag: GitHub Pages non permette header HTTP custom. Senza CSS-in-JS **si può togliere `'unsafe-inline'` da `style-src`**. React Router in modalità framework però inserisce `<script>` inline nell'HTML prerenderizzato (contesto e manifest). La soluzione è uno script post-build che calcola lo **sha256 di ogni script inline** e lo scrive nel meta CSP di ogni pagina. Lo stesso meccanismo copre lo script inline che applica tema e lingua prima del paint. `connect-src` si aprirà a `https://api.web3forms.com` e `form-action` resterà `'none'` (il form usa fetch), entrambi in Fase 3. Restano documentati i limiti del meta: niente `frame-ancestors`, `report-to`, HSTS, `X-Frame-Options`. |
-| **Pagine statiche per route** (`scripts/write-route-pages.mjs`) | Dopo la build copiava la *shell vuota* `index.html` in `dist/<rotta>/index.html` leggendo i `<loc>` di `public/sitemap.xml`, così GitHub Pages rispondeva 200 invece di 404. Lo script falliva se la sitemap era vuota o un path non era valido. `404.html` era una copia della shell. | Viene sostituito dal **prerender vero** di React Router (`ssr: false` + `prerender`), che scrive HTML completo per route. Si conservano tre idee: (1) **una fonte unica delle route**, che nella v2 è il file tipizzato `src/routes/routeMap.ts` da cui derivano router, prerender, sitemap, hreflang e llms.txt (la sitemap diventa un *output*, non più l'input); (2) **la build fallisce** se l'elenco delle route è vuoto o non valido; (3) `404.html` resta per gli URL non previsti e mantiene lo status 404 per i crawler. |
-| **JSON-LD** | Un solo `Person` statico in `index.html`, con `jobTitle`, `address` (Pisa), `knowsAbout`, `alumniOf` (ITS Academy Prodigi) e `sameAs` GitHub. | Generato per route dai dati tipizzati: `Person` + `WebSite` + `ProfilePage` su tutte le route, `SoftwareSourceCode` per i progetti. In Fase 0 c'è un `WebSite` + `Person` minimo, solo per verificare la pipeline e il test sull'HTML. |
-| **SEO** | Title, description, canonical, OG, Twitter in `index.html`. `PageMeta.jsx` aggiornava title, description e canonical **solo lato client**, quindi i crawler senza JS vedevano i meta della home su ogni route. Il dominio era hardcoded in tre posti. `og:locale it_IT`, `theme-color #008080`. | I meta vengono dall'export `meta` di React Router e finiscono **nell'HTML prerenderizzato** di ogni route, con `lang`, hreflang IT/EN/x-default e `og:locale`/`og:locale:alternate`. Il dominio sta in un'unica costante (`src/config/site.ts`). |
+| Soluzione v1                                                    | Come funzionava                                                                                                                                                                                                                                                                                                                                                                                                                    | Cosa diventa nella v2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **CSP via meta tag**                                            | `<meta http-equiv>` in `index.html`, subito dopo `viewport` e prima di qualsiasi risorsa. Policy: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'`. Le due aperture erano necessarie: `'unsafe-inline'` per emotion/MUI e `data:` per le frecce SVG della scrollbar. | Resta nel meta tag: GitHub Pages non permette header HTTP custom. Senza CSS-in-JS **si può togliere `'unsafe-inline'` da `style-src`**. React Router in modalità framework però inserisce `<script>` inline nell'HTML prerenderizzato (contesto e manifest). La soluzione è uno script post-build che calcola lo **sha256 di ogni script inline** e lo scrive nel meta CSP di ogni pagina. Lo stesso meccanismo copre lo script inline che applica tema e lingua prima del paint. `connect-src` si aprirà a `https://api.web3forms.com` e `form-action` resterà `'none'` (il form usa fetch), entrambi in Fase 3. Restano documentati i limiti del meta: niente `frame-ancestors`, `report-to`, HSTS, `X-Frame-Options`. |
+| **Pagine statiche per route** (`scripts/write-route-pages.mjs`) | Dopo la build copiava la _shell vuota_ `index.html` in `dist/<rotta>/index.html` leggendo i `<loc>` di `public/sitemap.xml`, così GitHub Pages rispondeva 200 invece di 404. Lo script falliva se la sitemap era vuota o un path non era valido. `404.html` era una copia della shell.                                                                                                                                             | Viene sostituito dal **prerender vero** di React Router (`ssr: false` + `prerender`), che scrive HTML completo per route. Si conservano tre idee: (1) **una fonte unica delle route**, che nella v2 è il file tipizzato `src/routes/routeMap.ts` da cui derivano router, prerender, sitemap, hreflang e llms.txt (la sitemap diventa un _output_, non più l'input); (2) **la build fallisce** se l'elenco delle route è vuoto o non valido; (3) `404.html` resta per gli URL non previsti e mantiene lo status 404 per i crawler.                                                                                                                                                                                        |
+| **JSON-LD**                                                     | Un solo `Person` statico in `index.html`, con `jobTitle`, `address` (Pisa), `knowsAbout`, `alumniOf` (ITS Academy Prodigi) e `sameAs` GitHub.                                                                                                                                                                                                                                                                                      | Generato per route dai dati tipizzati: `Person` + `WebSite` + `ProfilePage` su tutte le route, `SoftwareSourceCode` per i progetti. In Fase 0 c'è un `WebSite` + `Person` minimo, solo per verificare la pipeline e il test sull'HTML.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| **SEO**                                                         | Title, description, canonical, OG, Twitter in `index.html`. `PageMeta.jsx` aggiornava title, description e canonical **solo lato client**, quindi i crawler senza JS vedevano i meta della home su ogni route. Il dominio era hardcoded in tre posti. `og:locale it_IT`, `theme-color #008080`.                                                                                                                                    | I meta vengono dall'export `meta` di React Router e finiscono **nell'HTML prerenderizzato** di ogni route, con `lang`, hreflang IT/EN/x-default e `og:locale`/`og:locale:alternate`. Il dominio sta in un'unica costante (`src/config/site.ts`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 
 Altre lezioni dal CLAUDE.md della v1 che vanno nell'ADR-0000:
+
 - Deep link, asset con path assoluto e CSP si verificano **solo** con `build` + `preview`, mai con `dev`.
 - **Proporzioni del 95, non pixel del 95.** La v1 usava `uiScale = 15/11` per scalare controlli pensati per 640×480. Nella v2 diventa un token di scala nel design system.
 - Esiste **una sola fonte** per la palette e per gli stili condivisi. Nella v1 copie divergenti degli stessi stili avevano creato bug.
@@ -51,12 +53,13 @@ Altre lezioni dal CLAUDE.md della v1 che vanno nell'ADR-0000:
 
 ### 1.2 Deploy e dominio nella v1
 
-- Il repo è `giampaolodelmoro99-afk/giampaolodelmoro99-afk.github.io`, uno *user site* servito dalla root, quindi niente `base` in Vite.
+- Il repo è `giampaolodelmoro99-afk/giampaolodelmoro99-afk.github.io`, uno _user site_ servito dalla root, quindi niente `base` in Vite.
 - Il dominio `gianpaolodelmoro.it` è configurato in **Settings → Pages** (`build_type: workflow`, HTTPS forzato, certificato anche per `www`). **Non c'è un file CNAME.** Con `actions/deploy-pages` il CNAME nell'artifact viene ignorato e il dominio vive nelle impostazioni del repo.
 - **Decisione: non ricreo il CNAME.** Il CLAUDE.md della v1 avvertiva che un CNAME in conflitto può far cadere il dominio.
 - Il vecchio `deploy.yml` faceva: push su `main` → Node 20 → `npm ci` → `npm run build` → `upload-pages-artifact` (`dist`) → `deploy-pages`. Non aveva test né concurrency.
 
 **Adattamento di `deploy.yml` alla v2:**
+
 - trigger `workflow_dispatch` e `push: tags: ['v*']`, niente più push su `main`
 - primo job: chiama `ci.yml` tramite `workflow_call`, così si pubblica solo un commit verde
 - Node letto da `.nvmrc` (`node-version-file`)
@@ -87,6 +90,7 @@ Tutti i testi sono **solo in italiano**: la versione inglese manca per intero.
 - **CV, presente solo lì**: esperienza ICTS Italia 06–10/2023 (controllo imbarchi, aeroporto di Pisa); Giurisprudenza 2020–2023 non terminata; lingue (italiano madrelingua, inglese B1); hobby pianoforte.
 
 **Incongruenze tra sito e CV da risolvere in CONTENT.md:**
+
 - Il CV cita Java, Spring Boot e Python, che sul sito non compaiono.
 - L'indirizzo del liceo è "Scienze Applicate" sul sito e "indirizzo informatico" nel CV.
 - I livelli in percentuale (65% per tutto) vengono **sostituiti con livello e contesto d'uso**.
@@ -96,13 +100,13 @@ Tutti i testi sono **solo in italiano**: la versione inglese manca per intero.
 
 ### 1.4 File pubblici della v1
 
-| File | Stato | Nella v2 |
-|---|---|---|
-| `llms.txt` | Solo IT, scritto a mano, dice "una SPA che i crawler non leggono" (non sarà più vero) | **Generato in build** dai dati (`llms.txt` IT+EN, più `llms-full.txt`). Fase 5 |
-| `robots.txt` | `Allow: /` + sitemap + 13 crawler AI espliciti | **Da riportare quasi uguale**, aggiornando l'elenco dei bot. Generato in build dalla costante del dominio. Fase 5, verifica in Fase 6 |
-| `sitemap.xml` | 5 URL senza hreflang, input dello script route | **Output della build** da `routeMap.ts`, con `xhtml:link` hreflang. Fase 5 |
-| `og-image.png` | 1200×630, **renderizzata con il font MS Sans Serif** e con glifi mancanti (quadrati vuoti) tra le tecnologie | **Non si riporta.** Immagini OG per route/lingua generate in build con i font liberi. Fase 5 |
-| `favicon.svg` | Pixel art originale 16×16 (finestra su teal), nessun asset Microsoft | **Riutilizzabile**, registrata in ASSETS.md come asset originale. Va aggiunta la variante per il tema ad alto contrasto/apple-touch-icon PNG. Fase 1 |
+| File           | Stato                                                                                                        | Nella v2                                                                                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `llms.txt`     | Solo IT, scritto a mano, dice "una SPA che i crawler non leggono" (non sarà più vero)                        | **Generato in build** dai dati (`llms.txt` IT+EN, più `llms-full.txt`). Fase 5                                                                       |
+| `robots.txt`   | `Allow: /` + sitemap + 13 crawler AI espliciti                                                               | **Da riportare quasi uguale**, aggiornando l'elenco dei bot. Generato in build dalla costante del dominio. Fase 5, verifica in Fase 6                |
+| `sitemap.xml`  | 5 URL senza hreflang, input dello script route                                                               | **Output della build** da `routeMap.ts`, con `xhtml:link` hreflang. Fase 5                                                                           |
+| `og-image.png` | 1200×630, **renderizzata con il font MS Sans Serif** e con glifi mancanti (quadrati vuoti) tra le tecnologie | **Non si riporta.** Immagini OG per route/lingua generate in build con i font liberi. Fase 5                                                         |
+| `favicon.svg`  | Pixel art originale 16×16 (finestra su teal), nessun asset Microsoft                                         | **Riutilizzabile**, registrata in ASSETS.md come asset originale. Va aggiunta la variante per il tema ad alto contrasto/apple-touch-icon PNG. Fase 1 |
 
 ### 1.5 CV in PDF (`public/cv-gianpaolo-del-moro.pdf`)
 
@@ -164,6 +168,7 @@ Tutti i testi sono **solo in italiano**: la versione inglese manca per intero.
   - timeout
 
   Per ogni caso verificano il messaggio, la presenza e il funzionamento del canale alternativo, i dati conservati e axe pulito, su desktop e su 320 px touch.
+
 - **Test sull'HTML prerenderizzato**: l'indirizzo email non compare in chiaro in nessun file di `build/client` (HTML, JSON-LD, txt, xml). Il link GitHub è presente.
 - **Privacy**: l'informativa cita l'eventuale controllo antispam di Web3Forms tramite servizi terzi, da verificare sulla loro privacy policy in F3.
 - **CSP**: `connect-src` aperto solo a `https://api.web3forms.com`.
@@ -179,6 +184,7 @@ Tutti i testi sono **solo in italiano**: la versione inglese manca per intero.
 - `docs/screenshot.png`.
 
 **Font sostitutivi (verificati):**
+
 - **Pixel Operator** di Jayvee Enaguas (HarvettFox96), licenza **CC0 1.0**.
   - Il pacchetto scaricato contiene `LICENSE.txt` CC0, versione 2.018 (2018).
   - L'ho verificato con `fc-query`: **contiene tutti i glifi richiesti**, sia regular sia bold (à è é ì ò ù, À È É Ì Ò Ù, ' ' " ", €, …, – —, « »).
@@ -192,31 +198,32 @@ Tutti i testi sono **solo in italiano**: la versione inglese manca per intero.
 
 Ogni commit è convenzionale con descrizione in italiano e finisce con il trailer `Co-Authored-By`. Branch, merge e tag li fai tu.
 
-| # | Passo | Commit |
-|---|---|---|
-| 1 | Salvo questo piano in `docs/phases/phase-00-plan.md` | `docs: salva il piano della fase 0` |
-| 2 | `.gitignore` aggiornato (aggiunge `build/`, `.react-router/`, `coverage/`, `playwright-report/`, `test-results/`, `.lighthouseci/`, `storybook-static/`, `*.tsbuildinfo`, `.claude/settings.local.json` esplicito); `.editorconfig`; `.nvmrc` = `24` (LTS Krypton, 24.21.0 oggi) | `chore: aggiorna gitignore, aggiunge editorconfig e nvmrc` |
-| 3 | `package.json` (`engines.node >=24`, `type: module`), Vite + React Router framework mode (`react-router.config.ts` con `ssr:false`, `prerender` da `routeMap`), `tsconfig.json` strict (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `verbatimModuleSyntax`) | `chore: inizializza progetto con Vite, React Router e TypeScript strict` |
-| 4 | Oxlint (aggiorno `.oxlintrc.json`) + type-aware con `oxlint-tsgolint`, Stylelint per i CSS Modules (vieta valori fuori dai token), Prettier, Husky (`pre-commit` → lint-staged, `commit-msg` → commitlint) | `chore: configura oxlint, stylelint, prettier, husky e commitlint` |
-| 5 | `src/styles/tokens.css` (colori, bevel, spaziature, tipografia, breakpoint, z-index, durate, safe-area), `global.css` minimo | `feat: aggiunge i token css iniziali` |
-| 6 | `routeMap.ts` (`/` it, `/en` en), `root.tsx` con `<html lang>` dinamico, export `meta` con title, description, canonical, hreflang, OG, Twitter e JSON-LD minimo. Desktop vuoto (`<main>` con `<h1>` "Gianpaolo Del Moro" come elemento LCP e link lingua via `<Link>`), sfondo dai token, responsive da 320 px, `100dvh` + safe-area | `feat: aggiunge desktop vuoto con route it ed en prerenderizzate` |
-| 7 | `scripts/postbuild.mjs`: hash CSP degli script inline nel meta di ogni HTML, `404.html` dal fallback SPA, controllo che ogni route di `routeMap` abbia il suo `index.html` (la build fallisce se ne manca uno) | `build: aggiunge csp con hash e controlli post-build` |
-| 8 | Vitest (jsdom), RTL, user-event, jest-dom, vitest-axe, coverage v8 ≥ 80%: un test unitario (il desktop rende `h1` e link lingua) e un test axe | `test: configura vitest con testing library, axe e coverage` |
-| 9 | Test sull'HTML prerenderizzato (progetto Vitest `prerender` che legge `build/client/**/index.html` con jsdom: `lang`, title, description, canonical, hreflang, OG, JSON-LD valido, `h1` presente senza JS) | `test: verifica l'html prerenderizzato di ogni route` |
-| 10 | Playwright: progetti 320/375/768/1024/1440 (chromium), touch emulato (`hasTouch`, `isMobile`, Chromium Pixel 7 e WebKit iPhone), Firefox 1440. Test e2e `/` → `/en` → `/` senza reload (marcatore su `window` che deve sopravvivere), axe con `@axe-core/playwright`, nessun errore in console, nessuno scroll orizzontale, screenshot di riferimento | `test: aggiunge e2e playwright multi-viewport con axe e screenshot` |
-| 11 | `size-limit` (JS iniziale e CSS iniziale), Lighthouse CI con preset mobile e desktop, 3 run (mediana), `minScore: 1` su tutte le categorie, URL `/` e `/en/` | `ci: aggiunge size-limit e lighthouse ci mobile e desktop` |
-| 12 | `.github/workflows/ci.yml`, `deploy.yml` adattato, `dependabot.yml` | `ci: aggiunge workflow ci, deploy manuale e dependabot` |
-| 13 | README (EN+IT), LICENSE, SECURITY, CONTRIBUTING, CHANGELOG | `docs: aggiunge readme, licenza, security, contributing e changelog` |
-| 14 | `CLAUDE.md` | `docs: aggiunge claude.md con le convenzioni del progetto` |
-| 15 | `docs/*.md` (tutti tranne CONTENT) | `docs: aggiunge la documentazione di progetto` |
-| 16 | `docs/CONTENT.md` | `docs: raccoglie i contenuti della v1 in content.md` |
-| 17 | `docs/adr/` (TEMPLATE + 0000–0010) | `docs: aggiunge template e adr iniziali` |
-| 18 | `docs/phases/phase-NN-retro.md` (modello) | `docs: aggiunge il modello di retrospettiva` |
-| 19 | `.claude/settings.json` + `.claude/hooks/format.mjs` | `chore: configura hook e permessi di claude code` |
-| 20 | `.claude/skills/*` (8) e `.claude/agents/*` (4) | `chore: aggiunge skill e agenti di claude code` |
-| 21 | Verifica finale (vedi §Verifica), CHANGELOG `[0.1.0]`, checkbox della Fase 0 in PLAN.md, `phase-00-retro.md` | `docs: chiude la fase 0 con retrospettiva e changelog` |
+| #   | Passo                                                                                                                                                                                                                                                                                                                                                 | Commit                                                                   |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 1   | Salvo questo piano in `docs/phases/phase-00-plan.md`                                                                                                                                                                                                                                                                                                  | `docs: salva il piano della fase 0`                                      |
+| 2   | `.gitignore` aggiornato (aggiunge `build/`, `.react-router/`, `coverage/`, `playwright-report/`, `test-results/`, `.lighthouseci/`, `storybook-static/`, `*.tsbuildinfo`, `.claude/settings.local.json` esplicito); `.editorconfig`; `.nvmrc` = `24` (LTS Krypton, 24.21.0 oggi)                                                                      | `chore: aggiorna gitignore, aggiunge editorconfig e nvmrc`               |
+| 3   | `package.json` (`engines.node >=24`, `type: module`), Vite + React Router framework mode (`react-router.config.ts` con `ssr:false`, `prerender` da `routeMap`), `tsconfig.json` strict (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `verbatimModuleSyntax`)                                                                             | `chore: inizializza progetto con Vite, React Router e TypeScript strict` |
+| 4   | Oxlint (aggiorno `.oxlintrc.json`) + type-aware con `oxlint-tsgolint`, Stylelint per i CSS Modules (vieta valori fuori dai token), Prettier, Husky (`pre-commit` → lint-staged, `commit-msg` → commitlint)                                                                                                                                            | `chore: configura oxlint, stylelint, prettier, husky e commitlint`       |
+| 5   | `src/styles/tokens.css` (colori, bevel, spaziature, tipografia, breakpoint, z-index, durate, safe-area), `global.css` minimo                                                                                                                                                                                                                          | `feat: aggiunge i token css iniziali`                                    |
+| 6   | `routeMap.ts` (`/` it, `/en` en), `root.tsx` con `<html lang>` dinamico, export `meta` con title, description, canonical, hreflang, OG, Twitter e JSON-LD minimo. Desktop vuoto (`<main>` con `<h1>` "Gianpaolo Del Moro" come elemento LCP e link lingua via `<Link>`), sfondo dai token, responsive da 320 px, `100dvh` + safe-area                 | `feat: aggiunge desktop vuoto con route it ed en prerenderizzate`        |
+| 7   | `scripts/postbuild.mjs`: hash CSP degli script inline nel meta di ogni HTML, `404.html` dal fallback SPA, controllo che ogni route di `routeMap` abbia il suo `index.html` (la build fallisce se ne manca uno)                                                                                                                                        | `build: aggiunge csp con hash e controlli post-build`                    |
+| 8   | Vitest (jsdom), RTL, user-event, jest-dom, vitest-axe, coverage v8 ≥ 80%: un test unitario (il desktop rende `h1` e link lingua) e un test axe                                                                                                                                                                                                        | `test: configura vitest con testing library, axe e coverage`             |
+| 9   | Test sull'HTML prerenderizzato (progetto Vitest `prerender` che legge `build/client/**/index.html` con jsdom: `lang`, title, description, canonical, hreflang, OG, JSON-LD valido, `h1` presente senza JS)                                                                                                                                            | `test: verifica l'html prerenderizzato di ogni route`                    |
+| 10  | Playwright: progetti 320/375/768/1024/1440 (chromium), touch emulato (`hasTouch`, `isMobile`, Chromium Pixel 7 e WebKit iPhone), Firefox 1440. Test e2e `/` → `/en` → `/` senza reload (marcatore su `window` che deve sopravvivere), axe con `@axe-core/playwright`, nessun errore in console, nessuno scroll orizzontale, screenshot di riferimento | `test: aggiunge e2e playwright multi-viewport con axe e screenshot`      |
+| 11  | `size-limit` (JS iniziale e CSS iniziale), Lighthouse CI con preset mobile e desktop, 3 run (mediana), `minScore: 1` su tutte le categorie, URL `/` e `/en/`                                                                                                                                                                                          | `ci: aggiunge size-limit e lighthouse ci mobile e desktop`               |
+| 12  | `.github/workflows/ci.yml`, `deploy.yml` adattato, `dependabot.yml`                                                                                                                                                                                                                                                                                   | `ci: aggiunge workflow ci, deploy manuale e dependabot`                  |
+| 13  | README (EN+IT), LICENSE, SECURITY, CONTRIBUTING, CHANGELOG                                                                                                                                                                                                                                                                                            | `docs: aggiunge readme, licenza, security, contributing e changelog`     |
+| 14  | `CLAUDE.md`                                                                                                                                                                                                                                                                                                                                           | `docs: aggiunge claude.md con le convenzioni del progetto`               |
+| 15  | `docs/*.md` (tutti tranne CONTENT)                                                                                                                                                                                                                                                                                                                    | `docs: aggiunge la documentazione di progetto`                           |
+| 16  | `docs/CONTENT.md`                                                                                                                                                                                                                                                                                                                                     | `docs: raccoglie i contenuti della v1 in content.md`                     |
+| 17  | `docs/adr/` (TEMPLATE + 0000–0010)                                                                                                                                                                                                                                                                                                                    | `docs: aggiunge template e adr iniziali`                                 |
+| 18  | `docs/phases/phase-NN-retro.md` (modello)                                                                                                                                                                                                                                                                                                             | `docs: aggiunge il modello di retrospettiva`                             |
+| 19  | `.claude/settings.json` + `.claude/hooks/format.mjs`                                                                                                                                                                                                                                                                                                  | `chore: configura hook e permessi di claude code`                        |
+| 20  | `.claude/skills/*` (8) e `.claude/agents/*` (4)                                                                                                                                                                                                                                                                                                       | `chore: aggiunge skill e agenti di claude code`                          |
+| 21  | Verifica finale (vedi §Verifica), CHANGELOG `[0.1.0]`, checkbox della Fase 0 in PLAN.md, `phase-00-retro.md`                                                                                                                                                                                                                                          | `docs: chiude la fase 0 con retrospettiva e changelog`                   |
 
 **Struttura delle cartelle dopo la Fase 0:**
+
 ```
 src/
   app/root.tsx  app/routes.ts  app/routes/desktop.tsx
@@ -229,6 +236,7 @@ src/
 scripts/postbuild.mjs
 tests/e2e/  tests/prerender/
 ```
+
 (`app/` non esiste in radice: `appDirectory` punta a `src/app`.)
 
 ### Scelte tecniche motivate (andranno negli ADR)
@@ -271,6 +279,7 @@ tests/e2e/  tests/prerender/
 ## 3. File `.md`: scopo e indice
 
 ### Radice
+
 - **CLAUDE.md** (≤ 100 righe). Scopo: istruzioni operative per Claude, con rimandi a `docs/`. Indice:
   1. Progetto in breve e link a SPECS
   2. Comandi (`dev`, `build`, `preview`, `test`, `test:e2e`, `test:prerender`, `lint`, `typecheck`, `size`, `lhci`)
@@ -301,6 +310,7 @@ tests/e2e/  tests/prerender/
 - **LICENSE**. MIT per il codice, più la sezione "Contenuti personali – Tutti i diritti riservati" per testi, immagini, CV e dati in `src/content/`. Gli asset di terzi restano con le rispettive licenze, elencate in ASSETS.md.
 
 ### docs/
+
 - **SPECS.md**
   1. Visione
   2. Tipi di visitatore (recruiter frettoloso: CV e contatti in ≤ 2 interazioni, anche con la "Vista semplice"; tech lead: codice, case study, qualità; curioso: esperienza 95, easter egg)
@@ -430,11 +440,14 @@ tests/e2e/  tests/prerender/
 - **EASTER_EGGS.md**: regole (accessibili, senza asset Microsoft, senza impatto su Lighthouse, disattivabili) e registro (nome, trigger, fase, file, test).
 
 ### docs/phases/
+
 - **phase-00-plan.md**: questo piano.
 - **phase-NN-retro.md** (modello): Obiettivi e risultato · Cosa è andato bene · Cosa no · Metriche (coverage, Lighthouse mobile e desktop per route, size-limit, numero di test) · Decisioni e ADR · Debito tecnico · Lezioni per AI_WORKFLOW · Azioni per la fase successiva.
 
 ### docs/adr/
+
 TEMPLATE.md (Stato · Contesto · Decisione · Alternative · Conseguenze · Riferimenti) e:
+
 - **0000-lezioni-dalla-v1**: contenuto di §1
 - **0001-design-system-css-modules-react-aria**
 - **0002-form-contatti-web3forms-honeypot**: stato **Proposta** fino alla verifica in F3 di privacy policy e DPA. Contiene:
@@ -516,25 +529,26 @@ Ogni fase ha sotto-checkbox per i deliverable e un "criterio di uscita" (close-p
 
 Formato comune delle skill: frontmatter `name` e `description`; corpo con **Quando usarla**, **Passi**, **Checklist di uscita** e **Riferimenti** ai file in `docs/`. Le skill sono brevi (≤ 80 righe) e non duplicano le regole: rimandano ai docs.
 
-| Skill | `description` | Contenuto |
-|---|---|---|
-| `win95-component` | Crea o modifica un componente del design system Win95 su React Aria Components con CSS Modules e token, responsive, con test, story e controllo axe. | Passi: (1) componente RAC giusto o composizione; (2) `Name.tsx` + `Name.module.css` (solo `var(--…)`, stati via `[data-pressed]`, `[data-focus-visible]`…); (3) responsive mobile-first e target 44 px nella modalità touch; (4) reduced motion; (5) `Name.test.tsx` (render, interazione con user-event, tastiera, axe); (6) `Name.stories.tsx` con varianti e temi; (7) export dall'indice; (8) verifica in Storybook e nel browser a 320 e 1440. Checklist con Stylelint e Oxlint puliti, coverage, niente commenti inline. |
-| `window-app` | Aggiunge una nuova app/finestra al desktop: route IT/EN, deep link, contenuto prerenderizzato, icona, voce nel menu Start, versione mobile, i18n e test. | Passi: voce in `routeMap` (slug IT/EN), modulo lazy in `features/<app>`, `meta` + JSON-LD, contenuto semantico renderizzato senza effetti (prerender), dizionari `it`/`en`, icona originale registrata in ASSETS, voce Start e icona desktop, comportamento mobile, test (unit, axe, e2e deep link, prerender), aggiornamento di sitemap e llms (automatico) e SPECS. |
-| `write-tests` | Indica quali test scrivere per un file (componente, hook, store, util, app/route, script di build) e su quali viewport, secondo docs/TESTING.md. | Tabella tipo di file → test obbligatori; pattern RTL (query per ruolo); user-event; axe; e2e con i 5 viewport + touch; prerender; come raggiungere l'80% senza test vuoti; anti-pattern. |
-| `update-visual-snapshots` | Aggiorna gli screenshot di riferimento di Playwright solo dopo un cambiamento visivo voluto e verificato. | Precondizioni (cambio voluto, motivazione nel commit); comando nel container Docker della CI; revisione delle differenze una per una; mai aggiornare per "far passare" la CI; commit dedicato `test: aggiorna gli screenshot di riferimento per …`. |
-| `i18n-strings` | Aggiunge o modifica testi dell'interfaccia in italiano e inglese nei dizionari tipizzati, con le stesse chiavi e il tono di docs/CONTENT.md. | Dove stanno i dizionari, naming delle chiavi, plurali e date con Intl, `en satisfies` lo shape di `it`, alt e aria-label inclusi, nome N/M, aggiornare CONTENT.md, test e content-reviewer. |
-| `add-project` | Aggiunge un progetto GitHub al portfolio: dati tipizzati, testi IT/EN, immagini, case study e metadati a build time. | Passi: voce in `src/content/projects.ts` secondo il template di CONTENT.md, verifica dell'URL con "giampaolo", immagini AVIF/WebP con dimensioni e alt IT/EN registrate in ASSETS, case study opzionale, script `fetch-github` per i metadati, JSON-LD `SoftwareSourceCode`, test. |
-| `new-adr` | Scrive una nuova decisione architetturale numerata a partire da docs/adr/TEMPLATE.md. | Numero progressivo, nome kebab in italiano, sezioni del template, stato Proposta/Accettata/Sostituita, link dagli altri docs e dalla eventuale ADR sostituita. |
-| `close-phase` | Prepara la chiusura di una fase: test, coverage, regressione visiva, Lighthouse mobile e desktop, agenti di review, QA nel browser, retrospettiva, CHANGELOG e PLAN. Non esegue merge né tag. | Passi: `lint`, `typecheck`, `test --coverage`, `build`, `test:prerender`, `test:e2e`, `size`, `lhci` mobile e desktop; lancio dei 4 agenti e correzione dei bloccanti; QA_CHECKLIST con Claude in Chrome (anche mobile); `phase-NN-retro.md`; CHANGELOG; checkbox in PLAN; riepilogo finale con i comandi di merge e tag **da far eseguire all'utente**. |
+| Skill                     | `description`                                                                                                                                                                                 | Contenuto                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `win95-component`         | Crea o modifica un componente del design system Win95 su React Aria Components con CSS Modules e token, responsive, con test, story e controllo axe.                                          | Passi: (1) componente RAC giusto o composizione; (2) `Name.tsx` + `Name.module.css` (solo `var(--…)`, stati via `[data-pressed]`, `[data-focus-visible]`…); (3) responsive mobile-first e target 44 px nella modalità touch; (4) reduced motion; (5) `Name.test.tsx` (render, interazione con user-event, tastiera, axe); (6) `Name.stories.tsx` con varianti e temi; (7) export dall'indice; (8) verifica in Storybook e nel browser a 320 e 1440. Checklist con Stylelint e Oxlint puliti, coverage, niente commenti inline. |
+| `window-app`              | Aggiunge una nuova app/finestra al desktop: route IT/EN, deep link, contenuto prerenderizzato, icona, voce nel menu Start, versione mobile, i18n e test.                                      | Passi: voce in `routeMap` (slug IT/EN), modulo lazy in `features/<app>`, `meta` + JSON-LD, contenuto semantico renderizzato senza effetti (prerender), dizionari `it`/`en`, icona originale registrata in ASSETS, voce Start e icona desktop, comportamento mobile, test (unit, axe, e2e deep link, prerender), aggiornamento di sitemap e llms (automatico) e SPECS.                                                                                                                                                          |
+| `write-tests`             | Indica quali test scrivere per un file (componente, hook, store, util, app/route, script di build) e su quali viewport, secondo docs/TESTING.md.                                              | Tabella tipo di file → test obbligatori; pattern RTL (query per ruolo); user-event; axe; e2e con i 5 viewport + touch; prerender; come raggiungere l'80% senza test vuoti; anti-pattern.                                                                                                                                                                                                                                                                                                                                       |
+| `update-visual-snapshots` | Aggiorna gli screenshot di riferimento di Playwright solo dopo un cambiamento visivo voluto e verificato.                                                                                     | Precondizioni (cambio voluto, motivazione nel commit); comando nel container Docker della CI; revisione delle differenze una per una; mai aggiornare per "far passare" la CI; commit dedicato `test: aggiorna gli screenshot di riferimento per …`.                                                                                                                                                                                                                                                                            |
+| `i18n-strings`            | Aggiunge o modifica testi dell'interfaccia in italiano e inglese nei dizionari tipizzati, con le stesse chiavi e il tono di docs/CONTENT.md.                                                  | Dove stanno i dizionari, naming delle chiavi, plurali e date con Intl, `en satisfies` lo shape di `it`, alt e aria-label inclusi, nome N/M, aggiornare CONTENT.md, test e content-reviewer.                                                                                                                                                                                                                                                                                                                                    |
+| `add-project`             | Aggiunge un progetto GitHub al portfolio: dati tipizzati, testi IT/EN, immagini, case study e metadati a build time.                                                                          | Passi: voce in `src/content/projects.ts` secondo il template di CONTENT.md, verifica dell'URL con "giampaolo", immagini AVIF/WebP con dimensioni e alt IT/EN registrate in ASSETS, case study opzionale, script `fetch-github` per i metadati, JSON-LD `SoftwareSourceCode`, test.                                                                                                                                                                                                                                             |
+| `new-adr`                 | Scrive una nuova decisione architetturale numerata a partire da docs/adr/TEMPLATE.md.                                                                                                         | Numero progressivo, nome kebab in italiano, sezioni del template, stato Proposta/Accettata/Sostituita, link dagli altri docs e dalla eventuale ADR sostituita.                                                                                                                                                                                                                                                                                                                                                                 |
+| `close-phase`             | Prepara la chiusura di una fase: test, coverage, regressione visiva, Lighthouse mobile e desktop, agenti di review, QA nel browser, retrospettiva, CHANGELOG e PLAN. Non esegue merge né tag. | Passi: `lint`, `typecheck`, `test --coverage`, `build`, `test:prerender`, `test:e2e`, `size`, `lhci` mobile e desktop; lancio dei 4 agenti e correzione dei bloccanti; QA_CHECKLIST con Claude in Chrome (anche mobile); `phase-NN-retro.md`; CHANGELOG; checkbox in PLAN; riepilogo finale con i comandi di merge e tag **da far eseguire all'utente**.                                                                                                                                                                       |
 
-| Agente | `description` | Contenuto |
-|---|---|---|
-| `code-reviewer` | Review indipendente delle modifiche del branch secondo docs/CODE_REVIEW.md. Da usare a fine task o fase. | Strumenti in sola lettura (Read, Grep, Glob, Bash in sola lettura come `git diff main...`); applica la checklist; report ordinato per gravità con file:riga; non modifica codice. |
+| Agente             | `description`                                                                                                           | Contenuto                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `code-reviewer`    | Review indipendente delle modifiche del branch secondo docs/CODE_REVIEW.md. Da usare a fine task o fase.                | Strumenti in sola lettura (Read, Grep, Glob, Bash in sola lettura come `git diff main...`); applica la checklist; report ordinato per gravità con file:riga; non modifica codice.                                                                                                                                                                                                                 |
 | `security-auditor` | Verifica sicurezza, CSP, dipendenze, requisiti di docs/LEGAL.md, richieste verso terze parti e registro docs/ASSETS.md. | Controlli: CSP e hash, `npm audit`, URL esterni nel codice e nel build, storage usato rispetto all'elenco consentito, form (campi, honeypot, tempo minimo, pausa tra invii, access key solo da variabile d'ambiente, nessuna email automatica al visitatore), Storybook con noindex, asset non registrati o di origine Microsoft, metadati del PDF, segreti, permessi dei workflow. Solo lettura. |
-| `a11y-auditor` | Audita accessibilità (WCAG 2.2 AA) e comportamento responsive/touch secondo docs/ACCESSIBILITY.md. | Rilegge componenti e CSS: ruoli e nomi, tastiera, focus, reduced motion, alto contrasto, contrasto dei token, target 44 px, assenza di funzioni solo hover o solo tasto destro, 320 px senza scroll orizzontale, safe-area. Può lanciare i test axe e Playwright. Solo lettura. |
-| `content-reviewer` | Rivede i testi IT/EN: tono, correttezza, traduzioni allineate, nome con N sul sito e M in GitHub ed email. | Confronta i dizionari `it` ed `en` e CONTENT.md: chiavi allineate, niente testo hardcoded nei componenti, terminologia coerente, grafia del nome, meta di lunghezza adeguata (title ≤ 60, description ≤ 160). **Segnala come bloccante** ogni testo marcato `BOZZA – da rivedere` che finisce nel sito senza la tua approvazione. Solo lettura. |
+| `a11y-auditor`     | Audita accessibilità (WCAG 2.2 AA) e comportamento responsive/touch secondo docs/ACCESSIBILITY.md.                      | Rilegge componenti e CSS: ruoli e nomi, tastiera, focus, reduced motion, alto contrasto, contrasto dei token, target 44 px, assenza di funzioni solo hover o solo tasto destro, 320 px senza scroll orizzontale, safe-area. Può lanciare i test axe e Playwright. Solo lettura.                                                                                                                   |
+| `content-reviewer` | Rivede i testi IT/EN: tono, correttezza, traduzioni allineate, nome con N sul sito e M in GitHub ed email.              | Confronta i dizionari `it` ed `en` e CONTENT.md: chiavi allineate, niente testo hardcoded nei componenti, terminologia coerente, grafia del nome, meta di lunghezza adeguata (title ≤ 60, description ≤ 160). **Segnala come bloccante** ogni testo marcato `BOZZA – da rivedere` che finisce nel sito senza la tua approvazione. Solo lettura.                                                   |
 
 **`.claude/settings.json`:**
+
 - **Hook `PostToolUse`** su `Edit|Write|MultiEdit`: `node .claude/hooks/format.mjs`, che legge il JSON da stdin e lancia `prettier --write --ignore-unknown` sul file modificato. Non serve `jq`.
 - **`permissions.allow`**:
   - `npm run *`, `npx playwright *`, `npx prettier *`, `npx oxlint *`
@@ -552,25 +566,26 @@ Formato comune delle skill: frontmatter `name` e `description`; corpo con **Quan
 
 **Runtime:**
 
-| Pacchetto | Versione |
-|---|---|
-| `react`, `react-dom` | 19.3.0 |
-| `react-router` | 8.4.0 |
+| Pacchetto            | Versione                   |
+| -------------------- | -------------------------- |
+| `react`, `react-dom` | 19.3.0                     |
+| `react-router`       | 8.4.0                      |
 | `@react-router/node` | 8.4.0 (serve al prerender) |
 
 `react-aria-components` 1.22.1 e `zustand` 5.0.15 si installano in F1 e F2.
 
 **Dev:**
 
-| Area | Pacchetti |
-|---|---|
-| Build e tipi | `@react-router/dev` 8.4.0 · `vite` 8.3.4 · `@vitejs/plugin-react` 6.1.2 · `typescript` 6.0.3 · `@types/react` e `@types/react-dom` 19.3.0 · `@types/node` 24.x (allineato a Node 24) |
-| Test | `vitest` 5.0.4 · `@vitest/coverage-v8` 5.0.4 · `jsdom` 30.1.2 · `@testing-library/react` 16.3.3 · `@testing-library/user-event` 14.6.8 · `@testing-library/jest-dom` 7.0.1 · `vitest-axe` 0.1.0 · `axe-core` 4.14.0 · `@playwright/test` 1.64.0 · `@axe-core/playwright` 4.13.0 |
-| Budget e Lighthouse | `@lhci/cli` 0.15.1 · `size-limit` 14.2.0 · `@size-limit/file` 14.2.0 |
-| Lint e formattazione | `oxlint` 1.88.0 · `oxlint-tsgolint` 7.0.2004 · `stylelint` 17.16.0 · `stylelint-config-standard` 40.0.0 · `stylelint-config-css-modules` 4.6.0 · `stylelint-declaration-strict-value` 1.12.1 · `prettier` 3.9.10 |
-| Hook e commit | `husky` 9.1.7 · `lint-staged` 17.6.0 · `@commitlint/cli` 21.2.3 · `@commitlint/config-conventional` 21.2.3 (`subject-case` disattivata per le descrizioni in italiano) |
+| Area                 | Pacchetti                                                                                                                                                                                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Build e tipi         | `@react-router/dev` 8.4.0 · `vite` 8.3.4 · `@vitejs/plugin-react` 6.1.2 · `typescript` 6.0.3 · `@types/react` e `@types/react-dom` 19.3.0 · `@types/node` 24.x (allineato a Node 24)                                                                                            |
+| Test                 | `vitest` 5.0.4 · `@vitest/coverage-v8` 5.0.4 · `jsdom` 30.1.2 · `@testing-library/react` 16.3.3 · `@testing-library/user-event` 14.6.8 · `@testing-library/jest-dom` 7.0.1 · `vitest-axe` 0.1.0 · `axe-core` 4.14.0 · `@playwright/test` 1.64.0 · `@axe-core/playwright` 4.13.0 |
+| Budget e Lighthouse  | `@lhci/cli` 0.15.1 · `size-limit` 14.2.0 · `@size-limit/file` 14.2.0                                                                                                                                                                                                            |
+| Lint e formattazione | `oxlint` 1.88.0 · `oxlint-tsgolint` 7.0.2004 · `stylelint` 17.16.0 · `stylelint-config-standard` 40.0.0 · `stylelint-config-css-modules` 4.6.0 · `stylelint-declaration-strict-value` 1.12.1 · `prettier` 3.9.10                                                                |
+| Hook e commit        | `husky` 9.1.7 · `lint-staged` 17.6.0 · `@commitlint/cli` 21.2.3 · `@commitlint/config-conventional` 21.2.3 (`subject-case` disattivata per le descrizioni in italiano)                                                                                                          |
 
 **Fasi successive (non installate in F0):**
+
 - `storybook` e `@storybook/react-vite` 10.6.2 (F1)
 - `subset-font` 2.9.0 (F1)
 - un generatore OG e PDF da scegliere in F3 e F5
@@ -584,6 +599,7 @@ Le versioni sono fissate con `^` e con `package-lock.json`. Dependabot lavora a 
 ## 6. Rischi e domande aperte
 
 **Rischi:**
+
 1. **Hash CSP vs script inline di React Router.** Se una release cambia il markup inline, gli hash vanno ricalcolati. Lo fa il post-build, e un test verifica che ogni `<script>` inline abbia il suo hash nel meta.
 2. **Trailing slash su GitHub Pages.** `/en` con `en/index.html` riceve un 301 verso `/en/`. Proposta: canonical, hreflang e sitemap **con la slash finale**, e link interni coerenti. Lo verifico con `curl -I` alla prima pubblicazione. Nel frattempo LHCI testa `/en/`.
 3. **Idratazione e layout persistito.** Leggere la posizione delle finestre da localStorage dopo l'idratazione può causare CLS. Mitigazione da progettare in F2: tema e prima applicazione tramite lo script inline con hash, variabili CSS impostate prima del paint, niente spostamenti visibili.
@@ -594,6 +610,7 @@ Le versioni sono fissate con `^` e con `package-lock.json`. Dependabot lavora a 
    - disattivato con reduced motion
 
    LHCI lo misura come un visitatore nuovo. Il progetto è della F4, il vincolo è già in PERFORMANCE_SEO.md.
+
 5. **Screenshot locali vs CI** (font rendering diverso). Baseline generate solo nel container Docker di Playwright, documentato nella skill.
 6. **`vitest-axe` è fermo dal 2022.** Funziona come wrapper di `axe-core`. Se si rompe con Vitest 5 lo sostituisco con un matcher locale di 20 righe.
 7. **TypeScript 6 vs 7.** Scelta conservativa; il passaggio va rivalutato in F5.
@@ -603,6 +620,7 @@ Le versioni sono fissate con `^` e con `package-lock.json`. Dependabot lavora a 
 10. **Il form è aggirabile.** Con la chiave pubblica su un sito statico, le protezioni lato client non fermano chi chiama l'API direttamente. Mitigazioni: restrizione al dominio nel pannello e piano B (ADR-0002).
 
 **Domande aperte rimaste** (nessuna blocca la Fase 0; sono tracciate nei documenti):
+
 - Java, Spring Boot, Python e l'indirizzo del liceo: in CONTENT.md, da chiudere in F3.
 - Le bozze di riformulazione per CV, bio e Timeline: in CONTENT.md, da approvare tu.
 - Web3Forms: gestore (Web3Creative o Sacred Media LLC), regione AWS e antispam di terzi. ADR-0002 resta "Proposta" fino alla verifica in F3.
@@ -640,6 +658,7 @@ Richiesta durante l'implementazione, vale per CONTRIBUTING.md, TESTING.md, CODE_
   - snapshot aggiornati solo per far passare la CI
 
   Le eventuali eccezioni vanno motivate in un ADR.
+
 - **Oxlint** (in `.oxlintrc.json`, tutte come errore): `vitest/no-disabled-tests`, `vitest/no-focused-tests`, `vitest/no-commented-out-tests`, `vitest/no-conditional-tests`, `vitest/expect-expect`, `vitest/warn-todo`. Le regole valgono anche per i file Playwright.
 - **Hook `pre-push`** (Husky): `npm run lint && npm run typecheck && npm run test`. Un push con errori evidenti si blocca prima della CI.
 - **code-reviewer**: segnala come **bloccante** ogni test disattivato, rimosso o indebolito rispetto a `main` (asserzioni tolte, `expect` più permissivi, viewport o progetti Playwright rimossi, soglie in `vitest.config.ts`, `lighthouserc.*`, `.size-limit.*` abbassate, snapshot cambiati senza un cambio visivo motivato). Usa `git diff main...HEAD` sui file di test e di configurazione.
