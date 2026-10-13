@@ -9,7 +9,7 @@ Branch, merge e tag li esegue il proprietario. La 1B parte da `main` dopo il mer
 
 ## Contesto
 
-La Fase 0 ha lasciato token minimi, font di sistema, focus di 1 px e nessun componente. Il design system "GDM 95" è stato approvato in Claude Design e il pacchetto è in `docs/design/gdm95/`, non ancora committato. La 1A porta in `src/` token, temi, font, icone, Icon e Glyph, e Storybook pubblicato con i test visivi. Chiude anche le 5 note rimaste dalla Fase 0. I 18 componenti restanti sono la 1B.
+La Fase 0 ha lasciato token minimi, font di sistema, focus di 1 px e nessun componente. Il design system "GDM 95" è stato approvato in Claude Design e il pacchetto è in `docs/design/gdm95/` (committato al passo 0). La 1A porta in `src/` token, temi, font, icone, Icon e Glyph, e Storybook pubblicato con i test visivi. Chiude anche le 5 note rimaste dalla Fase 0. I 18 componenti restanti sono la 1B.
 
 ## Decisioni prese (D1–D6)
 
@@ -21,6 +21,21 @@ La Fase 0 ha lasciato token minimi, font di sistema, focus di 1 px e nessun comp
 | D4  | Autore delle icone: "Claude (Claude Design) per Gianpaolo Del Moro".                                                                                                                                                      |
 | D5  | Lo slider è rimandato alla F4A. Il pulsante con sola icona diventa una variante di Button (1B).                                                                                                                           |
 | D6  | Per i valori letterali del CSS si creano token, senza eccezioni Stylelint.                                                                                                                                                |
+
+## Scostamenti dall'implementazione (1A)
+
+Scelte prese durante il lavoro, documentate in ADR-0010, DESIGN_SYSTEM.md e PERFORMANCE_SEO.md:
+
+| Piano                                                             | Implementazione                                                                          | Motivo                                                                                                           |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Subset di IBM Plex Sans con `subset-font`, file `ibm-plex-sans-*` | Subset **Latin1 ufficiali di IBM**, identici alla release (`IBMPlexSans-*-Latin1.woff2`) | La licenza riserva il nome "Plex": un subset nostro sarebbe una versione modificata (OFL-FAQ 2.5-2.6)            |
+| Originali di Plex in `fonts-src/`                                 | Solo Pixel Operator in `fonts-src/`                                                      | Plex non si modifica, quindi non serve l'originale                                                               |
+| Preload solo di `pixel-operator-400`                              | Preload di 400 e **700** (6,3 kB)                                                        | Il titolo della home, al primo disegno, è in grassetto                                                           |
+| Fallback su `local("DejaVu Sans")`                                | `local("Arial")`, `local("Liberation Sans")`, `local("Arimo")`                           | DejaVu non è compatibile con le metriche di Arial su cui sono calcolati gli override                             |
+| CSP di Storybook con `font-src 'self'`                            | `font-src 'self' data:`                                                                  | Le pagine Docs di Storybook usano font incorporati in `data:` (nessuna richiesta esterna)                        |
+| `glyphs.json` letto dal pacchetto                                 | Copiato in `src/components/Icon/glyphs.json`                                             | Il codice non dipende dalla documentazione (review)                                                              |
+| Due commit separati per tag e runner                              | Un solo commit `ci:`                                                                     | Stesse righe di `deploy.yml`                                                                                     |
+| Screenshot del focus rigenerati al passo 4                        | Rigenerati dopo il passo 5 (font)                                                        | Gli screenshot non mostrano il focus: cambiavano per interlinea e font, meglio una sola rigenerazione verificata |
 
 ## 1. Analisi del pacchetto (riepilogo)
 
@@ -68,7 +83,7 @@ La Fase 0 ha lasciato token minimi, font di sistema, focus di 1 px e nessun comp
 | 14  | **CI**: filtro dei tag del deploy, runner `ubuntu-24.04` (§6.3, §6.5)                                                                                                                                                                                                                                                                                                                                                                 | `ci: limita il deploy ai tag di versione` · `ci: fissa la versione di ubuntu nei runner`                                        |
 | 15  | **Preview in LAN**: `scripts/preview.mjs` ascolta di default su `127.0.0.1` (oggi ascolta su tutte le interfacce). Con `--host` ascolta su `0.0.0.0` e stampa l'indirizzo LAN. Così funziona `npm run preview -- --host`.                                                                                                                                                                                                             | `feat: aggiunge l'opzione --host alla preview`                                                                                  |
 | 16  | **Documenti** (§7)                                                                                                                                                                                                                                                                                                                                                                                                                    | `docs: aggiorna i documenti al design system GDM 95` · `docs: toglie LinkedIn e i nomi Microsoft dai documenti`                 |
-| 17  | **Chiusura** con `close-phase`: tre review, QA in Chrome, QA su Android reale, retrospettiva, CHANGELOG, CI del branch verde                                                                                                                                                                                                                                                                                                          | `docs: chiude la fase 1A`                                                                                                       |
+| 17  | **Chiusura** con `close-phase`: quattro review (code, security, a11y, content), QA in Chrome, QA su Android reale, retrospettiva, CHANGELOG, CI del branch verde                                                                                                                                                                                                                                                                      | `docs: chiude la fase 1A`                                                                                                       |
 
 ## 3. Font
 
@@ -219,9 +234,9 @@ La Fase 0 ha lasciato token minimi, font di sistema, focus di 1 px e nessun comp
 - **Telefono Android reale**, con `npm run build && npm run preview -- --host` sulla stessa rete Wi-Fi. Checklist in QA_CHECKLIST.md:
   - [ ] Pixel Operator caricato: il testo del desktop è in pixel font, non nel fallback
   - [ ] focus visibile a doppio anello, con tastiera Bluetooth o con la navigazione di TalkBack
-  - [ ] nessuno scroll orizzontale, in verticale e in orizzontale
+  - [ ] nessuno scroll orizzontale, sia con il telefono in verticale sia in orizzontale
   - [ ] Storybook navigabile al touch: barra laterale, toolbar dei comandi, cambio tema e input
-- **Chiusura**: CI del branch verde su GitHub, review di code-reviewer, security-auditor e a11y-auditor, retrospettiva e CHANGELOG.
+- **Chiusura**: CI del branch verde su GitHub, review di code-reviewer, security-auditor, a11y-auditor e content-reviewer, retrospettiva e CHANGELOG.
 - Nessun test disattivato e nessuna soglia abbassata. Gli screenshot si aggiornano solo nel container, con commit dedicati.
 
 ## 9. Dipendenze nuove (1A)

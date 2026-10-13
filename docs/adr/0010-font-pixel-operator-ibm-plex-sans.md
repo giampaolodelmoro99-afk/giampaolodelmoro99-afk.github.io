@@ -12,7 +12,7 @@ La v1 usava "Pixelated MS Sans Serif", un font Microsoft: vietato. Serve un font
 
 - **Pixel Operator** (Jayvee Enaguas, CC0 1.0, versione 2018.10.04-1) per interfaccia e titoli: titlebar, menu, pulsanti, etichette.
   - Fonte: la pagina ufficiale su notabug.org risponde 404 dal 13/10/2026; si usa il pacchetto DaFont caricato dall'autore, con `LICENSE.txt` CC0 1.0 e la licenza scritta anche nei metadati del font (dettagli e SHA-256 in ASSETS.md).
-  - Glifi: à è é ì ò ù, maiuscole accentate, virgolette e apostrofo tipografici, €, …, – —, « », •. Mancano solo simboli rari di Latin-1 (§ ª º ² ³ ¹ ¼ ½ ¾ ¤ ¯), resi dal fallback.
+  - Glifi: à è é ì ò ù, maiuscole accentate, virgolette e apostrofo tipografici, €, …, – —, « », •. Mancano solo simboli rari di Latin-1 (§ ª º ² ³ ¹ ¼ ½ ¾ ¤ ¯ e il trattino morbido), resi dal fallback.
   - Subset woff2 generato da `npm run fonts` (`scripts/fonts.mjs`, `subset-font`) dagli originali in `fonts-src/`. Il risultato è deterministico e committato.
 - **IBM Plex Sans** (IBM, SIL OFL 1.1, release `@ibm/plex-sans@1.1.0`, font 3.005) per i testi lunghi nelle finestre "documento" (bio, case study, privacy), per il tema `high-contrast` e per chi sceglie `data-font="readable"`. La dimensione del testo non cambia il font.
   - Si usano i **subset Latin1 ufficiali di IBM** (`fonts/split/woff2/`), identici alla release, con l'`unicode-range` del CSS ufficiale. Coprono tutti i glifi richiesti.

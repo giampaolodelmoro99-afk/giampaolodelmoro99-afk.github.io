@@ -31,7 +31,7 @@ Piano: [phase-01-plan.md](phases/phase-01-plan.md) §1–§10.
 - [ ] Token GDM 95 completi: colori, bevel, misure desktop e touch, focus, tipografia, z-index, durate
 - [ ] Temi classico e alto contrasto, `forced-colors`, attributi `data-theme`, `data-font`, `data-input`, `data-motion`, dimensione del testo
 - [ ] Focus a doppio anello sulle pagine esistenti
-- [ ] Font: Pixel Operator e IBM Plex Sans con subset, preload, fallback metrico; licenze e SHA-256 in ASSETS.md
+- [ ] Font: Pixel Operator (subset) e IBM Plex Sans (subset Latin1 ufficiali), preload di Pixel Operator, fallback metrico; licenze e SHA-256 in ASSETS.md
 - [ ] Icone GDM 95 registrate in ASSETS.md, componenti Icon e Glyph, favicon col monogramma GDM
 - [ ] Storybook 10, pubblicato in `/storybook/` con `noindex`, CSP dedicata, `Disallow` in robots.txt, fuori da sitemap, llms e Lighthouse CI
 - [ ] Test visivi e axe delle story nel container

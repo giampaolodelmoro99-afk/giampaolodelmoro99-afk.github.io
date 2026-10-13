@@ -100,7 +100,7 @@ Immagini 1200×630 per route e lingua, generate in build con i font liberi del p
 
 L'idratazione parte dopo `load` (§3), quindi non pesa su LCP. Resta da controllare che non ritardi in modo percepibile la prima interazione.
 
-- **Misura attuale** (`tests/e2e/performance.spec.ts`, progetto Playwright `performance`: Pixel 7, CPU rallentata 4× via CDP): tempo da `load` a `html[data-hydrated]` e long task. Fase 1A: idratazione circa 260 ms dopo `load`, una long task di circa 60 ms. Soglie del test: idratazione entro 1 s, nessuna long task oltre 200 ms.
+- **Misura attuale** (`tests/e2e/performance.spec.ts`, progetto Playwright `performance`: Pixel 7, CPU rallentata 4× via CDP): tempo da `load` a `html[data-hydrated]` e long task. Fase 1A: idratazione circa 260 ms dopo `load`, una long task di circa 60 ms. Soglie del test, **bloccanti come gli altri budget**: idratazione entro 1 s e nessuna long task oltre 200 ms. Sono circa 4 volte la misura di riferimento, per assorbire la variabilità dei runner; la misura di ogni esecuzione è nell'annotazione `misura` del report Playwright. Se una fase le supera va ottimizzato il codice: alzarle richiede un ADR.
 - **In Fase 2A**, con il window manager:
   1. la stessa misura, con la home che contiene desktop, icone e taskbar
   2. INP del primo clic su un'icona subito dopo l'idratazione (Event Timing API, `interactionId`), con soglia ≤ 200 ms su CPU 4×

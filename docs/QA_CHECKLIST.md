@@ -58,7 +58,7 @@ Il terminale stampa l'indirizzo in rete locale (`http://192.168.x.x:4173`): apri
 
 - [ ] **Font**: il testo del desktop è in Pixel Operator (pixel netti), non nel font di sistema.
 - [ ] **Focus**: con una tastiera Bluetooth (Tab) o con la navigazione di TalkBack, il focus è visibile come doppio anello (tratteggio nero su alone bianco).
-- [ ] **Layout**: nessuno scroll orizzontale, in verticale e in orizzontale; testi non tagliati.
+- [ ] **Layout**: nessuno scroll orizzontale, sia con il telefono in verticale sia in orizzontale; testi non tagliati.
 - [ ] **Storybook** (`/storybook/`): si naviga al tocco (barra laterale, story, pannelli), la toolbar cambia tema e input, l'anteprima segue.
 - [ ] Annota modello del telefono, versione di Android e di Chrome nella retrospettiva.
 

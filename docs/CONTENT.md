@@ -6,7 +6,7 @@ Raccolta dei contenuti del sito. Fonte per i dizionari i18n, i dati tipizzati (`
 
 - **Nome**: sul sito sempre "Gianpaolo Del Moro" (con N). GitHub ed email usano "giampaolo" (con M): `github.com/giampaolodelmoro99-afk`, `giampaolo.delmoro99@gmail.com`. La differenza è voluta, non va uniformata.
 - **Email**: mai in chiaro nel markup statico (LEGAL.md §4).
-- **LinkedIn non compare in nessuna parte del sito**: né link, né icone, né testi, né form, né JSON-LD, llms.txt o CV pubblico. Il proprietario non ha un profilo LinkedIn (decisione del 13/10/2026). Il canale alternativo del form è l'email offuscata più GitHub.
+- **LinkedIn non compare in nessuna parte del sito**: né in link, icone, testi o form, né in JSON-LD, llms.txt o CV pubblico. Il proprietario non ha un profilo LinkedIn (decisione del 13/10/2026). Il canale alternativo del form è l'email offuscata più GitHub.
 - **Tono**: diretto, concreto, in prima persona; niente superlativi vuoti. In inglese: stesso contenuto, non traduzione letterale.
 - **Bozze**: ogni testo marcato `BOZZA – da rivedere` è scritto da Claude e **non va online** finché Gianpaolo non lo approva. Dopo l'approvazione si toglie il marcatore e si annota la data.
 

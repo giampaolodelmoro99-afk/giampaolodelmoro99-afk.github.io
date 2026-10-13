@@ -18,17 +18,17 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 
 ## 3. Soglie
 
-| Controllo       | Soglia                                                                          | Dove                  |
-| --------------- | ------------------------------------------------------------------------------- | --------------------- |
-| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                      | `vitest.config.ts`    |
-| Lighthouse      | 100 in tutte e 4 le categorie, preset mobile e desktop, mediana di 3 esecuzioni | `lighthouserc.*.json` |
-| JS iniziale     | ≤ 115 kB gzip (Fase 0: 112 kB)                                                  | `.size-limit.js`      |
-| CSS iniziale    | ≤ 12 kB gzip                                                                    | `.size-limit.js`      |
-| Font in preload | ≤ 25 kB (woff2)                                                                 | `.size-limit.js`      |
-| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×)                                  | `performance.spec.ts` |
-| axe             | 0 violazioni WCAG 2.2 AA                                                        | unit ed e2e           |
-| Console         | 0 errori e warning                                                              | fixture e2e           |
-| Terze parti     | 0 richieste verso altre origini                                                 | fixture e2e           |
+| Controllo       | Soglia                                                                                        | Dove                  |
+| --------------- | --------------------------------------------------------------------------------------------- | --------------------- |
+| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                    | `vitest.config.ts`    |
+| Lighthouse      | 100 in tutte e 4 le categorie, preset mobile e desktop, mediana di 3 esecuzioni               | `lighthouserc.*.json` |
+| JS iniziale     | ≤ 115 kB gzip (Fase 0: 112 kB)                                                                | `.size-limit.js`      |
+| CSS iniziale    | ≤ 12 kB gzip                                                                                  | `.size-limit.js`      |
+| Font in preload | ≤ 25 kB (woff2)                                                                               | `.size-limit.js`      |
+| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms | `performance.spec.ts` |
+| axe             | 0 violazioni WCAG 2.2 AA                                                                      | unit ed e2e           |
+| Console         | 0 errori e warning                                                                            | fixture e2e           |
+| Terze parti     | 0 richieste verso altre origini                                                               | fixture e2e           |
 
 **Le soglie non si abbassano.** Un'eccezione richiede un ADR.
 

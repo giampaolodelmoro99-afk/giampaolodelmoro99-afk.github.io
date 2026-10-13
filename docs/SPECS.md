@@ -43,7 +43,7 @@ Il dettaglio di ogni app si definisce nel piano della fase che la realizza.
 - **i18n**: italiano di default, inglese, slug tradotti (`I18N.md`).
 - **Sicurezza**: CSP senza `unsafe-inline`, dipendenze controllate.
 - **Manutenibilità**: TypeScript strict, coverage ≥ 80%, ADR per ogni decisione rilevante.
-- **Originalità e nomi**: nessun asset Microsoft (`ASSETS.md`) e nessun nome di prodotto Microsoft nelle etichette. Le app si chiamano "Terminale" / "Terminal" e "Campo minato" / "Minefield", mai "MS-DOS", "Prato fiorito" o "Windows" (design system GDM 95, `docs/design/gdm95/README.md`).
+- **Originalità e nomi**: nessun asset Microsoft (`ASSETS.md`) e nessun nome di prodotto Microsoft nelle etichette (nomi delle app, icone, menu e titoli delle finestre). Le descrizioni ("in stile Windows 95") e il disclaimer di non affiliazione di `LEGAL.md` possono nominare Windows. Le app si chiamano "Terminale" / "Terminal" e "Campo minato" / "Minefield", mai "MS-DOS", "Prato fiorito" o "Windows" (design system GDM 95, `docs/design/gdm95/README.md`).
 - **LinkedIn**: non compare in nessuna parte del sito (`CONTENT.md` §1).
 
 ## 5. Route e deep link
@@ -81,7 +81,7 @@ La v1 era indicizzata con quattro sottopagine. Non devono diventare 404 alla rel
   - tempo minimo di compilazione
   - pausa minima tra due invii dallo stesso browser (`contact.lastSubmitAt` in localStorage)
   - pulsante disabilitato durante l'invio
-- **Stati di invio**: in corso, inviato e errore, annunciati con una regione live e con il focus spostato sul messaggio.
+- **Stati di invio**: in corso, inviato ed errore, annunciati con una regione live e con il focus spostato sul messaggio.
 - **Errore di invio** (quota esaurita, servizio irraggiungibile, rete assente, risposta non valida, timeout):
   - messaggio chiaro e accessibile
   - dati conservati

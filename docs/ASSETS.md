@@ -75,6 +75,7 @@ Campi obbligatori: nome, file nel repo, fonte (URL ufficiale), autore, versione,
 | Avviso 32×32                   | `src/assets/icons/warning-32.svg`      | originale, creata per la v2 (design system GDM 95)                                         | Claude (Claude Design) per Gianpaolo Del Moro | contenuto del progetto, tutti i diritti riservati | `05f1c661c6429470aed14bb06eab6f526a9c32089a0f610bb9ad9947e5ae3038` | 13/10/2026 | Pixel art 32×32, triangolo giallo con punto esclamativo. Non deriva da icone Microsoft.                                                                    |
 
 Icone GDM 95 dal pacchetto di consegna approvato il 13/10/2026 (`docs/design/gdm95/icons/`), copiate byte per byte: gli SHA-256 coincidono con quelli del pacchetto. Gli SVG hanno i colori del tema classico scritti dentro; nell'interfaccia il componente `Icon` usa i dati generati da `npm run icons` e legge i colori dai token.
+
 **Dismessi:**
 
 - _Favicon "monitor"_ (`public/favicon.svg` della Fase 0, SHA-256 `d4ba53a7304ffef9bfff2203131235b95d7891c3d5ab767a13a9a5d44b672565`): sostituita dal monogramma GDM in Fase 1A. Resta nella storia di git.
