@@ -25,7 +25,8 @@
     "size": "size-limit",
     "lhci:mobile": "lhci autorun --config=lighthouserc.mobile.json",
     "lhci:desktop": "lhci autorun --config=lighthouserc.desktop.json",
-    "fonts": "node scripts/fonts.mjs"
+    "fonts": "node scripts/fonts.mjs",
+    "icons": "node scripts/icons.mjs"
   },
   "dependencies": {
     "@react-router/node": "^8.4.0",
