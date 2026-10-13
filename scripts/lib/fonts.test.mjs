@@ -73,8 +73,10 @@ describe("font serviti dal sito", () => {
     },
   );
 
-  it("Pixel Operator in preload resta sotto i 25 kB", () => {
-    expect(statSync(`${fonts}/pixel-operator-400.woff2`).size).toBeLessThanOrEqual(25 * 1024);
+  it("i due pesi di Pixel Operator in preload restano sotto i 25 kB in tutto", () => {
+    const preloaded = ["pixel-operator-400.woff2", "pixel-operator-700.woff2"];
+    const total = preloaded.reduce((sum, file) => sum + statSync(`${fonts}/${file}`).size, 0);
+    expect(total).toBeLessThanOrEqual(25 * 1024);
   });
 
   it("i file sono woff2", () => {

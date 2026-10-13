@@ -3,8 +3,24 @@ import { expect, test } from "../e2e/fixtures";
 import { openStory, stories, variants } from "./stories";
 
 const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
-const interactive =
-  "button, input, select, textarea, [role=button], [role=checkbox], [role=radio], [role=tab], [role=menuitem], [role=option], [role=gridcell], [tabindex]:not([tabindex='-1'])";
+const interactive = [
+  "a[href]",
+  "button",
+  "input",
+  "select",
+  "textarea",
+  "[role=button]",
+  "[role=link]",
+  "[role=checkbox]",
+  "[role=radio]",
+  "[role=switch]",
+  "[role=slider]",
+  "[role=tab]",
+  "[role=menuitem]",
+  "[role=option]",
+  "[role=gridcell]",
+  "[tabindex]:not([tabindex='-1'])",
+].join(", ");
 
 for (const id of stories) {
   for (const variant of variants) {
@@ -26,10 +42,20 @@ for (const id of stories) {
         const small = await page.locator("#storybook-root").evaluate((root, selector) => {
           return [...root.querySelectorAll(selector)]
             .map((element) => {
-              const { width, height } = element.getBoundingClientRect();
-              return { element: element.outerHTML.slice(0, 80), width, height };
+              const style = getComputedStyle(element);
+              const hidden = style.clip !== "auto" || style.clipPath !== "none";
+              const target = hidden ? (element.closest("label") ?? element) : element;
+              const { width, height } = target.getBoundingClientRect();
+              return {
+                element: target.outerHTML.slice(0, 80),
+                width,
+                height,
+                hidden: target === element && hidden,
+              };
             })
-            .filter(({ width, height }) => width < 44 || height < 44);
+            .filter(({ hidden }) => !hidden)
+            .filter(({ width, height }) => width < 44 || height < 44)
+            .map(({ element, width, height }) => ({ element, width, height }));
         }, interactive);
         expect(small, "in modalità touch ogni controllo misura almeno 44×44 px").toEqual([]);
       }

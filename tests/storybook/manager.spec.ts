@@ -18,9 +18,7 @@ test("il manager di Storybook si apre sotto la sua CSP, senza errori né richies
   });
 
   await page.goto("/storybook/?path=/docs/fondamenta-introduzione--docs");
-  await expect(
-    page.getByRole("link", { name: "Token" }).or(page.getByText("Token")).first(),
-  ).toBeVisible();
+  await expect(page.locator('[data-item-id="fondamenta-introduzione--docs"]')).toBeVisible();
   const preview = page.frameLocator("#storybook-preview-iframe");
   await expect(preview.getByRole("heading", { name: "GDM 95" })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");

@@ -43,7 +43,6 @@ for (const path of ["/", "/en/"]) {
       type: "misura",
       description: `load ${timing.loadEnd} ms, idratazione +${hydration} ms, long task ${JSON.stringify(timing.longTasks)}`,
     });
-    console.log(`MISURA ${path}`, JSON.stringify({ ...timing, hydration }));
 
     expect(timing.hydratedAt).toBeGreaterThan(timing.loadEnd);
     expect(hydration).toBeLessThan(1000);
