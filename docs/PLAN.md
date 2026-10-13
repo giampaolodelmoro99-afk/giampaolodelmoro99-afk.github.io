@@ -8,7 +8,7 @@ Ogni fase:
 
 Il proprietario esegue merge `--no-ff` e tag `phase-NN`. Criterio di uscita comune a tutte le fasi: **tutti i test verdi in locale e nella CI del branch**, Lighthouse 100 mobile e desktop, nessuna violazione axe.
 
-Le fasi 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per una sola review.
+Le fasi 1, 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per una sola review.
 
 ## 0. Foundation
 
@@ -24,14 +24,24 @@ Le fasi 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per
 - [x] Documentazione, ADR 0000–0010, configurazione di Claude Code
 - [ ] CI verde su GitHub per `phase/00-foundation`, retrospettiva, merge e tag `phase-00`
 
-## 1. Design system
+## 1A. Design system: fondamenta
 
-- [ ] Token completi: colori, bevel, spaziature, tipografia, breakpoint, z-index, durate
-- [ ] Temi classico e alto contrasto, `forced-colors`, "dimensione testo"
+Piano: [phase-01-plan.md](phases/phase-01-plan.md) §1–§10.
+
+- [ ] Token GDM 95 completi: colori, bevel, misure desktop e touch, focus, tipografia, z-index, durate
+- [ ] Temi classico e alto contrasto, `forced-colors`, attributi `data-theme`, `data-font`, `data-input`, `data-motion`, dimensione del testo
+- [ ] Focus a doppio anello sulle pagine esistenti
 - [ ] Font: Pixel Operator e IBM Plex Sans con subset, preload, fallback metrico; licenze e SHA-256 in ASSETS.md
-- [ ] Componenti base responsive su React Aria Components (catalogo in DESIGN_SYSTEM.md §6)
-- [ ] Storybook 10, pubblicato in `/storybook/` con `noindex`, `Disallow` in robots.txt, fuori da sitemap, llms e Lighthouse CI
-- [ ] Icone originali iniziali (Claude Design), registrate in ASSETS.md
+- [ ] Icone GDM 95 registrate in ASSETS.md, componenti Icon e Glyph, favicon col monogramma GDM
+- [ ] Storybook 10, pubblicato in `/storybook/` con `noindex`, CSP dedicata, `Disallow` in robots.txt, fuori da sitemap, llms e Lighthouse CI
+- [ ] Test visivi e axe delle story nel container
+- [ ] Note dalla Fase 0: analisi del bundle, JS dopo load, filtro dei tag del deploy, runner fissato
+
+## 1B. Design system: componenti
+
+Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconfermare in plan mode.
+
+- [ ] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
 
 ## 2A. Window manager desktop
 
