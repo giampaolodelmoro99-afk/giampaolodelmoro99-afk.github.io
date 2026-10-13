@@ -40,10 +40,12 @@ Piano: [phase-01-plan.md](phases/phase-01-plan.md) §1–§10.
 
 ## 1B. Design system: componenti
 
-Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconfermare in plan mode.
+Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 14/10/2026).
 
 - [ ] Sostituire le icone di Campo minato (16 e 32 px): il disegno attuale (erba e fiori) richiama "Prato fiorito". Nuova versione da Claude Design, SHA-256 in ASSETS.md, `npm run icons`, screenshot
 - [ ] CSP del sito e stile inserito a runtime da React Aria (`react-aria-pressable-style`), prima del primo componente nelle pagine
+- [ ] Pagina 404 con il `Link` di React Aria e test e2e con la CSP reale (ADR-0012)
+- [ ] Peso dei componenti con size-limit: totale, gruppo del desktop per la F2A, incremento per componente
 - [ ] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
 
 ## 2A. Window manager desktop
@@ -52,6 +54,7 @@ Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconferma
 - [ ] Finestre: drag, resize, focus, z-index, minimizza, massimizza, chiudi, animazioni
 - [ ] Taskbar con orologio, menu Start, menu contestuale (anche senza tasto destro), "Esegui…"
 - [ ] Scorciatoie da tastiera e annunci per screen reader
+- [ ] Attributi `style` dei componenti nell'HTML prerenderizzato (ADR-0012, tipo C): soluzione con ADR ed e2e con la CSP reale sulla home per Checkbox, Select, Tooltip, AlertDialog e DesktopIcon
 
 ## 2B. Routing, persistenza e mobile
 
