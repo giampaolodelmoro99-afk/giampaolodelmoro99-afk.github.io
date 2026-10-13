@@ -1,8 +1,8 @@
-import { expect, test } from "./fixtures";
+import { expect, openPage, test } from "./fixtures";
 
 for (const path of ["/", "/en/"]) {
   test(`nessuno scroll orizzontale su ${path}`, async ({ page }) => {
-    await page.goto(path);
+    await openPage(page, path);
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
@@ -11,7 +11,7 @@ for (const path of ["/", "/en/"]) {
 }
 
 test("il collegamento della lingua misura almeno 44×44 px", async ({ page }) => {
-  await page.goto("/");
+  await openPage(page, "/");
   const box = await page.getByRole("link", { name: "English version" }).boundingBox();
   expect(box?.width).toBeGreaterThanOrEqual(44);
   expect(box?.height).toBeGreaterThanOrEqual(44);

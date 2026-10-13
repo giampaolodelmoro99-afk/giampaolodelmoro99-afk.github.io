@@ -20,10 +20,10 @@ function renderDocument(path: string, routeId: string) {
 }
 
 describe("root", () => {
-  it("collega i fogli di stile dei token e globali", () => {
+  it("collega il foglio di stile globale e la favicon", () => {
     expect(links()).toEqual([
       expect.objectContaining({ rel: "stylesheet" }),
-      expect.objectContaining({ rel: "stylesheet" }),
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
     ]);
   });
 

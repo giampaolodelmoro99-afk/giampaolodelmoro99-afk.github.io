@@ -1,5 +1,5 @@
 import { AxeBuilder } from "@axe-core/playwright";
-import { test as base, expect } from "@playwright/test";
+import { test as base, expect, type Page, type Response } from "@playwright/test";
 
 const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
@@ -56,5 +56,11 @@ export const test = base.extend<Fixtures>({
     });
   },
 });
+
+export async function openPage(page: Page, path: string): Promise<Response | null> {
+  const response = await page.goto(path);
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
+  return response;
+}
 
 export { expect };

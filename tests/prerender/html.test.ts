@@ -3,7 +3,8 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { JSDOM } from "jsdom";
 import { beforeAll, describe, expect, it } from "vitest";
-import { inlineScriptHashes } from "../../scripts/lib/csp.mjs";
+import { inlineScriptHashes, sha256Source } from "../../scripts/lib/csp.mjs";
+import { bootId } from "../../scripts/lib/hydration.mjs";
 import { githubUrl, siteUrl } from "../../src/config/site";
 import { getDictionary } from "../../src/i18n";
 import { type Locale, locales, routeKeys, routeMap } from "../../src/routes/routeMap";
@@ -100,6 +101,16 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
       expect(policy).toContain(hash);
     }
     expect(policy).not.toContain("unsafe-inline");
+  });
+
+  it("rinvia l'idratazione: nessun modulepreload e payload di avvio consentito dalla CSP", async () => {
+    const { html, document } = await load(fileFor(href));
+    expect(html).not.toContain("modulepreload");
+    const payload = document.getElementById(bootId);
+    expect(payload?.getAttribute("type")).toBe("text/plain");
+    expect(attr(document, 'meta[http-equiv="Content-Security-Policy"]', "content")).toContain(
+      sha256Source(payload?.textContent ?? ""),
+    );
   });
 });
 

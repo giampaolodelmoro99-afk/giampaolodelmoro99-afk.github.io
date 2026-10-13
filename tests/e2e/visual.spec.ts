@@ -1,4 +1,4 @@
-import { expect, test } from "./fixtures";
+import { expect, openPage, test } from "./fixtures";
 
 for (const [name, path] of [
   ["desktop-it", "/"],
@@ -6,7 +6,7 @@ for (const [name, path] of [
   ["not-found", "/pagina-inesistente"],
 ] as const) {
   test(`aspetto di ${name}`, { tag: "@visual" }, async ({ page }) => {
-    await page.goto(path);
+    await openPage(page, path);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
   });

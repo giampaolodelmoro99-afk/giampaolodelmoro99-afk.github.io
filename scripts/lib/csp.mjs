@@ -1,5 +1,10 @@
 import { createHash } from "node:crypto";
 
+/** @param {string} source */
+export function sha256Source(source) {
+  return `'sha256-${createHash("sha256").update(source, "utf8").digest("base64")}'`;
+}
+
 const executableTypes = new Set(["", "module", "text/javascript", "application/javascript"]);
 
 /** @param {string} html */
@@ -10,10 +15,7 @@ export function inlineScriptHashes(html) {
     if (/\ssrc=/.test(attributes)) continue;
     const type = /\stype="([^"]*)"/.exec(attributes)?.[1] ?? "";
     if (!executableTypes.has(type)) continue;
-    const digest = createHash("sha256")
-      .update(match[2] ?? "", "utf8")
-      .digest("base64");
-    hashes.add(`'sha256-${digest}'`);
+    hashes.add(sha256Source(match[2] ?? ""));
   }
   return [...hashes];
 }

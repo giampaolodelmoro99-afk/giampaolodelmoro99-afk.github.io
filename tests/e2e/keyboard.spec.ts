@@ -1,7 +1,7 @@
-import { expect, test } from "./fixtures";
+import { expect, openPage, test } from "./fixtures";
 
 test("il collegamento della lingua si raggiunge e si attiva da tastiera", async ({ page }) => {
-  await page.goto("/");
+  await openPage(page, "/");
   await page.keyboard.press("Tab");
   const link = page.getByRole("link", { name: "English version" });
   await expect(link).toBeFocused();

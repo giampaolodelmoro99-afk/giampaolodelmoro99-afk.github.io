@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import {
   Links,
   Meta,
@@ -10,12 +10,11 @@ import {
 } from "react-router";
 import { defaultLocale, localeFromPathname } from "../routes/routeMap";
 import globalHref from "../styles/global.css?url";
-import tokensHref from "../styles/tokens.css?url";
 import type { Route } from "./+types/root";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "stylesheet", href: tokensHref },
   { rel: "stylesheet", href: globalHref },
+  { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
 ];
 
 export function Layout({ children }: { children: ReactNode }) {
@@ -39,5 +38,8 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
+  useEffect(() => {
+    document.documentElement.dataset["hydrated"] = "true";
+  }, []);
   return <Outlet />;
 }
