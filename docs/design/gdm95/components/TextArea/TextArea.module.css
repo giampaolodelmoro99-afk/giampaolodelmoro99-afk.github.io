@@ -1,0 +1,8 @@
+/* TextArea.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.root {
+  composes: input from '../TextField/TextField.module.css';
+  min-block-size: calc(var(--control-height) * 3);
+  resize: vertical;
+  line-height: var(--line-height-body);
+}

@@ -1,0 +1,151 @@
+/* ScrollArea.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.scroll {
+  overflow: auto;
+}
+
+.root {
+  background: var(--color-field);
+  box-shadow: var(--bevel-field);
+  padding: var(--space-2) var(--space-3);
+}
+
+.root:focus-visible {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo), var(--bevel-field);
+}
+
+.scroll::-webkit-scrollbar {
+  inline-size: var(--scrollbar-size);
+  block-size: var(--scrollbar-size);
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+.scroll::-webkit-scrollbar-track {
+  background: var(--dither);
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: var(--color-surface);
+  box-shadow: var(--bevel-raised);
+}
+
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-hover);
+}
+
+.scroll::-webkit-scrollbar-corner {
+  background: var(--color-surface);
+}
+
+.scroll::-webkit-scrollbar-button:single-button {
+  display: var(--scrollbar-buttons);
+  inline-size: var(--scrollbar-size);
+  block-size: var(--scrollbar-size);
+  background-color: var(--color-surface);
+  background-repeat: no-repeat;
+  box-shadow: var(--bevel-raised);
+}
+
+.scroll::-webkit-scrollbar-button:single-button:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.scroll::-webkit-scrollbar-button:single-button:active {
+  box-shadow: var(--bevel-pressed);
+}
+
+.scroll::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image:
+  linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0);
+  background-size: 2px 2px, 6px 2px, 10px 2px;
+  background-position: center calc(50% - 2px), center 50%, center calc(50% + 2px);
+}
+
+.scroll::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image:
+  linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0);
+  background-size: 10px 2px, 6px 2px, 2px 2px;
+  background-position: center calc(50% - 2px), center 50%, center calc(50% + 2px);
+}
+
+.scroll::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  background-image:
+  linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0);
+  background-size: 2px 2px, 2px 6px, 2px 10px;
+  background-position: calc(50% - 2px) center, 50% center, calc(50% + 2px) center;
+}
+
+.scroll::-webkit-scrollbar-button:single-button:horizontal:increment {
+  background-image:
+  linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0);
+  background-size: 2px 10px, 2px 6px, 2px 2px;
+  background-position: calc(50% - 2px) center, 50% center, calc(50% + 2px) center;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .scroll {
+    scrollbar-color: var(--color-shadow) var(--color-surface-light);
+  }
+}
+
+.sb {
+  display: flex;
+  flex-direction: column;
+  inline-size: var(--scrollbar-size);
+  block-size: 10rem;
+}
+
+.sbBtn {
+  display: grid;
+  place-items: center;
+  block-size: var(--scrollbar-size);
+  flex: none;
+  background: var(--color-surface);
+  box-shadow: var(--bevel-raised);
+  color: var(--color-text);
+}
+
+.sbBtn[data-hovered] {
+  background: var(--color-surface-hover); box-shadow: var(--bevel-hover);
+}
+
+.sbBtn[data-pressed] {
+  box-shadow: var(--bevel-pressed);
+}
+
+.sbBtn[data-pressed] svg {
+  translate: 1px 1px;
+}
+
+.sbBtn[data-disabled] {
+  color: var(--color-text-disabled);
+}
+
+.sbTrack {
+  position: relative;
+  flex: 1;
+  background: var(--dither);
+}
+
+.sbThumb {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: var(--thumb-top, 20%);
+  block-size: var(--thumb-size, 30%);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-raised);
+}
+
+.sb[data-input-mode="touch"] .sbBtn {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .sbBtn,
+  .sbThumb {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}

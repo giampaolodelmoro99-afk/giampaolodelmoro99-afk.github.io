@@ -1,0 +1,42 @@
+/* StartButton.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.root {
+  composes: root from '../Button/Button.module.css';
+  flex: none;
+  min-inline-size: 0;
+  padding-inline: var(--space-1) var(--space-2);
+  font-weight: var(--font-weight-bold);
+}
+
+.startmenu {
+  display: flex;
+  padding: var(--space-1);
+  min-inline-size: 15rem;
+}
+
+.startmenuSide {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  inline-size: var(--space-6);
+  padding-block: var(--space-2);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+}
+
+.startmenuSide span {
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-xl);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.startmenuMenu {
+  flex: 1;
+}
+
+.startmenu [role="menuitem"] {
+  min-block-size: max(var(--menu-item-height), 2.5rem);
+}

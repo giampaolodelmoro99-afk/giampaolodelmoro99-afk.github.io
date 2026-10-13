@@ -1,0 +1,82 @@
+/* DesktopIcon.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.desktop {
+  background: var(--color-desktop);
+  color: var(--color-desktop-text);
+}
+
+.desktopIcons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--desktop-icon-cell));
+  gap: var(--space-2);
+  align-content: start;
+  padding: var(--space-2);
+  outline: none;
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  inline-size: var(--desktop-icon-cell);
+  min-block-size: var(--touch-target-min);
+  padding: var(--space-1) 0;
+  outline: none;
+  color: var(--color-desktop-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  text-align: center;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.img {
+  display: grid;
+  place-items: center;
+  inline-size: var(--desktop-icon-size);
+  block-size: var(--desktop-icon-size);
+}
+
+.label {
+  max-inline-size: 100%;
+  padding: 0 2px;
+  overflow-wrap: anywhere;
+}
+
+.root[data-hovered] .label {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.root[data-selected] .label {
+  background: var(--color-selection);
+  color: var(--color-selection-text);
+}
+
+.root[data-selected] .img {
+  background: conic-gradient(var(--color-selection) 25%, transparent 0 50%, var(--color-selection) 0 75%, transparent 0) 0 0 / 2px 2px;
+}
+
+.root[data-selected] .img svg {
+  opacity: 0.75;
+}
+
+.root[data-focus-visible] .label {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 calc(var(--focus-width) + 1px + var(--focus-halo-width)) var(--color-focus-halo);
+}
+
+.root[data-disabled] {
+  opacity: 0.6;
+}
+
+@media (forced-colors: active) {
+  .root[data-selected] .label {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}

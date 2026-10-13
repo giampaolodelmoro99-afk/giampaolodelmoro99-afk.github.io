@@ -1,0 +1,163 @@
+/* Window.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: min(var(--window-min-width), 100%);
+  padding: calc(var(--bevel-width) + 1px);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-window);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: var(--titlebar-height);
+  padding: 2px 2px 2px var(--space-1);
+  background: var(--color-titlebar-active);
+  color: var(--color-titlebar-active-text);
+}
+
+.titlebar[data-active="false"] {
+  background: var(--color-titlebar-inactive);
+  color: var(--color-titlebar-inactive-text);
+  box-shadow: inset 0 0 0 var(--border-width-hairline) var(--color-titlebar-inactive-border);
+}
+
+.titlebarIcon {
+  margin-inline-end: var(--space-1);
+}
+
+.titlebarTitle {
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.titlebar[data-active="false"] .titlebarTitle {
+  font-weight: var(--font-weight-regular);
+}
+
+.titlebarControls {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.titlebtn {
+  composes: root from '../Button/Button.module.css';
+  min-inline-size: 0;
+  inline-size: var(--titlebar-button-width);
+  block-size: var(--titlebar-button-height);
+  min-block-size: 0;
+  padding: 0;
+}
+
+.titlebtnClose {
+  margin-inline-start: 2px;
+}
+
+.body {
+  flex: 1;
+  min-block-size: 0;
+  padding: var(--space-3);
+}
+
+.root[data-variant="document"] .body {
+  margin: var(--space-1) 0;
+  padding: var(--space-5);
+  background: var(--color-document);
+  box-shadow: var(--bevel-field);
+  overflow: auto;
+}
+
+.document {
+  font-family: var(--font-family-document);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+  color: var(--color-text);
+}
+
+.document > * {
+  max-inline-size: var(--measure-document);
+}
+
+.document h1 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+}
+
+.document h2 {
+  margin: var(--space-6) 0 var(--space-2);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-tight);
+}
+
+.document h3 {
+  margin: var(--space-5) 0 var(--space-2);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-tight);
+}
+
+.document p {
+  margin: 0 0 var(--space-4);
+}
+
+.document small {
+  font-size: var(--font-size-sm);
+}
+
+.link,
+.document a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link:visited,
+.document a:visited {
+  color: var(--color-link-visited);
+}
+
+.link:focus-visible,
+.document a:focus-visible {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+@media (forced-colors: active) {
+  .root {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}
+
+@media (forced-colors: active) {
+  .titlebar {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+@media (forced-colors: active) {
+  .titlebar[data-active="false"] {
+    background: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+}

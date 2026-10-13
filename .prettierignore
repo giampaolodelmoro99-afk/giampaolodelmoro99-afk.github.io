@@ -7,3 +7,6 @@ test-results
 storybook-static
 package-lock.json
 tests/e2e/**/*-snapshots
+
+# Pacchetto di consegna del design system: documentazione, si conserva com'è stato consegnato
+docs/design

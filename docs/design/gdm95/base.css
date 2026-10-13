@@ -1,0 +1,23 @@
+/*
+ * GDM 95 — base globale minima, da importare dopo tokens.css.
+ * I CSS Modules dei componenti la danno per presente.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-root);
+}
+
+body {
+  margin: 0;
+  background: var(--color-desktop);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
