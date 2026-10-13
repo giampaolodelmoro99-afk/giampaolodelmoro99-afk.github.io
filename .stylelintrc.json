@@ -56,7 +56,8 @@
     {
       "files": ["src/styles/tokens.css"],
       "rules": {
-        "color-no-hex": null
+        "color-no-hex": null,
+        "color-hex-length": "long"
       }
     }
   ]

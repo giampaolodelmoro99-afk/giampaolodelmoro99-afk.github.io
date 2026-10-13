@@ -7,10 +7,7 @@
 }
 
 html {
-  font-family: var(--font-family-ui);
   font-size: var(--font-size-root);
-  line-height: var(--line-height-body);
-  color: var(--color-text);
   background: var(--color-desktop);
   text-size-adjust: 100%;
 }
@@ -19,6 +16,11 @@ body {
   margin: var(--space-0);
   min-block-size: 100dvh;
   overflow-x: hidden;
+  color: var(--color-text);
+  background: var(--color-desktop);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
 }
 
 ::selection {
