@@ -625,3 +625,21 @@ Le versioni sono fissate con `^` e con `package-lock.json`. Dependabot lavora a 
 6. Push su `phase/00-foundation`: `ci.yml` verde su GitHub Actions. `deploy.yml` **non** parte, perché è solo manuale o su tag.
 7. QA nel browser con Claude in Chrome su `npm run preview`: 320 px verticale e orizzontale e 1440 px, tastiera, console e rete senza richieste esterne, CSP senza violazioni.
 8. Chiusura con la skill `close-phase`, retrospettiva e CHANGELOG. Merge e tag li esegui tu.
+
+---
+
+## Integrazione: regola di merge e integrità dei controlli
+
+Richiesta durante l'implementazione, vale per CONTRIBUTING.md, TESTING.md, CODE_REVIEW.md, la skill `close-phase` e l'agente `code-reviewer`.
+
+- **Regola di merge.** Una fase si chiude solo se passano tutti i test, sia i nuovi sia quelli di tutte le fasi precedenti. Devono essere verdi in locale e nella CI di GitHub per il branch della fase. `close-phase` termina leggendo lo stato dell'ultima run CI del branch (`gh run list --branch phase/NN-nome --limit 1`). Se non è verde (o non c'è), **non propone i comandi di merge** e riporta cosa manca.
+- **Vietato aggirare i controlli.** Sono vietati:
+  - `test.skip`, `test.only`, `describe.skip`, `describe.only` e `test.todo`
+  - test commentati, oppure rimossi senza motivazione
+  - soglie di coverage, Lighthouse o size-limit abbassate
+  - snapshot aggiornati solo per far passare la CI
+
+  Le eventuali eccezioni vanno motivate in un ADR.
+- **Oxlint** (in `.oxlintrc.json`, tutte come errore): `vitest/no-disabled-tests`, `vitest/no-focused-tests`, `vitest/no-commented-out-tests`, `vitest/no-conditional-tests`, `vitest/expect-expect`, `vitest/warn-todo`. Le regole valgono anche per i file Playwright.
+- **Hook `pre-push`** (Husky): `npm run lint && npm run typecheck && npm run test`. Un push con errori evidenti si blocca prima della CI.
+- **code-reviewer**: segnala come **bloccante** ogni test disattivato, rimosso o indebolito rispetto a `main` (asserzioni tolte, `expect` più permissivi, viewport o progetti Playwright rimossi, soglie in `vitest.config.ts`, `lighthouserc.*`, `.size-limit.*` abbassate, snapshot cambiati senza un cambio visivo motivato). Usa `git diff main...HEAD` sui file di test e di configurazione.
