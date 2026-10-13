@@ -23,6 +23,7 @@ test("il manager di Storybook si apre sotto la sua CSP, senza errori né richies
   await expect(preview.getByRole("heading", { name: "GDM 95" })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
 
+  expect(await page.context().cookies()).toEqual([]);
   expect(errors).toEqual([]);
   expect(external).toEqual([]);
 });

@@ -28,6 +28,10 @@ updates:
             "axe-core",
             "@axe-core/*",
           ]
+      storybook:
+        patterns: ["storybook", "@storybook/*"]
+      fonts:
+        patterns: ["subset-font", "fontkit", "@types/fontkit", "@types/subset-font"]
       playwright:
         patterns: ["@playwright/test"]
       quality:

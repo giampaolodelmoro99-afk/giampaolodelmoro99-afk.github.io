@@ -167,6 +167,9 @@ describe("Storybook in /storybook/", () => {
         expect(policy).toContain(hash);
       }
       expect(policy).not.toMatch(/unsafe-eval|https?:/);
+      expect(policy).not.toMatch(/script-src[^;]*unsafe-inline/);
+      expect(html.indexOf("<meta charset")).toBeGreaterThan(0);
+      expect(html.indexOf("<meta charset")).toBeLessThan(1024);
     },
   );
 

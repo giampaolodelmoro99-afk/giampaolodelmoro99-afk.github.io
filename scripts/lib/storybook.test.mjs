@@ -17,6 +17,7 @@ describe("storybookCsp", () => {
     expect(policy).toContain("frame-src 'self'");
     expect(policy).toContain("object-src 'none'");
     expect(policy).not.toMatch(/unsafe-eval|https?:/);
+    expect(policy).not.toMatch(/script-src[^;]*unsafe-inline/);
   });
 });
 

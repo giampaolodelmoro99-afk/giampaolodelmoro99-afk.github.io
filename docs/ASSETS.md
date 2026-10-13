@@ -80,6 +80,14 @@ Icone GDM 95 dal pacchetto di consegna approvato il 13/10/2026 (`docs/design/gdm
 
 - _Favicon "monitor"_ (`public/favicon.svg` della Fase 0, SHA-256 `d4ba53a7304ffef9bfff2203131235b95d7891c3d5ab767a13a9a5d44b672565`): sostituita dal monogramma GDM in Fase 1A. Resta nella storia di git.
 
+## Asset di strumenti terzi (solo `/storybook/`)
+
+Storybook, pubblicato in `/storybook/` come strumento di documentazione (non è una pagina del sito), porta nel build alcuni file della propria interfaccia. Non sono nel repository: arrivano dal pacchetto `storybook` a ogni build.
+
+- **Nunito Sans** (`sb-common-assets/nunito-sans-*.woff2` e copie nella radice di `/storybook/`): font dell'interfaccia di Storybook, The Nunito Sans Project Authors, SIL OFL 1.1 (licenza nei metadati dei woff2).
+- **Logo di Storybook** (`favicon.svg`, `sb-common-assets/favicon.svg`): parte dell'interfaccia del tool, Storybook (MIT). Identifica lo strumento, non il sito; non è usato nelle pagine del sito.
+- Codice del manager e dell'anteprima: Storybook, MIT.
+
 ## Suoni
 
 Nessuno (Fase 4A).
