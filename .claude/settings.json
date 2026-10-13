@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm test*)",
+      "Bash(npm ls*)",
+      "Bash(npm view *)",
+      "Bash(npx playwright test*)",
+      "Bash(npx prettier *)",
+      "Bash(npx oxlint*)",
+      "Bash(npx stylelint *)",
+      "Bash(npx vitest*)",
+      "Bash(npx tsc*)",
+      "Bash(npx react-router typegen*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git ls-tree*)",
+      "Bash(git branch --show-current)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(gh run list*)",
+      "Bash(gh run view*)",
+      "Read(node_modules/**)"
+    ],
+    "ask": ["Bash(npm install*)", "Bash(npm uninstall*)", "Bash(npm audit fix*)", "Bash(docker *)"],
+    "deny": [
+      "Bash(git push*)",
+      "Bash(git merge*)",
+      "Bash(git tag*)",
+      "Bash(git rebase*)",
+      "Bash(git reset --hard*)",
+      "Bash(git checkout main*)",
+      "Bash(git switch main*)",
+      "Bash(git branch -D*)",
+      "Bash(git commit --no-verify*)",
+      "Bash(git commit -n *)",
+      "Bash(rm -rf*)",
+      "Edit(.claude/settings.local.json)",
+      "Write(.claude/settings.local.json)",
+      "Read(.env)",
+      "Read(.env.*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/format.mjs\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
