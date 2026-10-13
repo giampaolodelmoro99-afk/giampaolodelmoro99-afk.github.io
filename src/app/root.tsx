@@ -1,6 +1,14 @@
 import type { ReactNode } from "react";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLocation } from "react-router";
 import { localeFromPathname } from "../routes/routeMap";
+import globalHref from "../styles/global.css?url";
+import tokensHref from "../styles/tokens.css?url";
+import type { Route } from "./+types/root";
+
+export const links: Route.LinksFunction = () => [
+  { rel: "stylesheet", href: tokensHref },
+  { rel: "stylesheet", href: globalHref },
+];
 
 export function Layout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();

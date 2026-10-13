@@ -6,7 +6,14 @@
     "custom-property-pattern": "^[a-z][a-z0-9-]*$",
     "declaration-no-important": true,
     "color-named": "never",
-    "color-no-hex": true
+    "color-no-hex": true,
+    "custom-property-empty-line-before": null,
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreProperties": ["/^--font-family/", "font-family"]
+      }
+    ]
   },
   "overrides": [
     {
@@ -48,7 +55,9 @@
     },
     {
       "files": ["src/styles/tokens.css"],
-      "rules": { "color-no-hex": null }
+      "rules": {
+        "color-no-hex": null
+      }
     }
   ]
 }
