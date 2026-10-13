@@ -1,0 +1,20 @@
+/* GroupBox.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.root {
+  margin: 0;
+  min-inline-size: 0;
+  padding: var(--space-3);
+  padding-block-start: var(--space-2);
+  border: var(--border-width-hairline) solid var(--color-shadow);
+  border-radius: var(--radius-none);
+  box-shadow: inset 1px 1px var(--color-highlight), 1px 1px var(--color-highlight);
+}
+
+.legend {
+  padding: 0 var(--space-1);
+  background: var(--color-surface);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}

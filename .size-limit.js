@@ -34,6 +34,14 @@ const stylesheets = [...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)]
   (match) => `${client}${match[1]}`,
 );
 
+const fontPreloads = [...html.matchAll(/<link rel="preload" href="([^"]+)" as="font"/g)].map(
+  (match) => `${client}${match[1]}`,
+);
+
+if (fontPreloads.length === 0) {
+  throw new Error("nessun font in preload in build/client/index.html");
+}
+
 export default [
   {
     name: "JS iniziale della home (gzip)",
@@ -46,5 +54,12 @@ export default [
     path: stylesheets,
     limit: "12 kB",
     gzip: true,
+  },
+  {
+    name: "Font in preload della home (woff2)",
+    path: fontPreloads,
+    limit: "25 kB",
+    gzip: false,
+    brotli: false,
   },
 ];

@@ -8,7 +8,7 @@ Ogni fase:
 
 Il proprietario esegue merge `--no-ff` e tag `phase-NN`. Criterio di uscita comune a tutte le fasi: **tutti i test verdi in locale e nella CI del branch**, Lighthouse 100 mobile e desktop, nessuna violazione axe.
 
-Le fasi 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per una sola review.
+Le fasi 1, 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per una sola review.
 
 ## 0. Foundation
 
@@ -24,14 +24,27 @@ Le fasi 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per
 - [x] Documentazione, ADR 0000–0010, configurazione di Claude Code
 - [ ] CI verde su GitHub per `phase/00-foundation`, retrospettiva, merge e tag `phase-00`
 
-## 1. Design system
+## 1A. Design system: fondamenta
 
-- [ ] Token completi: colori, bevel, spaziature, tipografia, breakpoint, z-index, durate
-- [ ] Temi classico e alto contrasto, `forced-colors`, "dimensione testo"
-- [ ] Font: Pixel Operator e IBM Plex Sans con subset, preload, fallback metrico; licenze e SHA-256 in ASSETS.md
-- [ ] Componenti base responsive su React Aria Components (catalogo in DESIGN_SYSTEM.md §6)
-- [ ] Storybook 10, pubblicato in `/storybook/` con `noindex`, `Disallow` in robots.txt, fuori da sitemap, llms e Lighthouse CI
-- [ ] Icone originali iniziali (Claude Design), registrate in ASSETS.md
+Piano: [phase-01-plan.md](phases/phase-01-plan.md) §1–§10.
+
+- [x] Token GDM 95 completi: colori, bevel, misure desktop e touch, focus, tipografia, z-index, durate
+- [x] Temi classico e alto contrasto, `forced-colors`, attributi `data-theme`, `data-font`, `data-input`, `data-motion`, dimensione del testo
+- [x] Focus a doppio anello sulle pagine esistenti
+- [x] Font: Pixel Operator (subset) e IBM Plex Sans (subset Latin1 ufficiali), preload di Pixel Operator, fallback metrico; licenze e SHA-256 in ASSETS.md
+- [x] Icone GDM 95 registrate in ASSETS.md, componenti Icon e Glyph, favicon col monogramma GDM
+- [x] Storybook 10, pubblicato in `/storybook/` con `noindex`, CSP dedicata, `Disallow` in robots.txt, fuori da sitemap, llms e Lighthouse CI
+- [x] Test visivi e axe delle story nel container
+- [x] Note dalla Fase 0: analisi del bundle, JS dopo load, filtro dei tag del deploy, runner fissato
+- [ ] QA su Android reale, CI verde su GitHub per `phase/01a-foundation-ds`, merge e tag `phase-01a`
+
+## 1B. Design system: componenti
+
+Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconfermare in plan mode.
+
+- [ ] Sostituire le icone di Campo minato (16 e 32 px): il disegno attuale (erba e fiori) richiama "Prato fiorito". Nuova versione da Claude Design, SHA-256 in ASSETS.md, `npm run icons`, screenshot
+- [ ] CSP del sito e stile inserito a runtime da React Aria (`react-aria-pressable-style`), prima del primo componente nelle pagine
+- [ ] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
 
 ## 2A. Window manager desktop
 
@@ -61,7 +74,7 @@ Le fasi 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per
 
 - [ ] Verifica di privacy policy e DPA di Web3Forms; ADR-0002 accettata o piano B
 - [ ] Form contatti: `replyto`, nessuna email automatica, access key da variabile di build, validazione, honeypot, tempo minimo, pausa tra invii, stati accessibili
-- [ ] Gestione degli errori di invio con canale alternativo sempre funzionante (email offuscata, GitHub, LinkedIn solo se in CONTENT.md)
+- [ ] Gestione degli errori di invio con canale alternativo sempre funzionante (email offuscata e GitHub; LinkedIn non compare sul sito)
 - [ ] Email mai in chiaro in HTML prerenderizzato, JSON-LD, llms e sitemap (test sul build)
 - [ ] e2e con risposte di errore simulate: 500, quota esaurita, rete assente, risposta non valida, timeout
 - [ ] Restrizione al dominio nel pannello di Web3Forms (DEPLOYMENT.md)
@@ -78,8 +91,8 @@ Le fasi 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per
 
 ## 4B. Svago
 
-- [ ] Prompt MS-DOS
-- [ ] Prato fiorito (accessibile da tastiera)
+- [ ] Terminale
+- [ ] Campo minato (accessibile da tastiera)
 - [ ] Cestino con la v1 (screenshot e link al tag)
 - [ ] Screensaver (rispetta reduced motion)
 - [ ] Easter egg registrati in EASTER_EGGS.md

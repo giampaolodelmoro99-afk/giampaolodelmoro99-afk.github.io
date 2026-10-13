@@ -15,6 +15,6 @@
 | ----------- | ------- | ------- | ---- | ---- | ---- |
 | _(nessuno)_ |         |         |      |      |      |
 
-Gli easter egg previsti (Prompt MS-DOS, Prato fiorito, Cestino con la v1, schermata di spegnimento, ecc.) si progettano e si registrano nelle Fasi 4A e 4B.
+Gli easter egg previsti (Terminale, Campo minato, Cestino con la v1, schermata di spegnimento, ecc.) si progettano e si registrano nelle Fasi 4A e 4B.
 
 Idea dalla v1: il terminale `while(true) { sudo apt install -y coffee; code(); }` della home (vedi CONTENT.md).

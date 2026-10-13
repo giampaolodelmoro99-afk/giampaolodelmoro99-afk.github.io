@@ -1,23 +1,74 @@
 /*
- * Token del design system (Fase 0: set iniziale, completato in Fase 1).
- * Unica fonte di colori, bevel, spaziature, tipografia, z-index e durate:
+ * GDM 95 — token del design system (Fase 1A).
+ * Unica fonte di colori, bevel, misure, tipografia, z-index e durate:
  * i CSS Modules usano solo var(--…), mai valori letterali.
- * I breakpoint sono documentati qui ma non usabili in @media:
- * le media query usano gli stessi valori in px (vedi docs/DESIGN_SYSTEM.md).
+ * Riferimento approvato: docs/design/gdm95/ (tokens.css, tokens.json, README.md).
+ * Le aggiunte rispetto al pacchetto sono elencate in docs/DESIGN_SYSTEM.md §2.
+ * I breakpoint sono documentativi: le @media usano gli stessi valori in px.
+ *
+ * Impostazioni sull'elemento <html>:
+ *   data-theme="classic" | "high-contrast"   tema dei colori
+ *   data-font="pixel" | "readable"            font dell'interfaccia, indipendente dal tema
+ *                                             (assente: pixel nel classico, readable in alto contrasto)
+ *   data-input="mouse" | "touch"              modalità dei controlli (assente: decide pointer: coarse)
+ *   data-motion="reduce"                      Riduci animazioni (come prefers-reduced-motion)
  */
 
-:root {
+/* ---------- Tema classico (predefinito) ---------- */
+
+:root,
+[data-theme="classic"] {
   --color-desktop: #008080;
+  --color-desktop-text: #ffffff;
   --color-surface: #c0c0c0;
   --color-surface-light: #dfdfdf;
-  --color-highlight: #fff;
+  --color-highlight: #ffffff;
   --color-shadow: #808080;
   --color-shadow-dark: #0a0a0a;
   --color-accent: #000080;
-  --color-text: #000;
-  --color-text-inverse: #fff;
+  --color-text: #000000;
+  --color-text-inverse: #ffffff;
   --color-text-disabled: #808080;
-  --color-focus: #000;
+  --color-text-disabled-etch: #ffffff;
+  --color-text-muted: #404040;
+  --color-surface-hover: #cacaca;
+  --color-field: #ffffff;
+  --color-field-disabled: #c0c0c0;
+  --color-document: #ffffff;
+  --color-titlebar-active: #000080;
+  --color-titlebar-active-text: #ffffff;
+  --color-titlebar-inactive: #666666;
+  --color-titlebar-inactive-text: #ffffff;
+  --color-titlebar-inactive-border: #666666;
+  --color-selection: #000080;
+  --color-selection-text: #ffffff;
+  --color-link: #0000c8;
+  --color-link-visited: #5a1a8c;
+  --color-error: #800000;
+  --color-success: #004f57;
+  --color-tooltip: #ffffe1;
+  --color-tooltip-border: #000000;
+  --color-focus: #000000;
+  --color-focus-halo: #ffffff;
+  --color-overlay: #00000040;
+  --color-pixel-outline: #000000;
+  --color-pixel-black: #000000;
+  --color-pixel-white: #ffffff;
+  --color-pixel-silver: #c0c0c0;
+  --color-pixel-gray: #808080;
+  --color-pixel-navy: #000080;
+  --color-pixel-blue: #0000ff;
+  --color-pixel-teal: #008080;
+  --color-pixel-cyan: #00ffff;
+  --color-pixel-yellow: #ffff00;
+  --color-pixel-olive: #808000;
+  --color-pixel-red: #ff0000;
+  --color-pixel-maroon: #800000;
+  --color-pixel-green: #008000;
+  --color-pixel-lime: #00ff00;
+  --color-pixel-purple: #800080;
+  --color-pixel-orange: #ff8000;
+  --color-pixel-skin: #ffcc99;
 
   --bevel-raised:
     inset -1px -1px var(--color-shadow-dark), inset 1px 1px var(--color-highlight),
@@ -25,7 +76,85 @@
   --bevel-sunken:
     inset -1px -1px var(--color-highlight), inset 1px 1px var(--color-shadow-dark),
     inset -2px -2px var(--color-surface-light), inset 2px 2px var(--color-shadow);
+  --bevel-field:
+    inset -1px -1px var(--color-highlight), inset 1px 1px var(--color-shadow),
+    inset -2px -2px var(--color-surface-light), inset 2px 2px var(--color-shadow-dark);
+  --bevel-window:
+    inset -1px -1px var(--color-shadow-dark), inset 1px 1px var(--color-surface-light),
+    inset -2px -2px var(--color-shadow), inset 2px 2px var(--color-highlight);
+  --bevel-pressed:
+    inset -1px -1px var(--color-highlight), inset 1px 1px var(--color-shadow-dark),
+    inset -2px -2px var(--color-surface-light), inset 2px 2px var(--color-shadow);
+  --bevel-default:
+    inset 0 0 0 1px var(--color-shadow-dark), inset -2px -2px var(--color-shadow-dark),
+    inset 2px 2px var(--color-highlight), inset -3px -3px var(--color-shadow),
+    inset 3px 3px var(--color-surface-light);
+  --bevel-default-pressed:
+    inset 0 0 0 1px var(--color-shadow-dark), inset 0 0 0 2px var(--color-shadow);
+  --bevel-status: inset -1px -1px var(--color-highlight), inset 1px 1px var(--color-shadow);
+  --bevel-groove:
+    inset -1px -1px var(--color-highlight), inset 1px 1px var(--color-shadow),
+    inset -2px -2px var(--color-shadow), inset 2px 2px var(--color-highlight);
+  --bevel-hover: var(--bevel-raised);
+  --bevel-tab:
+    inset 1px 1px var(--color-highlight), inset 2px 2px var(--color-surface-light),
+    inset -1px 0 var(--color-shadow-dark), inset -2px 0 var(--color-shadow);
+  --bevel-none: none;
+}
 
+/* ---------- Tema ad alto contrasto: testo ≥ 7:1, bordi pieni al posto dei bevel ---------- */
+
+[data-theme="high-contrast"] {
+  --color-desktop: #000000;
+  --color-surface: #000000;
+  --color-surface-light: #000000;
+  --color-shadow: #ffffff;
+  --color-shadow-dark: #ffffff;
+  --color-accent: #ffff00;
+  --color-text: #ffffff;
+  --color-text-inverse: #000000;
+  --color-text-disabled: #3ff23f;
+  --color-text-disabled-etch: #000000;
+  --color-text-muted: #ffffff;
+  --color-surface-hover: #000000;
+  --color-field: #000000;
+  --color-field-disabled: #000000;
+  --color-document: #000000;
+  --color-titlebar-active: #ffff00;
+  --color-titlebar-active-text: #000000;
+  --color-titlebar-inactive: #000000;
+  --color-titlebar-inactive-border: #ffffff;
+  --color-selection: #00ffff;
+  --color-selection-text: #000000;
+  --color-link: #ffff00;
+  --color-link-visited: #ff9cff;
+  --color-error: #ff8080;
+  --color-success: #8fd8ff;
+  --color-tooltip: #000000;
+  --color-tooltip-border: #ffffff;
+  --color-focus: #ffffff;
+  --color-focus-halo: #000000;
+  --color-overlay: #000000b3;
+  --color-pixel-outline: #ffffff;
+
+  --bevel-raised: inset 0 0 0 2px #ffffff;
+  --bevel-sunken: inset 0 0 0 2px #ffffff;
+  --bevel-field: inset 0 0 0 2px #ffffff;
+  --bevel-window: inset 0 0 0 3px #ffffff;
+  --bevel-pressed: inset 0 0 0 3px #ffffff;
+  --bevel-default: inset 0 0 0 2px #ffffff, inset 0 0 0 4px #000000, inset 0 0 0 6px #ffffff;
+  --bevel-default-pressed:
+    inset 0 0 0 2px #ffffff, inset 0 0 0 4px #000000, inset 0 0 0 7px #ffffff;
+  --bevel-status: inset 0 0 0 1px #ffffff;
+  --bevel-groove: inset 0 0 0 2px #ffffff;
+  --bevel-hover: inset 0 0 0 2px #00ffff;
+  --bevel-tab: inset 2px 2px #ffffff, inset -2px 0 #ffffff;
+  --bevel-none: none;
+}
+
+/* ---------- Misure, tipografia, livelli, movimento ---------- */
+
+:root {
   --space-0: 0;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -33,23 +162,62 @@
   --space-4: 1rem;
   --space-5: 1.5rem;
   --space-6: 2rem;
-  --space-safe-top: max(var(--space-5), env(safe-area-inset-top));
-  --space-safe-bottom: max(var(--space-5), env(safe-area-inset-bottom));
-  --space-gutter: max(var(--space-4), env(safe-area-inset-left), env(safe-area-inset-right));
 
-  --font-family-ui:
-    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-family-document: var(--font-family-ui);
-  --font-family-mono: ui-monospace, "Cascadia Mono", "DejaVu Sans Mono", monospace;
+  --radius-none: 0;
+
+  --touch-target-min: 44px;
+  --target-min-desktop: 24px;
+  --control-height-desktop: 2rem;
+  --control-height-touch: max(44px, 2.75rem);
+  --button-min-width-desktop: 4.75rem;
+  --button-min-width-touch: 6rem;
+  --titlebar-height-desktop: 1.75rem;
+  --titlebar-height-touch: max(48px, 3rem);
+  --titlebar-button-width-desktop: 1.5rem;
+  --titlebar-button-height-desktop: 1.5rem;
+  --titlebar-button-touch: 44px;
+  --glyph-pixel: 2px;
+  --choice-row-desktop: 24px;
+  --choice-row-touch: 44px;
+  --choice-box-desktop: 1.25rem;
+  --choice-box-touch: 1.75rem;
+  --menu-item-height-desktop: 1.75rem;
+  --menu-item-height-touch: 44px;
+  --scrollbar-size-desktop: 1.5rem;
+  --scrollbar-size-touch: 0.75rem;
+  --progress-height: 1.5rem;
+  --progress-block-width: 0.625rem;
+  --progress-block-gap: 2px;
+  --taskbar-height-desktop: 2.5rem;
+  --taskbar-height-touch: 3.5rem;
+  --taskbar-button-max-width: 10rem;
+  --desktop-icon-cell: 5.5rem;
+  --icon-size-sm: 16px;
+  --icon-size-lg: 32px;
+  --icon-size-xl: 64px;
+  --window-min-width: 15rem;
+  --tooltip-max-width: 20rem;
+  --bevel-width: 2px;
+  --border-width-hairline: 1px;
+
+  --focus-width: 2px;
+  --focus-halo-width: 2px;
+  --focus-offset: 2px;
+  --focus-offset-inset: -4px;
+  --focus-style: dashed;
+
   --font-size-root: 100%;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
   --font-size-title: clamp(1.75rem, 1.2rem + 3vw, 3rem);
   --font-weight-regular: 400;
   --font-weight-bold: 700;
   --line-height-tight: 1.2;
   --line-height-body: 1.5;
+  --measure-document: 68ch;
 
   --bp-xs: 320px;
   --bp-sm: 480px;
@@ -57,13 +225,12 @@
   --bp-lg: 1024px;
   --bp-xl: 1440px;
 
-  --touch-target-min: 44px;
-
   --z-desktop: 0;
   --z-icons: 10;
   --z-window: 100;
   --z-taskbar: 1000;
   --z-menu: 1100;
+  --z-tooltip: 1200;
   --z-overlay: 2000;
 
   --duration-instant: 0ms;
@@ -72,13 +239,200 @@
   --duration-slow: 400ms;
   --easing-standard: steps(4, end);
 
-  --radius-none: 0;
+  --space-safe-top: max(var(--space-5), env(safe-area-inset-top));
+  --space-safe-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+  --space-gutter: max(var(--space-4), env(safe-area-inset-left), env(safe-area-inset-right));
+
+  --font-family-ui-pixel: "Pixel Operator", "Pixel Operator Fallback", system-ui, sans-serif;
+  --font-family-ui-readable:
+    "IBM Plex Sans", "IBM Plex Sans Fallback", system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  --font-family-document:
+    "IBM Plex Sans", "IBM Plex Sans Fallback", system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  --font-family-mono: ui-monospace, "Cascadia Mono", "DejaVu Sans Mono", monospace;
+  --font-family-ui: var(--font-family-ui-pixel);
+
+  --focus-ring-spread: calc(var(--focus-offset) + var(--focus-width) + var(--focus-halo-width));
+  --no-shadow: 0 0 0 0 transparent;
+
+  /* Aggiunte della Fase 1A, non presenti nel pacchetto (DESIGN_SYSTEM.md §2). */
+  --space-bevel: var(--bevel-width);
+  --offset-pressed: 1px;
+  --text-etch-offset: 1px;
+  --underline-offset: 3px;
+  --underline-thickness: 1px;
+  --focus-offset-label: 1px;
+  --focus-ring-spread-label: calc(
+    var(--focus-width) + var(--focus-offset-label) + var(--focus-halo-width)
+  );
+  --opacity-disabled: 0.5;
+  --opacity-inactive: 0.6;
+  --opacity-dither: 0.75;
+  --z-raised: 1;
+  --menu-min-width: 11rem;
+  --start-menu-min-width: 15rem;
+  --start-menu-item-min-height: 2.5rem;
+  --dialog-width: 28rem;
+  --listbox-max-height: min(20rem, 60vh);
+  --statusbar-field-height: 1.5rem;
+  --font-family-prose: var(--font-family-document);
 }
+
+/* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */
+
+:root,
+[data-theme] {
+  --focus-halo: 0 0 0 var(--focus-ring-spread) var(--color-focus-halo);
+  --focus-halo-inset: inset 0 0 0 calc(var(--focus-width) + var(--focus-halo-width) * 2)
+    var(--color-focus-halo);
+  --dither: conic-gradient(
+      var(--color-highlight) 25%,
+      var(--color-surface) 0 50%,
+      var(--color-highlight) 0 75%,
+      var(--color-surface) 0
+    )
+    0 0 / 2px 2px;
+
+  /* Aggiunte della Fase 1A, non presenti nel pacchetto (DESIGN_SYSTEM.md §2). */
+  --text-etch: var(--text-etch-offset) var(--text-etch-offset) 0 var(--color-text-disabled-etch);
+  --focus-halo-label: 0 0 0 var(--focus-ring-spread-label) var(--color-focus-halo);
+  --dither-selection: conic-gradient(
+      var(--color-selection) 25%,
+      transparent 0 50%,
+      var(--color-selection) 0 75%,
+      transparent 0
+    )
+    0 0 / 2px 2px;
+  --bevel-thin-raised: inset -1px -1px var(--color-shadow), inset 1px 1px var(--color-highlight);
+  --bevel-thin-separator: inset 0 1px var(--color-shadow), inset 0 -1px var(--color-highlight);
+  --bevel-taskbar-top: inset 0 1px var(--color-surface-light), inset 0 2px var(--color-highlight);
+  --bevel-group-line: inset 1px 1px var(--color-highlight), 1px 1px var(--color-highlight);
+}
+
+/* ---------- Font dell'interfaccia: predefinito del tema, poi data-font ---------- */
+
+/* Secondo blocco voluto: deve seguire il --dither di :root, [data-theme] e precedere [data-font]. */
+/* stylelint-disable-next-line no-duplicate-selectors */
+[data-theme="high-contrast"] {
+  --font-family-ui: var(--font-family-ui-readable);
+  --dither: var(--color-surface);
+}
+
+[data-font="readable"] {
+  --font-family-ui: var(--font-family-ui-readable);
+}
+
+[data-font="pixel"] {
+  --font-family-ui: var(--font-family-ui-pixel);
+}
+
+/* ---------- Modalità desktop / touch: alias usati dai componenti ---------- */
+
+:root,
+[data-input="mouse"] {
+  --control-height: var(--control-height-desktop);
+  --button-min-width: var(--button-min-width-desktop);
+  --titlebar-height: var(--titlebar-height-desktop);
+  --titlebar-button-width: var(--titlebar-button-width-desktop);
+  --titlebar-button-height: var(--titlebar-button-height-desktop);
+  --choice-box: var(--choice-box-desktop);
+  --choice-row: var(--choice-row-desktop);
+  --menu-item-height: var(--menu-item-height-desktop);
+  --scrollbar-size: var(--scrollbar-size-desktop);
+  --taskbar-height: var(--taskbar-height-desktop);
+  --target-min: var(--target-min-desktop);
+  --desktop-icon-size: var(--icon-size-lg);
+  --scrollbar-buttons: block;
+}
+
+@media (pointer: coarse) {
+  :root:not([data-input="mouse"]) {
+    --control-height: var(--control-height-touch);
+    --button-min-width: var(--button-min-width-touch);
+    --titlebar-height: var(--titlebar-height-touch);
+    --titlebar-button-width: var(--titlebar-button-touch);
+    --titlebar-button-height: var(--titlebar-button-touch);
+    --choice-box: var(--choice-box-touch);
+    --choice-row: var(--choice-row-touch);
+    --menu-item-height: var(--menu-item-height-touch);
+    --scrollbar-size: var(--scrollbar-size-touch);
+    --taskbar-height: var(--taskbar-height-touch);
+    --target-min: var(--touch-target-min);
+    --desktop-icon-size: var(--icon-size-lg);
+    --scrollbar-buttons: none;
+  }
+}
+
+[data-input="touch"] {
+  --control-height: var(--control-height-touch);
+  --button-min-width: var(--button-min-width-touch);
+  --titlebar-height: var(--titlebar-height-touch);
+  --titlebar-button-width: var(--titlebar-button-touch);
+  --titlebar-button-height: var(--titlebar-button-touch);
+  --choice-box: var(--choice-box-touch);
+  --choice-row: var(--choice-row-touch);
+  --menu-item-height: var(--menu-item-height-touch);
+  --scrollbar-size: var(--scrollbar-size-touch);
+  --taskbar-height: var(--taskbar-height-touch);
+  --target-min: var(--touch-target-min);
+  --desktop-icon-size: var(--icon-size-lg);
+  --scrollbar-buttons: none;
+}
+
+/* ---------- Movimento ridotto ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-slow: 0ms;
+  }
+}
+
+[data-motion="reduce"] {
+  --duration-fast: 0ms;
+  --duration-base: 0ms;
+  --duration-slow: 0ms;
+}
+
+/* ---------- Colori forzati (temi a contrasto del sistema) ---------- */
+
+@media (forced-colors: active) {
+  /* Fase 1A: anche [data-theme], così un sottoalbero con un tema proprio usa i colori di sistema. */
+  :root,
+  [data-theme] {
+    --color-pixel-outline: CanvasText;
+    --color-desktop: Canvas;
+    --color-desktop-text: CanvasText;
+    --color-surface: ButtonFace;
+    --color-surface-hover: ButtonFace;
+    --color-text: ButtonText;
+    --color-text-muted: CanvasText;
+    --color-text-disabled: GrayText;
+    --color-text-disabled-etch: Canvas;
+    --color-field: Field;
+    --color-field-disabled: Field;
+    --color-document: Canvas;
+    --color-titlebar-active: Highlight;
+    --color-titlebar-active-text: HighlightText;
+    --color-titlebar-inactive: Canvas;
+    --color-titlebar-inactive-text: CanvasText;
+    --color-titlebar-inactive-border: CanvasText;
+    --color-selection: Highlight;
+    --color-selection-text: HighlightText;
+    --color-link: LinkText;
+    --color-link-visited: VisitedText;
+    --color-accent: Highlight;
+    --color-tooltip: Canvas;
+    --color-tooltip-border: CanvasText;
+    --color-focus: Highlight;
+    --color-focus-halo: Canvas;
+    --forced-border-width: 2px;
+    --forced-border-width-pressed: 4px;
+  }
+
+  [data-focus-visible] {
+    outline-color: Highlight;
   }
 }

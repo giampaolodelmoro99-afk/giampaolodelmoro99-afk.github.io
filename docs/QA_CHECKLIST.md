@@ -46,7 +46,23 @@ npm run build && npm run preview   # http://localhost:4173
 - [ ] Il font della UI è quello del progetto, non il fallback.
 - [ ] HTML sorgente (Ctrl+U): contenuto, meta e JSON-LD presenti; email non in chiaro.
 
-## 7. Prompt per Claude in Chrome
+## 7. Telefono Android reale (dalla Fase 1A)
+
+Da fare a fine fase, oltre ai viewport emulati. Sul computer:
+
+```bash
+npm run build && npm run preview -- --host
+```
+
+Il terminale stampa l'indirizzo in rete locale (`http://192.168.x.x:4173`): aprilo da Chrome per Android sulla stessa rete Wi-Fi.
+
+- [ ] **Font**: il testo del desktop è in Pixel Operator (pixel netti), non nel font di sistema.
+- [ ] **Focus**: con una tastiera Bluetooth (Tab) o con la navigazione di TalkBack, il focus è visibile come doppio anello (tratteggio nero su alone bianco).
+- [ ] **Layout**: nessuno scroll orizzontale, sia con il telefono in verticale sia in orizzontale; testi non tagliati.
+- [ ] **Storybook** (`/storybook/`): si naviga al tocco (barra laterale, story, pannelli), la toolbar cambia tema e input, l'anteprima segue.
+- [ ] Annota modello del telefono, versione di Android e di Chrome nella retrospettiva.
+
+## 8. Prompt per Claude in Chrome
 
 Da usare in una sessione con Claude in Chrome, con `npm run preview` avviato.
 
@@ -70,6 +86,6 @@ Da usare in una sessione con Claude in Chrome, con `npm run preview` avviato.
 
 > Confronta lo screenshot della route a 1440 px con il mockup di Claude Design allegato. Elenca le differenze di spaziature, colori, bevel e tipografia, con priorità.
 
-## 8. Esito
+## 9. Esito
 
 Registra l'esito nella retrospettiva di fase: data, viewport e browser provati, problemi trovati e come sono stati risolti.

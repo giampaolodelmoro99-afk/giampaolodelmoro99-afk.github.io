@@ -1,0 +1,72 @@
+/* Tabs.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.tablist {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  padding-inline-start: var(--space-1);
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: calc(var(--control-height) - 2px);
+  padding: 0 var(--space-3);
+  margin-block-start: 2px;
+  background: var(--color-surface);
+  box-shadow: var(--bevel-tab);
+  color: var(--color-text);
+  cursor: default;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab[data-hovered]:not([data-selected]) {
+  background: var(--color-surface-hover);
+}
+
+.tab[data-selected] {
+  z-index: 1;
+  min-block-size: var(--control-height);
+  margin: 0 calc(var(--space-1) * -0.5) -2px;
+  padding-block-end: 2px;
+  padding-inline: calc(var(--space-3) + var(--space-1) * 0.5);
+  margin-block-start: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+.tab[data-focus-visible] {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+  box-shadow: var(--focus-halo-inset), var(--bevel-tab);
+}
+
+.tab[data-disabled] {
+  color: var(--color-text-disabled);
+  text-shadow: 1px 1px 0 var(--color-text-disabled-etch);
+}
+
+.tabpanel {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-raised);
+  outline: none;
+}
+
+.tabpanel[data-focus-visible] {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+}
+
+@media (forced-colors: active) {
+  .tab,
+  .tabpanel {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}

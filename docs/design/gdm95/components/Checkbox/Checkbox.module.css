@@ -1,0 +1,62 @@
+/* Checkbox.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.root {
+  --_box-bg: var(--color-field);
+  --_mark: var(--color-text);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--choice-row);
+  padding-inline-end: var(--space-1);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.box {
+  display: grid;
+  place-items: center;
+  inline-size: var(--choice-box);
+  block-size: var(--choice-box);
+  flex: none;
+  background: var(--_box-bg);
+  box-shadow: var(--bevel-field);
+  color: var(--_mark);
+}
+
+.root[data-pressed] {
+  --_box-bg: var(--color-surface);
+}
+
+.root[data-hovered] .label {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.root[data-focus-visible] .label {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 calc(var(--focus-width) + 1px + var(--focus-halo-width)) var(--color-focus-halo);
+}
+
+.root[data-disabled] {
+  --_box-bg: var(--color-surface);
+  --_mark: var(--color-text-disabled);
+  color: var(--color-text-disabled);
+  text-shadow: 1px 1px 0 var(--color-text-disabled-etch);
+}
+
+.root[data-invalid] .box {
+  box-shadow: inset 0 0 0 var(--bevel-width) var(--color-error), var(--bevel-field);
+}
+
+@media (forced-colors: active) {
+  .box {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}

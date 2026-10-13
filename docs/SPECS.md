@@ -12,26 +12,26 @@ Il tema 95 è un'interfaccia, non un ostacolo: chi ha fretta trova CV e contatti
 | ------------------------ | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Recruiter frettoloso** | Capire chi sono, scaricare il CV, contattarmi. Spesso da telefono, in meno di un minuto. | CV e contatti raggiungibili in **≤ 2 interazioni** da qualsiasi route; "Vista semplice" senza metafora desktop; contatto possibile **anche se il form è giù**; testi brevi in apertura.            |
 | **Tech lead**            | Valutare il codice e il modo di lavorare.                                                | Link al repo e ai progetti GitHub; case study (problema, scelte, difficoltà, risultato); finestra "Making of" con processo, test, ADR e uso dell'AI; qualità verificabile (Lighthouse, test, CSP). |
-| **Curioso**              | Divertirsi con il desktop 95.                                                            | Window manager credibile, Prato fiorito, Prompt MS-DOS, easter egg; tutto disattivabile, accessibile e senza impatto sulle metriche.                                                               |
+| **Curioso**              | Divertirsi con il desktop 95.                                                            | Window manager credibile, Campo minato, Terminale, easter egg; tutto disattivabile, accessibile e senza impatto sulle metriche.                                                                    |
 
 ## 3. Requisiti funzionali
 
 Il dettaglio di ogni app si definisce nel piano della fase che la realizza.
 
-| Area           | Requisito                                                                                                                                                                                     | Fase  |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| Desktop        | Sfondo, icone, selezione, apertura con doppio clic / Invio / tap                                                                                                                              | 2A    |
-| Finestre       | Drag, resize, focus, z-index, minimizza, massimizza, chiudi; animazioni rispettose di reduced motion                                                                                          | 2A    |
-| Taskbar        | Pulsanti delle finestre aperte, orologio con etichetta accessibile, menu Start                                                                                                                | 2A    |
-| Menu           | Start, menu contestuale (sempre raggiungibile anche senza tasto destro), "Esegui…"                                                                                                            | 2A    |
-| Routing        | Ogni finestra ha un deep link per lingua; il router è la fonte di verità della finestra attiva                                                                                                | 2B    |
-| Persistenza    | Posizione e dimensione delle finestre in localStorage, senza CLS                                                                                                                              | 2B    |
-| Mobile         | Modalità dedicata: finestre a schermo intero, navigazione touch                                                                                                                               | 2B    |
-| Contenuti      | About, Progetti GitHub (dati a build time), case study, CV stampabile IT/EN, Timeline, Skills (livello e contesto d'uso, niente percentuali)                                                  | 3A    |
-| Contatti       | Form Web3Forms con anti-abuso e canale alternativo (§7)                                                                                                                                       | 3B    |
-| Legale         | Pagina /privacy IT/EN, disclaimer Microsoft nel footer                                                                                                                                        | 3B    |
-| Accesso rapido | Vista semplice; Making of                                                                                                                                                                     | 3B    |
-| Esperienza     | Boot (solo prima visita, saltabile, mai elemento LCP), suoni con mute, Pannello di controllo, Prompt MS-DOS, Prato fiorito, Cestino con la v1, screensaver, 404 BSOD, spegnimento, easter egg | 4A/4B |
+| Area           | Requisito                                                                                                                                                                                | Fase  |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| Desktop        | Sfondo, icone, selezione, apertura con doppio clic / Invio / tap                                                                                                                         | 2A    |
+| Finestre       | Drag, resize, focus, z-index, minimizza, massimizza, chiudi; animazioni rispettose di reduced motion                                                                                     | 2A    |
+| Taskbar        | Pulsanti delle finestre aperte, orologio con etichetta accessibile, menu Start                                                                                                           | 2A    |
+| Menu           | Start, menu contestuale (sempre raggiungibile anche senza tasto destro), "Esegui…"                                                                                                       | 2A    |
+| Routing        | Ogni finestra ha un deep link per lingua; il router è la fonte di verità della finestra attiva                                                                                           | 2B    |
+| Persistenza    | Posizione e dimensione delle finestre in localStorage, senza CLS                                                                                                                         | 2B    |
+| Mobile         | Modalità dedicata: finestre a schermo intero, navigazione touch                                                                                                                          | 2B    |
+| Contenuti      | About, Progetti GitHub (dati a build time), case study, CV stampabile IT/EN, Timeline, Skills (livello e contesto d'uso, niente percentuali)                                             | 3A    |
+| Contatti       | Form Web3Forms con anti-abuso e canale alternativo (§7)                                                                                                                                  | 3B    |
+| Legale         | Pagina /privacy IT/EN, disclaimer Microsoft nel footer                                                                                                                                   | 3B    |
+| Accesso rapido | Vista semplice; Making of                                                                                                                                                                | 3B    |
+| Esperienza     | Boot (solo prima visita, saltabile, mai elemento LCP), suoni con mute, Pannello di controllo, Terminale, Campo minato, Cestino con la v1, screensaver, 404 BSOD, spegnimento, easter egg | 4A/4B |
 
 ## 4. Requisiti non funzionali
 
@@ -43,6 +43,8 @@ Il dettaglio di ogni app si definisce nel piano della fase che la realizza.
 - **i18n**: italiano di default, inglese, slug tradotti (`I18N.md`).
 - **Sicurezza**: CSP senza `unsafe-inline`, dipendenze controllate.
 - **Manutenibilità**: TypeScript strict, coverage ≥ 80%, ADR per ogni decisione rilevante.
+- **Originalità e nomi**: nessun asset Microsoft (`ASSETS.md`) e nessun nome di prodotto Microsoft nelle etichette (nomi delle app, icone, menu e titoli delle finestre). Le descrizioni ("in stile Windows 95") e il disclaimer di non affiliazione di `LEGAL.md` possono nominare Windows. Le app si chiamano "Terminale" / "Terminal" e "Campo minato" / "Minefield", mai "MS-DOS", "Prato fiorito" o "Windows" (design system GDM 95, `docs/design/gdm95/README.md`).
+- **LinkedIn**: non compare in nessuna parte del sito (`CONTENT.md` §1).
 
 ## 5. Route e deep link
 
@@ -79,11 +81,11 @@ La v1 era indicizzata con quattro sottopagine. Non devono diventare 404 alla rel
   - tempo minimo di compilazione
   - pausa minima tra due invii dallo stesso browser (`contact.lastSubmitAt` in localStorage)
   - pulsante disabilitato durante l'invio
-- **Stati di invio**: in corso, inviato e errore, annunciati con una regione live e con il focus spostato sul messaggio.
+- **Stati di invio**: in corso, inviato ed errore, annunciati con una regione live e con il focus spostato sul messaggio.
 - **Errore di invio** (quota esaurita, servizio irraggiungibile, rete assente, risposta non valida, timeout):
   - messaggio chiaro e accessibile
   - dati conservati
-  - **canale alternativo sempre funzionante**: email offuscata (ricomposta dopo l'idratazione) e link GitHub; LinkedIn solo se aggiunto in `CONTENT.md`
+  - **canale alternativo sempre funzionante**: email offuscata (ricomposta dopo l'idratazione) e link GitHub. **LinkedIn non compare in nessuna parte del sito** (CONTENT.md §1)
 - **Email mai in chiaro** nell'HTML prerenderizzato, nel JSON-LD, in llms.txt e nella sitemap.
 - **Access key**: variabile d'ambiente di build `VITE_WEB3FORMS_ACCESS_KEY`, mai nel codice.
 

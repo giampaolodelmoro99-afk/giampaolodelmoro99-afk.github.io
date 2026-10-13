@@ -30,20 +30,27 @@ src/
   routes/routeMap.ts    fonte unica di route, slug per lingua, prerender
   i18n/                 dizionari tipizzati it.ts / en.ts, useT, useLocale
   seo/                  buildMeta, jsonLd
-  styles/               tokens.css (token), global.css (reset e base)
+  styles/               tokens.css (token GDM 95), fonts.css (@font-face), global.css (base)
+  assets/               fonts/ (woff2 e licenze) e icons/ (SVG GDM 95), registrati in docs/ASSETS.md
+  types/                dichiarazioni TypeScript (variabili CSS negli stili inline)
   features/<nome>/      componenti e CSS Module di una feature o app
-  components/           componenti del design system (dalla Fase 1)
+  components/           componenti del design system (Icon e Glyph dalla 1A, gli altri dalla 1B)
   stores/               store Zustand (dalla Fase 2)
   content/              dati tipizzati dei contenuti (dalla Fase 3)
 scripts/
-  postbuild.mjs         passi dopo la build
-  preview.mjs           server statico che imita GitHub Pages
-  lib/                  funzioni pure testate (csp, hydration)
+  postbuild.mjs         passi dopo la build del sito
+  postbuild-storybook.mjs  CSP dedicata e controlli di Storybook
+  fonts.mjs, icons.mjs  generatori manuali (subset dei font, dati delle icone)
+  preview.mjs           server statico che imita GitHub Pages (--host per la rete locale)
+  lib/                  funzioni pure testate (csp, hydration, fonts, icons, assets, storybook, workflows)
+fonts-src/              originali dei font da cui nasce il subset (non serviti)
+.storybook/             configurazione di Storybook e pagine "Fondamenta"
 tests/
   setup/                setup Vitest, helper axe e render
   prerender/            test sull'HTML statico
   e2e/                  Playwright, fixture, screenshot di riferimento
-public/                 file serviti dalla radice (favicon, robots…)
+  storybook/            test visivi e axe delle story
+public/                 file serviti dalla radice (favicon, robots.txt)
 docs/                   documentazione, ADR, piani e retrospettive
 ```
 
@@ -108,10 +115,11 @@ L'elenco curato dei progetti sta in un file tipizzato. Uno script di build scari
 ## 9. Post-build e file generati
 
 - **Fase 0**: `404.html`, idratazione rinviata, CSP.
+- **Fase 1A**: Storybook in `build/client/storybook/` con CSP propria (PERFORMANCE_SEO.md §12); `robots.txt` minimo in `public/`.
 - **Fase 5**: sitemap con hreflang, `robots.txt`, `llms.txt` e `llms-full.txt` IT/EN, immagini Open Graph per route.
 
 Tutti derivano da `routeMap`, dai dizionari e dai dati dei contenuti.
 
 ## 10. Dipendenze ammesse
 
-Runtime: React, React DOM, React Router, React Aria Components (F1), Zustand (F2). Ogni nuova dipendenza di runtime richiede una motivazione (peso, alternativa scritta in casa) nel piano di fase o in un ADR, e non deve violare i budget né `LEGAL.md`.
+Runtime: React, React DOM, React Router, React Aria Components (F1B), Zustand (F2). Ogni nuova dipendenza di runtime richiede una motivazione (peso, alternativa scritta in casa) nel piano di fase o in un ADR, e non deve violare i budget né `LEGAL.md`.

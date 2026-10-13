@@ -1,0 +1,98 @@
+/* TextField.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.label {
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+}
+
+[data-disabled] > .label,
+.label[data-disabled] {
+  color: var(--color-text-disabled);
+  text-shadow: 1px 1px 0 var(--color-text-disabled-etch);
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+
+.input {
+  --_halo: var(--no-shadow);
+  inline-size: 100%;
+  min-block-size: var(--control-height);
+  padding: var(--space-1) var(--space-2);
+  border: 0;
+  border-radius: var(--radius-none);
+  background: var(--color-field);
+  box-shadow: var(--_halo), var(--bevel-field);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  caret-color: var(--color-text);
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.input::selection {
+  background: var(--color-selection);
+  color: var(--color-selection-text);
+}
+
+.input[data-focused] {
+  --_halo: var(--focus-halo);
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.input[data-invalid] {
+  box-shadow: var(--_halo), inset 0 0 0 var(--bevel-width) var(--color-error), var(--bevel-field);
+}
+
+.input[data-disabled],
+.input[readonly] {
+  background: var(--color-field-disabled);
+  color: var(--color-text-disabled);
+  text-shadow: 1px 1px 0 var(--color-text-disabled-etch);
+}
+
+.input[readonly]:not([data-disabled]) {
+  color: var(--color-text);
+  text-shadow: none;
+}
+
+.desc {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-error);
+  font-size: var(--font-size-md);
+}
+
+.errorIcon {
+  --glyph-pixel: 1px;
+}
+
+@media (forced-colors: active) {
+  .input {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}
+
+@media (forced-colors: active) {
+  [data-focused].input {
+    outline-color: Highlight;
+  }
+}

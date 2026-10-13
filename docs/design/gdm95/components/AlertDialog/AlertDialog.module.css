@@ -1,0 +1,48 @@
+/* AlertDialog.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding: var(--space-gutter);
+  background: var(--color-overlay);
+}
+
+.modal {
+  outline: none;
+  max-inline-size: 100%;
+}
+
+.dialogOuter {
+  outline: none;
+}
+
+.root {
+  inline-size: min(28rem, 100%);
+}
+
+.body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+}
+
+.message {
+  padding-block-start: var(--space-1);
+  line-height: var(--line-height-body);
+}
+
+.message p {
+  margin: 0 0 var(--space-2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4) var(--space-3);
+}

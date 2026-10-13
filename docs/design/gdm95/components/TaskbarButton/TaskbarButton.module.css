@@ -1,0 +1,69 @@
+/* TaskbarButton.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.taskbar {
+  position: relative;
+  z-index: var(--z-taskbar);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: var(--taskbar-height);
+  padding: 2px 2px max(2px, env(safe-area-inset-bottom));
+  background: var(--color-surface);
+  box-shadow: inset 0 1px var(--color-surface-light), inset 0 2px var(--color-highlight);
+  font-family: var(--font-family-ui);
+}
+
+.root {
+  composes: root from '../Button/Button.module.css';
+  flex: 0 1 var(--taskbar-button-max-width);
+  justify-content: flex-start;
+  min-inline-size: var(--target-min);
+  padding-inline: var(--space-1) var(--space-2);
+}
+
+.root .content {
+  min-inline-size: 0;
+}
+
+.label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.root[data-selected] {
+  --_bevel: var(--bevel-sunken);
+  background: var(--dither);
+  font-weight: var(--font-weight-bold);
+}
+
+.root[data-selected][data-hovered] {
+  --_bevel: var(--bevel-sunken);
+}
+
+.root[data-selected] > .content {
+  translate: 1px 1px;
+}
+
+.tray {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+  min-block-size: calc(var(--taskbar-height) - 6px);
+  padding: 0 var(--space-3);
+  box-shadow: var(--bevel-status);
+  color: var(--color-text);
+}
+
+@media (forced-colors: active) {
+  .tray {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}
+
+@media (forced-colors: active) {
+  .root[data-selected] {
+    border-width: var(--forced-border-width-pressed);
+  }
+}

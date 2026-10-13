@@ -1,0 +1,13 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Fondamenta/Introduzione" />
+
+# GDM 95
+
+Design system di gianpaolodelmoro.it: l'atmosfera di Windows 95 ricostruita da zero, con React Aria Components, CSS Modules e token.
+
+- **Regole e token**: `docs/DESIGN_SYSTEM.md` nel repository; il pacchetto approvato è in `docs/design/gdm95/`.
+- **Comandi della toolbar**: tema (classico o alto contrasto), font (pixel o leggibile), input (mouse o touch), movimento ridotto, dimensione del testo e lingua. Agiscono sull'elemento `<html>` dell'anteprima con gli stessi attributi del sito.
+- **Accessibilità**: il pannello Accessibility esegue axe su ogni story. I test visivi e axe con il contrasto girano in Playwright, nel container della CI.
+
+Storybook è uno strumento di documentazione: non è indicizzato e non fa parte del sito.

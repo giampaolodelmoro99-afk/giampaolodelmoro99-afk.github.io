@@ -1,5 +1,5 @@
 {
-  "include": ["**/*", ".react-router/types/**/*"],
+  "include": ["**/*", ".storybook/**/*", ".react-router/types/**/*"],
   "exclude": ["node_modules", "build", "coverage", "playwright-report", "test-results"],
   "compilerOptions": {
     "target": "ES2023",

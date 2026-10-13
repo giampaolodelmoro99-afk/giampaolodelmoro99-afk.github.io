@@ -6,6 +6,7 @@ Raccolta dei contenuti del sito. Fonte per i dizionari i18n, i dati tipizzati (`
 
 - **Nome**: sul sito sempre "Gianpaolo Del Moro" (con N). GitHub ed email usano "giampaolo" (con M): `github.com/giampaolodelmoro99-afk`, `giampaolo.delmoro99@gmail.com`. La differenza è voluta, non va uniformata.
 - **Email**: mai in chiaro nel markup statico (LEGAL.md §4).
+- **LinkedIn non compare in nessuna parte del sito**: né in link, icone, testi o form, né in JSON-LD, llms.txt o CV pubblico. Il proprietario non ha un profilo LinkedIn (decisione del 13/10/2026). Il canale alternativo del form è l'email offuscata più GitHub.
 - **Tono**: diretto, concreto, in prima persona; niente superlativi vuoti. In inglese: stesso contenuto, non traduzione letterale.
 - **Bozze**: ogni testo marcato `BOZZA – da rivedere` è scritto da Claude e **non va online** finché Gianpaolo non lo approva. Dopo l'approvazione si toglie il marcatore e si annota la data.
 
@@ -88,7 +89,7 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 
 - [ ] **Java, Spring Boot, Python**: vanno sul sito (Skills, llms.txt) o restano solo nel CV? Con quale livello e contesto d'uso?
 - [ ] **Indirizzo del liceo**: "Scienze Applicate" (sito v1) o "indirizzo informatico" (CV v1)?
-- [ ] **LinkedIn**: profilo da aggiungere ai contatti e al canale alternativo del form? (Solo se lo aggiungi qui.)
+- [x] **LinkedIn**: chiusa il 13/10/2026, non compare sul sito (vedi §1).
 - [ ] **Disponibilità**: "Full-time", stage, località (Pisa, remoto, trasferimento)?
 
 ## 4. Bozze da approvare

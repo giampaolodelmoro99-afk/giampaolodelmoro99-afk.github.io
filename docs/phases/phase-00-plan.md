@@ -1,5 +1,7 @@
 # Fase 0 — Foundation: piano
 
+> Piano storico, conservato com'era all'approvazione. Alcune regole sono state superate: LinkedIn non compare sul sito (CONTENT.md §1) e le app si chiamano Terminale e Campo minato (SPECS.md §4); vedi [phase-01-plan.md](phase-01-plan.md).
+
 ## Contesto
 
 La v1 di gianpaolodelmoro.it (React 19, MUI, JavaScript) è stata rimossa da `main` (commit `e7aa4ed`). Resta consultabile solo dal tag `v1.0.0-legacy` (`9f50b1d`). La v2 viene riscritta da zero, sempre in stile Windows 95, con TypeScript strict, un design system proprio, prerender, i18n IT/EN, Lighthouse 100 su mobile e desktop, test completi e un processo documentato a fasi.

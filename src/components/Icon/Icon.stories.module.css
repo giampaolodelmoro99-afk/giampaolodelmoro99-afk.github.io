@@ -1,0 +1,30 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--button-min-width), 1fr));
+  gap: var(--space-3);
+  margin: var(--space-0);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  color: var(--color-text);
+  list-style: none;
+}
+
+.cell {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+}
+
+.icons {
+  display: flex;
+  align-items: end;
+  gap: var(--space-3);
+  margin: var(--space-0);
+}
+
+.glyphs {
+  display: grid;
+  place-items: center;
+  min-block-size: var(--control-height);
+  color: var(--color-text);
+}

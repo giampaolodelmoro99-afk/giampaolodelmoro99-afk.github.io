@@ -18,52 +18,61 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 
 ## 3. Soglie
 
-| Controllo    | Soglia                                                                          | Dove                  |
-| ------------ | ------------------------------------------------------------------------------- | --------------------- |
-| Coverage     | ≥ 80% su righe, rami, funzioni e statement                                      | `vitest.config.ts`    |
-| Lighthouse   | 100 in tutte e 4 le categorie, preset mobile e desktop, mediana di 3 esecuzioni | `lighthouserc.*.json` |
-| JS iniziale  | ≤ 115 kB gzip (Fase 0: 112 kB)                                                  | `.size-limit.js`      |
-| CSS iniziale | ≤ 12 kB gzip                                                                    | `.size-limit.js`      |
-| axe          | 0 violazioni WCAG 2.2 AA                                                        | unit ed e2e           |
-| Console      | 0 errori e warning                                                              | fixture e2e           |
-| Terze parti  | 0 richieste verso altre origini                                                 | fixture e2e           |
+| Controllo       | Soglia                                                                                        | Dove                  |
+| --------------- | --------------------------------------------------------------------------------------------- | --------------------- |
+| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                    | `vitest.config.ts`    |
+| Lighthouse      | 100 in tutte e 4 le categorie, preset mobile e desktop, mediana di 3 esecuzioni               | `lighthouserc.*.json` |
+| JS iniziale     | ≤ 115 kB gzip (Fase 0: 112 kB)                                                                | `.size-limit.js`      |
+| CSS iniziale    | ≤ 12 kB gzip                                                                                  | `.size-limit.js`      |
+| Font in preload | ≤ 25 kB (woff2)                                                                               | `.size-limit.js`      |
+| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms | `performance.spec.ts` |
+| axe             | 0 violazioni WCAG 2.2 AA                                                                      | unit ed e2e           |
+| Console         | 0 errori e warning                                                                            | fixture e2e           |
+| Terze parti     | 0 richieste verso altre origini                                                               | fixture e2e           |
 
 **Le soglie non si abbassano.** Un'eccezione richiede un ADR.
 
 ## 4. Viewport e progetti Playwright
 
-| Progetto          | Viewport / dispositivo    | Esclude              |
-| ----------------- | ------------------------- | -------------------- |
-| `chromium-320`    | 320×640                   | `touch.spec.ts`      |
-| `chromium-375`    | 375×667                   | `touch.spec.ts`      |
-| `chromium-768`    | 768×1024                  | `touch.spec.ts`      |
-| `chromium-1024`   | 1024×768                  | `touch.spec.ts`      |
-| `chromium-1440`   | 1440×900                  | `touch.spec.ts`      |
-| `touch-pixel-7`   | Pixel 7 (Chromium, touch) | `visual`, `keyboard` |
-| `touch-iphone-14` | iPhone 14 (WebKit, touch) | `visual`, `keyboard` |
-| `firefox-1440`    | Firefox 1440×900          | `visual`, `touch`    |
+| Progetto          | Viewport / dispositivo             | Esclude                           |
+| ----------------- | ---------------------------------- | --------------------------------- |
+| `chromium-320`    | 320×640                            | `touch.spec.ts`                   |
+| `chromium-375`    | 375×667                            | `touch.spec.ts`                   |
+| `chromium-768`    | 768×1024                           | `touch.spec.ts`                   |
+| `chromium-1024`   | 1024×768                           | `touch.spec.ts`                   |
+| `chromium-1440`   | 1440×900                           | `touch.spec.ts`                   |
+| `touch-pixel-7`   | Pixel 7 (Chromium, touch)          | `visual`, `keyboard`              |
+| `touch-iphone-14` | iPhone 14 (WebKit, touch)          | `visual`, `keyboard`              |
+| `firefox-1440`    | Firefox 1440×900                   | `visual`, `touch`                 |
+| `performance`     | Pixel 7 (Chromium, CPU 4× via CDP) | esegue solo `performance.spec.ts` |
+| `storybook`       | Chromium 1024×768                  | esegue solo `tests/storybook/`    |
+
+Il progetto `storybook` apre le story da `build/client/storybook/` (`iframe.html?id=…&globals=…`): screenshot delle story con tag `visual` e axe con contrasto su tutte le story, in tema classico e alto contrasto, con input mouse e touch; in touch ogni controllo deve misurare almeno 44×44 px. L'addon a11y di Storybook è in modalità manuale nei test, per non eseguire axe due volte.
 
 I test specifici di un tipo di input stanno in file dedicati (`keyboard.spec.ts`, `touch.spec.ts`), assegnati ai progetti dalla configurazione. Mai `test.skip` condizionali.
 
 ## 5. Cosa testare per tipo di file
 
-| Tipo                            | Test obbligatori                                                                                                                 |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Componente del design system    | Render con ruolo e nome accessibile; interazione con user-event (mouse e tastiera); stati (`data-*`); axe; story con le varianti |
-| Feature / app                   | Come sopra + i18n (IT ed EN); deep link e2e; contenuto nel test prerender; screenshot sui viewport                               |
-| Hook                            | Comportamento con `renderHook`, casi limite, cleanup                                                                             |
-| Store Zustand                   | Azioni e selettori come funzioni pure; sincronizzazione con l'URL in e2e                                                         |
-| Util / lib                      | Unit con casi limite ed errori                                                                                                   |
-| Modulo route (`src/app/routes`) | `meta` e render in un documento (`createRoutesStub` + `renderToString`)                                                          |
-| Script di build                 | Funzioni pure in `scripts/lib` con unit test; effetto sul build nel test prerender                                               |
-| CSS                             | Stylelint; effetto visivo con screenshot; target touch e overflow in e2e                                                         |
+| Tipo                            | Test obbligatori                                                                                                                                         |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Componente del design system    | Render con ruolo e nome accessibile; interazione con user-event (mouse e tastiera); stati (`data-*`); axe; story con le varianti                         |
+| Feature / app                   | Come sopra + i18n (IT ed EN); deep link e2e; contenuto nel test prerender; screenshot sui viewport                                                       |
+| Hook                            | Comportamento con `renderHook`, casi limite, cleanup                                                                                                     |
+| Store Zustand                   | Azioni e selettori come funzioni pure; sincronizzazione con l'URL in e2e                                                                                 |
+| Util / lib                      | Unit con casi limite ed errori                                                                                                                           |
+| Modulo route (`src/app/routes`) | `meta` e render in un documento (`createRoutesStub` + `renderToString`)                                                                                  |
+| Script di build                 | Funzioni pure in `scripts/lib` con unit test; effetto sul build nel test prerender                                                                       |
+| Asset (font, icone, immagini)   | Riga in ASSETS.md con SHA-256 (`scripts/lib/assets.test.mjs`); glifi dei font (`fonts.test.mjs`); dati delle icone allineati agli SVG (`icons.test.mjs`) |
+| Token e Stylelint               | `src/styles/tokens.test.ts` (pacchetto GDM 95 incluso con gli stessi valori, ogni `var()` definita) e `stylelint.test.ts`                                |
+| Workflow della CI               | `scripts/lib/workflows.test.mjs`: filtro dei tag del deploy e runner con versione esplicita                                                              |
+| CSS                             | Stylelint; effetto visivo con screenshot; target touch e overflow in e2e                                                                                 |
 
 Le query si fanno per ruolo e nome (`getByRole`), non per classe o test id, salvo eccezioni motivate.
 
 ## 6. Regressione visiva
 
-- `tests/e2e/visual.spec.ts`, tag `@visual`, solo sui progetti Chromium.
-- Baseline in `tests/e2e/__screenshots__/<progetto>/`.
+- `tests/e2e/visual.spec.ts` (pagine) e `tests/storybook/components.visual.spec.ts` (story), tag `@visual`, solo sui progetti Chromium.
+- Baseline in `tests/e2e/__screenshots__/<progetto>/` e `tests/storybook/__screenshots__/storybook/`.
 - **Si generano solo nel container** (`npm run test:e2e:update-snapshots`): il rendering dei font dell'host differisce da quello della CI.
 - Si aggiornano solo per un cambio visivo voluto, verificato nel browser, con commit dedicato (skill `update-visual-snapshots`).
 

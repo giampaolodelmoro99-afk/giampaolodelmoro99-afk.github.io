@@ -1,0 +1,159 @@
+/* MenuBar.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.popover {
+  z-index: var(--z-menu);
+  outline: none;
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+.popoverMenu {
+  min-inline-size: 11rem;
+  padding: var(--space-1);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-window);
+}
+
+.popover[data-entering] {
+  animation: drop var(--duration-fast) var(--easing-standard);
+}
+
+@keyframes drop {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+.menuItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-block-size: var(--menu-item-height);
+  padding-inline: var(--space-2);
+  outline: none;
+  color: var(--color-text);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menuItem[data-focused],
+.menuItem[data-hovered],
+.menuItem[data-open] {
+  background: var(--color-selection);
+  color: var(--color-selection-text);
+}
+
+.menuItem[data-focus-visible] {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+  box-shadow: var(--focus-halo-inset);
+}
+
+.menuItem[data-disabled] {
+  color: var(--color-text-disabled);
+  text-shadow: 1px 1px 0 var(--color-text-disabled-etch);
+  background: transparent;
+}
+
+.menu {
+  outline: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.menuItem {
+  gap: var(--space-2);
+  padding-inline: 0 var(--space-3);
+}
+
+.menuCheck {
+  display: grid;
+  place-items: center;
+  inline-size: var(--space-6);
+  flex: none;
+}
+
+.menuLabel {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.menuShortcut {
+  margin-inline-start: var(--space-5);
+  font-family: inherit;
+  color: inherit;
+}
+
+.menuSub {
+  --glyph-pixel: 2px;
+  margin-inline-start: var(--space-4);
+}
+
+.menuSep {
+  block-size: var(--bevel-width);
+  margin: var(--space-1) var(--space-1);
+  border: 0;
+  box-shadow: inset 0 1px var(--color-shadow), inset 0 -1px var(--color-highlight);
+}
+
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: var(--border-width-hairline) 0;
+}
+
+.trigger {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: max(var(--target-min), var(--menu-item-height));
+  min-inline-size: var(--target-min);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-none);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.trigger[data-hovered] {
+  box-shadow: inset -1px -1px var(--color-shadow), inset 1px 1px var(--color-highlight);
+}
+
+.trigger[data-pressed],
+.trigger[aria-expanded="true"] {
+  background: var(--color-selection);
+  color: var(--color-selection-text);
+  box-shadow: none;
+}
+
+.trigger[data-focus-visible] {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+  box-shadow: var(--focus-halo-inset);
+}
+
+.trigger[data-disabled] {
+  color: var(--color-text-disabled);
+  text-shadow: 1px 1px 0 var(--color-text-disabled-etch);
+}
+
+@media (forced-colors: active) {
+  .popover {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}
+
+@media (forced-colors: active) {
+  .menuItem[data-focused] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}

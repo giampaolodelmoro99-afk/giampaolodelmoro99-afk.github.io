@@ -9,10 +9,22 @@ import {
   useMatches,
 } from "react-router";
 import { defaultLocale, localeFromPathname } from "../routes/routeMap";
+import proseHref from "../assets/fonts/IBMPlexSans-Regular-Latin1.woff2?url";
+import pixelOperatorBoldHref from "../assets/fonts/pixel-operator-700.woff2?url";
 import globalHref from "../styles/global.css?url";
 import type { Route } from "./+types/root";
 
+const fontPreload = (href: string) => ({
+  rel: "preload",
+  href,
+  as: "font",
+  type: "font/woff2",
+  crossOrigin: "anonymous" as const,
+});
+
 export const links: Route.LinksFunction = () => [
+  fontPreload(pixelOperatorBoldHref),
+  fontPreload(proseHref),
   { rel: "stylesheet", href: globalHref },
   { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
 ];

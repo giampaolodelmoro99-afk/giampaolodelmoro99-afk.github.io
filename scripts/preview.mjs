@@ -1,15 +1,21 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
-import { extname, join, normalize, resolve } from "node:path";
+import { networkInterfaces } from "node:os";
+import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // Server statico che imita GitHub Pages: file esistente → 200,
 // cartella senza slash finale → 301, cartella con index.html → 200,
 // tutto il resto → 404.html con status 404.
+// Ascolta solo in loopback (127.0.0.1 e, se disponibile, ::1, perché "localhost"
+// può risolvere su entrambi); con `npm run preview -- --host` ascolta su tutte
+// le interfacce, per provare il sito da un telefono sulla stessa rete Wi-Fi.
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)), "build/client");
 const port = Number(process.env.PORT ?? 4173);
+const lan = process.argv.includes("--host");
+const host = lan ? "0.0.0.0" : "127.0.0.1";
 
 /** @type {Record<string, string>} */
 const types = {
@@ -59,12 +65,19 @@ function send(res, file, status) {
   createReadStream(file).pipe(res);
 }
 
-const server = createServer(async (req, res) => {
+/** @type {import("node:http").RequestListener} */
+const handler = async (req, res) => {
   const url = new URL(req.url ?? "/", "http://localhost");
-  const pathname = decodeURIComponent(url.pathname);
+  let pathname;
+  try {
+    pathname = decodeURIComponent(url.pathname);
+  } catch {
+    res.writeHead(400).end();
+    return;
+  }
   const target = normalize(join(root, pathname));
 
-  if (!target.startsWith(root)) {
+  if (target !== root && !target.startsWith(`${root}${sep}`)) {
     res.writeHead(400).end();
     return;
   }
@@ -92,8 +105,24 @@ const server = createServer(async (req, res) => {
   }
 
   send(res, join(root, "404.html"), 404);
+};
+
+createServer(handler).listen(port, host, () => {
+  console.log(`Preview su http://localhost:${port}`);
+  if (!lan) return;
+  const addresses = Object.values(networkInterfaces())
+    .flat()
+    .filter((address) => address?.family === "IPv4" && !address.internal);
+  for (const address of addresses) {
+    console.log(`In rete locale: http://${address?.address}:${port}`);
+  }
 });
 
-server.listen(port, () => {
-  console.log(`Preview su http://localhost:${port}`);
-});
+if (!lan) {
+  createServer(handler)
+    .on("error", (/** @type {NodeJS.ErrnoException} */ error) => {
+      if (error.code === "EADDRNOTAVAIL" || error.code === "EAFNOSUPPORT") return;
+      throw error;
+    })
+    .listen(port, "::1");
+}

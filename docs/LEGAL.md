@@ -6,7 +6,7 @@ Questo documento è **vincolante**: ogni modifica che lo viola va segnalata e no
 
 - Font salvati nel progetto, niente CDN, niente analytics, niente embed (YouTube, mappe, social), niente pixel.
 - **Unica eccezione**: la chiamata a Web3Forms (`https://api.web3forms.com`) al momento dell'invio del form contatti, su azione esplicita del visitatore.
-- I link verso siti esterni (GitHub, LinkedIn) sono semplici `<a>` e non generano richieste finché il visitatore non li segue.
+- I link verso siti esterni (GitHub) sono semplici `<a>` e non generano richieste finché il visitatore non li segue.
 - Verifica automatica: la fixture e2e fallisce per qualsiasi richiesta verso un'origine diversa dal sito.
 
 ## 2. Storage tecnico e cookie
@@ -23,6 +23,8 @@ Il sito non usa cookie. Usa solo localStorage tecnico, necessario alle funzioni 
 | `contact.lastSubmitAt` | data e ora dell'ultimo invio del form (anti-abuso)                   | 3B   |
 
 Più `sessionStorage` `react-router-scroll-positions`, gestito da React Router per ripristinare lo scroll.
+
+**Storybook** (`/storybook/`, dalla Fase 1A): è lo strumento di documentazione del design system, non una pagina del sito, e non è indicizzato. Il suo manager salva in localStorage e sessionStorage dello stesso dominio lo stato dell'interfaccia (pannelli aperti, story selezionata, impostazioni della toolbar). È storage tecnico, senza identificativi né tracciamento, e si crea solo visitando `/storybook/`.
 
 **Qualsiasi chiave nuova va aggiunta a questa tabella e ad ADR-0003 prima del merge.** Niente identificativi, niente dati personali, niente tracciamento.
 
@@ -43,7 +45,7 @@ Linkata nel footer e accanto al pulsante di invio del form. Contenuti obbligator
 7. **Conservazione**: log secondo le policy di GitHub; messaggi nella casella email per il tempo necessario a rispondere e comunque non oltre 24 mesi; Web3Forms li conserva 30 giorni sul piano gratuito.
 8. **Diritti** (artt. 15-22): accesso, rettifica, cancellazione, limitazione, opposizione, portabilità; come esercitarli.
 9. **Reclamo** al Garante per la protezione dei dati personali (garanteprivacy.it).
-10. **Cookie e storage**: nessun cookie; elenco delle chiavi di §2 con lo scopo di ciascuna.
+10. **Cookie e storage**: nessun cookie; elenco delle chiavi di §2 con lo scopo di ciascuna, **compreso lo storage tecnico di Storybook sotto `/storybook/`** (da scrivere in F3B).
 11. Data dell'ultimo aggiornamento.
 
 ## 4. Form contatti (Fase 3B, ADR-0002)
@@ -57,7 +59,7 @@ Linkata nel footer e accanto al pulsante di invio del form. Contenuti obbligator
   - pausa tra invii (`contact.lastSubmitAt`)
   - pulsante disabilitato durante l'invio
   - restrizione al dominio nel pannello di Web3Forms
-- In caso di errore: messaggio accessibile e **canale alternativo sempre funzionante** (email offuscata, GitHub; LinkedIn solo se aggiunto in CONTENT.md).
+- In caso di errore: messaggio accessibile e **canale alternativo sempre funzionante** (email offuscata e GitHub). LinkedIn non compare sul sito (CONTENT.md §1).
 - **L'email non compare mai in chiaro** nell'HTML prerenderizzato, nel JSON-LD, in llms.txt o nella sitemap; si ricompone dopo l'idratazione. Un test sul build lo verifica.
 
 ## 5. Marchi

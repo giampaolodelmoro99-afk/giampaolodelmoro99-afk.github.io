@@ -12,7 +12,10 @@ for (const path of ["/", "/en/"]) {
 
 test("il collegamento della lingua misura almeno 44×44 px", async ({ page }) => {
   await openPage(page, "/");
-  const box = await page.getByRole("link", { name: "English version" }).boundingBox();
-  expect(box?.width).toBeGreaterThanOrEqual(44);
-  expect(box?.height).toBeGreaterThanOrEqual(44);
+  const box = await page.getByRole("link", { name: "English version" }).evaluate((element) => {
+    const { width, height } = element.getBoundingClientRect();
+    return { width, height };
+  });
+  expect(box.width).toBeGreaterThanOrEqual(44);
+  expect(box.height).toBeGreaterThanOrEqual(44);
 });

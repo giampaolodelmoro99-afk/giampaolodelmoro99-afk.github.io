@@ -3,7 +3,7 @@
   "plugins": ["stylelint-declaration-strict-value"],
   "rules": {
     "selector-class-pattern": "^[a-z][a-zA-Z0-9]*$",
-    "custom-property-pattern": "^[a-z][a-z0-9-]*$",
+    "custom-property-pattern": "^_?[a-z][a-z0-9-]*$",
     "declaration-no-important": true,
     "color-named": "never",
     "color-no-hex": true,
@@ -17,7 +17,7 @@
   },
   "overrides": [
     {
-      "files": ["src/**/*.module.css", "src/styles/global.css"],
+      "files": ["src/**/*.module.css", "src/styles/global.css", ".storybook/**/*.module.css"],
       "rules": {
         "scale-unlimited/declaration-strict-value": [
           [
@@ -33,7 +33,13 @@
             "z-index",
             "/^(margin|padding|gap|row-gap|column-gap)/",
             "/^(transition|animation)(-duration|-timing-function)?$/",
-            "border-radius"
+            "border-radius",
+            "text-shadow",
+            "opacity",
+            "translate",
+            "outline-offset",
+            "text-underline-offset",
+            "text-decoration-thickness"
           ],
           {
             "ignoreValues": [
@@ -56,7 +62,8 @@
     {
       "files": ["src/styles/tokens.css"],
       "rules": {
-        "color-no-hex": null
+        "color-no-hex": null,
+        "color-hex-length": "long"
       }
     }
   ]

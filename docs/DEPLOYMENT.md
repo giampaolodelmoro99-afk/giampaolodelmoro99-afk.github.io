@@ -4,7 +4,7 @@
 
 - Hosting: **GitHub Pages**, repo `giampaolodelmoro99-afk/giampaolodelmoro99-afk.github.io` (user site, servito dalla radice: niente `base` in Vite).
 - Pubblicazione tramite GitHub Actions (`build_type: workflow`) con `actions/upload-pages-artifact` e `actions/deploy-pages`.
-- Contenuto pubblicato: `build/client` (HTML prerenderizzato, asset, `404.html`).
+- Contenuto pubblicato: `build/client` (HTML prerenderizzato, asset, `404.html`, `robots.txt` e Storybook in `/storybook/`).
 
 ## 2. Dominio
 
@@ -14,14 +14,30 @@
 
 ## 3. Workflow
 
-| Workflow     | Trigger                                                    | Cosa fa                                                                                                                                                                       |
-| ------------ | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ci.yml`     | push su `main` e `phase/**`, pull request, `workflow_call` | quality (format, lint, typecheck, unit con coverage, audit delle dipendenze di produzione), build, prerender + size, e2e nel container (2 shard), Lighthouse mobile e desktop |
-| `deploy.yml` | **`workflow_dispatch`** oppure **tag `v*`**                | richiama `ci.yml`; se è tutto verde scarica l'artifact `build` e pubblica `build/client`                                                                                      |
+| Workflow     | Trigger                                                                                      | Cosa fa                                                                                                                                                                                                                                                |
+| ------------ | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ci.yml`     | push su `main` e `phase/**`, pull request, `workflow_call`                                   | quality (format, lint, typecheck, unit con coverage, audit delle dipendenze di produzione), build del sito e di Storybook, prerender + size, e2e nel container (2 shard, compresi i progetti `storybook` e `performance`), Lighthouse mobile e desktop |
+| `deploy.yml` | **`workflow_dispatch`** oppure **tag `vMAJOR.MINOR.PATCH`** (filtro `v[0-9]+.[0-9]+.[0-9]+`) | job `tag` che ricontrolla il nome del tag, poi richiama `ci.yml`; se è tutto verde scarica l'artifact `build` e pubblica `build/client`                                                                                                                |
 
 - Permessi minimi: `contents: read` ovunque; `pages: write` e `id-token: write` solo nel job di pubblicazione.
 - `concurrency: pages` evita pubblicazioni sovrapposte.
-- I tag di fase sono `phase-NN` e **non** fanno partire il deploy. Solo i tag `v*` lo fanno.
+- **Solo i tag di versione `vMAJOR.MINOR.PATCH`** (es. `v1.0.0`, `v1.2.3`) fanno partire il deploy. Non lo fanno:
+  - i tag di fase `phase-NN` (e `phase-01a`, `phase-01b`)
+  - i tag con suffisso, come `v1.0.0-legacy` (la v1) o `v1.0.0-rc1`
+- Doppio controllo: il filtro `tags` di GitHub confronta il nome intero; il job `tag` ripete il controllo con la regex `^v[0-9]+\.[0-9]+\.[0-9]+$` e ferma il workflow prima della CI. `workflow_dispatch` resta libero per il rollback (§8).
+- Il test `scripts/lib/workflows.test.mjs` verifica entrambe le regole su tag validi e non validi.
+
+### Runner
+
+Tutti i job usano **`runs-on: ubuntu-24.04`**, mai `ubuntu-latest`: GitHub sposta `ubuntu-latest` su Ubuntu 26.04 dal 19/10/2026, e un cambio di sistema non deve arrivare senza preavviso. 24.04 (Noble) è anche la base dell'immagine Playwright `-noble` usata dagli e2e. Il test `scripts/lib/workflows.test.mjs` fallisce se un workflow usa `ubuntu-latest` o un runner senza versione.
+
+**Aggiornare il runner** (per esempio a `ubuntu-26.04`):
+
+1. Branch dedicato (`chore/runner-ubuntu-26.04`), creato dal proprietario.
+2. Sostituire `ubuntu-24.04` in `ci.yml` e `deploy.yml`.
+3. Se esiste, passare anche all'immagine Playwright basata sulla nuova Ubuntu (tag `-<nome in codice>`) in `ci.yml` e negli script `test:e2e*`, poi rigenerare gli screenshot nel container (skill `update-visual-snapshots`).
+4. CI completa verde, con Lighthouse 100 su mobile e desktop, prima del merge.
+5. Farlo prima del ritiro di 24.04 annunciato da GitHub (controllare il changelog di GitHub Actions e `actions/runner-images`).
 
 ## 4. Prima pubblicazione della v2 e transizione
 

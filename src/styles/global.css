@@ -1,4 +1,5 @@
 @import url("./tokens.css");
+@import url("./fonts.css");
 
 *,
 *::before,
@@ -7,10 +8,7 @@
 }
 
 html {
-  font-family: var(--font-family-ui);
   font-size: var(--font-size-root);
-  line-height: var(--line-height-body);
-  color: var(--color-text);
   background: var(--color-desktop);
   text-size-adjust: 100%;
 }
@@ -19,14 +17,20 @@ body {
   margin: var(--space-0);
   min-block-size: 100dvh;
   overflow-x: hidden;
+  color: var(--color-text);
+  background: var(--color-desktop);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
 }
 
 ::selection {
-  color: var(--color-text-inverse);
-  background: var(--color-accent);
+  color: var(--color-selection-text);
+  background: var(--color-selection);
 }
 
 :focus-visible {
-  outline: 1px dotted var(--color-focus);
-  outline-offset: 2px;
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
 }

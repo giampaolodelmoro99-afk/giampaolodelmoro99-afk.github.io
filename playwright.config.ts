@@ -5,6 +5,7 @@ const baseURL = `http://localhost:${port}`;
 const visual = /visual\.spec\.ts$/;
 const keyboard = /keyboard\.spec\.ts$/;
 const touch = /touch\.spec\.ts$/;
+const performance = /performance\.spec\.ts$/;
 
 const viewports = [
   { name: "chromium-320", width: 320, height: 640 },
@@ -32,22 +33,32 @@ export default defineConfig({
     ...viewports.map(({ name, width, height }) => ({
       name,
       use: { ...devices["Desktop Chrome"], viewport: { width, height } },
-      testIgnore: touch,
+      testIgnore: [touch, performance],
     })),
     {
       name: "touch-pixel-7",
       use: { ...devices["Pixel 7"] },
-      testIgnore: [visual, keyboard],
+      testIgnore: [visual, keyboard, performance],
     },
     {
       name: "touch-iphone-14",
       use: { ...devices["iPhone 14"] },
-      testIgnore: [visual, keyboard],
+      testIgnore: [visual, keyboard, performance],
+    },
+    {
+      name: "performance",
+      testMatch: performance,
+      use: { ...devices["Pixel 7"] },
+    },
+    {
+      name: "storybook",
+      testDir: "tests/storybook",
+      use: { ...devices["Desktop Chrome"], viewport: { width: 1024, height: 768 } },
     },
     {
       name: "firefox-1440",
       use: { ...devices["Desktop Firefox"], viewport: { width: 1440, height: 900 } },
-      testIgnore: [visual, touch],
+      testIgnore: [visual, touch, performance],
     },
   ],
   webServer: {

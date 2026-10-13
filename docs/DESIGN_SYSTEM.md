@@ -1,67 +1,150 @@
-# Design system
+# Design system GDM 95
 
-Stato: **iniziale (Fase 0)**. Il catalogo dei componenti, i temi completi e i font si completano in Fase 1.
+Stato: **Fase 1A** (token, temi, font, icone, Storybook). I componenti arrivano in Fase 1B.
+
+Il riferimento approvato è il pacchetto di consegna **GDM 95** (Claude Design, 13/10/2026) in [`docs/design/gdm95/`](design/gdm95/): token, linee guida, CSS di riferimento dei componenti, icone e pagine di esempio. Il pacchetto è documentazione: si conserva così com'è e non viene importato dal codice. Questo documento descrive come il pacchetto è stato portato in `src/` e le regole del repository.
 
 ## 1. Principi
 
-- **Proporzioni del 95, non pixel del 95.** I controlli del 95 erano pensati per 640×480 (font 11 px, pulsanti alti 23 px). Si conservano i rapporti (altezza/font ≈ 2,1, bevel a due livelli, spaziature) scalati per schermi moderni, come faceva `uiScale` nella v1.
-- **Una sola fonte.** Colori, bevel, spaziature, tipografia, z-index e durate esistono solo come variabili in `src/styles/tokens.css`. I CSS Modules usano solo `var(--…)`, e Stylelint vieta valori letterali.
-- **Accessibile prima che fedele.** Se l'estetica 95 confligge con WCAG 2.2 AA (contrasto, dimensione del testo, target touch), vince l'accessibilità.
-- **Originale.** Nessun asset Microsoft: l'estetica si ricrea con CSS, SVG e asset con licenza libera (`ASSETS.md`).
+- **Proporzioni del 95, non pixel del 95.** I controlli del 95 erano pensati per 640×480 (font 11 px, pulsanti alti 23 px). Si conservano i rapporti (pulsante alto circa il doppio del testo, bevel a due livelli, spazi stretti) con testo a 16 px.
+- **Una sola fonte.** Colori, bevel, misure, tipografia, z-index e durate esistono solo come variabili in `src/styles/tokens.css`. I CSS Modules usano solo `var(--…)`, e Stylelint vieta i valori letterali.
+- **Accessibile prima che fedele.** Se l'estetica 95 confligge con WCAG 2.2 AA, vince l'accessibilità. Le deroghe applicate sono nel README del pacchetto, sezione "Scelte rispetto al 95".
+- **Originale.** Nessun asset Microsoft e nessun nome di prodotto Microsoft nelle etichette. Ogni asset nuovo va registrato in `ASSETS.md` prima di essere usato.
 
 ## 2. Token
 
-| Gruppo     | Token (Fase 0)                                                                                                                                                                                                                  | Note                                                                                                            |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Colori     | `--color-desktop`, `--color-surface`, `--color-surface-light`, `--color-highlight`, `--color-shadow`, `--color-shadow-dark`, `--color-accent`, `--color-text`, `--color-text-inverse`, `--color-text-disabled`, `--color-focus` | Palette classica. Testo bianco su `#008080` = 4,77:1 (AA per testo normale).                                    |
-| Bevel      | `--bevel-raised`, `--bevel-sunken`                                                                                                                                                                                              | Quattro `box-shadow` inset, uno l'inverso dell'altro. In F1: `--bevel-field`, `--bevel-window`.                 |
-| Spaziature | `--space-0` … `--space-6`, `--space-gutter`, `--space-safe-top`, `--space-safe-bottom`                                                                                                                                          | In `rem`, così seguono la dimensione del testo. Gutter e safe-area includono `env(safe-area-inset-*)`.          |
-| Tipografia | `--font-family-ui`, `--font-family-document`, `--font-family-mono`, `--font-size-root/sm/md/lg/title`, `--font-weight-*`, `--line-height-*`                                                                                     | In F0 font di sistema. In F1: Pixel Operator (UI) e IBM Plex Sans (documenti).                                  |
-| Breakpoint | `--bp-xs` 320, `--bp-sm` 480, `--bp-md` 768, `--bp-lg` 1024, `--bp-xl` 1440                                                                                                                                                     | Documentativi. Le `@media` usano gli stessi valori in px, perché le variabili non funzionano nelle media query. |
-| Touch      | `--touch-target-min` 44px                                                                                                                                                                                                       | Minimo per ogni controllo in modalità touch.                                                                    |
-| Z-index    | `--z-desktop` 0, `--z-icons` 10, `--z-window` 100, `--z-taskbar` 1000, `--z-menu` 1100, `--z-overlay` 2000                                                                                                                      | Le finestre usano offset dentro `--z-window`.                                                                   |
-| Movimento  | `--duration-instant/fast/base/slow`, `--easing-standard` (`steps(4, end)`)                                                                                                                                                      | Azzerati da `prefers-reduced-motion`. In F4 anche dal Pannello di controllo.                                    |
-| Forma      | `--radius-none`                                                                                                                                                                                                                 | Il 95 non ha angoli arrotondati.                                                                                |
+`src/styles/tokens.css` contiene **tutto** `docs/design/gdm95/tokens.css`, con gli stessi valori; le descrizioni di ogni token sono in `tokens.json` del pacchetto. Il test `src/styles/tokens.test.ts` verifica che nessun valore del pacchetto sia cambiato e che ogni `var()` usata nei CSS di `src/` sia definita.
+
+| Gruppo     | Token principali                                                                                                                                                | Note                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Colori     | superfici, testo, campi, documento, barra del titolo attiva e inattiva, selezione, link, errore, successo, tooltip, focus, `--color-pixel-*`                    | Due temi, contrasti verificati: testo ≥ 4,5:1 nel classico e ≥ 7:1 in alto contrasto             |
+| Bevel      | `--bevel-raised`, `-sunken`, `-field`, `-window`, `-pressed`, `-default`, `-default-pressed`, `-status`, `-groove`, `-hover`, `-tab`                            | `box-shadow` inset a due livelli; in alto contrasto diventano bordi pieni                        |
+| Misure     | coppie `*-desktop` / `*-touch` e i loro **alias**                                                                                                               | I componenti leggono solo gli alias (vedi §3)                                                    |
+| Focus      | `--focus-width`, `--focus-halo-width`, `--focus-offset`, `--focus-offset-inset`, `--focus-style`, `--focus-halo`, `--focus-halo-inset`                          | Doppio anello (§5)                                                                               |
+| Tipografia | `--font-family-ui` (alias), `-ui-pixel`, `-ui-readable`, `-document`, `-prose`, `-mono`; `--font-size-sm…2xl`, `-title`; pesi; interlinee; `--measure-document` | Il font pixel non scende mai sotto `--font-size-md` (16 px)                                      |
+| Spaziature | `--space-0` … `--space-6`, `--space-gutter`, `--space-safe-top`, `--space-safe-bottom`                                                                          | In `rem`, seguono la dimensione del testo; gutter e safe-area includono `env(safe-area-inset-*)` |
+| Breakpoint | `--bp-xs` 320, `--bp-sm` 480, `--bp-md` 768, `--bp-lg` 1024, `--bp-xl` 1440                                                                                     | Solo di riferimento: le `@media` usano gli stessi valori in px                                   |
+| Z-index    | `--z-desktop` 0, `--z-icons` 10, `--z-window` 100, `--z-taskbar` 1000, `--z-menu` 1100, `--z-tooltip` 1200, `--z-overlay` 2000                                  | Le finestre usano offset dentro `--z-window`                                                     |
+| Movimento  | `--duration-instant/fast/base/slow`, `--easing-standard` (`steps(4, end)`)                                                                                      | Azzerati da `prefers-reduced-motion` e da `data-motion="reduce"`                                 |
+| Forma      | `--radius-none`                                                                                                                                                 | Il 95 non ha angoli arrotondati                                                                  |
+
+**Aggiunte della Fase 1A** (non nel pacchetto: servono a togliere i valori letterali rimasti nel CSS di riferimento dei componenti, decisione D6 del piano):
+
+| Token                                                                                        | Valore                                           | Uso                                                                   |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------- |
+| `--space-bevel`                                                                              | `var(--bevel-width)` (2 px)                      | stacchi pari a un bevel: barra di stato, taskbar, schede              |
+| `--offset-pressed`                                                                           | 1px                                              | contenuto spostato quando un controllo è premuto                      |
+| `--text-etch-offset`, `--text-etch`                                                          | 1px; `1px 1px 0 var(--color-text-disabled-etch)` | incisione del testo disabilitato                                      |
+| `--underline-offset`, `--underline-thickness`                                                | 3px; 1px                                         | sottolineatura in hover di etichette e icone                          |
+| `--focus-offset-label`, `--focus-ring-spread-label`, `--focus-halo-label`                    | 1px; calcolati                                   | anello attorno alle etichette di checkbox, radio e icone              |
+| `--opacity-disabled`, `--opacity-inactive`, `--opacity-dither`                               | 0.5; 0.6; 0.75                                   | icone disabilitate, icona del desktop disabilitata e selezionata      |
+| `--z-raised`                                                                                 | 1                                                | controllo con focus sopra i vicini                                    |
+| `--menu-min-width`, `--start-menu-min-width`, `--start-menu-item-min-height`                 | 11rem; 15rem; 2.5rem                             | menu a comparsa e menu Start                                          |
+| `--dialog-width`, `--listbox-max-height`, `--statusbar-field-height`                         | 28rem; `min(20rem, 60vh)`; 1.5rem                | dialog, lista dei select, campi della barra di stato                  |
+| `--dither-selection`                                                                         | retino 2 px di `--color-selection`               | icona del desktop selezionata                                         |
+| `--font-family-prose`                                                                        | `var(--font-family-document)` (IBM Plex Sans)    | frasi e paragrafi, in ogni tema e con ogni `data-font` (§4)           |
+| `--bevel-thin-raised`, `--bevel-thin-separator`, `--bevel-taskbar-top`, `--bevel-group-line` | bevel di 1 px                                    | voci della barra dei menu, separatori, bordo della taskbar, group box |
+
+I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither-selection`, i bevel sottili) sono dichiarati su `:root, [data-theme]`, come `--focus-halo`: si ricalcolano dentro un contenitore con un tema diverso.
 
 **Regole:**
 
-- Un nuovo valore visivo nasce come token, poi si usa.
+- Un nuovo valore visivo nasce come token (qui e in questa tabella), poi si usa.
 - Un token si rinomina solo con un refactor completo.
-- I colori esadecimali sono ammessi solo in `tokens.css` (Stylelint `color-no-hex`).
+- I colori esadecimali sono ammessi solo in `tokens.css`, nella forma lunga del pacchetto (`#ffffff`).
 
-## 3. Temi (Fase 1)
+## 3. Impostazioni sull'elemento `<html>`
 
-- **Classico**: palette di §2.
-- **Alto contrasto**: `[data-theme="high-contrast"]` ridefinisce i token colore (contrasto ≥ 7:1 dove possibile) e usa il font leggibile anche per l'interfaccia. Rispetta anche `forced-colors: active` (colori di sistema, bordi visibili al posto dei bevel).
-- **Dimensione del testo**: impostazione del Pannello di controllo che agisce su `--font-size-root`. Tutte le misure in `rem` seguono.
+| Attributo          | Valori                                   | Effetto                                                                                                       |
+| ------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `data-theme`       | `classic` (predefinito), `high-contrast` | Ridefinisce colori e bevel                                                                                    |
+| `data-font`        | assente, `pixel`, `readable`             | Font dell'interfaccia, **indipendente dal tema**. Assente: `pixel` nel classico, `readable` in alto contrasto |
+| `data-input`       | assente, `mouse`, `touch`                | Modalità dei controlli. Assente: decide `@media (pointer: coarse)`                                            |
+| `data-motion`      | assente, `reduce`                        | "Riduci animazioni": azzera le durate come `prefers-reduced-motion`                                           |
+| `--font-size-root` | 100%, 112,5%, 125%                       | Dimensione del testo: tutte le misure in rem seguono                                                          |
 
-## 4. Font (Fase 1)
+- `data-theme` e `data-font` vanno sullo **stesso** elemento, così `data-font` vince sempre sul predefinito del tema.
+- I componenti leggono solo gli alias (`--font-family-ui`, `--control-height`, `--titlebar-height`, `--choice-box`, `--menu-item-height`, `--scrollbar-size`, `--taskbar-height`, `--target-min`…), mai i token `*-desktop`/`*-touch` o `-pixel`/`-readable` direttamente.
+- In Fase 1A gli attributi si cambiano dalla toolbar di Storybook. La persistenza delle preferenze e lo script che le applica prima del primo disegno arrivano con il Pannello di controllo (F4A).
 
-| Ruolo                | Font                                           | Licenza     | Uso                                                          |
-| -------------------- | ---------------------------------------------- | ----------- | ------------------------------------------------------------ |
-| Interfaccia e titoli | Pixel Operator (regular e bold)                | CC0 1.0     | titlebar, menu, pulsanti, etichette                          |
-| Testi lunghi         | IBM Plex Sans (regular, bold, italic se serve) | SIL OFL 1.1 | finestre "documento" stile WordPad: bio, case study, privacy |
+## 4. Temi e font
 
-**Requisiti** (vedi ADR-0010):
+- **Classico**: palette del 95 con le deroghe elencate in §9 (barra inattiva `#666666` con testo bianco, pulsanti della barra del titolo 24×24, focus a doppio anello).
+- **Alto contrasto** (`data-theme="high-contrast"`): nero, testo bianco, barra del titolo gialla, selezione ciano, link gialli, bordi pieni al posto dei bevel, font leggibile per l'interfaccia.
+- **`forced-colors: active`**: i token passano ai colori di sistema (anche dentro un sottoalbero con `data-theme`, aggiunta della 1A, e con il contorno delle icone su `CanvasText`) e i componenti disegnano bordi `ButtonText` dove spariscono i bevel.
 
-- subset woff2 con lettere accentate italiane maiuscole e minuscole, virgolette e apostrofo tipografici, €, … – —
-- preload solo del font necessario al primo paint
-- `font-display: swap` con fallback metrico (`size-adjust`, `ascent-override`, `descent-override`) per avere CLS 0
-- alto contrasto e "dimensione testo" possono usare IBM Plex Sans anche per l'interfaccia
+| Ruolo                                               | Font                                                    | Licenza     | File                                              |
+| --------------------------------------------------- | ------------------------------------------------------- | ----------- | ------------------------------------------------- |
+| Titoli, etichette e controlli (pixel)               | Pixel Operator regular e bold, subset                   | CC0 1.0     | `src/assets/fonts/pixel-operator-{400,700}.woff2` |
+| Frasi e paragrafi, interfaccia leggibile, documenti | IBM Plex Sans regular, bold, corsivo (Latin1 ufficiali) | SIL OFL 1.1 | `src/assets/fonts/IBMPlexSans-*-Latin1.woff2`     |
+| Codice e Terminale                                  | monospace di sistema                                    | –           | –                                                 |
+
+- `@font-face` in `src/styles/fonts.css`, con `font-display: swap` e fallback metrici (`"Pixel Operator Fallback"`, `"IBM Plex Sans Fallback"`) calcolati da `npm run fonts`.
+- **Regola d'uso (decisione del 13/10/2026).** Pixel Operator solo per **titoli, etichette e controlli** (`--font-family-ui`). Tutto il testo che si legge come frase o paragrafo usa **`--font-family-prose`** (IBM Plex Sans, interlinea `--line-height-body`), anche nel tema classico e anche con `data-font="pixel"`: a 16 px Pixel Operator rende come un Arial di circa 12,5 px, adatto alle etichette brevi ma non alla lettura. Esempi: la frase della home e i messaggi della 404 sono in prosa; titoli, link di navigazione, pulsanti e voci di menu restano in pixel.
+- Preload di **Pixel Operator bold** (titolo della home) e **IBM Plex Sans regular** (frase della home, elemento LCP): 24,1 kB, sotto il budget di 25. Pixel Operator regular (link) arriva dal CSS con il fallback metrico.
+- Dettagli, fonti e motivazioni: ADR-0010 e `ASSETS.md`. DotGothic16, usato nelle anteprime di Claude Design, non è nel sito.
 
 ## 5. Convenzioni CSS Modules e React Aria
 
-- Un file `Componente.module.css` accanto a `Componente.tsx`. Classi in camelCase (Stylelint `selector-class-pattern`).
-- Gli stati vengono dagli attributi di React Aria Components, non da classi aggiunte a mano: `[data-hovered]`, `[data-pressed]`, `[data-focus-visible]`, `[data-selected]`, `[data-disabled]`, `[data-open]`.
+- Un file `Componente.module.css` accanto a `Componente.tsx`, partendo dal CSS di riferimento del pacchetto (`docs/design/gdm95/components/<Nome>/`). Classi in camelCase.
+- Gli stati vengono solo dagli attributi di React Aria Components: `[data-hovered]`, `[data-pressed]`, `[data-focus-visible]`, `[data-focused]`, `[data-selected]`, `[data-disabled]`, `[data-open]`, `[data-invalid]`.
+- Proprietà personalizzate **private** di un modulo con il prefisso `_` (`--_bevel`, `--_halo`); Stylelint le ammette solo così.
+- Dipendenze tra moduli con `composes` (es. `composes: root from "../Button/Button.module.css"`); nessuna classe globale.
 - Mobile-first: lo stile base vale a 320 px, le `@media (min-width: …)` aggiungono.
-- Nessun `!important` (Stylelint).
-- Focus: contorno tratteggiato 1 px stile 95 (`--color-focus`), sempre visibile con tastiera.
-- Stato disabilitato: il controllo resta visibile, testo `--color-text-disabled` con l'ombra chiara di 1 px.
+- Nessun `!important`. Gli unici stili inline ammessi sono variabili CSS con valori dinamici (es. `--glyph-width`), tipizzate in `src/types/css.d.ts`.
+- Stylelint controlla con `declaration-strict-value` colori, sfondi, ombre, font, spaziature, z-index, durate e anche `text-shadow`, `opacity`, `translate`, `outline-offset`, `text-underline-offset`, `text-decoration-thickness` (test in `src/styles/stylelint.test.ts`).
 
-## 6. Componenti (catalogo da completare in Fase 1)
+**Focus — doppio anello.** Ogni elemento interattivo ha un tratteggio `--color-focus` di 2 px sopra un alone pieno `--color-focus-halo` (6 px in tutto), visibile anche sul blu della barra del titolo e sul petrolio del desktop.
 
-Pulsante, pulsante icona, campo di testo, area di testo, checkbox, radio, select/listbox, slider, tab, menu, finestra (cornice), titlebar, barra di stato, gruppo (fieldset), barra di avanzamento, tooltip, dialog, icona del desktop. Ognuno ha story, test e varianti dei temi.
+```css
+.root[data-focus-visible] {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo), var(--bevel-raised);
+}
+```
+
+- L'alone va sempre per primo nel `box-shadow`.
+- Dentro contenitori con overflow (voci di menu, opzioni, schede): `--focus-offset-inset` e `--focus-halo-inset`.
+- Pulsanti, select e icone usano `[data-focus-visible]` (solo tastiera); i campi di testo `[data-focused]` (sempre).
+- Gli elementi nativi (link delle pagine) ricevono lo stesso anello da `:focus-visible` in `global.css`.
+
+**Disabilitato**: il controllo resta visibile, testo `--color-text-disabled` con `--text-etch`. È esente da WCAG 1.4.3 (componenti inattivi).
+
+## 6. Componenti (Fase 1B)
+
+Catalogo del pacchetto, da implementare in Fase 1B (piano in `docs/phases/phase-01-plan.md`, appendice B, da riconfermare): Button (anche con sola icona e `aria-label`), TextField, TextArea, Checkbox, Radio/RadioGroup, Select, Window, MenuBar, Tabs, Tooltip, ScrollArea, ProgressBar, GroupBox, StatusBar, TaskbarButton e Taskbar, StartButton, DesktopIcon, AlertDialog. Icon e Glyph sono già in Fase 1A.
+
+- Lo **slider** non è nel pacchetto: si valuta in F4A se il Pannello di controllo ne avrà bisogno.
+- Ogni componente ha test, story (tag `visual` per gli screenshot), axe pulito e target di 44 px in modalità touch.
+- **Il form Contatti delle pagine di esempio del pacchetto è solo dimostrativo.** Il form del sito resta quello di SPECS.md §7: nome, email e messaggio, senza "Argomento", "Rispondimi via" né casella di consenso; LinkedIn non compare.
 
 ## 7. Icone
 
-Pixel art originale in SVG (`viewBox="0 0 16 16"` o 32, `shape-rendering="crispEdges"`, colori dai token tramite `currentColor` o variabili). Ogni icona va registrata in `ASSETS.md`. Le icone decorative hanno `aria-hidden`; quelle che sono controlli hanno un nome accessibile sul controllo.
+- 33 SVG originali in pixel art in `src/assets/icons/` (14 icone a 16 e 32 px, monogramma GDM, tre icone dei dialoghi a 32 px), registrati in `ASSETS.md`.
+- `npm run icons` genera `src/components/Icon/iconData.ts` e `glyphData.ts`. Ogni path ha un ruolo di colore (`pixelNavy`, `pixelYellow`…) che il CSS Module di Icon lega a `--color-pixel-*`. Regola per il nero: **il primo path `#000000` di un SVG è il contorno** (`--color-pixel-outline`, bianco in alto contrasto), gli altri sono riempimenti neri. Un test fallisce se i dati generati non sono allineati agli SVG.
+- `Icon`: `name`, `size` (16 o 32; le icone dei dialoghi solo 32, anche nei tipi), `scale` intera, `label`. Senza `label` è decorativa (`aria-hidden`), con `label` ha `role="img"`.
+- `Glyph`: glifi dei controlli (spunta, trattino, frecce, riduci, ingrandisci, ripristina, chiudi) a `--glyph-pixel` in `currentColor`; i dati del cerchio del radio sono pronti per la 1B.
+- Gli SVG con i colori scritti dentro servono per favicon (`public/favicon.svg` = monogramma GDM 32), immagini Open Graph (F5) e documentazione.
+- Scala solo per interi, `shape-rendering="crispEdges"`, mai sfocare o ruotare.
+
+## 8. Storybook
+
+Storybook 10 documenta il design system e serve i test visivi.
+
+- `npm run storybook` in sviluppo; `npm run build` lo costruisce in `build/client/storybook/`, pubblicato in `/storybook/` (noindex, CSP dedicata, `Disallow` in robots.txt: PERFORMANCE_SEO.md §12).
+- Toolbar: tema, font, input, movimento, dimensione del testo e lingua, applicati all'`<html>` dell'anteprima con gli stessi attributi del sito; si possono passare anche dall'URL (`&globals=theme:high-contrast;input:touch`).
+- Pagine "Fondamenta": Introduzione e Token (colori e bevel dei due temi affiancati, tipografia), in `.storybook/docs/`.
+- Le pagine "Fondamenta" e le story di esempio sono documentazione in italiano: la regola "testi solo nei dizionari" vale per il sito, non per Storybook. I componenti ricevono comunque i testi dalle props o dai dizionari.
+- Le story con tag `visual` vengono fotografate in tema classico e alto contrasto, con input mouse e touch; tutte le story passano axe con il contrasto (TESTING.md §6).
+
+## 9. Scelte rispetto al 95 (deroghe)
+
+Le deroghe del pacchetto sono nel suo README ("Scelte rispetto al 95"). In più, decise dopo la consegna:
+
+| Token                                                           | Pacchetto                                         | Sito                                                          | Motivo                                                                                                                      |
+| --------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `--color-titlebar-inactive`, `--color-titlebar-inactive-border` | `#6a6a6a` (2,97:1 sul telaio `#c0c0c0`)           | **`#666666`** (3,16:1 sul telaio, 5,74:1 con il testo bianco) | WCAG 1.4.11 chiede 3:1 per i bordi dei componenti: `#6a6a6a` era appena sotto. Decisione del 13/10/2026 dopo l'a11y-auditor |
+| Font delle frasi                                                | Pixel Operator anche per i testi dell'interfaccia | IBM Plex Sans per frasi e paragrafi (`--font-family-prose`)   | Leggibilità (§4)                                                                                                            |
+
+Il test `src/styles/tokens.test.ts` conosce queste deroghe: verifica che il pacchetto abbia il valore originale e il sito quello nuovo. In F2A la finestra attiva avrà anche un segnale non cromatico (non basta la differenza di colore tra barra attiva e inattiva).

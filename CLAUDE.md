@@ -7,7 +7,9 @@ Portfolio v2 di Gianpaolo Del Moro (gianpaolodelmoro.it) in stile Windows 95: Re
 | Comando                                                 | Uso                                                                                     |
 | ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | `npm run dev`                                           | dev server: **non** prova CSP, prerender, deep link e 404                               |
-| `npm run build && npm run preview`                      | verifica reale, come su GitHub Pages                                                    |
+| `npm run build && npm run preview`                      | verifica reale, come su GitHub Pages (sito + Storybook); `preview -- --host` per la LAN |
+| `npm run build:site` · `storybook` · `analyze`          | solo il sito · Storybook in sviluppo · treemap del bundle in `build/stats.html`         |
+| `npm run fonts` · `icons`                               | rigenera il subset di Pixel Operator · i dati di Icon e Glyph dagli SVG                 |
 | `npm run lint` · `typecheck` · `test` · `test:coverage` | Oxlint + Stylelint · typegen + tsc · Vitest                                             |
 | `npm run test:prerender`                                | HTML statico (dopo `build`)                                                             |
 | `npm run test:e2e`                                      | Playwright completo nel container Docker (come la CI); `test:e2e:host` senza screenshot |
@@ -57,7 +59,8 @@ Un componente o una feature è finito solo se:
 ## Asset e aspetti legali
 
 - **Vietati gli asset Microsoft**: font (MS Sans Serif ecc.), icone, suoni, logo Windows, Clippy.
-- Ogni nuovo asset (font, icona, suono, immagine) va registrato in `docs/ASSETS.md` con fonte, autore, versione e licenza.
+- Ogni nuovo asset (font, icona, suono, immagine) va registrato in `docs/ASSETS.md` con fonte, autore, versione, licenza e SHA-256: un test confronta il registro con i file.
+- Design system: il pacchetto approvato è in `docs/design/gdm95/` (solo documentazione, non si modifica né si importa). I componenti leggono solo gli alias dei token, mai `*-desktop`/`*-touch`.
 - Rispettare sempre `docs/LEGAL.md`. Nessuna richiesta a terze parti al caricamento della pagina, solo storage tecnico elencato.
 
 ## v1

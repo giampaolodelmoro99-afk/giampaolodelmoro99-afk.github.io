@@ -1,0 +1,73 @@
+/* ProgressBar.module.css — CSS di riferimento GDM 95. Solo var(--…) da tokens.css; stati dagli attributi data-* di React Aria. */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.value {
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  position: relative;
+  block-size: var(--progress-height);
+  padding: calc(var(--bevel-width) + 1px);
+  background: var(--color-field);
+  box-shadow: var(--bevel-status);
+  overflow: hidden;
+}
+
+.fill {
+  block-size: 100%;
+  background: repeating-linear-gradient(
+  to right,
+  var(--color-accent) 0 var(--progress-block-width),
+  transparent var(--progress-block-width) calc(var(--progress-block-width) + var(--progress-block-gap))
+  );
+}
+
+.fill[data-indeterminate] {
+  inline-size: 30%;
+  animation: progress calc(var(--duration-slow) * 5) steps(10, end) infinite;
+}
+
+@keyframes progress {
+  from { translate: -100% 0; }
+  to { translate: 340% 0; }
+}
+
+[data-motion="reduce"] .fill[data-indeterminate] {
+  animation: none;
+  inline-size: 100%;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill[data-indeterminate] {
+    animation: none;
+    inline-size: 100%;
+    opacity: 0.5;
+  }
+}
+
+@media (forced-colors: active) {
+  .track {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}
+
+@media (forced-colors: active) {
+  .fill {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}

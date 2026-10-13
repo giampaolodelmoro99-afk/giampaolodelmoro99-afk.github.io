@@ -5,7 +5,7 @@
   min-block-size: 100dvh;
   padding-block: var(--space-safe-top) var(--space-safe-bottom);
   padding-inline: var(--space-gutter);
-  color: var(--color-text-inverse);
+  color: var(--color-desktop-text);
   background: var(--color-desktop);
   text-align: center;
 }
@@ -21,7 +21,9 @@
 .tagline {
   max-inline-size: 40ch;
   margin: var(--space-0) auto;
+  font-family: var(--font-family-prose);
   font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
 }
 
 .languageLink {
@@ -33,8 +35,4 @@
   padding-inline: var(--space-3);
   color: inherit;
   font-size: var(--font-size-md);
-}
-
-.languageLink:focus-visible {
-  outline-color: var(--color-text-inverse);
 }

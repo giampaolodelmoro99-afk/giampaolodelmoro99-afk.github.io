@@ -1,0 +1,100 @@
+{
+  "descrizione": "Glifi in pixel art per i componenti. Ogni riga è una fila di pixel; 'X' = pixel pieno in currentColor. Disegna ogni pixel come rettangolo 1×1 in un SVG con viewBox pari a larghezza×altezza e shape-rendering=crispEdges; dimensione resa = lato × --glyph-pixel.",
+  "glyphs": {
+    "check": [
+      "......X",
+      ".....XX",
+      "X...XXX",
+      "XX.XXX.",
+      "XXXXX..",
+      ".XXX...",
+      "..X...."
+    ],
+    "dash": [
+      ".......",
+      ".......",
+      ".......",
+      "XXXXXXX",
+      "XXXXXXX",
+      ".......",
+      "......."
+    ],
+    "down": [
+      "XXXXX",
+      ".XXX.",
+      "..X.."
+    ],
+    "up": [
+      "..X..",
+      ".XXX.",
+      "XXXXX"
+    ],
+    "right": [
+      "X..",
+      "XX.",
+      "XXX",
+      "XX.",
+      "X.."
+    ],
+    "left": [
+      "..X",
+      ".XX",
+      "XXX",
+      ".XX",
+      "..X"
+    ],
+    "minimize": [
+      "........",
+      "........",
+      "........",
+      "........",
+      "........",
+      "XXXXXX..",
+      "XXXXXX.."
+    ],
+    "maximize": [
+      "XXXXXXXXX",
+      "XXXXXXXXX",
+      "X.......X",
+      "X.......X",
+      "X.......X",
+      "X.......X",
+      "X.......X",
+      "XXXXXXXXX"
+    ],
+    "restore": [
+      "..XXXXXX",
+      "..XXXXXX",
+      "..X....X",
+      "XXXXXX.X",
+      "XXXXXX.X",
+      "X....XXX",
+      "X....X..",
+      "XXXXXX.."
+    ],
+    "close": [
+      "XX....XX",
+      ".XX..XX.",
+      "..XXXX..",
+      "...XX...",
+      "..XXXX..",
+      ".XX..XX.",
+      "XX....XX"
+    ]
+  },
+  "radio": {
+    "descrizione": "Cerchio del radio 10×10. Lettere: s = --color-shadow, k = --color-shadow-dark, w = --color-highlight, l = --color-surface-light, f = fondo (--color-field, o --color-surface se premuto/disabilitato), D = punto (fondo se non selezionato, --color-text se selezionato).",
+    "rows": [
+      "...ssss...",
+      ".sskkkksw.",
+      ".skfffflw.",
+      "skffDDfflw",
+      "skfDDDDflw",
+      "skfDDDDflw",
+      "skffDDfflw",
+      ".skfffflw.",
+      ".swllllww.",
+      "...wwww..."
+    ]
+  }
+}

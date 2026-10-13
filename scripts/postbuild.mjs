@@ -25,6 +25,7 @@ async function listHtml(dir) {
   const entries = await readdir(dir, { withFileTypes: true, recursive: true });
   return entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".html"))
+    .filter((entry) => !relative(client, entry.parentPath).split(/[\\/]/).includes("storybook"))
     .map((entry) => join(entry.parentPath, entry.name));
 }
 

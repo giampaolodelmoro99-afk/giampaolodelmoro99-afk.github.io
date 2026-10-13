@@ -1,0 +1,91 @@
+.glyph {
+  display: block;
+  inline-size: calc(var(--glyph-width) * var(--glyph-pixel));
+  block-size: calc(var(--glyph-height) * var(--glyph-pixel));
+  flex: none;
+  fill: currentcolor;
+}
+
+.root {
+  display: block;
+  flex: none;
+  image-rendering: pixelated;
+}
+
+.pixelOutline {
+  fill: var(--color-pixel-outline);
+}
+
+.pixelBlack {
+  fill: var(--color-pixel-black);
+}
+
+.pixelWhite {
+  fill: var(--color-pixel-white);
+}
+
+.pixelSilver {
+  fill: var(--color-pixel-silver);
+}
+
+.pixelGray {
+  fill: var(--color-pixel-gray);
+}
+
+.pixelNavy {
+  fill: var(--color-pixel-navy);
+}
+
+.pixelBlue {
+  fill: var(--color-pixel-blue);
+}
+
+.pixelTeal {
+  fill: var(--color-pixel-teal);
+}
+
+.pixelCyan {
+  fill: var(--color-pixel-cyan);
+}
+
+.pixelYellow {
+  fill: var(--color-pixel-yellow);
+}
+
+.pixelOlive {
+  fill: var(--color-pixel-olive);
+}
+
+.pixelRed {
+  fill: var(--color-pixel-red);
+}
+
+.pixelMaroon {
+  fill: var(--color-pixel-maroon);
+}
+
+.pixelGreen {
+  fill: var(--color-pixel-green);
+}
+
+.pixelLime {
+  fill: var(--color-pixel-lime);
+}
+
+.pixelPurple {
+  fill: var(--color-pixel-purple);
+}
+
+.pixelOrange {
+  fill: var(--color-pixel-orange);
+}
+
+.pixelSkin {
+  fill: var(--color-pixel-skin);
+}
+
+@media (forced-colors: active) {
+  .root {
+    forced-color-adjust: none;
+  }
+}
