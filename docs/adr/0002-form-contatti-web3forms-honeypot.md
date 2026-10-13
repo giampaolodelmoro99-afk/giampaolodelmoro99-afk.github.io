@@ -27,7 +27,7 @@ Il sito è statico su GitHub Pages: niente backend. Serve un modo per farsi cont
   - pulsante disabilitato durante l'invio
   - restrizione al dominio `gianpaolodelmoro.it` nel pannello di Web3Forms (DEPLOYMENT.md §6)
 - **Stati accessibili**: in corso, inviato e errore annunciati in una regione live, con il focus sul messaggio.
-- **Invio fallito** (quota esaurita, servizio irraggiungibile, rete assente, risposta non valida, timeout): messaggio chiaro, dati conservati e **canale alternativo sempre funzionante**. Il canale è l'email offuscata (ricomposta dopo l'idratazione, mai in chiaro nell'HTML prerenderizzato né nel JSON-LD) più il link GitHub; LinkedIn solo se aggiunto in CONTENT.md. Il canale alternativo è visibile anche nella finestra Contatti.
+- **Invio fallito** (quota esaurita, servizio irraggiungibile, rete assente, risposta non valida, timeout): messaggio chiaro, dati conservati e **canale alternativo sempre funzionante**. Il canale è l'email offuscata (ricomposta dopo l'idratazione, mai in chiaro nell'HTML prerenderizzato né nel JSON-LD) più il link GitHub. LinkedIn non compare sul sito (CONTENT.md §1). Il canale alternativo è visibile anche nella finestra Contatti.
 - **Test**: e2e con `page.route` che simulano 500, quota esaurita, rete assente, JSON malformato e timeout. Test sul build che l'email non compaia in chiaro.
 
 ## Limiti dichiarati

@@ -71,7 +71,7 @@ Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconferma
 
 - [ ] Verifica di privacy policy e DPA di Web3Forms; ADR-0002 accettata o piano B
 - [ ] Form contatti: `replyto`, nessuna email automatica, access key da variabile di build, validazione, honeypot, tempo minimo, pausa tra invii, stati accessibili
-- [ ] Gestione degli errori di invio con canale alternativo sempre funzionante (email offuscata, GitHub, LinkedIn solo se in CONTENT.md)
+- [ ] Gestione degli errori di invio con canale alternativo sempre funzionante (email offuscata e GitHub; LinkedIn non compare sul sito)
 - [ ] Email mai in chiaro in HTML prerenderizzato, JSON-LD, llms e sitemap (test sul build)
 - [ ] e2e con risposte di errore simulate: 500, quota esaurita, rete assente, risposta non valida, timeout
 - [ ] Restrizione al dominio nel pannello di Web3Forms (DEPLOYMENT.md)
@@ -88,8 +88,8 @@ Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconferma
 
 ## 4B. Svago
 
-- [ ] Prompt MS-DOS
-- [ ] Prato fiorito (accessibile da tastiera)
+- [ ] Terminale
+- [ ] Campo minato (accessibile da tastiera)
 - [ ] Cestino con la v1 (screenshot e link al tag)
 - [ ] Screensaver (rispetta reduced motion)
 - [ ] Easter egg registrati in EASTER_EGGS.md

@@ -6,7 +6,7 @@ Questo documento è **vincolante**: ogni modifica che lo viola va segnalata e no
 
 - Font salvati nel progetto, niente CDN, niente analytics, niente embed (YouTube, mappe, social), niente pixel.
 - **Unica eccezione**: la chiamata a Web3Forms (`https://api.web3forms.com`) al momento dell'invio del form contatti, su azione esplicita del visitatore.
-- I link verso siti esterni (GitHub, LinkedIn) sono semplici `<a>` e non generano richieste finché il visitatore non li segue.
+- I link verso siti esterni (GitHub) sono semplici `<a>` e non generano richieste finché il visitatore non li segue.
 - Verifica automatica: la fixture e2e fallisce per qualsiasi richiesta verso un'origine diversa dal sito.
 
 ## 2. Storage tecnico e cookie
@@ -57,7 +57,7 @@ Linkata nel footer e accanto al pulsante di invio del form. Contenuti obbligator
   - pausa tra invii (`contact.lastSubmitAt`)
   - pulsante disabilitato durante l'invio
   - restrizione al dominio nel pannello di Web3Forms
-- In caso di errore: messaggio accessibile e **canale alternativo sempre funzionante** (email offuscata, GitHub; LinkedIn solo se aggiunto in CONTENT.md).
+- In caso di errore: messaggio accessibile e **canale alternativo sempre funzionante** (email offuscata e GitHub). LinkedIn non compare sul sito (CONTENT.md §1).
 - **L'email non compare mai in chiaro** nell'HTML prerenderizzato, nel JSON-LD, in llms.txt o nella sitemap; si ricompone dopo l'idratazione. Un test sul build lo verifica.
 
 ## 5. Marchi
