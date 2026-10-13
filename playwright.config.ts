@@ -45,6 +45,11 @@ export default defineConfig({
       testIgnore: [visual, keyboard],
     },
     {
+      name: "storybook",
+      testDir: "tests/storybook",
+      use: { ...devices["Desktop Chrome"], viewport: { width: 1024, height: 768 } },
+    },
+    {
       name: "firefox-1440",
       use: { ...devices["Desktop Firefox"], viewport: { width: 1440, height: 900 } },
       testIgnore: [visual, touch],
