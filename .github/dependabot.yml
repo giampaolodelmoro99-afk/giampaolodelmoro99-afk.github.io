@@ -1,0 +1,53 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+      react-router:
+        patterns: ["react-router", "@react-router/*", "isbot"]
+      build:
+        patterns: ["vite", "typescript", "@types/node"]
+      test:
+        patterns:
+          [
+            "vitest",
+            "@vitest/*",
+            "@testing-library/*",
+            "jsdom",
+            "@types/jsdom",
+            "vitest-axe",
+            "axe-core",
+            "@axe-core/*",
+          ]
+      playwright:
+        patterns: ["@playwright/test"]
+      quality:
+        patterns:
+          [
+            "oxlint",
+            "oxlint-tsgolint",
+            "stylelint*",
+            "prettier",
+            "husky",
+            "lint-staged",
+            "@commitlint/*",
+            "size-limit",
+            "@size-limit/*",
+            "@lhci/cli",
+          ]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: ci
