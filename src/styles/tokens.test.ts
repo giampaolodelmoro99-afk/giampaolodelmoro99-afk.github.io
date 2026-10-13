@@ -26,19 +26,19 @@ function filesUnder(dir: string, extension: string): string[] {
     .map((entry) => join(entry.parentPath, entry.name));
 }
 
-const packageOnly = new Map([
-  ["--font-family-ui-pixel", '"Pixel Operator", DotGothic16, system-ui, sans-serif'],
-]);
+const projectFontStack = (value: string) =>
+  value
+    .replace("DotGothic16, ", '"Pixel Operator Fallback", ')
+    .replace('"IBM Plex Sans", system-ui', '"IBM Plex Sans", "IBM Plex Sans Fallback", system-ui');
 
 describe("tokens.css", () => {
   const ours = declarations(tokensCss);
 
-  it("contiene ogni token del pacchetto GDM 95 con lo stesso valore", () => {
+  it("contiene ogni token del pacchetto GDM 95 con lo stesso valore, più le facce di fallback dei font", () => {
     const missing: string[] = [];
     for (const [name, values] of declarations(packageCss)) {
       for (const value of values) {
-        if (packageOnly.get(name) === value) continue;
-        if (!ours.get(name)?.has(value)) missing.push(`${name}: ${value}`);
+        if (!ours.get(name)?.has(projectFontStack(value))) missing.push(`${name}: ${value}`);
       }
     }
     expect(missing).toEqual([]);

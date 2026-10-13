@@ -112,6 +112,21 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
       sha256Source(payload?.textContent ?? ""),
     );
   });
+
+  it("precarica solo i due pesi di Pixel Operator, file esistenti e dello stesso sito", async () => {
+    const { document } = await load(fileFor(href));
+    const preloads = [...document.querySelectorAll('link[rel="preload"]')];
+    expect(preloads.map((link) => link.getAttribute("href"))).toEqual([
+      expect.stringMatching(/^\/assets\/pixel-operator-400-[\w-]+\.woff2$/),
+      expect.stringMatching(/^\/assets\/pixel-operator-700-[\w-]+\.woff2$/),
+    ]);
+    for (const link of preloads) {
+      expect(link.getAttribute("as")).toBe("font");
+      expect(link.getAttribute("type")).toBe("font/woff2");
+      expect(link.getAttribute("crossorigin")).toBe("anonymous");
+      expect(existsSync(join(client, link.getAttribute("href") ?? ""))).toBe(true);
+    }
+  });
 });
 
 describe("404.html", () => {
