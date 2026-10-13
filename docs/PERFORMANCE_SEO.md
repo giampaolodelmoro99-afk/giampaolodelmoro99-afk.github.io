@@ -2,17 +2,35 @@
 
 ## 1. Budget
 
-| Metrica               | Budget             | Misura Fase 0 | Come si verifica    |
-| --------------------- | ------------------ | ------------- | ------------------- |
-| JS iniziale (gzip)    | ≤ 115 kB           | 112 kB        | `npm run size`      |
-| CSS iniziale (gzip)   | ≤ 12 kB            | 1,3 kB        | `npm run size`      |
-| Font in preload       | ≤ 25 kB (dalla F1) | –             | review + Lighthouse |
-| LCP (mobile simulato) | ≤ 1,2 s            | 0,9 s         | Lighthouse CI       |
-| FCP (mobile simulato) | ≤ 1,0 s            | 0,9 s         | Lighthouse CI       |
-| TBT (mobile simulato) | ≤ 50 ms            | 0 ms          | Lighthouse CI       |
-| CLS                   | ≤ 0,01             | 0             | Lighthouse CI       |
+| Metrica               | Budget             | Misura Fase 0 | Come si verifica |
+| --------------------- | ------------------ | ------------- | ---------------- |
+| JS iniziale (gzip)    | ≤ 115 kB           | 112 kB        | `npm run size`   |
+| CSS iniziale (gzip)   | ≤ 12 kB            | 1,3 kB        | `npm run size`   |
+| Font in preload       | ≤ 25 kB (dalla F1) | 6,3 kB (F1A)  | `npm run size`   |
+| LCP (mobile simulato) | ≤ 1,2 s            | 0,9 s         | Lighthouse CI    |
+| FCP (mobile simulato) | ≤ 1,0 s            | 0,9 s         | Lighthouse CI    |
+| TBT (mobile simulato) | ≤ 50 ms            | 0 ms          | Lighthouse CI    |
+| CLS                   | ≤ 0,01             | 0             | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
+
+### Analisi del bundle (Fase 1A)
+
+`npm run analyze` costruisce il sito con `rollup-plugin-visualizer` (solo l'environment `client`) e scrive la treemap in `build/stats.html`, fuori da `build/client`. Misura del 13/10/2026, JS iniziale della home 112,2 kB gzip:
+
+| Chunk                   | gzip    | Contenuto                                                                |
+| ----------------------- | ------- | ------------------------------------------------------------------------ |
+| `entry.client`          | 66,3 kB | React DOM (client e riconciliatore), scheduler                           |
+| `jsx-runtime`           | 39,1 kB | React e il router di React Router (data router, single fetch, hydration) |
+| `routeMap`              | 4,1 kB  | parte DOM di React Router (`Link`, `NavLink`), più `routeMap.ts`         |
+| route, root e dizionari | ≈ 3 kB  | codice del sito; i due dizionari valgono 0,9 kB gzip in tutto            |
+
+**Conclusione: non riducibile in modo significativo.**
+
+- React DOM e il nucleo di React Router sono il prezzo della modalità framework con prerender e idratazione (ADR-0006). Le alternative (Preact, un router scritto in casa) rompono React Aria Components o l'idratazione del prerender.
+- Dividere i dizionari per lingua farebbe risparmiare circa 0,4 kB gzip al costo di un caricamento asincrono dei testi: non vale la complessità.
+- Il JS parte dopo l'evento `load`, quindi non pesa su LCP né su TBT (Lighthouse mobile 100).
+- Il budget resta 115 kB. Dalla Fase 1B React Aria entra solo nei chunk delle app, con `@react-aria/optimize-locales-plugin` limitato a italiano e inglese; size-limit avrà una voce per i chunk dei componenti.
 
 ## 2. Lighthouse CI
 

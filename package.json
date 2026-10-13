@@ -29,7 +29,8 @@
     "icons": "node scripts/icons.mjs",
     "build:site": "react-router build && node scripts/postbuild.mjs",
     "build:storybook": "storybook build -o build/client/storybook --quiet && node scripts/postbuild-storybook.mjs",
-    "storybook": "storybook dev -p 6006"
+    "storybook": "storybook dev -p 6006",
+    "analyze": "ANALYZE=1 react-router build && node scripts/postbuild.mjs"
   },
   "dependencies": {
     "@react-router/node": "^8.4.0",
@@ -68,6 +69,7 @@
     "oxlint": "^1.88.0",
     "oxlint-tsgolint": "^7.0.2004",
     "prettier": "^3.9.10",
+    "rollup-plugin-visualizer": "^7.1.1",
     "size-limit": "^14.2.0",
     "storybook": "^10.6.2",
     "stylelint": "^17.16.0",
