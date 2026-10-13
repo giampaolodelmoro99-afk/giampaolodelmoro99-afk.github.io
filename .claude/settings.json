@@ -31,9 +31,6 @@
       "Bash(git merge*)",
       "Bash(git tag*)",
       "Bash(git rebase*)",
-      "Bash(git reset --hard*)",
-      "Bash(git checkout main*)",
-      "Bash(git switch main*)",
       "Bash(git branch -D*)",
       "Bash(git commit --no-verify*)",
       "Bash(git commit -n *)",
@@ -41,7 +38,15 @@
       "Edit(.claude/settings.local.json)",
       "Write(.claude/settings.local.json)",
       "Read(.env)",
-      "Read(.env.*)"
+      "Read(.env.*)",
+      "Bash(git checkout *)",
+      "Bash(git switch *)",
+      "Bash(git restore *)",
+      "Bash(git stash *)",
+      "Bash(git reset *)",
+      "Bash(git clean *)",
+      "Bash(git -C *)",
+      "Bash(git worktree *)"
     ]
   },
   "hooks": {
