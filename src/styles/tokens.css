@@ -37,9 +37,9 @@
   --color-document: #ffffff;
   --color-titlebar-active: #000080;
   --color-titlebar-active-text: #ffffff;
-  --color-titlebar-inactive: #6a6a6a;
+  --color-titlebar-inactive: #666666;
   --color-titlebar-inactive-text: #ffffff;
-  --color-titlebar-inactive-border: #6a6a6a;
+  --color-titlebar-inactive-border: #666666;
   --color-selection: #000080;
   --color-selection-text: #ffffff;
   --color-link: #0000c8;
@@ -276,6 +276,7 @@
   --dialog-width: 28rem;
   --listbox-max-height: min(20rem, 60vh);
   --statusbar-field-height: 1.5rem;
+  --font-family-prose: var(--font-family-document);
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */

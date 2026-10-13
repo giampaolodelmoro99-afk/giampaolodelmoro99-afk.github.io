@@ -31,6 +31,16 @@ const projectFontStack = (value: string) =>
     .replace("DotGothic16, ", '"Pixel Operator Fallback", ')
     .replace('"IBM Plex Sans", system-ui', '"IBM Plex Sans", "IBM Plex Sans Fallback", system-ui');
 
+const approvedOverrides = new Map([
+  ["--color-titlebar-inactive", { approved: "#6a6a6a", ours: "#666666" }],
+  ["--color-titlebar-inactive-border", { approved: "#6a6a6a", ours: "#666666" }],
+]);
+
+const expectedValue = (name: string, value: string) => {
+  const override = approvedOverrides.get(name);
+  return override?.approved === value ? override.ours : projectFontStack(value);
+};
+
 describe("tokens.css", () => {
   const ours = declarations(tokensCss);
 
@@ -38,10 +48,18 @@ describe("tokens.css", () => {
     const missing: string[] = [];
     for (const [name, values] of declarations(packageCss)) {
       for (const value of values) {
-        if (!ours.get(name)?.has(projectFontStack(value))) missing.push(`${name}: ${value}`);
+        if (!ours.get(name)?.has(expectedValue(name, value))) missing.push(`${name}: ${value}`);
       }
     }
     expect(missing).toEqual([]);
+  });
+
+  it("applica le deroghe approvate dopo la consegna del pacchetto (DESIGN_SYSTEM.md, Scelte rispetto al 95)", () => {
+    for (const [name, { approved, ours: value }] of approvedOverrides) {
+      expect(declarations(packageCss).get(name)?.has(approved)).toBe(true);
+      expect(ours.get(name)?.has(value)).toBe(true);
+      expect(ours.get(name)?.has(approved)).toBe(false);
+    }
   });
 
   it("non include il font sostitutivo delle anteprime", () => {
