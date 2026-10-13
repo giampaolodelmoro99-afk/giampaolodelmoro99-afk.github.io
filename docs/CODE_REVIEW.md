@@ -77,7 +77,7 @@ Comando utile: `git diff main...HEAD --stat -- tests '**/*.test.*' vitest.config
 
 - [ ] Nessuna richiesta a terze parti al caricamento; nessun nuovo storage fuori dall'elenco di LEGAL.md.
 - [ ] Nuovi asset registrati in ASSETS.md; nessun asset Microsoft.
-- [ ] Nessuno script o stile inline aggiunto a mano (CSP).
+- [ ] Nessuno script o stile inline aggiunto a mano (CSP), nessun attributo `style` nell'HTML prerenderizzato (ADR-0012).
 - [ ] Email mai in chiaro nel markup statico.
 
 ## 11. Documentazione

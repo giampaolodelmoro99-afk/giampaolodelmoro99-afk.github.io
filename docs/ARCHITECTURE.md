@@ -30,11 +30,12 @@ src/
   routes/routeMap.ts    fonte unica di route, slug per lingua, prerender
   i18n/                 dizionari tipizzati it.ts / en.ts, useT, useLocale
   seo/                  buildMeta, jsonLd
-  styles/               tokens.css (token GDM 95), fonts.css (@font-face), global.css (base)
+  styles/               tokens.css (token GDM 95), fonts.css (@font-face), global.css (base e regola di React Aria, ADR-0012)
   assets/               fonts/ (woff2 e licenze) e icons/ (SVG GDM 95), registrati in docs/ASSETS.md
   types/                dichiarazioni TypeScript (variabili CSS negli stili inline)
   features/<nome>/      componenti e CSS Module di una feature o app
-  components/           componenti del design system (Icon e Glyph dalla 1A, gli altri dalla 1B)
+  components/           componenti del design system (Icon e Glyph dalla 1A, gli altri dalla 1B),
+                        AriaRouterProvider (React Aria con React Router) e cx (classi dei moduli)
   stores/               store Zustand (dalla Fase 2)
   content/              dati tipizzati dei contenuti (dalla Fase 3)
 scripts/
@@ -116,10 +117,11 @@ L'elenco curato dei progetti sta in un file tipizzato. Uno script di build scari
 
 - **Fase 0**: `404.html`, idratazione rinviata, CSP.
 - **Fase 1A**: Storybook in `build/client/storybook/` con CSP propria (PERFORMANCE_SEO.md §12); `robots.txt` minimo in `public/`.
+- **Fase 1B**: la CSP del sito non cambia con React Aria: lo stile di `usePress` viene da `global.css`, segnalato dall'id sul suo link (ADR-0012).
 - **Fase 5**: sitemap con hreflang, `robots.txt`, `llms.txt` e `llms-full.txt` IT/EN, immagini Open Graph per route.
 
 Tutti derivano da `routeMap`, dai dizionari e dai dati dei contenuti.
 
 ## 10. Dipendenze ammesse
 
-Runtime: React, React DOM, React Router, React Aria Components (F1B), Zustand (F2). Ogni nuova dipendenza di runtime richiede una motivazione (peso, alternativa scritta in casa) nel piano di fase o in un ADR, e non deve violare i budget né `LEGAL.md`.
+Runtime: React, React DOM, React Router, React Aria Components (F1B, import per sottopercorso), Zustand (F2). Ogni nuova dipendenza di runtime richiede una motivazione (peso, alternativa scritta in casa) nel piano di fase o in un ADR, e non deve violare i budget né `LEGAL.md`.
