@@ -1,7 +1,11 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["react", "jsx-a11y", "typescript", "import", "unicorn", "oxc", "vitest"],
-  "env": { "browser": true, "node": true, "es2024": true },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2024": true
+  },
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -50,19 +54,29 @@
     "typescript/consistent-type-imports": "error",
     "typescript/no-floating-promises": "error",
     "import/no-cycle": "error",
-    "import/no-unassigned-import": ["error", { "allow": ["@testing-library/jest-dom/vitest"] }],
+    "import/no-unassigned-import": [
+      "error",
+      {
+        "allow": ["@testing-library/jest-dom/vitest", "**/*.css"]
+      }
+    ],
     "vitest/no-disabled-tests": "error",
     "vitest/no-focused-tests": "error",
     "vitest/no-commented-out-tests": "error",
     "vitest/no-conditional-tests": "error",
     "vitest/expect-expect": [
       "error",
-      { "assertFunctionNames": ["expect", "expect.*", "expectNoAxeViolations"] }
+      {
+        "assertFunctionNames": ["expect", "expect.*", "expectNoAxeViolations"]
+      }
     ],
     "vitest/warn-todo": "error",
     "no-restricted-globals": [
       "error",
-      { "name": "location", "message": "Naviga solo con React Router (useNavigate, Link)." }
+      {
+        "name": "location",
+        "message": "Naviga solo con React Router (useNavigate, Link)."
+      }
     ],
     "no-restricted-properties": [
       "error",
@@ -81,11 +95,16 @@
   "overrides": [
     {
       "files": ["src/**/*.tsx"],
-      "rules": { "no-inline-comments": "error" }
+      "rules": {
+        "no-inline-comments": "error"
+      }
     },
     {
       "files": ["scripts/**", "tests/**", "*.config.*", "src/app/routes.ts"],
-      "rules": { "no-restricted-globals": "off", "no-restricted-properties": "off" }
+      "rules": {
+        "no-restricted-globals": "off",
+        "no-restricted-properties": "off"
+      }
     }
   ]
 }

@@ -11,7 +11,7 @@
     "build": "react-router build && node scripts/postbuild.mjs",
     "preview": "node scripts/preview.mjs",
     "typecheck": "react-router typegen && tsc --noEmit",
-    "lint": "oxlint --type-aware && stylelint --allow-empty-input \"src/**/*.css\"",
+    "lint": "oxlint --type-aware && stylelint --allow-empty-input \"src/**/*.css\" \".storybook/**/*.css\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
@@ -26,7 +26,8 @@
     "lhci:mobile": "lhci autorun --config=lighthouserc.mobile.json",
     "lhci:desktop": "lhci autorun --config=lighthouserc.desktop.json",
     "fonts": "node scripts/fonts.mjs",
-    "icons": "node scripts/icons.mjs"
+    "icons": "node scripts/icons.mjs",
+    "storybook": "storybook dev -p 6006"
   },
   "dependencies": {
     "@react-router/node": "^8.4.0",
@@ -43,6 +44,9 @@
     "@playwright/test": "^1.64.0",
     "@react-router/dev": "^8.4.0",
     "@size-limit/file": "^14.2.0",
+    "@storybook/addon-a11y": "^10.6.2",
+    "@storybook/addon-docs": "^10.6.2",
+    "@storybook/react-vite": "^10.6.2",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
@@ -63,6 +67,7 @@
     "oxlint-tsgolint": "^7.0.2004",
     "prettier": "^3.9.10",
     "size-limit": "^14.2.0",
+    "storybook": "^10.6.2",
     "stylelint": "^17.16.0",
     "stylelint-config-css-modules": "^4.6.0",
     "stylelint-config-standard": "^40.0.0",

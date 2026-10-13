@@ -25,6 +25,27 @@ export type IconName = keyof typeof iconSizes;
 
 export type IconSize<Name extends IconName> = (typeof iconSizes)[Name][number];
 
+export const iconNames: readonly IconName[] = [
+  "about",
+  "contacts",
+  "controlpanel",
+  "cv",
+  "error",
+  "gdm",
+  "info",
+  "makingof",
+  "minefield",
+  "privacy",
+  "projects",
+  "run",
+  "simpleview",
+  "skills",
+  "terminal",
+  "timeline",
+  "trash",
+  "warning",
+];
+
 export type PixelRole =
   | "pixelOutline"
   | "pixelBlack"

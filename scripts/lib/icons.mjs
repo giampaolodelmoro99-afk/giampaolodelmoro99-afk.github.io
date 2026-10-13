@@ -123,6 +123,8 @@ export function renderIconModule(icons) {
     "",
     "export type IconSize<Name extends IconName> = (typeof iconSizes)[Name][number];",
     "",
+    `export const iconNames: readonly IconName[] = ${JSON.stringify(Object.keys(table))};`,
+    "",
     "export type PixelRole =",
     ...["pixelOutline", ...Object.values(colorRoles)].map((role) => `  | ${JSON.stringify(role)}`),
     "  ;",

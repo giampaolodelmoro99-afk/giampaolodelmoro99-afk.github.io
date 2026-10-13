@@ -17,7 +17,7 @@
   },
   "overrides": [
     {
-      "files": ["src/**/*.module.css", "src/styles/global.css"],
+      "files": ["src/**/*.module.css", "src/styles/global.css", ".storybook/**/*.module.css"],
       "rules": {
         "scale-unlimited/declaration-strict-value": [
           [
