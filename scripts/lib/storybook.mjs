@@ -25,7 +25,7 @@ export function storybookCsp(hashes) {
 }
 
 const externalResource =
-  /<(?:script|iframe|img|source)\b[^>]*\ssrc="(?:https?:)?\/\/|<link\b[^>]*\shref="(?:https?:)?\/\//i;
+  /<(?:script|iframe|img|source)\b[^>]*\ssrc=["']?(?:https?:)?\/\/|<link\b[^>]*\shref=["']?(?:https?:)?\/\//i;
 
 /**
  * Prepara un HTML di Storybook per la pubblicazione: verifica il meta robots

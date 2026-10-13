@@ -57,7 +57,7 @@
     "import/no-unassigned-import": [
       "error",
       {
-        "allow": ["@testing-library/jest-dom/vitest", "**/*.css"]
+        "allow": ["@testing-library/jest-dom/vitest"]
       }
     ],
     "vitest/no-disabled-tests": "error",
@@ -104,6 +104,17 @@
       "rules": {
         "no-restricted-globals": "off",
         "no-restricted-properties": "off"
+      }
+    },
+    {
+      "files": [".storybook/**"],
+      "rules": {
+        "import/no-unassigned-import": [
+          "error",
+          {
+            "allow": ["**/*.css"]
+          }
+        ]
       }
     }
   ]

@@ -40,6 +40,16 @@ describe("prepareStorybookHtml", () => {
       "esterna",
     ],
     [
+      "con uno script esterno tra apici singoli",
+      page(`${robotsMeta}<script src='https://cdn.example/x.js'></script>`),
+      "esterna",
+    ],
+    [
+      "con uno script esterno senza virgolette",
+      page(`${robotsMeta}<script src=//cdn.example/x.js></script>`),
+      "esterna",
+    ],
+    [
       "con un foglio di stile esterno",
       page(`${robotsMeta}<link rel="stylesheet" href="//cdn.example/x.css">`),
       "esterna",
