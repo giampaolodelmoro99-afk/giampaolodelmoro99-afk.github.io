@@ -1,4 +1,5 @@
 import type { SVGProps } from "react";
+import { cx } from "../cx";
 import { type IconData, type IconName, type IconSize, iconSizes, icons } from "./iconData";
 import styles from "./Icon.module.css";
 
@@ -29,7 +30,7 @@ export function Icon<Name extends IconName>({
 
   return (
     <svg
-      className={[styles.root, className].filter(Boolean).join(" ")}
+      className={cx(styles.root, className)}
       viewBox={`0 0 ${data.size} ${data.size}`}
       width={pixels}
       height={pixels}

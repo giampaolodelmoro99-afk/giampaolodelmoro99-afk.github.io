@@ -1,4 +1,6 @@
-import { screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { createRoutesStub } from "react-router";
 import { describe, expect, it } from "vitest";
 import { expectNoAxeViolations } from "../../../tests/setup/axe";
 import { renderAt } from "../../../tests/setup/render";
@@ -16,6 +18,19 @@ describe("NotFound", () => {
       "href",
       "/en/",
     );
+  });
+
+  it("usa il Link di React Aria e naviga con React Router senza ricaricare", async () => {
+    const Stub = createRoutesStub([
+      { path: "/en/", Component: () => <p>English home</p> },
+      { path: "*", Component: NotFound },
+    ]);
+    render(<Stub initialEntries={["/sconosciuta"]} />);
+    const link = screen.getByRole("link", { name: "Back to the home page" });
+    expect(link).toHaveAttribute("data-react-aria-pressable", "true");
+    expect(link).toHaveAttribute("hreflang", "en");
+    await userEvent.click(link);
+    expect(screen.getByText("English home")).toBeInTheDocument();
   });
 
   it("non ha violazioni axe", async () => {

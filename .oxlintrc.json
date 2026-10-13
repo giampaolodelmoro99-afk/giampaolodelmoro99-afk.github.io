@@ -135,7 +135,8 @@
     {
       "files": ["src/components/AriaRouterProvider/AriaRouterProvider.tsx"],
       "rules": {
-        "no-restricted-imports": "off"
+        "no-restricted-imports": "off",
+        "react/hooks": "off"
       }
     }
   ]

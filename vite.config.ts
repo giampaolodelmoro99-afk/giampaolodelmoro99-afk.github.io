@@ -23,5 +23,17 @@ export default defineConfig({
   ],
   build: {
     assetsInlineLimit: 0,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "framework",
+              test: /[\\/]node_modules[\\/](react|react-dom|react-router|scheduler|cookie|set-cookie-parser)[\\/]/,
+            },
+          ],
+        },
+      },
+    },
   },
 });

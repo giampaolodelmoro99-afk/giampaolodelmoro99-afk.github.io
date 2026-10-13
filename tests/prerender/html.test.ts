@@ -140,6 +140,19 @@ describe("404.html", () => {
       getDictionary("it").notFound.heading,
     );
   });
+
+  it("ha link <a href> normali verso le due home, utilizzabili prima dell'idratazione", async () => {
+    const { document } = await load(join(client, "404.html"));
+    const links = [...document.querySelectorAll("main nav a")].map((link) => [
+      link.getAttribute("href"),
+      link.getAttribute("hreflang"),
+      link.textContent,
+    ]);
+    expect(links).toEqual([
+      [routeMap.desktop.it, null, getDictionary("it").notFound.home],
+      [routeMap.desktop.en, "en", getDictionary("en").notFound.home],
+    ]);
+  });
 });
 
 const siteHtmlFiles = existsSync(client)
