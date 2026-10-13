@@ -73,8 +73,8 @@ describe("font serviti dal sito", () => {
     },
   );
 
-  it("i due pesi di Pixel Operator in preload restano sotto i 25 kB in tutto", () => {
-    const preloaded = ["pixel-operator-400.woff2", "pixel-operator-700.woff2"];
+  it("i font in preload (titolo e frasi della home) restano sotto i 25 kB in tutto", () => {
+    const preloaded = ["pixel-operator-700.woff2", "IBMPlexSans-Regular-Latin1.woff2"];
     const total = preloaded.reduce((sum, file) => sum + statSync(`${fonts}/${file}`).size, 0);
     expect(total).toBeLessThanOrEqual(25 * 1024);
   });

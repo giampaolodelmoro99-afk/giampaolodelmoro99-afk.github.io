@@ -19,20 +19,20 @@ function renderDocument(path: string, routeId: string) {
   return renderToString(<Stub initialEntries={[path]} />);
 }
 
-const fontPreload = (weight: string) =>
+const fontPreload = (file: string) =>
   expect.objectContaining({
     rel: "preload",
     as: "font",
     type: "font/woff2",
     crossOrigin: "anonymous",
-    href: expect.stringContaining(`pixel-operator-${weight}`),
+    href: expect.stringContaining(file),
   });
 
 describe("root", () => {
-  it("precarica i due pesi del font pixel e collega foglio di stile e favicon", () => {
+  it("precarica il font pixel del titolo e quello delle frasi, poi foglio di stile e favicon", () => {
     expect(links()).toEqual([
-      fontPreload("400"),
-      fontPreload("700"),
+      fontPreload("pixel-operator-700"),
+      fontPreload("IBMPlexSans-Regular-Latin1"),
       expect.objectContaining({ rel: "stylesheet" }),
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
     ]);

@@ -113,12 +113,12 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
     );
   });
 
-  it("precarica solo i due pesi di Pixel Operator, file esistenti e dello stesso sito", async () => {
+  it("precarica solo Pixel Operator bold (titolo) e IBM Plex Sans regular (frasi), file esistenti e dello stesso sito", async () => {
     const { document } = await load(fileFor(href));
     const preloads = [...document.querySelectorAll('link[rel="preload"]')];
     expect(preloads.map((link) => link.getAttribute("href"))).toEqual([
-      expect.stringMatching(/^\/assets\/pixel-operator-400-[\w-]+\.woff2$/),
       expect.stringMatching(/^\/assets\/pixel-operator-700-[\w-]+\.woff2$/),
+      expect.stringMatching(/^\/assets\/IBMPlexSans-Regular-Latin1-[\w-]+\.woff2$/),
     ]);
     for (const link of preloads) {
       expect(link.getAttribute("as")).toBe("font");

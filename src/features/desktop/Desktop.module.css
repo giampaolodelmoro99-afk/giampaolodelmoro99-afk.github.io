@@ -21,7 +21,9 @@
 .tagline {
   max-inline-size: 40ch;
   margin: var(--space-0) auto;
+  font-family: var(--font-family-prose);
   font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
 }
 
 .languageLink {
