@@ -24,6 +24,8 @@ Il sito non usa cookie. Usa solo localStorage tecnico, necessario alle funzioni 
 
 Più `sessionStorage` `react-router-scroll-positions`, gestito da React Router per ripristinare lo scroll.
 
+**Storybook** (`/storybook/`, dalla Fase 1A): è lo strumento di documentazione del design system, non una pagina del sito, e non è indicizzato. Il suo manager salva in localStorage e sessionStorage dello stesso dominio lo stato dell'interfaccia (pannelli aperti, story selezionata, impostazioni della toolbar). È storage tecnico, senza identificativi né tracciamento, e si crea solo visitando `/storybook/`.
+
 **Qualsiasi chiave nuova va aggiunta a questa tabella e ad ADR-0003 prima del merge.** Niente identificativi, niente dati personali, niente tracciamento.
 
 ## 3. Informativa privacy (pagina /privacy, IT ed EN, Fase 3B)
@@ -43,7 +45,7 @@ Linkata nel footer e accanto al pulsante di invio del form. Contenuti obbligator
 7. **Conservazione**: log secondo le policy di GitHub; messaggi nella casella email per il tempo necessario a rispondere e comunque non oltre 24 mesi; Web3Forms li conserva 30 giorni sul piano gratuito.
 8. **Diritti** (artt. 15-22): accesso, rettifica, cancellazione, limitazione, opposizione, portabilità; come esercitarli.
 9. **Reclamo** al Garante per la protezione dei dati personali (garanteprivacy.it).
-10. **Cookie e storage**: nessun cookie; elenco delle chiavi di §2 con lo scopo di ciascuna.
+10. **Cookie e storage**: nessun cookie; elenco delle chiavi di §2 con lo scopo di ciascuna, **compreso lo storage tecnico di Storybook sotto `/storybook/`** (da scrivere in F3B).
 11. Data dell'ultimo aggiornamento.
 
 ## 4. Form contatti (Fase 3B, ADR-0002)

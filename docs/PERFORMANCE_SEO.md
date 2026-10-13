@@ -75,6 +75,8 @@ Il JSON-LD non è soggetto alla CSP degli script (tipo non eseguibile), ma resta
 
 ## 7. robots.txt e crawler AI (Fase 5, verifica in Fase 6)
 
+Dalla Fase 1A esiste un `public/robots.txt` minimo (`User-agent: *`, `Allow: /`, `Disallow: /storybook/`), verificato dal test prerender. In F5 diventa il file completo:
+
 - `User-agent: *` + `Allow: /`.
 - Accesso esplicito ai crawler di ricerca e AI, come nella v1: GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-SearchBot, Claude-User, PerplexityBot, Perplexity-User, Google-Extended, Applebot-Extended, meta-externalagent, Amazonbot, CCBot. L'elenco si aggiorna in F5.
 - `Disallow: /storybook/`.
@@ -93,6 +95,17 @@ Immagini 1200×630 per route e lingua, generate in build con i font liberi del p
 - **Nessun cloaking**: nessun rilevamento dei crawler tramite user agent, nessun contenuto diverso tra bot e persone.
 - Il boot (F4A) è un overlay che non diventa l'elemento LCP, non sposta il layout, compare solo alla prima visita (chiave di storage "boot già visto"), si salta da tastiera e touch e viene saltato con reduced motion. Lighthouse lo misura come un visitatore nuovo, e deve comunque dare 100.
 - Animazioni solo con `transform` e `opacity`, durate dai token.
+
+### JavaScript dopo l'evento load
+
+L'idratazione parte dopo `load` (§3), quindi non pesa su LCP. Resta da controllare che non ritardi in modo percepibile la prima interazione.
+
+- **Misura attuale** (`tests/e2e/performance.spec.ts`, progetto Playwright `performance`: Pixel 7, CPU rallentata 4× via CDP): tempo da `load` a `html[data-hydrated]` e long task. Fase 1A: idratazione circa 260 ms dopo `load`, una long task di circa 60 ms. Soglie del test: idratazione entro 1 s, nessuna long task oltre 200 ms.
+- **In Fase 2A**, con il window manager:
+  1. la stessa misura, con la home che contiene desktop, icone e taskbar
+  2. INP del primo clic su un'icona subito dopo l'idratazione (Event Timing API, `interactionId`), con soglia ≤ 200 ms su CPU 4×
+  3. TBT di Lighthouse ≤ 50 ms (budget di §1) e un flusso Lighthouse "timespan" apri-finestra
+  4. un clic prima dell'idratazione resta una navigazione completa verso il deep link (comportamento voluto, ADR-0006)
 - I suoni si caricano solo dopo un'interazione e mai nel chunk iniziale.
 
 ## 11. Trailing slash e canonical su GitHub Pages
@@ -105,4 +118,9 @@ GitHub Pages risponde a `/en` con un 301 verso `/en/` (cartella con `index.html`
 
 ## 12. Storybook
 
-Pubblicato in `/storybook/` dalla F1, escluso dall'indicizzazione: `meta robots noindex`, `Disallow: /storybook/` in robots.txt, fuori da sitemap, llms.txt e Lighthouse CI.
+Pubblicato in `/storybook/` dalla F1A, escluso dall'indicizzazione: `meta robots noindex, nofollow` nel manager e nell'anteprima, `Disallow: /storybook/` in robots.txt, fuori da sitemap, llms.txt e Lighthouse CI (gli URL di `lighthouserc` sono espliciti).
+
+- **Build**: `npm run build` costruisce il sito e poi Storybook in `build/client/storybook/`; `build:site` costruisce solo il sito.
+- **CSP**: `scripts/postbuild.mjs` ignora la cartella `storybook`, quindi la CSP del sito non cambia. `scripts/postbuild-storybook.mjs` inserisce in `index.html` e `iframe.html` una **CSP dedicata** come primo elemento di `<head>`: script solo dal sito e con hash, `style-src 'self' 'unsafe-inline'` (Storybook inserisce stili a runtime), `font-src 'self' data:` (font incorporati delle pagine Docs), `frame-src 'self'`, niente `unsafe-eval`. La build fallisce se mancano i meta noindex o se compaiono risorse esterne.
+- `project.json`, che Storybook genera per la telemetria, viene tolto: elencherebbe le dipendenze di sviluppo. La telemetria è disattivata.
+- Test: prerender (noindex, CSP dedicata, `project.json` assente, robots.txt, nessun riferimento a Storybook nelle pagine del sito) ed e2e (manager senza errori né richieste esterne).

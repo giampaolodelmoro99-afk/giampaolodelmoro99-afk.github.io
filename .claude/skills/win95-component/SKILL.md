@@ -24,7 +24,7 @@ Per ogni componente riutilizzabile in `src/components/` (pulsante, campo, checkb
    - interazione con `userEvent` (mouse e tastiera)
    - stati e varianti
    - `expectNoAxeViolations(container)` da `tests/setup/axe.ts`
-7. **Story**: tutte le varianti, stati (disabled, focus), temi, viewport 320 e 1440.
+7. **Story**: parti dal README e dal CSS di riferimento in `docs/design/gdm95/components/<Nome>/`. Story `Default` e `AllStates` con tutte le varianti e gli stati statici; tag `visual` sulle story da fotografare (temi e input si cambiano dalla toolbar, i test `tests/storybook/` le fotografano in classico/alto contrasto × mouse/touch e le passano ad axe). Screenshot solo nel container.
 8. **Verifica nel browser** (Storybook e `npm run build && npm run preview` se usato in una pagina) a 320 e 1440 px, con tastiera. Usa QA_CHECKLIST.md.
 
 ## Checklist di uscita
