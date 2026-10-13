@@ -42,9 +42,9 @@ Piano: [phase-01-plan.md](phases/phase-01-plan.md) §1–§10.
 
 Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 14/10/2026).
 
-- [ ] Sostituire le icone di Campo minato (16 e 32 px): il disegno attuale (erba e fiori) richiama "Prato fiorito". Nuova versione da Claude Design, SHA-256 in ASSETS.md, `npm run icons`, screenshot
-- [ ] CSP del sito e stile inserito a runtime da React Aria (`react-aria-pressable-style`), prima del primo componente nelle pagine
-- [ ] Pagina 404 con il `Link` di React Aria e test e2e con la CSP reale (ADR-0012)
+- [x] Sostituire le icone di Campo minato (16 e 32 px): il disegno attuale (erba e fiori) richiama "Prato fiorito". Nuova versione da Claude Design, SHA-256 in ASSETS.md, `npm run icons`, screenshot
+- [x] CSP del sito e stile inserito a runtime da React Aria (`react-aria-pressable-style`), prima del primo componente nelle pagine
+- [x] Pagina 404 con il `Link` di React Aria e test e2e con la CSP reale (ADR-0012)
 - [ ] Peso dei componenti con size-limit: totale, gruppo del desktop per la F2A, incremento per componente
 - [ ] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
 
