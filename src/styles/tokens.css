@@ -252,6 +252,27 @@
 
   --focus-ring-spread: calc(var(--focus-offset) + var(--focus-width) + var(--focus-halo-width));
   --no-shadow: 0 0 0 0 transparent;
+
+  /* Aggiunte della Fase 1A, non presenti nel pacchetto (DESIGN_SYSTEM.md §2). */
+  --space-bevel: var(--bevel-width);
+  --offset-pressed: 1px;
+  --text-etch-offset: 1px;
+  --underline-offset: 3px;
+  --underline-thickness: 1px;
+  --focus-offset-label: 1px;
+  --focus-ring-spread-label: calc(
+    var(--focus-width) + var(--focus-offset-label) + var(--focus-halo-width)
+  );
+  --opacity-disabled: 0.5;
+  --opacity-inactive: 0.6;
+  --opacity-dither: 0.75;
+  --z-raised: 1;
+  --menu-min-width: 11rem;
+  --start-menu-min-width: 15rem;
+  --start-menu-item-min-height: 2.5rem;
+  --dialog-width: 28rem;
+  --listbox-max-height: min(20rem, 60vh);
+  --statusbar-field-height: 1.5rem;
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */
@@ -268,6 +289,21 @@
       var(--color-surface) 0
     )
     0 0 / 2px 2px;
+
+  /* Aggiunte della Fase 1A, non presenti nel pacchetto (DESIGN_SYSTEM.md §2). */
+  --text-etch: var(--text-etch-offset) var(--text-etch-offset) 0 var(--color-text-disabled-etch);
+  --focus-halo-label: 0 0 0 var(--focus-ring-spread-label) var(--color-focus-halo);
+  --dither-selection: conic-gradient(
+      var(--color-selection) 25%,
+      transparent 0 50%,
+      var(--color-selection) 0 75%,
+      transparent 0
+    )
+    0 0 / 2px 2px;
+  --bevel-thin-raised: inset -1px -1px var(--color-shadow), inset 1px 1px var(--color-highlight);
+  --bevel-thin-separator: inset 0 1px var(--color-shadow), inset 0 -1px var(--color-highlight);
+  --bevel-taskbar-top: inset 0 1px var(--color-surface-light), inset 0 2px var(--color-highlight);
+  --bevel-group-line: inset 1px 1px var(--color-highlight), 1px 1px var(--color-highlight);
 }
 
 /* ---------- Font dell'interfaccia: predefinito del tema, poi data-font ---------- */
