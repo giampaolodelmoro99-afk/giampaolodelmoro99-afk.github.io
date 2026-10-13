@@ -8,7 +8,8 @@ import { fileURLToPath } from "node:url";
 // Server statico che imita GitHub Pages: file esistente → 200,
 // cartella senza slash finale → 301, cartella con index.html → 200,
 // tutto il resto → 404.html con status 404.
-// Ascolta solo su 127.0.0.1; con `npm run preview -- --host` ascolta su tutte
+// Ascolta solo in loopback (127.0.0.1 e, se disponibile, ::1, perché "localhost"
+// può risolvere su entrambi); con `npm run preview -- --host` ascolta su tutte
 // le interfacce, per provare il sito da un telefono sulla stessa rete Wi-Fi.
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)), "build/client");
@@ -64,7 +65,8 @@ function send(res, file, status) {
   createReadStream(file).pipe(res);
 }
 
-const server = createServer(async (req, res) => {
+/** @type {import("node:http").RequestListener} */
+const handler = async (req, res) => {
   const url = new URL(req.url ?? "/", "http://localhost");
   const pathname = decodeURIComponent(url.pathname);
   const target = normalize(join(root, pathname));
@@ -97,9 +99,9 @@ const server = createServer(async (req, res) => {
   }
 
   send(res, join(root, "404.html"), 404);
-});
+};
 
-server.listen(port, host, () => {
+createServer(handler).listen(port, host, () => {
   console.log(`Preview su http://localhost:${port}`);
   if (!lan) return;
   const addresses = Object.values(networkInterfaces())
@@ -109,3 +111,9 @@ server.listen(port, host, () => {
     console.log(`In rete locale: http://${address?.address}:${port}`);
   }
 });
+
+if (!lan) {
+  createServer(handler)
+    .on("error", () => {})
+    .listen(port, "::1");
+}
