@@ -1,26 +1,27 @@
 name: Deploy su GitHub Pages
 
+# Deploy solo manuale o su tag di release: la v1 resta online finché
+# non si pubblica la v2 (vedi docs/DEPLOYMENT.md).
 on:
+  workflow_dispatch:
   push:
-    branches: [main]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
+  ci:
+    name: CI completa
+    uses: ./.github/workflows/ci.yml
+
   deploy:
-    needs: build
+    name: Pubblicazione
+    needs: ci
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -29,5 +30,12 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: build
+          path: build
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/client
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

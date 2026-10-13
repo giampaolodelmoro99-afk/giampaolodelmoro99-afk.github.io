@@ -1,0 +1,63 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-css-modules"],
+  "plugins": ["stylelint-declaration-strict-value"],
+  "rules": {
+    "selector-class-pattern": "^[a-z][a-zA-Z0-9]*$",
+    "custom-property-pattern": "^[a-z][a-z0-9-]*$",
+    "declaration-no-important": true,
+    "color-named": "never",
+    "color-no-hex": true,
+    "custom-property-empty-line-before": null,
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreProperties": ["/^--font-family/", "font-family"]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*.module.css", "src/styles/global.css"],
+      "rules": {
+        "scale-unlimited/declaration-strict-value": [
+          [
+            "/color$/",
+            "background",
+            "fill",
+            "stroke",
+            "box-shadow",
+            "font-family",
+            "font-size",
+            "font-weight",
+            "line-height",
+            "z-index",
+            "/^(margin|padding|gap|row-gap|column-gap)/",
+            "/^(transition|animation)(-duration|-timing-function)?$/",
+            "border-radius"
+          ],
+          {
+            "ignoreValues": [
+              "inherit",
+              "initial",
+              "unset",
+              "currentcolor",
+              "transparent",
+              "none",
+              "0",
+              "auto",
+              "normal"
+            ],
+            "ignoreFunctions": false,
+            "disableFix": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/styles/tokens.css"],
+      "rules": {
+        "color-no-hex": null
+      }
+    }
+  ]
+}

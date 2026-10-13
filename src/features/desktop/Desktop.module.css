@@ -1,0 +1,40 @@
+.desktop {
+  display: grid;
+  place-content: center;
+  gap: var(--space-4);
+  min-block-size: 100dvh;
+  padding-block: var(--space-safe-top) var(--space-safe-bottom);
+  padding-inline: var(--space-gutter);
+  color: var(--color-text-inverse);
+  background: var(--color-desktop);
+  text-align: center;
+}
+
+.heading {
+  margin: var(--space-0);
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  overflow-wrap: anywhere;
+}
+
+.tagline {
+  max-inline-size: 40ch;
+  margin: var(--space-0) auto;
+  font-size: var(--font-size-md);
+}
+
+.languageLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--touch-target-min);
+  min-inline-size: var(--touch-target-min);
+  padding-inline: var(--space-3);
+  color: inherit;
+  font-size: var(--font-size-md);
+}
+
+.languageLink:focus-visible {
+  outline-color: var(--color-text-inverse);
+}

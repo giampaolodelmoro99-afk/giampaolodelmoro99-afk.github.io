@@ -1,0 +1,32 @@
+@import url("./tokens.css");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-root);
+  line-height: var(--line-height-body);
+  color: var(--color-text);
+  background: var(--color-desktop);
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: var(--space-0);
+  min-block-size: 100dvh;
+  overflow-x: hidden;
+}
+
+::selection {
+  color: var(--color-text-inverse);
+  background: var(--color-accent);
+}
+
+:focus-visible {
+  outline: 1px dotted var(--color-focus);
+  outline-offset: 2px;
+}

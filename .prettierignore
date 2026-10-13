@@ -1,0 +1,9 @@
+build
+coverage
+playwright-report
+test-results
+.react-router
+.lighthouseci
+storybook-static
+package-lock.json
+tests/e2e/**/*-snapshots

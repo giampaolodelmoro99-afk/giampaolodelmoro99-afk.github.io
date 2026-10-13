@@ -1,0 +1,84 @@
+/*
+ * Token del design system (Fase 0: set iniziale, completato in Fase 1).
+ * Unica fonte di colori, bevel, spaziature, tipografia, z-index e durate:
+ * i CSS Modules usano solo var(--…), mai valori letterali.
+ * I breakpoint sono documentati qui ma non usabili in @media:
+ * le media query usano gli stessi valori in px (vedi docs/DESIGN_SYSTEM.md).
+ */
+
+:root {
+  --color-desktop: #008080;
+  --color-surface: #c0c0c0;
+  --color-surface-light: #dfdfdf;
+  --color-highlight: #fff;
+  --color-shadow: #808080;
+  --color-shadow-dark: #0a0a0a;
+  --color-accent: #000080;
+  --color-text: #000;
+  --color-text-inverse: #fff;
+  --color-text-disabled: #808080;
+  --color-focus: #000;
+
+  --bevel-raised:
+    inset -1px -1px var(--color-shadow-dark), inset 1px 1px var(--color-highlight),
+    inset -2px -2px var(--color-shadow), inset 2px 2px var(--color-surface-light);
+  --bevel-sunken:
+    inset -1px -1px var(--color-highlight), inset 1px 1px var(--color-shadow-dark),
+    inset -2px -2px var(--color-surface-light), inset 2px 2px var(--color-shadow);
+
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-safe-top: max(var(--space-5), env(safe-area-inset-top));
+  --space-safe-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+  --space-gutter: max(var(--space-4), env(safe-area-inset-left), env(safe-area-inset-right));
+
+  --font-family-ui:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-document: var(--font-family-ui);
+  --font-family-mono: ui-monospace, "Cascadia Mono", "DejaVu Sans Mono", monospace;
+  --font-size-root: 100%;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-title: clamp(1.75rem, 1.2rem + 3vw, 3rem);
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.2;
+  --line-height-body: 1.5;
+
+  --bp-xs: 320px;
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1440px;
+
+  --touch-target-min: 44px;
+
+  --z-desktop: 0;
+  --z-icons: 10;
+  --z-window: 100;
+  --z-taskbar: 1000;
+  --z-menu: 1100;
+  --z-overlay: 2000;
+
+  --duration-instant: 0ms;
+  --duration-fast: 100ms;
+  --duration-base: 200ms;
+  --duration-slow: 400ms;
+  --easing-standard: steps(4, end);
+
+  --radius-none: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}
