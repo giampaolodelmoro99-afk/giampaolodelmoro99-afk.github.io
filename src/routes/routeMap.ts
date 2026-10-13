@@ -4,6 +4,8 @@ export type Locale = (typeof locales)[number];
 
 export const defaultLocale: Locale = "it";
 
+export const intlLocales = { it: "it-IT", en: "en-US" } as const satisfies Record<Locale, string>;
+
 export const routeMap = {
   desktop: { it: "/", en: "/en/" },
 } as const satisfies Record<string, Record<Locale, string>>;

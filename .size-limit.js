@@ -48,12 +48,14 @@ export default [
     path: [...initialJs].map((file) => `${client}${file}`),
     limit: "115 kB",
     gzip: true,
+    disablePlugins: ["@size-limit/esbuild"],
   },
   {
     name: "CSS iniziale della home (gzip)",
     path: stylesheets,
     limit: "12 kB",
     gzip: true,
+    disablePlugins: ["@size-limit/esbuild"],
   },
   {
     name: "Font in preload della home (woff2)",
@@ -61,5 +63,6 @@ export default [
     limit: "25 kB",
     gzip: false,
     brotli: false,
+    disablePlugins: ["@size-limit/esbuild"],
   },
 ];
