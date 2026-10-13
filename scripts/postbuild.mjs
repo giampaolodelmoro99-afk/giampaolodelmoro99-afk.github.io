@@ -1,4 +1,4 @@
-import { copyFile, readFile, readdir, writeFile } from "node:fs/promises";
+import { access, copyFile, readFile, readdir, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { notFoundPath, prerenderPaths } from "../src/routes/routeMap.ts";
@@ -26,14 +26,16 @@ async function listHtml(dir) {
     .map((entry) => join(entry.parentPath, entry.name));
 }
 
-const missing = [];
-for (const route of prerenderPaths()) {
-  try {
-    await readFile(htmlFileFor(route));
-  } catch {
-    missing.push(route);
-  }
-}
+const routes = prerenderPaths();
+const present = await Promise.all(
+  routes.map((route) =>
+    access(htmlFileFor(route)).then(
+      () => true,
+      () => false,
+    ),
+  ),
+);
+const missing = routes.filter((_, index) => !present[index]);
 if (missing.length > 0) {
   throw new Error(`Route senza HTML prerenderizzato: ${missing.join(", ")}`);
 }
@@ -41,7 +43,9 @@ if (missing.length > 0) {
 await copyFile(htmlFileFor(notFoundPath), join(client, "404.html"));
 
 const charset = '<meta charSet="utf-8"/>';
-for (const file of await listHtml(client)) {
+
+/** @param {string} file */
+async function injectCsp(file) {
   const html = await readFile(file, "utf8");
   if (!html.includes(charset)) {
     throw new Error(`${relative(client, file)}: meta charset non trovato`);
@@ -54,3 +58,5 @@ for (const file of await listHtml(client)) {
   await writeFile(file, html.replace(charset, `${charset}${meta}`));
   console.log(`CSP: ${relative(client, file)} (${hashes.length} script inline)`);
 }
+
+await Promise.all((await listHtml(client)).map(injectCsp));

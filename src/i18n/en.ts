@@ -18,7 +18,7 @@ export const en: Dictionary = {
     tagline:
       "Full Stack Developer in training. The new Windows 95–style portfolio is under construction.",
     languageNavLabel: "Language",
-    switchLanguage: "Versione italiana",
+    languageName: "English version",
   },
   notFound: {
     title: "Page not found | Gianpaolo Del Moro",

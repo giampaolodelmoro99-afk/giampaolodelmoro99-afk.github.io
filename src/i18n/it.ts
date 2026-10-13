@@ -16,7 +16,7 @@ export const it = {
     tagline:
       "Full Stack Developer in formazione. Il nuovo portfolio in stile Windows 95 è in costruzione.",
     languageNavLabel: "Lingua",
-    switchLanguage: "English version",
+    languageName: "Versione italiana",
   },
   notFound: {
     title: "Pagina non trovata | Gianpaolo Del Moro",

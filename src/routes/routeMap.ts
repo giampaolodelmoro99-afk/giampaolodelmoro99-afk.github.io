@@ -22,16 +22,19 @@ export function routePath(href: string): string {
   return href === "/" ? href : href.replace(/\/+$/, "");
 }
 
-export function prerenderPaths(): string[] {
-  const paths = [
-    ...routeKeys.flatMap((key) => locales.map((locale) => routePath(routeMap[key][locale]))),
-    notFoundPath,
-  ];
+export function validatePaths(paths: string[]): string[] {
   const invalid = paths.filter((path) => !/^\/([a-z0-9-]+(\/[a-z0-9-]+)*)?$/.test(path));
   if (paths.length === 0 || invalid.length > 0) {
     throw new Error(`routeMap non valida: ${invalid.join(", ") || "nessuna route"}`);
   }
   return paths;
+}
+
+export function prerenderPaths(): string[] {
+  return validatePaths([
+    ...routeKeys.flatMap((key) => locales.map((locale) => routePath(routeMap[key][locale]))),
+    notFoundPath,
+  ]);
 }
 
 export function localeFromPathname(pathname: string): Locale {
