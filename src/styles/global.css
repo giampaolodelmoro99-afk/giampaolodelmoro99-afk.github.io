@@ -34,3 +34,9 @@ body {
   outline-offset: var(--focus-offset);
   box-shadow: var(--focus-halo);
 }
+
+@layer {
+  [data-react-aria-pressable] {
+    touch-action: pan-x pan-y pinch-zoom;
+  }
+}

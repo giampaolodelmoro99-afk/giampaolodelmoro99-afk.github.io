@@ -1,6 +1,7 @@
 import { renderToString } from "react-dom/server";
 import { createRoutesStub } from "react-router";
 import { describe, expect, it } from "vitest";
+import { pressableStyleId } from "../styles/reactAriaPressable";
 import App, { Layout, links } from "./root";
 
 function renderDocument(path: string, routeId: string) {
@@ -29,11 +30,11 @@ const fontPreload = (file: string) =>
   });
 
 describe("root", () => {
-  it("precarica il font pixel del titolo e quello delle frasi, poi foglio di stile e favicon", () => {
+  it("precarica il font pixel del titolo e quello delle frasi, poi foglio di stile (con l'id sentinella di React Aria) e favicon", () => {
     expect(links()).toEqual([
       fontPreload("pixel-operator-700"),
       fontPreload("IBMPlexSans-Regular-Latin1"),
-      expect.objectContaining({ rel: "stylesheet" }),
+      expect.objectContaining({ rel: "stylesheet", id: pressableStyleId }),
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
     ]);
   });
