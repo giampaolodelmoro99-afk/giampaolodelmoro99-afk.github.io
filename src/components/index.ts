@@ -9,6 +9,7 @@ export * from "./ScrollArea";
 export * from "./Select";
 export * from "./StatusBar";
 export * from "./Tabs";
+export * from "./TaskbarButton";
 export * from "./TextArea";
 export * from "./TextField";
 export * from "./Tooltip";

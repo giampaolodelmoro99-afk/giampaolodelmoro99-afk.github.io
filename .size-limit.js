@@ -98,9 +98,11 @@ function componentChecks() {
     MenuSeparator: "MenuBar",
     Submenu: "MenuBar",
     Window: "Window",
+    Taskbar: "TaskbarButton",
+    TaskbarButton: "TaskbarButton",
   };
   const components = Object.keys(folders);
-  const desktopShell = ["Window"];
+  const desktopShell = ["Window", "Taskbar", "TaskbarButton"];
   const framework = ["react", "react-dom", "react/jsx-runtime", "react-router", "scheduler"];
 
   const check = (name, file, names, only) => ({
@@ -140,6 +142,10 @@ function esbuildConfig(only) {
   return (config) => ({
     ...config,
     define: { "process.env.NODE_ENV": '"production"' },
+    // esbuild avvisa che con composes tra file l'ordine delle regole non è
+    // garantito: vale per il suo bundle, non per Vite che costruisce il sito.
+    // La misura del peso non cambia, quindi l'avviso si silenzia qui.
+    logOverride: { "undefined-composes-from": "silent" },
     loader: { ...config.loader, ...(only === "js" ? { ".css": "empty" } : {}) },
     plugins: [
       ...(config.plugins ?? []),

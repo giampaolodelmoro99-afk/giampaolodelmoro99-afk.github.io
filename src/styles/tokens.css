@@ -294,6 +294,7 @@
   --progress-easing: steps(10, end);
   --clip-closed-down: inset(0 0 100% 0);
   --clip-open: inset(0);
+  --space-taskbar-bottom: max(var(--space-bevel), env(safe-area-inset-bottom));
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */

@@ -1,0 +1,87 @@
+.taskbar {
+  position: relative;
+  z-index: var(--z-taskbar);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: var(--taskbar-height);
+  padding: var(--space-bevel) var(--space-bevel) var(--space-taskbar-bottom);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-taskbar-top);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+}
+
+.buttons {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+
+.root {
+  composes: root from "../Button/Button.module.css";
+  flex: 0 1 var(--taskbar-button-max-width);
+  justify-content: flex-start;
+  min-inline-size: var(--target-min);
+  padding-inline: var(--space-1) var(--space-2);
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.icon {
+  flex: none;
+}
+
+.label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.root[data-selected],
+.root[data-selected][data-hovered] {
+  --_bevel: var(--bevel-sunken);
+
+  background: var(--dither);
+  font-weight: var(--font-weight-bold);
+}
+
+.root[data-selected] > .content,
+.root[data-pressed] > .content {
+  translate: var(--offset-pressed) var(--offset-pressed);
+}
+
+.root[data-disabled] .icon {
+  opacity: var(--opacity-disabled);
+}
+
+.tray {
+  --_height: calc(var(--taskbar-height) - var(--space-bevel) * 3);
+
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--_height);
+  padding: var(--space-0) var(--space-3);
+  box-shadow: var(--bevel-status);
+  color: var(--color-text);
+}
+
+@media (forced-colors: active) {
+  .tray {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+
+  .root[data-selected] {
+    border-width: var(--forced-border-width-pressed);
+  }
+}
