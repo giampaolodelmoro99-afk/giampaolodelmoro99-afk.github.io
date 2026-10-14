@@ -1,0 +1,10 @@
+.stage {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-desktop);
+}
+
+.small {
+  max-inline-size: var(--dialog-width);
+}

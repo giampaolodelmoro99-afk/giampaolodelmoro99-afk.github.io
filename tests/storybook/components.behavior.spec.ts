@@ -102,3 +102,27 @@ test("MenuBar: frecce tra i menu, freccia giù apre, Esc chiude e riporta il foc
   await expect(page.getByRole("menu")).toBeHidden();
   await expect(file).toBeFocused();
 });
+
+for (const [input, size] of [
+  ["mouse", 24],
+  ["touch", 44],
+] as const) {
+  test(`Window: i pulsanti della barra del titolo misurano ${size}×${size} px (${input})`, async ({
+    page,
+  }) => {
+    await openStory(page, "componenti-window--default", { theme: "classic", input });
+    const sizes = await Promise.all(
+      ["Riduci a icona", "Ingrandisci", "Chiudi"].map((name) =>
+        page.getByRole("button", { name }).evaluate((button) => {
+          const { width, height } = button.getBoundingClientRect();
+          return [Math.round(width), Math.round(height)];
+        }),
+      ),
+    );
+    expect(sizes).toEqual([
+      [size, size],
+      [size, size],
+      [size, size],
+    ]);
+  });
+}

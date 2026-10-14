@@ -29,6 +29,12 @@ export const it = {
     progressBar: {
       inProgress: "In corso…",
     },
+    window: {
+      minimize: "Riduci a icona",
+      maximize: "Ingrandisci",
+      restore: "Ripristina",
+      close: "Chiudi",
+    },
   },
 };
 

@@ -31,5 +31,11 @@ export const en: Dictionary = {
     progressBar: {
       inProgress: "In progress…",
     },
+    window: {
+      minimize: "Minimize",
+      maximize: "Maximize",
+      restore: "Restore",
+      close: "Close",
+    },
   },
 };

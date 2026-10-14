@@ -12,3 +12,4 @@ export * from "./Tabs";
 export * from "./TextArea";
 export * from "./TextField";
 export * from "./Tooltip";
+export * from "./Window";

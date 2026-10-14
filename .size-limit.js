@@ -97,9 +97,10 @@ function componentChecks() {
     MenuItem: "MenuBar",
     MenuSeparator: "MenuBar",
     Submenu: "MenuBar",
+    Window: "Window",
   };
   const components = Object.keys(folders);
-  const desktopShell = [];
+  const desktopShell = ["Window"];
   const framework = ["react", "react-dom", "react/jsx-runtime", "react-router", "scheduler"];
 
   const check = (name, file, names, only) => ({
