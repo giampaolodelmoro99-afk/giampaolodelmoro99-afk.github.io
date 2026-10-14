@@ -84,3 +84,21 @@ test("Select: la lista si apre larga quanto il campo e si sceglie al clic", asyn
   await expect(listbox).toBeHidden();
   await expect(button).toContainText("Leggibile");
 });
+
+test("MenuBar: frecce tra i menu, freccia giù apre, Esc chiude e riporta il focus", async ({
+  page,
+}) => {
+  await openStory(page, "componenti-menubar--default", { theme: "classic", input: "mouse" });
+  const file = page.getByRole("button", { name: "File" });
+  await page.keyboard.press("Tab");
+  await expect(file).toBeFocused();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("button", { name: "Visualizza" })).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
+  await page.keyboard.press("ArrowDown");
+  await expect(page.getByRole("menu")).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: /Nuovo/ })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("menu")).toBeHidden();
+  await expect(file).toBeFocused();
+});

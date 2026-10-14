@@ -1,0 +1,5 @@
+.window {
+  min-block-size: calc(var(--menu-item-height) * 10);
+  padding: var(--space-1);
+  background: var(--color-surface);
+}

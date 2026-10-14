@@ -2,6 +2,7 @@ export * from "./Button";
 export * from "./Checkbox";
 export * from "./GroupBox";
 export * from "./Icon";
+export * from "./MenuBar";
 export * from "./ProgressBar";
 export * from "./Radio";
 export * from "./ScrollArea";

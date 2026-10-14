@@ -92,6 +92,11 @@ function componentChecks() {
     Tooltip: "Tooltip",
     Tabs: "Tabs",
     Select: "Select",
+    MenuBar: "MenuBar",
+    MenuButton: "MenuBar",
+    MenuItem: "MenuBar",
+    MenuSeparator: "MenuBar",
+    Submenu: "MenuBar",
   };
   const components = Object.keys(folders);
   const desktopShell = [];
