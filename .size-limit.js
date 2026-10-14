@@ -82,6 +82,7 @@ function componentChecks() {
     Button: "Button",
     TextField: "TextField",
     TextArea: "TextArea",
+    Checkbox: "Checkbox",
   };
   const components = Object.keys(folders);
   const desktopShell = [];

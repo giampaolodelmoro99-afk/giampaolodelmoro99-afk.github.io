@@ -62,5 +62,6 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 | Button              | 26,95 (Icon compresa) | +14,58 (base React Aria 13,02) | 27,37     | 0,86       | 12,89            | –          | 110,81 |
 | TextField           | 13,24                 | +4,45                          | 31,82     | 1,16       | 13,20            | –          | 110,81 |
 | TextArea            | 13,64                 | +0,45                          | 32,27     | 1,53       | 13,58            | –          | 110,81 |
+| Checkbox            | 16,54                 | +2,17                          | 34,44     | 1,75       | 13,80            | –          | 110,81 |
 
 Valori in kB gzip.
