@@ -47,7 +47,7 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 | `performance`     | Pixel 7 (Chromium, CPU 4× via CDP) | esegue solo `performance.spec.ts` |
 | `storybook`       | Chromium 1024×768                  | esegue solo `tests/storybook/`    |
 
-Il progetto `storybook` apre le story da `build/client/storybook/` (`iframe.html?id=…&globals=…`): screenshot delle story con tag `visual` e axe con contrasto su tutte le story, in tema classico e alto contrasto, con input mouse e touch; in touch ogni controllo deve misurare almeno 44×44 px. L'addon a11y di Storybook è in modalità manuale nei test, per non eseguire axe due volte.
+Il progetto `storybook` avvia Chromium senza `--hide-scrollbars` (l'opzione predefinita di Playwright in headless nasconde le barre), così screenshot e test vedono la barra di scorrimento GDM 95. Il progetto `storybook` apre le story da `build/client/storybook/` (`iframe.html?id=…&globals=…`): screenshot delle story con tag `visual` e axe con contrasto su tutte le story, in tema classico e alto contrasto, con input mouse e touch; in touch ogni controllo deve misurare almeno 44×44 px. L'addon a11y di Storybook è in modalità manuale nei test, per non eseguire axe due volte.
 
 I test specifici di un tipo di input stanno in file dedicati (`keyboard.spec.ts`, `touch.spec.ts`), assegnati ai progetti dalla configurazione. Mai `test.skip` condizionali.
 

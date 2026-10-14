@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor } from "storybook/test";
 import { afterLayout } from "../../../.storybook/interactions";
 import { Button } from "../Button";
+import { TextArea } from "../TextArea";
 import { TextField } from "./TextField";
 import styles from "./TextField.stories.module.css";
 
@@ -70,6 +71,7 @@ export const EsempioForm: Story = {
         isRequired
         description="Ti rispondo a questo indirizzo"
       />
+      <TextArea label="Messaggio" name="message" isRequired />
       <div className={styles.actions}>
         <Button type="submit" variant="default">
           Invia

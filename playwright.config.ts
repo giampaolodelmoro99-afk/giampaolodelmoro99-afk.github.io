@@ -53,7 +53,11 @@ export default defineConfig({
     {
       name: "storybook",
       testDir: "tests/storybook",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 1024, height: 768 } },
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1024, height: 768 },
+        launchOptions: { ignoreDefaultArgs: ["--hide-scrollbars"] },
+      },
     },
     {
       name: "firefox-1440",

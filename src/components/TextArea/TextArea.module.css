@@ -1,0 +1,7 @@
+.input {
+  composes: input from "../TextField/TextField.module.css";
+  composes: scroll from "../ScrollArea/Scrollbar.module.css";
+  min-block-size: calc(var(--control-height) * 3);
+  resize: vertical;
+  line-height: var(--line-height-body);
+}

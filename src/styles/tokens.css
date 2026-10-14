@@ -282,6 +282,9 @@
   --disabled-marker-inset: calc(var(--bevel-width) * 2);
   --disabled-marker-offset: calc(var(--disabled-marker-inset) * -1);
   --opacity-full: 1;
+  --scroll-arrow-1: var(--glyph-pixel);
+  --scroll-arrow-3: calc(var(--glyph-pixel) * 3);
+  --scroll-arrow-5: calc(var(--glyph-pixel) * 5);
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */

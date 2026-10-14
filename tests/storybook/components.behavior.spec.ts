@@ -15,3 +15,18 @@ for (const theme of ["classic", "high-contrast"] as const) {
     expect(fontSize).toBeGreaterThanOrEqual(16);
   });
 }
+
+test("TextArea: si ridimensiona solo in verticale e scorre con la barra GDM 95", async ({
+  page,
+}) => {
+  await openStory(page, "componenti-textarea--stati", { theme: "classic", input: "mouse" });
+  const area = page.getByRole("textbox", { name: "Messaggio lungo" });
+  const { resize, scrollbar, overflowing } = await area.evaluate((element: HTMLElement) => ({
+    resize: getComputedStyle(element).resize,
+    scrollbar: element.offsetWidth - element.clientWidth,
+    overflowing: element.scrollHeight > element.clientHeight,
+  }));
+  expect(resize).toBe("vertical");
+  expect(overflowing).toBe(true);
+  expect(scrollbar).toBeGreaterThanOrEqual(24);
+});
