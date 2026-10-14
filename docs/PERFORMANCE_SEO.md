@@ -54,25 +54,26 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 
 **Base delle collezioni di React Aria.** Il primo componente con una collezione (Tabs: `TabList`, `Tab`, `TabPanel`) paga una volta sola selezione e collezioni di React Stately, `Document` e `BaseCollection`, `useSelectableCollection` e `useSelectableItem`, `CollectionBuilder` e navigazione da tastiera: **+17,48 kB** gzip sul totale, con il codice delle nostre Tabs sotto 1 kB. La riusano Select (ListBox), MenuBar e StartButton (Menu) e DesktopIcon (GridList). Accettata il 14/10/2026 come seconda base una tantum.
 
-**Base degli overlay (prevista).** Select porterà Popover, posizionamento, FocusScope e chiusura con clic esterno, stimati in circa +16 kB. Si accetta come terza base solo se il metafile conferma che l'eccedenza è codice condiviso e che la parte specifica del Select resta sotto i 10 kB.
+**Base degli overlay di React Aria.** Il Select aggiunge **+16,90 kB** gzip. Misurato il 14/10/2026 aggiungendo i pezzi uno alla volta sopra il totale: base degli overlay (Popover, FocusScope, chiusura con clic esterno, `ariaHideOutside`, blocco dello scroll) ≈ 8,9 kB; navigazione delle liste condivisa con Menu (`ListKeyboardDelegate`, `useMenuTrigger`, `useSelectableList`) ≈ 5,4 kB; **parte specifica del Select** (Select, `useSelect`, `HiddenSelect`, ListBox, stato) **5,78 kB**, sotto la soglia. Accettata come terza base una tantum: MenuBar, StartButton e AlertDialog riusano overlay e navigazione.
 
 **Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. I budget si fissano alla chiusura della fase.
 
 **Indice dei componenti.** Importare anche solo Icon da `src/components/index.ts` costa circa 0,6 kB in più che dalla sua cartella: l'indice trascina codice di React Aria eseguito al caricamento del modulo. La voce "Icon importato dall'indice" lo tiene d'occhio fino alla decisione della F2A (`sideEffects` o import dalle cartelle).
 
-| Componente aggiunto | Da solo (JS)          | Incremento sul totale                 | Totale JS | Totale CSS | Icon dall'indice | Guscio F2A | Home   |
-| ------------------- | --------------------- | ------------------------------------- | --------- | ---------- | ---------------- | ---------- | ------ |
-| Icon e Glyph        | 12,28 / 1,03          | –                                     | 12,79     | 0,26       | –                | –          | 110,81 |
-| Button              | 26,95 (Icon compresa) | +14,58 (base React Aria 13,02)        | 27,37     | 0,86       | 12,89            | –          | 110,81 |
-| TextField           | 13,24                 | +4,45                                 | 31,82     | 1,16       | 13,20            | –          | 110,81 |
-| TextArea            | 13,64                 | +0,45                                 | 32,27     | 1,53       | 13,58            | –          | 110,81 |
-| Checkbox            | 16,54                 | +2,17                                 | 34,44     | 1,75       | 13,80            | –          | 110,81 |
-| RadioGroup e Radio  | 13,24 / 15,14         | +4,22                                 | 38,66     | 1,93       | 14,18            | –          | 110,81 |
-| GroupBox            | 0,39                  | +0,17                                 | 38,83     | 2,00       | 14,26            | –          | 110,81 |
-| ProgressBar         | 6,43                  | +2,43                                 | 41,26     | 2,35       | 14,71            | –          | 110,81 |
-| StatusBar           | 5,96                  | +0,34                                 | 41,60     | 2,44       | 14,80            | –          | 110,81 |
-| ScrollArea          | 0,78                  | +0,09                                 | 41,69     | 2,49       | 14,85            | –          | 110,81 |
-| Tooltip             | 14,21                 | +6,19 (primo overlay: posizionamento) | 47,88     | 2,60       | 14,97            | –          | 110,81 |
-| Tabs                | 32,13                 | +17,48 (base collezioni)              | 65,36     | 2,85       | 15,22            | –          | 110,81 |
+| Componente aggiunto | Da solo (JS)          | Incremento sul totale                                       | Totale JS | Totale CSS | Icon dall'indice | Guscio F2A | Home   |
+| ------------------- | --------------------- | ----------------------------------------------------------- | --------- | ---------- | ---------------- | ---------- | ------ |
+| Icon e Glyph        | 12,28 / 1,03          | –                                                           | 12,79     | 0,26       | –                | –          | 110,81 |
+| Button              | 26,95 (Icon compresa) | +14,58 (base React Aria 13,02)                              | 27,37     | 0,86       | 12,89            | –          | 110,81 |
+| TextField           | 13,24                 | +4,45                                                       | 31,82     | 1,16       | 13,20            | –          | 110,81 |
+| TextArea            | 13,64                 | +0,45                                                       | 32,27     | 1,53       | 13,58            | –          | 110,81 |
+| Checkbox            | 16,54                 | +2,17                                                       | 34,44     | 1,75       | 13,80            | –          | 110,81 |
+| RadioGroup e Radio  | 13,24 / 15,14         | +4,22                                                       | 38,66     | 1,93       | 14,18            | –          | 110,81 |
+| GroupBox            | 0,39                  | +0,17                                                       | 38,83     | 2,00       | 14,26            | –          | 110,81 |
+| ProgressBar         | 6,43                  | +2,43                                                       | 41,26     | 2,35       | 14,71            | –          | 110,81 |
+| StatusBar           | 5,96                  | +0,34                                                       | 41,60     | 2,44       | 14,80            | –          | 110,81 |
+| ScrollArea          | 0,78                  | +0,09                                                       | 41,69     | 2,49       | 14,85            | –          | 110,81 |
+| Tooltip             | 14,21                 | +6,19 (primo overlay: posizionamento)                       | 47,88     | 2,60       | 14,97            | –          | 110,81 |
+| Tabs                | 32,13                 | +17,48 (base collezioni)                                    | 65,36     | 2,85       | 15,22            | –          | 110,81 |
+| Select              | 55,74                 | +16,90 (base overlay ≈ 8,9; navigazione ≈ 5,4; Select 5,78) | 82,26     | 3,27       | 15,64            | –          | 110,81 |
 
 Valori in kB gzip.

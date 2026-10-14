@@ -68,3 +68,19 @@ test("Tooltip: compare con l'hover del mouse dopo il ritardo, non subito", async
   await expect(page.getByRole("tooltip")).toBeHidden();
   await expect(page.getByRole("tooltip")).toHaveText("Svuota il cestino");
 });
+
+test("Select: la lista si apre larga quanto il campo e si sceglie al clic", async ({ page }) => {
+  await openStory(page, "componenti-select--default", { theme: "classic", input: "touch" });
+  const button = page.getByRole("button", { name: /Carattere/ });
+  await button.click();
+  const listbox = page.getByRole("listbox");
+  await expect(listbox).toBeVisible();
+  const [buttonBox, listBox] = await Promise.all([
+    button.evaluate((element) => element.getBoundingClientRect().width),
+    listbox.evaluate((element) => element.parentElement?.getBoundingClientRect().width ?? 0),
+  ]);
+  expect(Math.abs(listBox - buttonBox)).toBeLessThanOrEqual(1);
+  await page.getByRole("option", { name: "Leggibile" }).click();
+  await expect(listbox).toBeHidden();
+  await expect(button).toContainText("Leggibile");
+});

@@ -82,6 +82,15 @@ describe("tokens.css", () => {
     }
     const forcedColorsOnly = ["--forced-border-width", "--forced-border-width-pressed"];
     forcedColorsOnly.forEach((name) => defined.add(name));
+    const popoverSource = readFileSync(
+      join(root, "node_modules/react-aria-components/dist/private/Popover.mjs"),
+      "utf8",
+    );
+    const setByReactAria = ["--trigger-width"];
+    for (const name of setByReactAria) {
+      expect(popoverSource, `${name} impostata da React Aria`).toContain(name);
+      defined.add(name);
+    }
     expect([...used].filter((name) => !defined.has(name))).toEqual([]);
   });
 });

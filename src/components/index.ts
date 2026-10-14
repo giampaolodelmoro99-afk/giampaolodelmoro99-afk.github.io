@@ -5,6 +5,7 @@ export * from "./Icon";
 export * from "./ProgressBar";
 export * from "./Radio";
 export * from "./ScrollArea";
+export * from "./Select";
 export * from "./StatusBar";
 export * from "./Tabs";
 export * from "./TextArea";

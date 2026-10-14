@@ -91,6 +91,7 @@ function componentChecks() {
     ScrollArea: "ScrollArea",
     Tooltip: "Tooltip",
     Tabs: "Tabs",
+    Select: "Select",
   };
   const components = Object.keys(folders);
   const desktopShell = [];

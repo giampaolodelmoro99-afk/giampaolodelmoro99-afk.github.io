@@ -292,6 +292,8 @@
   --progress-indeterminate-to: 340%;
   --progress-duration: calc(var(--duration-slow) * 5);
   --progress-easing: steps(10, end);
+  --clip-closed-down: inset(0 0 100% 0);
+  --clip-open: inset(0);
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */
