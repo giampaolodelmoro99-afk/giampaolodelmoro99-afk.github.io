@@ -51,14 +51,17 @@ const styleAttributes = (html: string) =>
 // ADR-0012, tipo C: nell'HTML prerenderizzato del sito gli attributi style sono
 // bloccati dalla CSP. Questo inventario elenca quelli che ogni story produce con
 // il rendering lato server, così un componente non li introduce di nascosto.
-// Ammessi oggi, da risolvere in F2A: le variabili CSS di Glyph e lo stile di
-// VisuallyHidden di React Aria (input di Checkbox e Radio, HiddenSelect…).
+// Ammessi oggi, da risolvere in F2A: le variabili CSS di Glyph e della
+// ProgressBar e lo stile di VisuallyHidden di React Aria (input di Checkbox e
+// Radio, HiddenSelect…).
 const glyphVariables = /^--glyph-width:\d+;--glyph-height:\d+$/;
 const visuallyHidden =
   /^border:0;clip:rect\(0 0 0 0\);clip-path:inset\(50%\);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;white-space:nowrap$/;
+const progressValue = /^--progress-value:\d+(\.\d+)?%$/;
 const known = [
   { pattern: glyphVariables, example: "Componenti/Icon/Glifi" },
   { pattern: visuallyHidden, example: "Componenti/Checkbox/Stati" },
+  { pattern: progressValue, example: "Componenti/ProgressBar/Stati" },
 ];
 
 describe("attributi style nel prerender (ADR-0012)", () => {

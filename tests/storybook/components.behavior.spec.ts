@@ -30,3 +30,19 @@ test("TextArea: si ridimensiona solo in verticale e scorre con la barra GDM 95",
   expect(overflowing).toBe(true);
   expect(scrollbar).toBeGreaterThanOrEqual(24);
 });
+
+test("ProgressBar: indeterminata si anima, con movimento ridotto resta ferma e lo dice", async ({
+  page,
+}) => {
+  const fill = () =>
+    page.getByRole("progressbar", { name: "Invio del messaggio" }).evaluate((bar) => {
+      const blocks = bar.querySelector("[data-indeterminate]");
+      return blocks ? getComputedStyle(blocks).animationName : "assente";
+    });
+  const variant = { theme: "classic", input: "mouse" } as const;
+  await openStory(page, "componenti-progressbar--indeterminata", variant);
+  expect(await fill()).not.toBe("none");
+  await openStory(page, "componenti-progressbar--indeterminata", variant, { motion: "reduce" });
+  expect(await fill()).toBe("none");
+  await expect(page.getByText("In corso…")).toBeVisible();
+});

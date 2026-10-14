@@ -1,0 +1,91 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-inline-size: 0;
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.value {
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  --_inset: calc(var(--bevel-width) + var(--border-width-hairline));
+
+  position: relative;
+  display: block;
+  block-size: var(--progress-height);
+  padding: var(--_inset);
+  overflow: hidden;
+  background: var(--color-field);
+  box-shadow: var(--bevel-status);
+}
+
+.fill {
+  --_block-color: var(--color-accent);
+  --_blocks: repeating-linear-gradient(
+    to right,
+    var(--_block-color) 0 var(--progress-block-width),
+    transparent var(--progress-block-width)
+      calc(var(--progress-block-width) + var(--progress-block-gap))
+  );
+
+  display: block;
+  inline-size: var(--progress-value);
+  block-size: 100%;
+  background: var(--_blocks);
+}
+
+.fill[data-indeterminate] {
+  inline-size: var(--progress-indeterminate-size);
+  animation-name: progress;
+  animation-duration: var(--progress-duration);
+  animation-timing-function: var(--progress-easing);
+  animation-iteration-count: infinite;
+}
+
+@keyframes progress {
+  from {
+    translate: var(--progress-indeterminate-from) 0;
+  }
+
+  to {
+    translate: var(--progress-indeterminate-to) 0;
+  }
+}
+
+[data-motion="reduce"] .fill[data-indeterminate] {
+  inline-size: 100%;
+  opacity: var(--opacity-paused);
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill[data-indeterminate] {
+    inline-size: 100%;
+    opacity: var(--opacity-paused);
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .track {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+
+  .fill {
+    --_block-color: Highlight;
+
+    forced-color-adjust: none;
+  }
+}

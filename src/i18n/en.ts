@@ -27,4 +27,9 @@ export const en: Dictionary = {
     message: "The requested page does not exist or has been moved.",
     home: "Back to the home page",
   },
+  ui: {
+    progressBar: {
+      inProgress: "In progress…",
+    },
+  },
 };

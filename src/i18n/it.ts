@@ -25,6 +25,11 @@ export const it = {
     message: "La pagina richiesta non esiste o è stata spostata.",
     home: "Torna alla home",
   },
+  ui: {
+    progressBar: {
+      inProgress: "In corso…",
+    },
+  },
 };
 
 export type Dictionary = typeof it;

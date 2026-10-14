@@ -285,6 +285,12 @@
   --scroll-arrow-1: var(--glyph-pixel);
   --scroll-arrow-3: calc(var(--glyph-pixel) * 3);
   --scroll-arrow-5: calc(var(--glyph-pixel) * 5);
+  --opacity-paused: 0.5;
+  --progress-indeterminate-size: 30%;
+  --progress-indeterminate-from: -100%;
+  --progress-indeterminate-to: 340%;
+  --progress-duration: calc(var(--duration-slow) * 5);
+  --progress-easing: steps(10, end);
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */

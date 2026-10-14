@@ -48,9 +48,15 @@ export const variants = [
 
 export type Variant = (typeof variants)[number];
 
-export async function openStory(page: Page, id: string, { theme, input }: Variant) {
+export async function openStory(
+  page: Page,
+  id: string,
+  { theme, input }: Variant,
+  extraGlobals: Record<string, string> = {},
+) {
+  const extra = Object.entries(extraGlobals).map(([name, value]) => `;${name}:${value}`);
   await page.goto(
-    `/storybook/iframe.html?id=${id}&viewMode=story&globals=theme:${theme};input:${input};a11y.manual:!true`,
+    `/storybook/iframe.html?id=${id}&viewMode=story&globals=theme:${theme};input:${input};a11y.manual:!true${extra.join("")}`,
   );
   const root = page.locator("#storybook-root");
   await root.locator(":scope > *").first().waitFor();
