@@ -54,7 +54,8 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 - [ ] Finestre: drag, resize, focus, z-index, minimizza, massimizza, chiudi, animazioni
 - [ ] Taskbar con orologio, menu Start, menu contestuale (anche senza tasto destro), "Esegui…"
 - [ ] Scorciatoie da tastiera e annunci per screen reader
-- [ ] Attributi `style` dei componenti nell'HTML prerenderizzato (ADR-0012, tipo C): soluzione con ADR ed e2e con la CSP reale sulla home per Checkbox, Select, Tooltip, AlertDialog e DesktopIcon
+- [ ] Attributi `style` dei componenti nell'HTML prerenderizzato (ADR-0012, tipo C), comprese le variabili inline di `Glyph` (`--glyph-width`, `--glyph-height`): soluzione con ADR ed e2e con la CSP reale sulla home per Checkbox, Select, Tooltip, AlertDialog e DesktopIcon
+- [ ] **Peso della home, da decidere nel piano della F2A prima di scrivere codice**: la home è a 110,81 kB su 115 (14/10/2026) e la base di React Aria (circa 13 kB) più i componenti del desktop la porterebbero oltre il budget. Il piano deve proporre come caricarli (chunk separato dopo il primo disegno, oppure budget rivisto con un ADR). Da decidere anche l'indice `src/components/index.ts`: oggi aggiunge circa 0,6 kB a chi importa anche solo Icon (`sideEffects` o import dalle cartelle)
 
 ## 2B. Routing, persistenza e mobile
 
