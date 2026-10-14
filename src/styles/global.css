@@ -29,7 +29,7 @@ body {
   background: var(--color-selection);
 }
 
-:focus-visible {
+:focus-visible:not([data-rac]) {
   outline: var(--focus-width) var(--focus-style) var(--color-focus);
   outline-offset: var(--focus-offset);
   box-shadow: var(--focus-halo);

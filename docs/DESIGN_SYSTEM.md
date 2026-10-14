@@ -107,7 +107,7 @@ I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither
 - L'alone va sempre per primo nel `box-shadow`.
 - Dentro contenitori con overflow (voci di menu, opzioni, schede): `--focus-offset-inset` e `--focus-halo-inset`.
 - Pulsanti, select e icone usano `[data-focus-visible]` (solo tastiera); i campi di testo `[data-focused]` (sempre).
-- Gli elementi nativi (link delle pagine) ricevono lo stesso anello da `:focus-visible` in `global.css`.
+- Gli elementi nativi (link delle pagine) ricevono lo stesso anello da `:focus-visible` in `global.css`. La regola salta gli elementi di React Aria (`:focus-visible:not([data-rac])`): per loro vale solo `[data-focus-visible]`, altrimenti un focus programmatico dopo un clic (per esempio quello di `usePress`) mostrerebbe l'anello anche con il mouse.
 
 **Disabilitato**: il controllo resta visibile, testo `--color-text-disabled` con `--text-etch`. È esente da WCAG 1.4.3 (componenti inattivi).
 
