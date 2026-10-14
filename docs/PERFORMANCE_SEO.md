@@ -63,5 +63,6 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 | TextField           | 13,24                 | +4,45                          | 31,82     | 1,16       | 13,20            | –          | 110,81 |
 | TextArea            | 13,64                 | +0,45                          | 32,27     | 1,53       | 13,58            | –          | 110,81 |
 | Checkbox            | 16,54                 | +2,17                          | 34,44     | 1,75       | 13,80            | –          | 110,81 |
+| RadioGroup e Radio  | 13,24 / 15,14         | +4,22                          | 38,66     | 1,93       | 14,18            | –          | 110,81 |
 
 Valori in kB gzip.

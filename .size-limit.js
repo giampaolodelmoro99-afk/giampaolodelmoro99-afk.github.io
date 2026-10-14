@@ -83,6 +83,8 @@ function componentChecks() {
     TextField: "TextField",
     TextArea: "TextArea",
     Checkbox: "Checkbox",
+    RadioGroup: "Radio",
+    Radio: "Radio",
   };
   const components = Object.keys(folders);
   const desktopShell = [];
