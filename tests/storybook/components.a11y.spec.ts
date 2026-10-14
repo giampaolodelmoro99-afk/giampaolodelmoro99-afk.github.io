@@ -50,6 +50,7 @@ for (const id of stories) {
             return false;
           };
           return [...root.querySelectorAll(selector)]
+            .filter((element) => getComputedStyle(element).display !== "contents")
             .map((element) => {
               const label = element.closest("label");
               const target = isClipped(element)
