@@ -100,9 +100,10 @@ function componentChecks() {
     Window: "Window",
     Taskbar: "TaskbarButton",
     TaskbarButton: "TaskbarButton",
+    StartButton: "StartButton",
   };
   const components = Object.keys(folders);
-  const desktopShell = ["Window", "Taskbar", "TaskbarButton"];
+  const desktopShell = ["Window", "Taskbar", "TaskbarButton", "StartButton"];
   const framework = ["react", "react-dom", "react/jsx-runtime", "react-router", "scheduler"];
 
   const check = (name, file, names, only) => ({

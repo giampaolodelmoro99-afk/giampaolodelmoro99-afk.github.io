@@ -116,6 +116,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+.menu[data-size="start"] .item {
+  --_start-height: max(var(--menu-item-height), var(--start-menu-item-min-height));
+
+  min-block-size: var(--_start-height);
+}
+
 .item[data-focused],
 .item[data-hovered],
 .item[data-open] {

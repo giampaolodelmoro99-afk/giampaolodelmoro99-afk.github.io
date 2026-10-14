@@ -15,6 +15,7 @@ import styles from "./Menu.module.css";
 
 export type MenuProps = Omit<AriaMenuProps<object>, "className" | "style" | "children"> & {
   children: ReactNode;
+  size?: "default" | "start";
   className?: string | undefined;
 };
 
@@ -33,9 +34,13 @@ export function MenuPopover({
   );
 }
 
-export function Menu({ children, className, ...props }: MenuProps) {
+export function Menu({ children, size = "default", className, ...props }: MenuProps) {
   return (
-    <AriaMenu {...props} className={cx(styles.menu, className)}>
+    <AriaMenu
+      {...props}
+      className={cx(styles.menu, className)}
+      data-size={size === "start" ? size : undefined}
+    >
       {children}
     </AriaMenu>
   );

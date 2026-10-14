@@ -1,0 +1,10 @@
+.stage {
+  --_item: max(var(--menu-item-height), var(--start-menu-item-min-height));
+  --_height: calc(var(--_item) * 9);
+
+  display: flex;
+  align-items: flex-end;
+  min-block-size: var(--_height);
+  padding: var(--space-1);
+  background: var(--color-desktop);
+}

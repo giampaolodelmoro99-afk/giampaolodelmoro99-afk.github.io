@@ -29,6 +29,9 @@ export const it = {
     progressBar: {
       inProgress: "In corso…",
     },
+    startButton: {
+      label: "Start",
+    },
     window: {
       minimize: "Riduci a icona",
       maximize: "Ingrandisci",

@@ -7,6 +7,7 @@ export * from "./ProgressBar";
 export * from "./Radio";
 export * from "./ScrollArea";
 export * from "./Select";
+export * from "./StartButton";
 export * from "./StatusBar";
 export * from "./Tabs";
 export * from "./TaskbarButton";

@@ -31,6 +31,9 @@ export const en: Dictionary = {
     progressBar: {
       inProgress: "In progress…",
     },
+    startButton: {
+      label: "Start",
+    },
     window: {
       minimize: "Minimize",
       maximize: "Maximize",
