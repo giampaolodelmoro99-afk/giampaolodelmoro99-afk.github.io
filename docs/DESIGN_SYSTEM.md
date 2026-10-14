@@ -47,13 +47,16 @@ Il riferimento approvato è il pacchetto di consegna **GDM 95** (Claude Design, 
 
 **Aggiunte della Fase 1B:**
 
-| Token                          | Valore                                                            | Uso                                                                             |
-| ------------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `--disabled-marker`            | `none`; in alto contrasto `1px dotted var(--color-text-disabled)` | secondo segnale del disabilitato, oltre al colore (§9)                          |
-| `--disabled-marker-inset`      | `calc(var(--bevel-width) * 2)`                                    | rientro del bordo punteggiato, dentro il bevel e lontano dal focus              |
-| `--disabled-marker-offset`     | `calc(var(--disabled-marker-inset) * -1)`                         | stesso bordo come `outline` rientrato, per gli elementi senza `::after` (campi) |
-| `--opacity-full`               | `1`                                                               | segnaposto dei campi a piena opacità (Firefox lo schiarisce)                    |
-| `--scroll-arrow-1`, `-3`, `-5` | 1, 3 e 5 volte `--glyph-pixel`                                    | righe delle frecce della barra di scorrimento disegnate con gradienti           |
+| Token                                           | Valore                                                            | Uso                                                                                   |
+| ----------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `--disabled-marker`                             | `none`; in alto contrasto `1px dotted var(--color-text-disabled)` | secondo segnale del disabilitato, oltre al colore (§9)                                |
+| `--disabled-marker-inset`                       | `calc(var(--bevel-width) * 2)`                                    | rientro del bordo punteggiato, dentro il bevel e lontano dal focus                    |
+| `--disabled-marker-offset`                      | `calc(var(--disabled-marker-inset) * -1)`                         | stesso bordo come `outline` rientrato, per gli elementi senza `::after` (campi)       |
+| `--opacity-full`                                | `1`                                                               | segnaposto dei campi a piena opacità (Firefox lo schiarisce)                          |
+| `--scroll-arrow-1`, `-3`, `-5`                  | 1, 3 e 5 volte `--glyph-pixel`                                    | righe delle frecce della barra di scorrimento disegnate con gradienti                 |
+| `--opacity-paused`, `--opacity-hidden`          | 0.5; 0                                                            | barra indeterminata ferma con movimento ridotto; inizio della dissolvenza del tooltip |
+| `--progress-indeterminate-size`, `-from`, `-to` | 30%; -100%; 340%                                                  | blocchi della barra indeterminata e loro corsa                                        |
+| `--progress-duration`, `--progress-easing`      | `calc(var(--duration-slow) * 5)`; `steps(10, end)`                | animazione a scatti della barra indeterminata (azzerata dal movimento ridotto)        |
 
 I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither-selection`, i bevel sottili) sono dichiarati su `:root, [data-theme]`, come `--focus-halo`: si ricalcolano dentro un contenitore con un tema diverso.
 

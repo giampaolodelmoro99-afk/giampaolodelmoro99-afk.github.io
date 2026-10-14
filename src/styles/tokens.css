@@ -286,6 +286,7 @@
   --scroll-arrow-3: calc(var(--glyph-pixel) * 3);
   --scroll-arrow-5: calc(var(--glyph-pixel) * 5);
   --opacity-paused: 0.5;
+  --opacity-hidden: 0;
   --progress-indeterminate-size: 30%;
   --progress-indeterminate-from: -100%;
   --progress-indeterminate-to: 340%;
