@@ -126,3 +126,29 @@ for (const [input, size] of [
     ]);
   });
 }
+
+test.describe("DesktopIcon al tocco", () => {
+  test.use({ hasTouch: true });
+
+  test("in touch un tocco apre l'icona", async ({ page }) => {
+    await openStory(page, "componenti-desktopicon--con-apertura", {
+      theme: "classic",
+      input: "touch",
+    });
+    await page.getByRole("row", { name: "Progetti" }).tap();
+    await expect(page.getByRole("status")).toHaveText("Aperta: projects");
+  });
+});
+
+test("DesktopIcon: con il mouse un clic seleziona e il doppio clic apre", async ({ page }) => {
+  await openStory(page, "componenti-desktopicon--con-apertura", {
+    theme: "classic",
+    input: "mouse",
+  });
+  const projects = page.getByRole("row", { name: "Progetti" });
+  await projects.click();
+  await expect(projects).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("status")).toHaveText("Nessuna finestra aperta");
+  await projects.dblclick();
+  await expect(page.getByRole("status")).toHaveText("Aperta: projects");
+});

@@ -297,6 +297,7 @@
   --space-taskbar-bottom: max(var(--space-bevel), env(safe-area-inset-bottom));
   --rotate-half: 180deg;
   --line-height-none: 1;
+  --desktop-icon-label-lines: 2;
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */

@@ -62,7 +62,8 @@ const styleAttributes = (html: string) =>
 // il rendering lato server, così un componente non li introduce di nascosto.
 // Ammessi oggi, da risolvere in F2A: le variabili CSS di Glyph e della
 // ProgressBar e alcuni stili interni di React Aria: VisuallyHidden (input di
-// Checkbox e Radio; HiddenSelect, nella variante con position:fixed).
+// Checkbox e Radio; HiddenSelect, nella variante con position:fixed) e
+// display:contents (celle di GridList nel DesktopIcon).
 const glyphVariables = /^--glyph-width:\d+;--glyph-height:\d+$/;
 const hiddenRule =
   "border:0;clip:rect\\(0 0 0 0\\);clip-path:inset\\(50%\\);height:1px;margin:-1px;overflow:hidden;padding:0;position:";
@@ -70,12 +71,14 @@ const visuallyHidden = new RegExp(`^${hiddenRule}absolute;width:1px;white-space:
 const visuallyHiddenFixed = new RegExp(
   `^${hiddenRule}fixed;width:1px;white-space:nowrap;top:0;left:0$`,
 );
+const displayContents = /^display:contents$/;
 const progressValue = /^--progress-value:\d+(\.\d+)?%$/;
 const known = [
   { pattern: glyphVariables, example: "Componenti/Icon/Glifi" },
   { pattern: visuallyHidden, example: "Componenti/Checkbox/Stati" },
   { pattern: progressValue, example: "Componenti/ProgressBar/Stati" },
   { pattern: visuallyHiddenFixed, example: "Componenti/Select/Stati" },
+  { pattern: displayContents, example: "Componenti/DesktopIcon/Default" },
 ];
 
 describe("attributi style nel prerender (ADR-0012)", () => {
