@@ -75,6 +75,7 @@ Le query si fanno per ruolo e nome (`getByRole`), non per classe o test id, salv
 - Baseline in `tests/e2e/__screenshots__/<progetto>/` e `tests/storybook/__screenshots__/storybook/`.
 - **Si generano solo nel container** (`npm run test:e2e:update-snapshots`): il rendering dei font dell'host differisce da quello della CI.
 - Si aggiornano solo per un cambio visivo voluto, verificato nel browser, con commit dedicato (skill `update-visual-snapshots`).
+- **Stati nelle story (dalla Fase 1B).** Hover, pressione e focus da tastiera non si forzano con le prop di React Aria: le story li creano nella funzione `play` con gli aiuti di `.storybook/interactions.ts` (`hover`, `press`, `focusWithKeyboard`). Gli aiuti aspettano un layout stabile, perché il mouse reale di Playwright resta in (0, 0) e, quando sparisce l'overlay di caricamento di Storybook, Chrome invia un `pointerover` reale che chiuderebbe hover e pressione. `openStory()` in `tests/storybook/stories.ts` aspetta la fase `finished` del rendering, cioè la fine della `play`, prima di fotografare o eseguire axe.
 
 ## 7. Test sull'HTML prerenderizzato
 

@@ -60,6 +60,16 @@ export async function openStory(page: Page, id: string, { theme, input }: Varian
       document.documentElement.dataset["input"] === expectedInput,
     [theme, input],
   );
+  await page.waitForFunction(() => {
+    const preview: unknown = Reflect.get(window, "__STORYBOOK_PREVIEW__");
+    const render: unknown =
+      typeof preview === "object" && preview !== null
+        ? Reflect.get(preview, "currentRender")
+        : undefined;
+    return (
+      typeof render === "object" && render !== null && Reflect.get(render, "phase") === "finished"
+    );
+  });
   await page.evaluate(() => document.fonts.ready);
   return root;
 }
