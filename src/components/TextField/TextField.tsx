@@ -17,7 +17,7 @@ export type FieldTextProps = {
   label: string;
   description?: string | undefined;
   errorMessage?: FieldErrorMessage | undefined;
-  className?: string;
+  className?: string | undefined;
 };
 
 export type TextFieldProps = Omit<AriaTextFieldProps, "children" | "className" | "style"> &

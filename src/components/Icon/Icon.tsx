@@ -14,7 +14,7 @@ export type IconProps<Name extends IconName> = {
   size?: IconSize<Name>;
   scale?: IconScale;
   label?: string;
-  className?: string;
+  className?: string | undefined;
 };
 
 export function Icon<Name extends IconName>({

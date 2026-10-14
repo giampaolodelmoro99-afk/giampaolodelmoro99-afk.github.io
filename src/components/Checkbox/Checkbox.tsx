@@ -9,7 +9,7 @@ import styles from "./Checkbox.module.css";
 
 export type CheckboxProps = Omit<AriaCheckboxProps, "children" | "className" | "style"> & {
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 };
 
 export function Checkbox({ children, className, ...props }: CheckboxProps) {

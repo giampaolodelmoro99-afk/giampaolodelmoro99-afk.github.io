@@ -14,7 +14,7 @@ export type TooltipProps = Omit<TooltipTriggerComponentProps, "children"> & {
   text: string;
   children: ReactElement;
   placement?: AriaTooltipProps["placement"];
-  className?: string;
+  className?: string | undefined;
 };
 
 export function Tooltip({

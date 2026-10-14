@@ -12,7 +12,7 @@ export type StatusBarField = {
 export type StatusBarProps = {
   label: string;
   fields: StatusBarField[];
-  className?: string;
+  className?: string | undefined;
 };
 
 export function StatusBar({ label, fields, className }: StatusBarProps) {

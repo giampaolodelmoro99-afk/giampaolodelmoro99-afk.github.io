@@ -90,6 +90,7 @@ function componentChecks() {
     StatusBar: "StatusBar",
     ScrollArea: "ScrollArea",
     Tooltip: "Tooltip",
+    Tabs: "Tabs",
   };
   const components = Object.keys(folders);
   const desktopShell = [];

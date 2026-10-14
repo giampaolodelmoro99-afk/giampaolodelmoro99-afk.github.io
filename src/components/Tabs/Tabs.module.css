@@ -1,0 +1,92 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+.tablist {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  padding-inline-start: var(--space-1);
+}
+
+.tab {
+  --_height: max(calc(var(--control-height) - var(--space-bevel)), var(--target-min));
+  --_halo: var(--no-shadow);
+  --_shadow: var(--_halo), var(--bevel-tab);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--_height);
+  margin-block-start: var(--space-bevel);
+  padding: var(--space-0) var(--space-3);
+  background: var(--color-surface);
+  box-shadow: var(--_shadow);
+  cursor: default;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab[data-hovered]:not([data-selected]) {
+  background: var(--color-surface-hover);
+}
+
+.tab[data-selected] {
+  --_lift: calc(var(--space-bevel) * -1);
+  --_overlap: calc(var(--space-1) * -0.5);
+  --_inline: calc(var(--space-3) + var(--space-1) * 0.5);
+  --_selected-height: calc(var(--_height) + var(--space-bevel));
+
+  z-index: var(--z-raised);
+  min-block-size: var(--_selected-height);
+  margin-block: var(--space-0) var(--_lift);
+  margin-inline: var(--_overlap);
+  padding-block-end: var(--space-bevel);
+  padding-inline: var(--_inline);
+  font-weight: var(--font-weight-bold);
+}
+
+.tab[data-focus-visible] {
+  --_halo: var(--focus-halo-inset);
+
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+}
+
+.tab[data-disabled] {
+  color: var(--color-text-disabled);
+  text-shadow: var(--text-etch);
+}
+
+.tab[data-disabled]::after {
+  content: "";
+  position: absolute;
+  inset: var(--disabled-marker-inset);
+  border: var(--disabled-marker);
+  pointer-events: none;
+}
+
+.panel {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-raised);
+  outline: none;
+}
+
+.panel[data-focus-visible] {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+}
+
+@media (forced-colors: active) {
+  .tab,
+  .panel {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}

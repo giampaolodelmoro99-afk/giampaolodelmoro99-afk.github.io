@@ -52,6 +52,10 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 
 **Base di React Aria.** Il primo componente React Aria paga una volta sola la base condivisa: `usePress`, focus da tastiera, hover, utilità DOM, SSR, LiveAnnouncer. Il `Button` di React Aria da solo pesa **13,02 kB** gzip (voce "Base React Aria"); il nostro codice del Button è sotto 1 kB. La stessa base è già nel chunk della 404, con il `Link` di React Aria (11,7 kB). Accettata il 14/10/2026 come costo una tantum: i componenti successivi la riusano.
 
+**Base delle collezioni di React Aria.** Il primo componente con una collezione (Tabs: `TabList`, `Tab`, `TabPanel`) paga una volta sola selezione e collezioni di React Stately, `Document` e `BaseCollection`, `useSelectableCollection` e `useSelectableItem`, `CollectionBuilder` e navigazione da tastiera: **+17,48 kB** gzip sul totale, con il codice delle nostre Tabs sotto 1 kB. La riusano Select (ListBox), MenuBar e StartButton (Menu) e DesktopIcon (GridList). Accettata il 14/10/2026 come seconda base una tantum.
+
+**Base degli overlay (prevista).** Select porterà Popover, posizionamento, FocusScope e chiusura con clic esterno, stimati in circa +16 kB. Si accetta come terza base solo se il metafile conferma che l'eccedenza è codice condiviso e che la parte specifica del Select resta sotto i 10 kB.
+
 **Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. I budget si fissano alla chiusura della fase.
 
 **Indice dei componenti.** Importare anche solo Icon da `src/components/index.ts` costa circa 0,6 kB in più che dalla sua cartella: l'indice trascina codice di React Aria eseguito al caricamento del modulo. La voce "Icon importato dall'indice" lo tiene d'occhio fino alla decisione della F2A (`sideEffects` o import dalle cartelle).
@@ -69,5 +73,6 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 | StatusBar           | 5,96                  | +0,34                                 | 41,60     | 2,44       | 14,80            | –          | 110,81 |
 | ScrollArea          | 0,78                  | +0,09                                 | 41,69     | 2,49       | 14,85            | –          | 110,81 |
 | Tooltip             | 14,21                 | +6,19 (primo overlay: posizionamento) | 47,88     | 2,60       | 14,97            | –          | 110,81 |
+| Tabs                | 32,13                 | +17,48 (base collezioni)              | 65,36     | 2,85       | 15,22            | –          | 110,81 |
 
 Valori in kB gzip.

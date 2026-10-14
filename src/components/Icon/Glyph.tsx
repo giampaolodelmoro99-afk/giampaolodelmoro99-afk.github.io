@@ -4,7 +4,7 @@ import styles from "./Icon.module.css";
 
 export type GlyphProps = {
   name: GlyphName;
-  className?: string;
+  className?: string | undefined;
 };
 
 export function Glyph({ name, className }: GlyphProps) {

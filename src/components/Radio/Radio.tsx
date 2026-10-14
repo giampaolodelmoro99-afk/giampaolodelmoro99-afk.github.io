@@ -35,7 +35,7 @@ export function RadioGroup({
 
 export type RadioProps = Omit<AriaRadioProps, "children" | "className" | "style"> & {
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 };
 
 const { size, parts } = radioCircle;

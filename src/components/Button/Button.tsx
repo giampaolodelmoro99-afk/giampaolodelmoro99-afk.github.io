@@ -9,7 +9,7 @@ import styles from "./Button.module.css";
 
 type BaseProps = Omit<AriaButtonProps, "children" | "className" | "style"> & {
   variant?: "normal" | "default";
-  className?: string;
+  className?: string | undefined;
 };
 
 type WithLabel = { children: ReactNode; icon?: SmallIconName };

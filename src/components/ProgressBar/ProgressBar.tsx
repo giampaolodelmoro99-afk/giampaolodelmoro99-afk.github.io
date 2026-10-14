@@ -13,7 +13,7 @@ export type ProgressBarProps = Omit<
 > & {
   label: string;
   valueLabel?: string | undefined;
-  className?: string;
+  className?: string | undefined;
 };
 
 export function ProgressBar({ label, valueLabel, className, ...props }: ProgressBarProps) {

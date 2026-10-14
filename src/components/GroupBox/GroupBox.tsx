@@ -5,7 +5,7 @@ import styles from "./GroupBox.module.css";
 export type GroupBoxProps = {
   legend: string;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 };
 
 export function GroupBox({ legend, children, className }: GroupBoxProps) {
