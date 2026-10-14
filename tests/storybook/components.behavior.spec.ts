@@ -58,3 +58,13 @@ test("ScrollArea: con il focus le frecce della tastiera scorrono il contenuto", 
   await page.keyboard.press("ArrowDown");
   await expect.poll(() => region.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
 });
+
+test("Tooltip: compare con l'hover del mouse dopo il ritardo, non subito", async ({ page }) => {
+  await openStory(page, "componenti-tooltip--default", { theme: "classic", input: "mouse" });
+  // React Aria apre il tooltip all'hover solo se l'ultima interazione è stata
+  // col puntatore (un clic), non dopo il solo caricamento della pagina.
+  await page.mouse.click(300, 150);
+  await page.getByRole("button", { name: "Svuota il cestino" }).hover();
+  await expect(page.getByRole("tooltip")).toBeHidden();
+  await expect(page.getByRole("tooltip")).toHaveText("Svuota il cestino");
+});

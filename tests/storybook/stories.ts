@@ -59,7 +59,7 @@ export async function openStory(
     `/storybook/iframe.html?id=${id}&viewMode=story&globals=theme:${theme};input:${input};a11y.manual:!true${extra.join("")}`,
   );
   const root = page.locator("#storybook-root");
-  await root.locator(":scope > *").first().waitFor();
+  await root.locator(":scope > *").first().waitFor({ state: "attached" });
   await page.waitForFunction(
     ([expectedTheme, expectedInput]) =>
       document.documentElement.dataset["theme"] === expectedTheme &&

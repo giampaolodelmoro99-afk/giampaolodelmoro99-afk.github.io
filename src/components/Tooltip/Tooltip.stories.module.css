@@ -1,0 +1,9 @@
+.stage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-4);
+  min-block-size: calc(var(--control-height) * 4);
+  padding: var(--space-4);
+  background: var(--color-surface);
+}

@@ -89,6 +89,7 @@ function componentChecks() {
     ProgressBar: "ProgressBar",
     StatusBar: "StatusBar",
     ScrollArea: "ScrollArea",
+    Tooltip: "Tooltip",
   };
   const components = Object.keys(folders);
   const desktopShell = [];

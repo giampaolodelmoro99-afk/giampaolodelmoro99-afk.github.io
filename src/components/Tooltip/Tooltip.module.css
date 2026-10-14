@@ -1,0 +1,35 @@
+.root {
+  --_border: inset 0 0 0 var(--border-width-hairline) var(--color-tooltip-border);
+
+  z-index: var(--z-tooltip);
+  max-inline-size: var(--tooltip-max-width);
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-tooltip);
+  box-shadow: var(--_border);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+.root[data-entering] {
+  animation-name: fade;
+  animation-duration: var(--duration-fast);
+  animation-timing-function: var(--easing-standard);
+}
+
+@keyframes fade {
+  from {
+    opacity: var(--opacity-hidden);
+  }
+
+  to {
+    opacity: var(--opacity-full);
+  }
+}
+
+@media (forced-colors: active) {
+  .root {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}
