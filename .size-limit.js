@@ -87,6 +87,7 @@ function componentChecks() {
     Radio: "Radio",
     GroupBox: "GroupBox",
     ProgressBar: "ProgressBar",
+    StatusBar: "StatusBar",
   };
   const components = Object.keys(folders);
   const desktopShell = [];
