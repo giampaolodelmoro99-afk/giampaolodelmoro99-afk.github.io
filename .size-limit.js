@@ -85,6 +85,7 @@ function componentChecks() {
     Checkbox: "Checkbox",
     RadioGroup: "Radio",
     Radio: "Radio",
+    GroupBox: "GroupBox",
   };
   const components = Object.keys(folders);
   const desktopShell = [];
