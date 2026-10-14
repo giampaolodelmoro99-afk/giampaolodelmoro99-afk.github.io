@@ -88,6 +88,7 @@ function componentChecks() {
     GroupBox: "GroupBox",
     ProgressBar: "ProgressBar",
     StatusBar: "StatusBar",
+    ScrollArea: "ScrollArea",
   };
   const components = Object.keys(folders);
   const desktopShell = [];

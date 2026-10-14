@@ -105,6 +105,13 @@
           }
         ]
       }
+    ],
+    "jsx-a11y/no-noninteractive-tabindex": [
+      "error",
+      {
+        "roles": ["tabpanel"],
+        "tags": ["section"]
+      }
     ]
   },
   "overrides": [

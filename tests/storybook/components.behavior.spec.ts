@@ -46,3 +46,15 @@ test("ProgressBar: indeterminata si anima, con movimento ridotto resta ferma e l
   expect(await fill()).toBe("none");
   await expect(page.getByText("In corso…")).toBeVisible();
 });
+
+test("ScrollArea: con il focus le frecce della tastiera scorrono il contenuto", async ({
+  page,
+}) => {
+  await openStory(page, "componenti-scrollarea--default", { theme: "classic", input: "mouse" });
+  const region = page.getByRole("region", { name: "Come funziona il portfolio" });
+  await page.keyboard.press("Tab");
+  await expect(region).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("ArrowDown");
+  await expect.poll(() => region.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+});

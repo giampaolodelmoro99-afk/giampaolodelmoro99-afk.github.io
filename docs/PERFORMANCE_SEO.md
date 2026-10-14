@@ -67,5 +67,6 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 | GroupBox            | 0,39                  | +0,17                          | 38,83     | 2,00       | 14,26            | –          | 110,81 |
 | ProgressBar         | 6,43                  | +2,43                          | 41,26     | 2,35       | 14,71            | –          | 110,81 |
 | StatusBar           | 5,96                  | +0,34                          | 41,60     | 2,44       | 14,80            | –          | 110,81 |
+| ScrollArea          | 0,78                  | +0,09                          | 41,69     | 2,49       | 14,85            | –          | 110,81 |
 
 Valori in kB gzip.

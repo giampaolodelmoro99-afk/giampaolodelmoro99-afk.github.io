@@ -4,6 +4,7 @@ export * from "./GroupBox";
 export * from "./Icon";
 export * from "./ProgressBar";
 export * from "./Radio";
+export * from "./ScrollArea";
 export * from "./StatusBar";
 export * from "./TextArea";
 export * from "./TextField";

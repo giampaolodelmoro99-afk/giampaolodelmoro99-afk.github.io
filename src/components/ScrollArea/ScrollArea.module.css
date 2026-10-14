@@ -1,0 +1,25 @@
+.root {
+  composes: scroll from "./Scrollbar.module.css";
+  --_halo: var(--no-shadow);
+  --_shadow: var(--_halo), var(--bevel-field);
+
+  display: block;
+  min-inline-size: 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-field);
+  box-shadow: var(--_shadow);
+  color: var(--color-text);
+}
+
+.root:focus-visible {
+  --_halo: var(--focus-halo);
+
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+@media (forced-colors: active) {
+  .root {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}
