@@ -43,8 +43,12 @@ for (const id of stories) {
         (root, [selector, size]) => {
           return [...root.querySelectorAll(selector)]
             .map((element) => {
-              const style = getComputedStyle(element);
-              const hidden = style.clip !== "auto" || style.clipPath !== "none";
+              let hidden = false;
+              for (let node: Element | null = element; node && node !== root;) {
+                const style = getComputedStyle(node);
+                if (style.clip !== "auto" || style.clipPath !== "none") hidden = true;
+                node = node.parentElement;
+              }
               const target = hidden ? (element.closest("label") ?? element) : element;
               const { width, height } = target.getBoundingClientRect();
               return {
