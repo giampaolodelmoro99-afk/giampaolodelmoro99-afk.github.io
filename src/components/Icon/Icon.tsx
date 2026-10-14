@@ -5,6 +5,10 @@ import styles from "./Icon.module.css";
 
 export type IconScale = 1 | 2 | 3;
 
+export type SmallIconName = {
+  [Name in IconName]: 16 extends IconSize<Name> ? Name : never;
+}[IconName];
+
 export type IconProps<Name extends IconName> = {
   name: Name;
   size?: IconSize<Name>;

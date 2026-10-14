@@ -45,6 +45,13 @@ Il riferimento approvato è il pacchetto di consegna **GDM 95** (Claude Design, 
 | `--font-family-prose`                                                                        | `var(--font-family-document)` (IBM Plex Sans)    | frasi e paragrafi, in ogni tema e con ogni `data-font` (§4)           |
 | `--bevel-thin-raised`, `--bevel-thin-separator`, `--bevel-taskbar-top`, `--bevel-group-line` | bevel di 1 px                                    | voci della barra dei menu, separatori, bordo della taskbar, group box |
 
+**Aggiunte della Fase 1B:**
+
+| Token                     | Valore                                                            | Uso                                                                |
+| ------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `--disabled-marker`       | `none`; in alto contrasto `1px dotted var(--color-text-disabled)` | secondo segnale del disabilitato, oltre al colore (§9)             |
+| `--disabled-marker-inset` | `calc(var(--bevel-width) * 2)`                                    | rientro del bordo punteggiato, dentro il bevel e lontano dal focus |
+
 I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither-selection`, i bevel sottili) sono dichiarati su `:root, [data-theme]`, come `--focus-halo`: si ricalcolano dentro un contenitore con un tema diverso.
 
 **Regole:**
@@ -113,7 +120,11 @@ I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither
 
 ## 6. Componenti (Fase 1B)
 
-Catalogo del pacchetto, da implementare in Fase 1B (piano in `docs/phases/phase-01-plan.md`, appendice B, da riconfermare): Button (anche con sola icona e `aria-label`), TextField, TextArea, Checkbox, Radio/RadioGroup, Select, Window, MenuBar, Tabs, Tooltip, ScrollArea, ProgressBar, GroupBox, StatusBar, TaskbarButton e Taskbar, StartButton, DesktopIcon, AlertDialog. Icon e Glyph sono già in Fase 1A.
+Catalogo del pacchetto, da implementare in Fase 1B (piano in `docs/phases/phase-01-plan.md`, appendice B): Button (anche con sola icona e `aria-label`), TextField, TextArea, Checkbox, Radio/RadioGroup, Select, Window, MenuBar, Tabs, Tooltip, ScrollArea, ProgressBar, GroupBox, StatusBar, TaskbarButton e Taskbar, StartButton, DesktopIcon, AlertDialog. Icon e Glyph sono già in Fase 1A.
+
+| Componente | React Aria | Note                                                                                                                                                                                                          |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Button`   | `Button`   | Varianti `normal` e `default` (azione con Invio); `icon` 16 px decorativa; con sola icona `aria-label` è obbligatorio (tipi). Stati: hover, premuto, focus, disabilitato. Font dei controlli (Pixel Operator) |
 
 - Lo **slider** non è nel pacchetto: si valuta in F4A se il Pannello di controllo ne avrà bisogno.
 - Ogni componente ha test, story (tag `visual` per gli screenshot), axe pulito e target di 44 px in modalità touch.
@@ -142,9 +153,10 @@ Storybook 10 documenta il design system e serve i test visivi.
 
 Le deroghe del pacchetto sono nel suo README ("Scelte rispetto al 95"). In più, decise dopo la consegna:
 
-| Token                                                           | Pacchetto                                         | Sito                                                          | Motivo                                                                                                                      |
-| --------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `--color-titlebar-inactive`, `--color-titlebar-inactive-border` | `#6a6a6a` (2,97:1 sul telaio `#c0c0c0`)           | **`#666666`** (3,16:1 sul telaio, 5,74:1 con il testo bianco) | WCAG 1.4.11 chiede 3:1 per i bordi dei componenti: `#6a6a6a` era appena sotto. Decisione del 13/10/2026 dopo l'a11y-auditor |
-| Font delle frasi                                                | Pixel Operator anche per i testi dell'interfaccia | IBM Plex Sans per frasi e paragrafi (`--font-family-prose`)   | Leggibilità (§4)                                                                                                            |
+| Token                                                           | Pacchetto                                         | Sito                                                                               | Motivo                                                                                                                                                                                                                                                          |
+| --------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--color-titlebar-inactive`, `--color-titlebar-inactive-border` | `#6a6a6a` (2,97:1 sul telaio `#c0c0c0`)           | **`#666666`** (3,16:1 sul telaio, 5,74:1 con il testo bianco)                      | WCAG 1.4.11 chiede 3:1 per i bordi dei componenti: `#6a6a6a` era appena sotto. Decisione del 13/10/2026 dopo l'a11y-auditor                                                                                                                                     |
+| Font delle frasi                                                | Pixel Operator anche per i testi dell'interfaccia | IBM Plex Sans per frasi e paragrafi (`--font-family-prose`)                        | Leggibilità (§4)                                                                                                                                                                                                                                                |
+| Disabilitato in alto contrasto                                  | solo il colore `#3ff23f`                          | colore più bordo **punteggiato** di 1 px dentro il controllo (`--disabled-marker`) | Il verde si distingueva dal bianco solo per tinta. Il punteggiato (`dotted`, 1 px, interno) non si confonde con il focus (`dashed`, 2 px, esterno, con alone). Decisione del 14/10/2026; verificato negli screenshot della story "Focus accanto a disabilitato" |
 
 Il test `src/styles/tokens.test.ts` conosce queste deroghe: verifica che il pacchetto abbia il valore originale e il sito quello nuovo. In F2A la finestra attiva avrà anche un segnale non cromatico (non basta la differenza di colore tra barra attiva e inattiva).

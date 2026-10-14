@@ -46,12 +46,17 @@ Gli import da React Aria vanno sempre per sottopercorso (`react-aria-components/
 
 ### Peso dei componenti (Fase 1B)
 
-`npm run size` misura anche i componenti di `src/components/` con `@size-limit/esbuild`, nelle condizioni della build del sito: import per sottopercorso da React Aria, `optimize-locales` su it-IT ed en-US, `NODE_ENV` di produzione, React, React DOM e React Router esclusi (stanno nel chunk `framework`). Voci: totale JS, totale CSS, guscio del desktop della F2A (`Window`, `Taskbar`, `TaskbarButton`, `StartButton`, `DesktopIcons`) e ogni componente da solo. I componenti non entrano nella home fino alla F2A.
+`npm run size` misura anche i componenti di `src/components/` con `@size-limit/esbuild`, nelle condizioni della build del sito: import per sottopercorso da React Aria, `optimize-locales` su it-IT ed en-US, `NODE_ENV` di produzione, React, React DOM e React Router esclusi (stanno nel chunk `framework`). Voci: totale JS, totale CSS, guscio del desktop della F2A (`Window`, `Taskbar`, `TaskbarButton`, `StartButton`, `DesktopIcons`), base di React Aria, Icon importato dall'indice e ogni componente dalla sua cartella. I componenti non entrano nella home fino alla F2A.
 
-Regola della 1B: se un componente aggiunge più di 10 kB gzip al totale, il lavoro si ferma e si analizza il metafile prima di proseguire. I budget si fissano alla chiusura della fase.
+**Base di React Aria.** Il primo componente React Aria paga una volta sola la base condivisa: `usePress`, focus da tastiera, hover, utilità DOM, SSR, LiveAnnouncer. Il `Button` di React Aria da solo pesa **13,02 kB** gzip (voce "Base React Aria"); il nostro codice del Button è sotto 1 kB. La stessa base è già nel chunk della 404, con il `Link` di React Aria (11,7 kB). Accettata il 14/10/2026 come costo una tantum: i componenti successivi la riusano.
 
-| Componente aggiunto | Da solo (JS) | Incremento sul totale | Totale JS | Totale CSS | Guscio F2A | Home   |
-| ------------------- | ------------ | --------------------- | --------- | ---------- | ---------- | ------ |
-| Icon e Glyph (base) | 12,28 / 1,03 | –                     | 12,79     | 0,26       | –          | 110,81 |
+**Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. I budget si fissano alla chiusura della fase.
+
+**Indice dei componenti.** Importare anche solo Icon da `src/components/index.ts` costa circa 0,6 kB in più che dalla sua cartella: l'indice trascina codice di React Aria eseguito al caricamento del modulo. La voce "Icon importato dall'indice" lo tiene d'occhio fino alla decisione della F2A (`sideEffects` o import dalle cartelle).
+
+| Componente aggiunto | Da solo (JS)          | Incremento sul totale          | Totale JS | Totale CSS | Icon dall'indice | Guscio F2A | Home   |
+| ------------------- | --------------------- | ------------------------------ | --------- | ---------- | ---------------- | ---------- | ------ |
+| Icon e Glyph        | 12,28 / 1,03          | –                              | 12,79     | 0,26       | –                | –          | 110,81 |
+| Button              | 26,95 (Icon compresa) | +14,58 (base React Aria 13,02) | 27,37     | 0,86       | 12,89            | –          | 110,81 |
 
 Valori in kB gzip.

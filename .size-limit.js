@@ -76,26 +76,40 @@ export default [
 // React DOM e React Router stanno nel chunk "framework" e restano fuori.
 // Senza limite fino alla chiusura della 1B, quando si fissano i budget.
 function componentChecks() {
-  const components = ["Icon", "Glyph"];
+  const folders = { Icon: "Icon", Glyph: "Icon", Button: "Button" };
+  const components = Object.keys(folders);
   const desktopShell = [];
   const framework = ["react", "react-dom", "react/jsx-runtime", "react-router", "scheduler"];
 
-  const check = (name, names, only) => ({
+  const check = (name, file, names, only) => ({
     name,
-    import: { "src/components/index.ts": `{ ${names.join(", ")} }` },
+    import: { [file]: `{ ${names.join(", ")} }` },
     ignore: framework,
     gzip: true,
     modifyEsbuildConfig: esbuildConfig(only),
   });
+  const index = "src/components/index.ts";
 
   return [
-    check("Componenti: totale JS (gzip)", components, "js"),
-    check("Componenti: totale CSS (gzip)", components, "css"),
+    check("Componenti: totale JS (gzip)", index, components, "js"),
+    check("Componenti: totale CSS (gzip)", index, components, "css"),
     ...(desktopShell.length > 0
-      ? [check("Componenti: guscio del desktop F2A, JS (gzip)", desktopShell, "js")]
+      ? [check("Componenti: guscio del desktop F2A, JS (gzip)", index, desktopShell, "js")]
       : []),
-    ...components.map((component) =>
-      check(`Componente ${component}: JS (gzip)`, [component], "js"),
+    check(
+      "Base React Aria: Button di React Aria da solo, JS (gzip)",
+      "node_modules/react-aria-components/dist/exports/Button.mjs",
+      ["Button"],
+      "js",
+    ),
+    check("Icon importato dall'indice dei componenti, JS (gzip)", index, ["Icon"], "js"),
+    ...Object.entries(folders).map(([component, folder]) =>
+      check(
+        `Componente ${component}: JS (gzip)`,
+        `src/components/${folder}/index.ts`,
+        [component],
+        "js",
+      ),
     ),
   ];
 }
