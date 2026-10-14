@@ -47,10 +47,12 @@ Il riferimento approvato è il pacchetto di consegna **GDM 95** (Claude Design, 
 
 **Aggiunte della Fase 1B:**
 
-| Token                     | Valore                                                            | Uso                                                                |
-| ------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `--disabled-marker`       | `none`; in alto contrasto `1px dotted var(--color-text-disabled)` | secondo segnale del disabilitato, oltre al colore (§9)             |
-| `--disabled-marker-inset` | `calc(var(--bevel-width) * 2)`                                    | rientro del bordo punteggiato, dentro il bevel e lontano dal focus |
+| Token                      | Valore                                                            | Uso                                                                             |
+| -------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `--disabled-marker`        | `none`; in alto contrasto `1px dotted var(--color-text-disabled)` | secondo segnale del disabilitato, oltre al colore (§9)                          |
+| `--disabled-marker-inset`  | `calc(var(--bevel-width) * 2)`                                    | rientro del bordo punteggiato, dentro il bevel e lontano dal focus              |
+| `--disabled-marker-offset` | `calc(var(--disabled-marker-inset) * -1)`                         | stesso bordo come `outline` rientrato, per gli elementi senza `::after` (campi) |
+| `--opacity-full`           | `1`                                                               | segnaposto dei campi a piena opacità (Firefox lo schiarisce)                    |
 
 I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither-selection`, i bevel sottili) sono dichiarati su `:root, [data-theme]`, come `--focus-halo`: si ricalcolano dentro un contenitore con un tema diverso.
 
@@ -122,9 +124,10 @@ I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither
 
 Catalogo del pacchetto, da implementare in Fase 1B (piano in `docs/phases/phase-01-plan.md`, appendice B): Button (anche con sola icona e `aria-label`), TextField, TextArea, Checkbox, Radio/RadioGroup, Select, Window, MenuBar, Tabs, Tooltip, ScrollArea, ProgressBar, GroupBox, StatusBar, TaskbarButton e Taskbar, StartButton, DesktopIcon, AlertDialog. Icon e Glyph sono già in Fase 1A.
 
-| Componente | React Aria | Note                                                                                                                                                                                                          |
-| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Button`   | `Button`   | Varianti `normal` e `default` (azione con Invio); `icon` 16 px decorativa; con sola icona `aria-label` è obbligatorio (tipi). Stati: hover, premuto, focus, disabilitato. Font dei controlli (Pixel Operator) |
+| Componente  | React Aria                                          | Note                                                                                                                                                                                                                                                                                                                                                    |
+| ----------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Button`    | `Button`                                            | Varianti `normal` e `default` (azione con Invio); `icon` 16 px decorativa; con sola icona `aria-label` è obbligatorio (tipi). Stati: hover, premuto, focus, disabilitato. Font dei controlli (Pixel Operator)                                                                                                                                           |
+| `TextField` | `TextField`, `Label`, `Input`, `Text`, `FieldError` | Etichetta sempre visibile; descrizione ed errore collegati con `aria-describedby`, in IBM Plex Sans (frasi); errore con glifo × oltre al colore; validazione nativa di React Aria con `errorMessage` dai dizionari (testo o funzione). Focus anche con il mouse (`[data-focused]`); testo a 16 px anche in touch. `FieldTexts` è riusato dalla TextArea |
 
 - Lo **slider** non è nel pacchetto: si valuta in F4A se il Pannello di controllo ne avrà bisogno.
 - Ogni componente ha test, story (tag `visual` per gli screenshot), axe pulito e target di 44 px in modalità touch.

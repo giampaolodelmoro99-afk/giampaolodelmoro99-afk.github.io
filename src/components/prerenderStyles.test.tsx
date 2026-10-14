@@ -51,26 +51,26 @@ const styleAttributes = (html: string) =>
 // ADR-0012, tipo C: nell'HTML prerenderizzato del sito gli attributi style sono
 // bloccati dalla CSP. Questo inventario elenca quelli che ogni story produce con
 // il rendering lato server, così un componente non li introduce di nascosto.
-// Gli unici attesi oggi sono le variabili CSS dei glifi (Glyph).
-const allowed: Record<string, RegExp> = {
-  "Componenti/Icon/Glifi": /^--glyph-width:\d+;--glyph-height:\d+$/,
-};
+// Gli unici ammessi oggi sono le variabili CSS di Glyph, da risolvere in F2A
+// insieme agli altri attributi del tipo C.
+const glyphVariables = /^--glyph-width:\d+;--glyph-height:\d+$/;
 
 describe("attributi style nel prerender (ADR-0012)", () => {
   it("trova le story dei componenti", () => {
     expect(stories.map(({ id }) => id)).toContain("Componenti/Icon/Tutte");
   });
 
-  it.each(stories)("$id produce solo gli attributi style dichiarati", ({ id, element }) => {
-    const pattern = allowed[id] ?? /^$/;
+  it.each(stories)("$id produce solo le variabili di Glyph", ({ element }) => {
     const unexpected = styleAttributes(renderToString(element)).filter(
-      (style) => !pattern.test(style),
+      (style) => !glyphVariables.test(style),
     );
     expect(unexpected).toEqual([]);
   });
 
-  it.each(Object.keys(allowed))("%s produce davvero gli attributi dichiarati", (id) => {
-    const found = stories.find((candidate) => candidate.id === id);
-    expect(styleAttributes(renderToString(found?.element ?? createElement("p")))).not.toEqual([]);
+  it("riconosce davvero le variabili di Glyph (story Glifi)", () => {
+    const glyphs = stories.find(({ id }) => id === "Componenti/Icon/Glifi");
+    const styles = styleAttributes(renderToString(glyphs?.element ?? createElement("p")));
+    expect(styles.length).toBeGreaterThan(0);
+    expect(styles.every((style) => glyphVariables.test(style))).toBe(true);
   });
 });

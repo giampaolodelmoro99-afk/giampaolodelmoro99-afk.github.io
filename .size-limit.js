@@ -76,7 +76,7 @@ export default [
 // React DOM e React Router stanno nel chunk "framework" e restano fuori.
 // Senza limite fino alla chiusura della 1B, quando si fissano i budget.
 function componentChecks() {
-  const folders = { Icon: "Icon", Glyph: "Icon", Button: "Button" };
+  const folders = { Icon: "Icon", Glyph: "Icon", Button: "Button", TextField: "TextField" };
   const components = Object.keys(folders);
   const desktopShell = [];
   const framework = ["react", "react-dom", "react/jsx-runtime", "react-router", "scheduler"];
