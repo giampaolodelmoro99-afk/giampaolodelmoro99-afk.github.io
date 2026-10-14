@@ -122,10 +122,26 @@ function esbuildConfig(only) {
     plugins: [
       ...(config.plugins ?? []),
       optimizeLocales.esbuild({ locales: Object.values(intlLocales) }),
+      removedLocalesLoader,
       ...(only === "css" ? [dropOutputs(/\.js$/)] : []),
     ],
   });
 }
+
+// optimize-locales 2.1.0 con unplugin 2.3: in esbuild le traduzioni escluse
+// vengono risolte verso empty.js nel namespace "locales-plugin", ma il plugin non
+// ha un hook load ed esbuild non sa caricarle ("Do not know how to load path").
+// In Vite funziona. Qui si carica il file dal disco: la misura resta quella con
+// le sole lingue it-IT ed en-US.
+const removedLocalesLoader = {
+  name: "removed-locales-loader",
+  setup(build) {
+    build.onLoad({ filter: /.*/, namespace: "locales-plugin" }, (args) => ({
+      contents: readFileSync(args.path, "utf8"),
+      loader: "js",
+    }));
+  },
+};
 
 function dropOutputs(pattern) {
   return {
