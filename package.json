@@ -25,6 +25,8 @@
     "size": "size-limit",
     "lhci:mobile": "lhci autorun --config=lighthouserc.mobile.json",
     "lhci:desktop": "lhci autorun --config=lighthouserc.desktop.json",
+    "lhci:mobile:strict": "lhci autorun --config=lighthouserc.mobile.strict.json",
+    "lhci:desktop:strict": "lhci autorun --config=lighthouserc.desktop.strict.json",
     "fonts": "node scripts/fonts.mjs",
     "icons": "node scripts/icons.mjs",
     "build:site": "react-router build && node scripts/postbuild.mjs",

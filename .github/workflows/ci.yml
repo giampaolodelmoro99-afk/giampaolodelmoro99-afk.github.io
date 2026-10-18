@@ -5,6 +5,11 @@ on:
     branches: [main, "phase/**"]
   pull_request:
   workflow_call:
+    inputs:
+      strict-lighthouse:
+        description: "Lighthouse Performance 100 su 5 esecuzioni (chiusura di fase e release, ADR-0013)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -125,7 +130,7 @@ jobs:
         with:
           name: build
           path: build
-      - run: npm run lhci:${{ matrix.preset }}
+      - run: npm run lhci:${{ matrix.preset }}${{ inputs.strict-lighthouse && ':strict' || '' }}
       - uses: actions/upload-artifact@v7
         if: always()
         with:
