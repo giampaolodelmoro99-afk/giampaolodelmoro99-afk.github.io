@@ -17,6 +17,9 @@ const interactive = [
   "[role=slider]",
   "[role=tab]",
   "[role=menuitem]",
+  "[role=menuitemradio]",
+  "[role=menuitemcheckbox]",
+  "[role=row]",
   "[role=option]",
   "[role=gridcell]",
   "[tabindex]:not([tabindex='-1'])",
@@ -38,13 +41,23 @@ for (const id of stories) {
         })),
       ).toEqual([]);
 
+      await page.evaluate(() =>
+        Promise.all(
+          document
+            .getAnimations()
+            .filter((animation) => animation.effect?.getTiming().iterations !== Infinity)
+            .map((animation) => animation.finished),
+        ),
+      );
       const minimum = variant.input === "touch" ? 44 : 24;
       const small = await page.locator("#storybook-root").evaluate(
         (root, [selector, size]) => {
           const isClipped = (element: Element) => {
             for (let node: Element | null = element; node && node !== root;) {
               const style = getComputedStyle(node);
-              if (style.clip !== "auto" || style.clipPath !== "none") return true;
+              if (style.clip === "rect(0px, 0px, 0px, 0px)" || style.clipPath === "inset(50%)") {
+                return true;
+              }
               node = node.parentElement;
             }
             return false;
