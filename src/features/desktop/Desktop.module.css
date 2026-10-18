@@ -37,6 +37,7 @@
   font-size: var(--font-size-md);
 }
 
+.languageLink:focus-visible,
 .languageLink[data-focus-visible] {
   outline: var(--focus-width) var(--focus-style) var(--color-focus);
   outline-offset: var(--focus-offset);

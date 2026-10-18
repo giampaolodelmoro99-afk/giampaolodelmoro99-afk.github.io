@@ -1,3 +1,4 @@
+import { getDictionary } from "../../src/i18n";
 import { expect, test } from "./fixtures";
 
 // La 404 deve funzionare anche prima dell'idratazione: i link prerenderizzati
@@ -9,8 +10,22 @@ test.use({ javaScriptEnabled: false, trace: "off" });
 
 test("dalla 404 i link prerenderizzati portano al desktop", async ({ page }) => {
   await page.goto("/pagina-inesistente");
-  const link = page.getByRole("link", { name: "Torna alla home" });
+  const link = page.getByRole("link", { name: getDictionary("it").notFound.home });
   await expect(link).toHaveAttribute("href", "/");
   await Promise.all([page.waitForURL("/", { waitUntil: "load" }), link.press("Enter")]);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Gianpaolo Del Moro");
+});
+
+test("dalla 404 il focus da tastiera è il doppio anello anche senza JavaScript", async ({
+  page,
+}) => {
+  await page.goto("/pagina-inesistente");
+  await page.keyboard.press("Tab");
+  const link = page.getByRole("link", { name: getDictionary("it").notFound.home });
+  await expect(link).toBeFocused();
+  const ring = await link.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth };
+  });
+  expect(ring).toEqual({ outlineStyle: "dashed", outlineWidth: "2px" });
 });
