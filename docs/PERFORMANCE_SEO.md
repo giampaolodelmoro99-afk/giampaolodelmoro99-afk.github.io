@@ -2,17 +2,18 @@
 
 ## 1. Budget
 
-| Metrica                | Budget              | Ultima misura                          | Come si verifica |
-| ---------------------- | ------------------- | -------------------------------------- | ---------------- |
-| JS iniziale (gzip)     | ≤ 115 kB            | 112 kB                                 | `npm run size`   |
-| CSS iniziale (gzip)    | ≤ 12 kB             | 1,3 kB                                 | `npm run size`   |
-| Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                          | `npm run size`   |
-| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 98,1 kB (F1B, fuori dalla home)        | `npm run size`   |
-| Guscio del desktop F2A | ≤ 75 kB (dalla F1B) | 74,9 kB (F1B)                          | `npm run size`   |
-| LCP (mobile simulato)  | ≤ 1,2 s             | 0,9 s (F0); 1,2 s (F1A, frase in Plex) | Lighthouse CI    |
-| FCP (mobile simulato)  | ≤ 1,0 s             | 0,9 s                                  | Lighthouse CI    |
-| TBT (mobile simulato)  | ≤ 50 ms             | 0 ms                                   | Lighthouse CI    |
-| CLS                    | ≤ 0,01              | 0                                      | Lighthouse CI    |
+| Metrica                | Budget              | Ultima misura                           | Come si verifica |
+| ---------------------- | ------------------- | --------------------------------------- | ---------------- |
+| JS iniziale (gzip)     | ≤ 115 kB            | 112 kB                                  | `npm run size`   |
+| CSS iniziale (gzip)    | ≤ 12 kB             | 1,3 kB                                  | `npm run size`   |
+| Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                           | `npm run size`   |
+| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 98,1 kB (F1B, fuori dalla home)         | `npm run size`   |
+| Guscio del desktop F2A | ≤ 75 kB (dalla F1B) | 74,9 kB (F1B)                           | `npm run size`   |
+| LCP (mobile simulato)  | ≤ 1,35 s (ADR-0013) | 1,20 s mediana (F1B, preview compressa) | Lighthouse CI    |
+| FCP (mobile simulato)  | ≤ 1,05 s (ADR-0013) | 0,91 s mediana (F1B)                    | Lighthouse CI    |
+| LCP / FCP desktop      | ≤ 0,5 s / ≤ 0,425 s | 0,32 / 0,27 s mediana (F1B)             | Lighthouse CI    |
+| TBT (mobile simulato)  | ≤ 50 ms             | 0 ms                                    | Lighthouse CI    |
+| CLS                    | ≤ 0,01              | 0                                       | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
 
@@ -89,10 +90,13 @@ Valori in kB gzip. Il guscio F2A scende da 75,03 a 74,92 kB con l'AlertDialog, c
 ## 2. Lighthouse CI
 
 - Configurazioni: `lighthouserc.mobile.json` (preset mobile, default di Lighthouse) e `lighthouserc.desktop.json` (`preset: desktop`).
-- Server: `scripts/preview.mjs`, lo stesso comportamento di GitHub Pages.
+- Server: `scripts/preview.mjs`, lo stesso comportamento di GitHub Pages, compressione gzip compresa (ADR-0013).
 - URL: `/` e `/en/`, poi tutte le route principali IT ed EN man mano che nascono. Storybook è escluso.
-- 3 esecuzioni per URL, `aggregationMethod: median-run`, `minScore: 1` su Performance, Accessibility, Best Practices e SEO.
-- Report in `.lighthouseci/<preset>/` (artifact in CI).
+- **Due livelli (ADR-0013)**:
+  - a ogni commit (`lhci:mobile`, `lhci:desktop`): 3 esecuzioni per URL, mediana; Accessibility, Best Practices e SEO a 100, Performance ≥ 95;
+  - a chiusura di fase e alla release (`lhci:mobile:strict`, `lhci:desktop:strict`; nel deploy `ci.yml` riceve `strict-lighthouse: true`): 5 esecuzioni, mediana, **Performance 100**.
+- In entrambi i livelli LCP, FCP, TBT e CLS hanno budget fissi (§1), verificati da `scripts/lib/lighthouse.test.mjs` insieme alla regola.
+- Report in `.lighthouseci/<preset>/` e `.lighthouseci/<preset>-strict/` (artifact in CI).
 
 ## 3. Prerender e contenuto senza JavaScript
 

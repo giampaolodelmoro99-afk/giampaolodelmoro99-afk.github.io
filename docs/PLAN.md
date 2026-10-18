@@ -69,6 +69,8 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
   - tooltip uguale all'`aria-label` letto due volte; `ScrollArea` focalizzabile solo quando scorre; segnaposto distinguibile dal testo
   - progetto Storybook a 320 px con controllo dell'overflow; verifiche manuali con NVDA, VoiceOver, zoom 200/400% e `forced-colors`
 
+- [ ] Rimisurare con la preview compressa le correzioni fatte per l'oscillazione di Lighthouse (ADR-0013): togliere l'idratazione rinviata se Performance resta ≥ 95 con LCP e FCP nei budget; rivedere il preload di Pixel Operator bold; rivedere i budget di LCP e FCP
+
 ## 2B. Routing, persistenza e mobile
 
 - [ ] Deep link per ogni finestra con React Router, sincronizzati con Zustand

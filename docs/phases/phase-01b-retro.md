@@ -56,7 +56,7 @@
 | Violazioni axe                               | 0 (story, temi, mouse e touch; pagine)                      | 0                             |
 | `npm audit --omit=dev`                       | 0 vulnerabilità                                             | 0                             |
 
-**LCP mobile**: 1,35 s contro 1,20 s su `main` misurato nelle stesse condizioni (FCP 1,05 contro 0,90). Lighthouse resta 100, ma i budget documentati di LCP (1,2 s) e FCP (1,0 s), che Lighthouse CI non verifica, sono superati di un passo simulato di 150 ms. L'ipotesi più probabile: `global.css` non compresso è passato da 14 140 a 15 171 byte, oltre la finestra TCP iniziale (circa 14,6 kB). La preview locale non comprime, GitHub Pages sì (3,5 kB gzip). Una prova con i token di `main` dà valori misti (1,2 s su `/`, 1,35 su `/en/`). **Decisione aperta (§9).**
+**LCP mobile**: 1,35 s contro 1,20 s su `main` misurato nelle stesse condizioni (FCP 1,05 contro 0,90). Lighthouse resta 100, ma i budget documentati di LCP (1,2 s) e FCP (1,0 s), che Lighthouse CI non verifica, sono superati di un passo simulato di 150 ms. L'ipotesi più probabile: `global.css` non compresso è passato da 14 140 a 15 171 byte, oltre la finestra TCP iniziale (circa 14,6 kB). La preview locale non comprime, GitHub Pages sì (3,5 kB gzip). Una prova con i token di `main` dà valori misti (1,2 s su `/`, 1,35 su `/en/`). **Decisione del 18/10/2026 (ADR-0013)**: la preview comprime come GitHub Pages. Rimisurati con la compressione, `main` e branch coincidono (LCP 1,20 s, FCP 0,91 s di mediana su mobile): il passo in più veniva dalla preview. Lighthouse passa a due livelli, con budget fissi su LCP, FCP, TBT e CLS.
 
 ## 5. QA manuale
 
@@ -100,6 +100,6 @@ Riportate in AI_WORKFLOW.md §5 (Fase 1B).
 ## 9. Azioni per la fase successiva
 
 1. Push del branch e verifica della CI su GitHub (primo run con i 247 screenshot e il progetto storybook senza `--hide-scrollbars`).
-2. **Decidere sull'LCP mobile (§4)**: preview con compressione come GitHub Pages, oppure `global.css` sotto i 14,6 kB, oppure budget LCP e FCP aggiornati con un ADR.
+2. ~~Decidere sull'LCP mobile~~: fatto con ADR-0013 (preview compressa, Lighthouse a due livelli).
 3. QA su Android reale (QA_CHECKLIST §7 e §7.1).
 4. Merge `--no-ff` e tag `phase-01b`, poi piano della F2A in plan mode, a partire dal caricamento separato del desktop e dal tipo C.

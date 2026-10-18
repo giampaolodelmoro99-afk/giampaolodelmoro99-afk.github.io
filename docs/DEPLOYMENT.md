@@ -36,7 +36,7 @@ Tutti i job usano **`runs-on: ubuntu-24.04`**, mai `ubuntu-latest`: GitHub spost
 1. Branch dedicato (`chore/runner-ubuntu-26.04`), creato dal proprietario.
 2. Sostituire `ubuntu-24.04` in `ci.yml` e `deploy.yml`.
 3. Se esiste, passare anche all'immagine Playwright basata sulla nuova Ubuntu (tag `-<nome in codice>`) in `ci.yml` e negli script `test:e2e*`, poi rigenerare gli screenshot nel container (skill `update-visual-snapshots`).
-4. CI completa verde, con Lighthouse 100 su mobile e desktop, prima del merge.
+4. CI completa verde prima del merge; alla release la CI usa Lighthouse severo (Performance 100, mediana di 5, ADR-0013).
 5. Farlo prima del ritiro di 24.04 annunciato da GitHub (controllare il changelog di GitHub Actions e `actions/runner-images`).
 
 ## 4. Prima pubblicazione della v2 e transizione

@@ -18,18 +18,18 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 
 ## 3. Soglie
 
-| Controllo       | Soglia                                                                                        | Dove                  |
-| --------------- | --------------------------------------------------------------------------------------------- | --------------------- |
-| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                    | `vitest.config.ts`    |
-| Lighthouse      | 100 in tutte e 4 le categorie, preset mobile e desktop, mediana di 3 esecuzioni               | `lighthouserc.*.json` |
-| JS iniziale     | ≤ 115 kB gzip (F1B: 110,81 kB con il chunk `framework`)                                       | `.size-limit.js`      |
-| Componenti      | JS ≤ 99 kB, CSS ≤ 5 kB, guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)          | `.size-limit.js`      |
-| CSS iniziale    | ≤ 12 kB gzip                                                                                  | `.size-limit.js`      |
-| Font in preload | ≤ 25 kB (woff2)                                                                               | `.size-limit.js`      |
-| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms | `performance.spec.ts` |
-| axe             | 0 violazioni WCAG 2.2 AA                                                                      | unit ed e2e           |
-| Console         | 0 errori e warning                                                                            | fixture e2e           |
-| Terze parti     | 0 richieste verso altre origini                                                               | fixture e2e           |
+| Controllo       | Soglia                                                                                                                                                             | Dove                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
+| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                         | `vitest.config.ts`    |
+| Lighthouse      | Accessibility, Best Practices, SEO 100; Performance ≥ 95 a ogni commit e 100 (mediana di 5) a fine fase e release; LCP, FCP, TBT e CLS con budget fissi (ADR-0013) | `lighthouserc.*.json` |
+| JS iniziale     | ≤ 115 kB gzip (F1B: 110,81 kB con il chunk `framework`)                                                                                                            | `.size-limit.js`      |
+| Componenti      | JS ≤ 99 kB, CSS ≤ 5 kB, guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)                                                                               | `.size-limit.js`      |
+| CSS iniziale    | ≤ 12 kB gzip                                                                                                                                                       | `.size-limit.js`      |
+| Font in preload | ≤ 25 kB (woff2)                                                                                                                                                    | `.size-limit.js`      |
+| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms                                                                      | `performance.spec.ts` |
+| axe             | 0 violazioni WCAG 2.2 AA                                                                                                                                           | unit ed e2e           |
+| Console         | 0 errori e warning                                                                                                                                                 | fixture e2e           |
+| Terze parti     | 0 richieste verso altre origini                                                                                                                                    | fixture e2e           |
 
 **Le soglie non si abbassano.** Un'eccezione richiede un ADR.
 
@@ -115,7 +115,8 @@ npm run build && npm run test:prerender
 npm run test:e2e           # suite completa nel container (come la CI)
 npm run test:e2e:host      # e2e sull'host senza @visual, per iterare
 npm run size
-npm run lhci:mobile && npm run lhci:desktop
+npm run lhci:mobile && npm run lhci:desktop                 # livello commit
+npm run lhci:mobile:strict && npm run lhci:desktop:strict   # chiusura di fase e release
 ```
 
 ## 10. Flakiness
