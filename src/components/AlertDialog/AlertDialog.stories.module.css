@@ -1,0 +1,7 @@
+.stage {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-desktop);
+}

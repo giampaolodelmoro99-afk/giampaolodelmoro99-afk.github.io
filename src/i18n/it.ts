@@ -26,6 +26,11 @@ export const it = {
     home: "Torna alla home",
   },
   ui: {
+    alertDialog: {
+      warning: "Avviso",
+      error: "Errore",
+      info: "Informazione",
+    },
     progressBar: {
       inProgress: "In corso…",
     },

@@ -20,6 +20,8 @@ export type WindowProps = {
   menu?: ReactNode;
   statusBar?: ReactNode;
   children: ReactNode;
+  titleId?: string;
+  isLandmark?: boolean;
   className?: string | undefined;
 };
 
@@ -38,9 +40,13 @@ export function Window({
   menu,
   statusBar,
   children,
+  titleId: titleIdProp,
+  isLandmark = true,
   className,
 }: WindowProps) {
-  const titleId = useId();
+  const generatedId = useId();
+  const titleId = titleIdProp ?? generatedId;
+  const Frame = isLandmark ? "section" : "div";
   const strings = useUiStrings().window;
   const actions = {
     minimize: { label: strings.minimize, glyph: "minimize", onPress: onMinimize },
@@ -53,8 +59,8 @@ export function Window({
   } as const;
 
   return (
-    <section
-      aria-labelledby={titleId}
+    <Frame
+      aria-labelledby={isLandmark ? titleId : undefined}
       className={cx(styles.root, className)}
       data-active={isActive}
       data-maximized={isMaximized || undefined}
@@ -88,6 +94,6 @@ export function Window({
         {children}
       </div>
       {statusBar}
-    </section>
+    </Frame>
   );
 }

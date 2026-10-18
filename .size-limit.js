@@ -102,6 +102,8 @@ function componentChecks() {
     TaskbarButton: "TaskbarButton",
     StartButton: "StartButton",
     DesktopIcons: "DesktopIcon",
+    AlertDialog: "AlertDialog",
+    AlertDialogFrame: "AlertDialog",
   };
   const components = Object.keys(folders);
   const desktopShell = ["Window", "Taskbar", "TaskbarButton", "StartButton", "DesktopIcons"];

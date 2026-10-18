@@ -28,6 +28,11 @@ export const en: Dictionary = {
     home: "Back to the home page",
   },
   ui: {
+    alertDialog: {
+      warning: "Warning",
+      error: "Error",
+      info: "Information",
+    },
     progressBar: {
       inProgress: "In progress…",
     },

@@ -152,3 +152,27 @@ test("DesktopIcon: con il mouse un clic seleziona e il doppio clic apre", async 
   await projects.dblclick();
   await expect(page.getByRole("status")).toHaveText("Aperta: projects");
 });
+
+test("AlertDialog: focus sul primario, intrappolato, clic fuori non chiude, Esc chiude e restituisce il focus", async ({
+  page,
+}) => {
+  await openStory(page, "componenti-alertdialog--interattivo", {
+    theme: "classic",
+    input: "mouse",
+  });
+  const trigger = page.getByRole("button", { name: "Svuota il cestino" });
+  await trigger.click();
+  const dialog = page.getByRole("alertdialog", { name: "Cestino" });
+  await expect(dialog).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sì" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Tab");
+  expect(await dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  await page.mouse.click(5, 5);
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+});
