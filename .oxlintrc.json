@@ -105,13 +105,6 @@
           }
         ]
       }
-    ],
-    "jsx-a11y/no-noninteractive-tabindex": [
-      "error",
-      {
-        "roles": ["tabpanel"],
-        "tags": ["section"]
-      }
     ]
   },
   "overrides": [
@@ -144,6 +137,18 @@
       "rules": {
         "no-restricted-imports": "off",
         "react/hooks": "off"
+      }
+    },
+    {
+      "files": ["src/components/ScrollArea/ScrollArea.tsx"],
+      "rules": {
+        "jsx-a11y/no-noninteractive-tabindex": [
+          "error",
+          {
+            "roles": ["tabpanel"],
+            "tags": ["section"]
+          }
+        ]
       }
     }
   ]

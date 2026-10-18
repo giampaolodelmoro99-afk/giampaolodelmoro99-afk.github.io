@@ -66,16 +66,20 @@ export async function openStory(
       document.documentElement.dataset["input"] === expectedInput,
     [theme, input],
   );
-  await page.waitForFunction(() => {
+  const phase = await page.waitForFunction(() => {
     const preview: unknown = Reflect.get(window, "__STORYBOOK_PREVIEW__");
     const render: unknown =
       typeof preview === "object" && preview !== null
         ? Reflect.get(preview, "currentRender")
         : undefined;
-    return (
-      typeof render === "object" && render !== null && Reflect.get(render, "phase") === "finished"
-    );
+    const current: unknown =
+      typeof render === "object" && render !== null ? Reflect.get(render, "phase") : undefined;
+    return ["finished", "errored", "aborted"].includes(String(current)) ? String(current) : false;
   });
+  const finalPhase = await phase.jsonValue();
+  if (finalPhase !== "finished") {
+    throw new Error(`la story ${id} è finita nella fase "${String(finalPhase)}" (play fallita?)`);
+  }
   await page.evaluate(() => document.fonts.ready);
   return root;
 }

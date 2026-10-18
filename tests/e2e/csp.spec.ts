@@ -63,7 +63,11 @@ test.describe("CSP del sito con un componente React Aria", () => {
     await openPage(page, notFound);
 
     await expect.poll(() => violations).toContainEqual(expect.stringMatching(/^style-src/));
-    expect(consoleErrors.length).toBeGreaterThan(0);
-    consoleErrors.splice(0);
+    const cspErrors = consoleErrors.filter((message) =>
+      /Content Security Policy|style-src/i.test(message),
+    );
+    expect(cspErrors.length).toBeGreaterThan(0);
+    const others = consoleErrors.filter((message) => !cspErrors.includes(message));
+    consoleErrors.splice(0, consoleErrors.length, ...others);
   });
 });
