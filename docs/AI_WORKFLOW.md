@@ -60,6 +60,15 @@ Come uso gli strumenti di Anthropic in questo progetto. È anche la fonte della 
 - **Quando un test fallisce di un soffio, cercare la causa nello strumento.** 43,99997 px in Firefox erano un errore di conversione di Playwright: il valore del browser era 44, quindi è cambiato il metodo di misura e non la soglia.
 - **Dopo aver modificato agenti, skill o hook, riavviare Claude Code prima di usarli.** Le definizioni si caricano all'avvio della sessione: il hook di sola lettura degli agenti di review non è scattato finché la sessione non è stata riavviata.
 
+### Fase 1B
+
+- **Una soglia di arresto concordata rende le decisioni misurabili.** La regola "fermati sopra 10 kB" ha fermato il lavoro tre volte. Ogni volta l'analisi del metafile ha separato le basi una tantum di React Aria dalla parte specifica, e la decisione è arrivata con i numeri invece che a sensazione.
+- **Gli script che riscrivono documenti vanno controllati come codice.** Un `replace` per indice in Python ha troncato PERFORMANCE_SEO.md di 94 righe, e nessun test l'ha visto: l'hanno trovato due agenti di review. Dopo ogni modifica scritta con uno script serve un `git diff --stat` del file.
+- **Le cache possono rendere cieco un test.** `import.meta.glob` con la cache dei moduli di Vitest 5 controllava 32 story su 70. Un test che scopre i propri casi deve verificare di averli trovati tutti (numero dei file contro numero dei casi).
+- **Mai riportare una misura a memoria.** "Home invariata" è stato ripetuto in più commit mentre il valore era cambiato. La misura si rifà dopo una build completa.
+- **Gli stati delle interazioni nei test visivi hanno bisogno di un layout stabile.** Il mouse reale di Playwright interferiva con gli hover sintetici: serviva aspettare font e due frame, non aumentare i timeout.
+- **Rendere più permissivo un test per far spazio a un caso nuovo va verificato in negativo.** L'eccezione per gli input nascosti di React Aria era diventata "qualsiasi clip-path": l'ha trovata il code-reviewer. La versione corretta è stata provata con una riga volutamente stretta.
+
 ## 6. Materiale per "Making of"
 
 Dalla Fase 3B la finestra "Making of" racconta:

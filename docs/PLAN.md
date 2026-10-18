@@ -47,6 +47,7 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 - [x] Pagina 404 con il `Link` di React Aria e test e2e con la CSP reale (ADR-0012)
 - [x] Peso dei componenti con size-limit: totale, gruppo del desktop per la F2A, incremento per componente
 - [x] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
+- [ ] QA su Android reale, CI verde su GitHub per `phase/01b-components`, merge e tag `phase-01b`
 
 ## 2A. Window manager desktop
 
