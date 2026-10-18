@@ -162,7 +162,11 @@ const siteHtmlFiles = existsSync(client)
       .filter((file) => !file.startsWith("storybook"))
   : [];
 
-const styledPages = [...pages.map(([href]) => relative(client, fileFor(href))), "404.html"];
+const styledPages = [
+  ...pages.map(([href]) => relative(client, fileFor(href))),
+  "404.html",
+  "__spa-fallback.html",
+];
 
 describe("React Aria e CSP del sito (ADR-0012)", () => {
   it("trova tutti gli HTML del sito", () => {
