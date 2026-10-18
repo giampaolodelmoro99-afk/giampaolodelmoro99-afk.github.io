@@ -25,25 +25,6 @@ export const it = {
     message: "La pagina richiesta non esiste o è stata spostata.",
     home: "Torna alla home",
   },
-  ui: {
-    alertDialog: {
-      warning: "Avviso",
-      error: "Errore",
-      info: "Informazione",
-    },
-    progressBar: {
-      inProgress: "In corso…",
-    },
-    startButton: {
-      label: "Start",
-    },
-    window: {
-      minimize: "Riduci a icona",
-      maximize: "Ingrandisci",
-      restore: "Ripristina",
-      close: "Chiudi",
-    },
-  },
 };
 
 export type Dictionary = typeof it;

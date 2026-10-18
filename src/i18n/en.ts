@@ -27,23 +27,4 @@ export const en: Dictionary = {
     message: "The requested page does not exist or has been moved.",
     home: "Back to the home page",
   },
-  ui: {
-    alertDialog: {
-      warning: "Warning",
-      error: "Error",
-      info: "Information",
-    },
-    progressBar: {
-      inProgress: "In progress…",
-    },
-    startButton: {
-      label: "Start",
-    },
-    window: {
-      minimize: "Minimize",
-      maximize: "Maximize",
-      restore: "Restore",
-      close: "Close",
-    },
-  },
 };

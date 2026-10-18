@@ -25,7 +25,7 @@ export function StartButton({ children, defaultOpen, className, ...menuProps }: 
       <MenuPopover placement="top start" className={styles.popover}>
         <div className={styles.startMenu}>
           <span className={styles.side} aria-hidden="true">
-            <span className={styles.sideText}>{siteHandle}</span>
+            <span className={styles.sideText}>{siteHandle()}</span>
           </span>
           <Menu {...menuProps} size="start" className={styles.menu}>
             {children}

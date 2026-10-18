@@ -1,6 +1,8 @@
 export const siteUrl = "https://gianpaolodelmoro.it";
 
-export const siteHandle = new URL(siteUrl).hostname.split(".")[0] ?? "";
+export function siteHandle(): string {
+  return new URL(siteUrl).hostname.split(".")[0] ?? "";
+}
 
 export const personName = "Gianpaolo Del Moro";
 
