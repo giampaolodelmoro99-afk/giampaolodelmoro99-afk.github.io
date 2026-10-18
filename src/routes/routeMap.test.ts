@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  intlLocales,
   localeFromPathname,
+  locales,
   notFoundPath,
   prerenderPaths,
   routeKeyFromPathname,
@@ -15,6 +17,13 @@ describe("routeMap", () => {
     expect(localeFromPathname("/en")).toBe("en");
     expect(localeFromPathname("/en/")).toBe("en");
     expect(localeFromPathname("/english")).toBe("it");
+  });
+
+  it("associa a ogni lingua il tag BCP 47 usato da React Aria", () => {
+    expect(Object.keys(intlLocales)).toEqual([...locales]);
+    for (const locale of locales) {
+      expect(intlLocales[locale]).toMatch(new RegExp(`^${locale}-[A-Z]{2}$`));
+    }
   });
 
   it("toglie la slash finale tranne che dalla radice", () => {

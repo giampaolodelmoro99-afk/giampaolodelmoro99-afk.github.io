@@ -48,18 +48,38 @@ export const variants = [
 
 export type Variant = (typeof variants)[number];
 
-export async function openStory(page: Page, id: string, { theme, input }: Variant) {
+export async function openStory(
+  page: Page,
+  id: string,
+  { theme, input }: Variant,
+  extraGlobals: Record<string, string> = {},
+) {
+  const extra = Object.entries(extraGlobals).map(([name, value]) => `;${name}:${value}`);
   await page.goto(
-    `/storybook/iframe.html?id=${id}&viewMode=story&globals=theme:${theme};input:${input};a11y.manual:!true`,
+    `/storybook/iframe.html?id=${id}&viewMode=story&globals=theme:${theme};input:${input};a11y.manual:!true${extra.join("")}`,
   );
   const root = page.locator("#storybook-root");
-  await root.locator(":scope > *").first().waitFor();
+  await root.locator(":scope > *").first().waitFor({ state: "attached" });
   await page.waitForFunction(
     ([expectedTheme, expectedInput]) =>
       document.documentElement.dataset["theme"] === expectedTheme &&
       document.documentElement.dataset["input"] === expectedInput,
     [theme, input],
   );
+  const phase = await page.waitForFunction(() => {
+    const preview: unknown = Reflect.get(window, "__STORYBOOK_PREVIEW__");
+    const render: unknown =
+      typeof preview === "object" && preview !== null
+        ? Reflect.get(preview, "currentRender")
+        : undefined;
+    const current: unknown =
+      typeof render === "object" && render !== null ? Reflect.get(render, "phase") : undefined;
+    return ["finished", "errored", "aborted"].includes(String(current)) ? String(current) : false;
+  });
+  const finalPhase = await phase.jsonValue();
+  if (finalPhase !== "finished") {
+    throw new Error(`la story ${id} è finita nella fase "${String(finalPhase)}" (play fallita?)`);
+  }
   await page.evaluate(() => document.fonts.ready);
   return root;
 }

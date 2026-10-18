@@ -62,6 +62,21 @@ Il terminale stampa l'indirizzo in rete locale (`http://192.168.x.x:4173`): apri
 - [ ] **Storybook** (`/storybook/`): si naviga al tocco (barra laterale, story, pannelli), la toolbar cambia tema e input, l'anteprima segue.
 - [ ] Annota modello del telefono, versione di Android e di Chrome nella retrospettiva.
 
+### 7.1 Componenti in Storybook (dalla Fase 1B)
+
+Su `/storybook/`, prima con tema classico e input automatico, poi di nuovo con **tema alto contrasto** e **input touch** dalla toolbar. Per ogni voce: il tocco funziona al primo colpo, nessuno zoom involontario, nessuno scroll orizzontale.
+
+- [ ] **Button**: il tocco attiva, lo stato premuto si vede, nessun doppio tocco per lo zoom.
+- [ ] **TextField, TextArea, Checkbox, Radio**: l'area di tocco comprende l'etichetta; al focus dei campi la pagina non si ingrandisce (testo ≥ 16 px); la tastiera virtuale non copre il campo.
+- [ ] **Select**: la lista si apre, resta visibile sopra la tastiera virtuale, si sceglie al tocco e si chiude.
+- [ ] **MenuBar e StartButton**: il tocco apre il menu, si sceglie una voce (anche nel sottomenu), un tocco fuori chiude.
+- [ ] **Tabs**: si cambia scheda al tocco; le linguette vanno a capo senza scroll.
+- [ ] **Window**: i pulsanti della barra del titolo misurano 44 px e rispondono al tocco.
+- [ ] **DesktopIcon** (story "Con Apertura"): un tocco apre l'icona (compare "Aperta: …").
+- [ ] **AlertDialog** (story "Interattivo"): si apre, il focus va sul pulsante primario, i pulsanti e Chiudi funzionano, un tocco sul velo non chiude.
+- [ ] **Tooltip**: al tocco non compare (nessun contenuto vive solo lì); con tastiera Bluetooth compare al focus.
+- [ ] **Alto contrasto**: i controlli disabilitati hanno il bordo punteggiato, distinto dal focus tratteggiato.
+
 ## 8. Prompt per Claude in Chrome
 
 Da usare in una sessione con Claude in Chrome, con `npm run preview` avviato.

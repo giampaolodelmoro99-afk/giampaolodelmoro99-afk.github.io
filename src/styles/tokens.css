@@ -277,6 +277,29 @@
   --listbox-max-height: min(20rem, 60vh);
   --statusbar-field-height: 1.5rem;
   --font-family-prose: var(--font-family-document);
+
+  /* Aggiunte della Fase 1B (DESIGN_SYSTEM.md §2 e §9). */
+  --disabled-marker-inset: calc(var(--bevel-width) * 2);
+  --disabled-marker-offset: calc(var(--disabled-marker-inset) * -1);
+  --opacity-full: 1;
+  --scroll-arrow-1: var(--glyph-pixel);
+  --scroll-arrow-3: calc(var(--glyph-pixel) * 3);
+  --scroll-arrow-5: calc(var(--glyph-pixel) * 5);
+  --opacity-paused: 0.5;
+  --opacity-hidden: 0;
+  --progress-indeterminate-size: 30%;
+  --progress-indeterminate-from: -100%;
+  --progress-indeterminate-to: 340%;
+  --progress-duration: calc(var(--duration-slow) * 5);
+  --progress-easing: steps(10, end);
+  --clip-closed-down: inset(0 0 100% 0);
+  --clip-open: inset(0);
+  --space-taskbar-bottom: max(var(--space-bevel), env(safe-area-inset-bottom));
+  --space-taskbar-start: max(var(--space-bevel), env(safe-area-inset-left));
+  --space-taskbar-end: max(var(--space-bevel), env(safe-area-inset-right));
+  --rotate-half: 180deg;
+  --line-height-none: 1;
+  --desktop-icon-label-lines: 2;
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */
@@ -308,6 +331,9 @@
   --bevel-thin-separator: inset 0 1px var(--color-shadow), inset 0 -1px var(--color-highlight);
   --bevel-taskbar-top: inset 0 1px var(--color-surface-light), inset 0 2px var(--color-highlight);
   --bevel-group-line: inset 1px 1px var(--color-highlight), 1px 1px var(--color-highlight);
+
+  /* Aggiunta della Fase 1B: secondo segnale del disabilitato, solo in alto contrasto. */
+  --disabled-marker: none;
 }
 
 /* ---------- Font dell'interfaccia: predefinito del tema, poi data-font ---------- */
@@ -317,6 +343,7 @@
 [data-theme="high-contrast"] {
   --font-family-ui: var(--font-family-ui-readable);
   --dither: var(--color-surface);
+  --disabled-marker: var(--border-width-hairline) dotted var(--color-text-disabled);
 }
 
 [data-font="readable"] {

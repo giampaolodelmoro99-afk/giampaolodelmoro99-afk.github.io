@@ -13,7 +13,7 @@ Portfolio v2 di Gianpaolo Del Moro (gianpaolodelmoro.it) in stile Windows 95: Re
 | `npm run lint` · `typecheck` · `test` · `test:coverage` | Oxlint + Stylelint · typegen + tsc · Vitest                                             |
 | `npm run test:prerender`                                | HTML statico (dopo `build`)                                                             |
 | `npm run test:e2e`                                      | Playwright completo nel container Docker (come la CI); `test:e2e:host` senza screenshot |
-| `npm run size` · `lhci:mobile` · `lhci:desktop`         | budget e Lighthouse 100 (dopo `build`)                                                  |
+| `npm run size` · `lhci:mobile` · `lhci:desktop`         | budget e Lighthouse del commit (dopo `build`); `lhci:*:strict` a fine fase (ADR-0013)   |
 
 ## Lingue
 
@@ -39,7 +39,7 @@ Un componente o una feature è finito solo se:
 1. è responsive da 320 px ai monitor larghi, con target touch ≥ 44 px in modalità touch
 2. ha test (`docs/TESTING.md`), una story in Storybook (dalla Fase 1) e zero violazioni axe
 3. ogni animazione rispetta `prefers-reduced-motion` e l'impostazione del Pannello di controllo
-4. non abbassa Lighthouse sotto 100 (mobile e desktop) e non toglie contenuto dall'HTML prerenderizzato
+4. non abbassa Lighthouse sotto 100 alla chiusura della fase (mobile e desktop, ADR-0013) e non toglie contenuto dall'HTML prerenderizzato
 5. **un lavoro visivo è verificato nel browser, anche su viewport mobile** (`docs/QA_CHECKLIST.md`, Claude in Chrome)
 
 ## Integrità dei test
@@ -80,5 +80,6 @@ La v1 si consulta solo dal tag: `git ls-tree -r --name-only v1.0.0-legacy`, `git
 - `dev` non applica CSP, prerender, `404.html` né l'idratazione rinviata: verifica sempre con `build` + `preview`.
 - Nessun file `CNAME` e nessun `base` in Vite: il dominio vive in Settings → Pages (`docs/DEPLOYMENT.md`).
 - Gli script inline sono ammessi solo perché il post-build ne calcola l'hash. Non aggiungere script o stili inline a mano (`docs/PERFORMANCE_SEO.md`).
+- L'id `react-aria-pressable-style` sul link di `global.css` impedisce a React Aria di inserire uno `<style>` bloccato dalla CSP: non toglierlo (ADR-0012).
 - Gli screenshot si generano solo nel container (`npm run test:e2e:update-snapshots`): quelli generati sull'host differiscono.
 - WebKit sull'host richiede `sudo npx playwright install-deps`. Nel container è già pronto.

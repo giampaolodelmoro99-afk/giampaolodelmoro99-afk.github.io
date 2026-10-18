@@ -2,15 +2,18 @@
 
 ## 1. Budget
 
-| Metrica               | Budget             | Misura Fase 0                          | Come si verifica |
-| --------------------- | ------------------ | -------------------------------------- | ---------------- |
-| JS iniziale (gzip)    | ≤ 115 kB           | 112 kB                                 | `npm run size`   |
-| CSS iniziale (gzip)   | ≤ 12 kB            | 1,3 kB                                 | `npm run size`   |
-| Font in preload       | ≤ 25 kB (dalla F1) | 24,1 kB (F1A)                          | `npm run size`   |
-| LCP (mobile simulato) | ≤ 1,2 s            | 0,9 s (F0); 1,2 s (F1A, frase in Plex) | Lighthouse CI    |
-| FCP (mobile simulato) | ≤ 1,0 s            | 0,9 s                                  | Lighthouse CI    |
-| TBT (mobile simulato) | ≤ 50 ms            | 0 ms                                   | Lighthouse CI    |
-| CLS                   | ≤ 0,01             | 0                                      | Lighthouse CI    |
+| Metrica                | Budget              | Ultima misura                           | Come si verifica |
+| ---------------------- | ------------------- | --------------------------------------- | ---------------- |
+| JS iniziale (gzip)     | ≤ 115 kB            | 112 kB                                  | `npm run size`   |
+| CSS iniziale (gzip)    | ≤ 12 kB             | 1,3 kB                                  | `npm run size`   |
+| Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                           | `npm run size`   |
+| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 98,1 kB (F1B, fuori dalla home)         | `npm run size`   |
+| Guscio del desktop F2A | ≤ 75 kB (dalla F1B) | 74,9 kB (F1B)                           | `npm run size`   |
+| LCP (mobile simulato)  | ≤ 1,35 s (ADR-0013) | 1,20 s mediana (F1B, preview compressa) | Lighthouse CI    |
+| FCP (mobile simulato)  | ≤ 1,05 s (ADR-0013) | 0,91 s mediana (F1B)                    | Lighthouse CI    |
+| LCP / FCP desktop      | ≤ 0,5 s / ≤ 0,425 s | 0,32 / 0,27 s mediana (F1B)             | Lighthouse CI    |
+| TBT (mobile simulato)  | ≤ 50 ms             | 0 ms                                    | Lighthouse CI    |
+| CLS                    | ≤ 0,01              | 0                                       | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
 
@@ -30,15 +33,70 @@
 - React DOM e il nucleo di React Router sono il prezzo della modalità framework con prerender e idratazione (ADR-0006). Le alternative (Preact, un router scritto in casa) rompono React Aria Components o l'idratazione del prerender.
 - Dividere i dizionari per lingua farebbe risparmiare circa 0,4 kB gzip al costo di un caricamento asincrono dei testi: non vale la complessità.
 - Il JS parte dopo l'evento `load`, quindi non pesa su LCP né su TBT (Lighthouse mobile 100).
-- Il budget resta 115 kB. Dalla Fase 1B React Aria entra solo nei chunk delle app, con `@react-aria/optimize-locales-plugin` limitato a italiano e inglese; size-limit avrà una voce per i chunk dei componenti.
+- Il budget resta 115 kB. Dalla Fase 1B React Aria entra solo nei chunk delle app, con `@react-aria/optimize-locales-plugin` limitato a italiano e inglese; size-limit ha voci dedicate ai componenti (vedi «Peso dei componenti»).
+
+### Chunk `framework` (Fase 1B)
+
+Con il `Link` di React Aria nella 404, Rolldown divideva React DOM e React Router in più chunk condivisi tra la home e la route 404: stessi moduli, ma la home passava da 112,27 a 114,04 kB gzip per il solo costo della divisione. Dal 14/10/2026 un gruppo `codeSplitting` in `vite.config.ts` tiene React, React DOM, React Router e scheduler in un unico chunk (ADR-0012). JS iniziale della home: **110,81 kB**.
+
+| Chunk                        | gzip     | Contenuto                                        |
+| ---------------------------- | -------- | ------------------------------------------------ |
+| `framework`                  | 107,3 kB | React, React DOM, scheduler, React Router        |
+| route, root, manifest, rest  | ≈ 3,5 kB | codice del sito, dizionari, runtime di Rolldown  |
+| `not-found` (solo sulla 404) | 11,6 kB  | React Aria: `Link`, `usePress`, `RouterProvider` |
+
+Gli import da React Aria vanno sempre per sottopercorso (`react-aria-components/Button`): Oxlint vieta l'import dalla radice, con un'unica eccezione per `RouterProvider` (ADR-0012).
+
+### Peso dei componenti (Fase 1B)
+
+`npm run size` misura anche i componenti di `src/components/` con `@size-limit/esbuild`, nelle condizioni della build del sito: import per sottopercorso da React Aria, `optimize-locales` su it-IT ed en-US, `NODE_ENV` di produzione, React, React DOM e React Router esclusi (stanno nel chunk `framework`). Voci: totale JS, totale CSS, guscio del desktop della F2A (`Window`, `Taskbar`, `TaskbarButton`, `StartButton`, `DesktopIcons`), base di React Aria, Icon importato dall'indice e ogni componente dalla sua cartella. I componenti non entrano nella home fino alla F2A.
+
+In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni escluse verso `empty.js` in un namespace che non sa caricare; `.size-limit.js` aggiunge un piccolo loader per quel namespace, così la misura resta con le sole lingue it-IT ed en-US (verificato: nel bundle restano solo le stringhe inglesi e italiane). In Vite il plugin funziona senza correzioni.
+
+**Base di React Aria.** Il primo componente React Aria paga una volta sola la base condivisa: `usePress`, focus da tastiera, hover, utilità DOM, SSR, LiveAnnouncer. Il `Button` di React Aria da solo pesa **13,02 kB** gzip (voce "Base React Aria"); il nostro codice del Button è sotto 1 kB. La stessa base è già nel chunk della 404, con il `Link` di React Aria (11,6 kB). Accettata il 14/10/2026 come costo una tantum: i componenti successivi la riusano.
+
+**Base delle collezioni di React Aria.** Il primo componente con una collezione (Tabs: `TabList`, `Tab`, `TabPanel`) paga una volta sola selezione e collezioni di React Stately, `Document` e `BaseCollection`, `useSelectableCollection` e `useSelectableItem`, `CollectionBuilder` e navigazione da tastiera: **+17,48 kB** gzip sul totale, con il codice delle nostre Tabs sotto 1 kB. La riusano Select (ListBox), MenuBar e StartButton (Menu) e DesktopIcon (GridList). Accettata il 14/10/2026 come seconda base una tantum.
+
+**Base degli overlay di React Aria.** Il Select aggiunge **+16,90 kB** gzip. Misurato il 14/10/2026 aggiungendo i pezzi uno alla volta sopra il totale: base degli overlay (Popover, FocusScope, chiusura con clic esterno, `ariaHideOutside`, blocco dello scroll) ≈ 8,9 kB; navigazione delle liste condivisa con Menu (`ListKeyboardDelegate`, `useMenuTrigger`, `useSelectableList`) ≈ 5,4 kB; **parte specifica del Select** (Select, `useSelect`, `HiddenSelect`, ListBox, stato) **5,78 kB**, sotto la soglia. Accettata come terza base una tantum: MenuBar, StartButton e AlertDialog riusano overlay e navigazione.
+
+**Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. Budget fissati alla chiusura della 1B (18/10/2026), misura arrotondata per eccesso al kB: **totale JS ≤ 99 kB**, **totale CSS ≤ 5 kB**, **guscio del desktop F2A ≤ 75 kB**; si alzano solo con un ADR.
+
+**Indice dei componenti.** Importare anche solo Icon da `src/components/index.ts` costa circa 0,6 kB in più che dalla sua cartella: l'indice trascina codice di React Aria eseguito al caricamento del modulo. La voce "Icon importato dall'indice" lo tiene d'occhio fino alla decisione della F2A (`sideEffects` o import dalle cartelle).
+
+| Componente aggiunto                                             | Da solo (JS)                        | Incremento sul totale                                       | Totale JS | Totale CSS | Icon dall'indice | Guscio F2A                                                                             | Home   |
+| --------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------- | --------- | ---------- | ---------------- | -------------------------------------------------------------------------------------- | ------ |
+| Icon e Glyph                                                    | 12,28 / 1,03                        | –                                                           | 12,79     | 0,26       | –                | –                                                                                      | 110,81 |
+| Button                                                          | 26,95 (Icon compresa)               | +14,58 (base React Aria 13,02)                              | 27,37     | 0,86       | 12,89            | –                                                                                      | 110,81 |
+| TextField                                                       | 13,24                               | +4,45                                                       | 31,82     | 1,16       | 13,20            | –                                                                                      | 110,81 |
+| TextArea                                                        | 13,64                               | +0,45                                                       | 32,27     | 1,53       | 13,58            | –                                                                                      | 110,81 |
+| Checkbox                                                        | 16,54                               | +2,17                                                       | 34,44     | 1,75       | 13,80            | –                                                                                      | 110,81 |
+| RadioGroup e Radio                                              | 13,24 / 15,14                       | +4,22                                                       | 38,66     | 1,93       | 14,18            | –                                                                                      | 110,81 |
+| GroupBox                                                        | 0,39                                | +0,17                                                       | 38,83     | 2,00       | 14,26            | –                                                                                      | 110,81 |
+| ProgressBar                                                     | 6,43                                | +2,43                                                       | 41,26     | 2,35       | 14,71            | –                                                                                      | 110,81 |
+| StatusBar                                                       | 5,96                                | +0,34                                                       | 41,60     | 2,44       | 14,80            | –                                                                                      | 110,81 |
+| ScrollArea                                                      | 0,78                                | +0,09                                                       | 41,69     | 2,49       | 14,85            | –                                                                                      | 110,81 |
+| Tooltip                                                         | 14,21                               | +6,19 (primo overlay: posizionamento)                       | 47,88     | 2,60       | 14,97            | –                                                                                      | 110,81 |
+| Tabs                                                            | 32,13                               | +17,48 (base collezioni)                                    | 65,36     | 2,85       | 15,22            | –                                                                                      | 110,81 |
+| Select                                                          | 55,74                               | +16,90 (base overlay ≈ 8,9; navigazione ≈ 5,4; Select 5,78) | 82,26     | 3,27       | 15,64            | –                                                                                      | 110,81 |
+| MenuBar (MenuBar, MenuButton, MenuItem, MenuSeparator, Submenu) | 9,30 / 46,19 / 32,68 / 5,63 / 60,23 | +6,11                                                       | 88,37     | 3,53       | 15,92            | –                                                                                      | 110,81 |
+| Window                                                          | 29,55                               | +0,93                                                       | 89,30     | 3,92       | 16,31            | 32,33 (Window)                                                                         | 110,81 |
+| Taskbar e TaskbarButton                                         | 9,33 / 26,23                        | +0,75                                                       | 90,05     | 4,11       | 16,50            | 36,23 (Window, Taskbar, TaskbarButton)                                                 | 110,81 |
+| StartButton                                                     | 59,99                               | +0,49                                                       | 90,54     | 4,26       | 16,77            | 66,43 (+ StartButton: entra la base di overlay e menu)                                 | 110,81 |
+| DesktopIcons                                                    | 53,36                               | +5,95                                                       | 96,49     | 4,52       | 17,03            | **75,03** (guscio completo: Window, Taskbar, TaskbarButton, StartButton, DesktopIcons) | 110,81 |
+| AlertDialog e AlertDialogFrame                                  | 41,18 / 31,06                       | +1,64                                                       | 98,13     | 4,63       | 17,16            | 74,92                                                                                  | 110,81 |
+
+Valori in kB gzip. Il guscio F2A scende da 75,03 a 74,92 kB con l'AlertDialog, che non ne fa parte, perché i testi dei componenti sono passati da `it.ts`/`en.ts` a `src/i18n/ui.ts` (commit c97ce15).
 
 ## 2. Lighthouse CI
 
 - Configurazioni: `lighthouserc.mobile.json` (preset mobile, default di Lighthouse) e `lighthouserc.desktop.json` (`preset: desktop`).
-- Server: `scripts/preview.mjs`, lo stesso comportamento di GitHub Pages.
+- Server: `scripts/preview.mjs`, lo stesso comportamento di GitHub Pages, compressione gzip compresa (ADR-0013).
 - URL: `/` e `/en/`, poi tutte le route principali IT ed EN man mano che nascono. Storybook è escluso.
-- 3 esecuzioni per URL, `aggregationMethod: median-run`, `minScore: 1` su Performance, Accessibility, Best Practices e SEO.
-- Report in `.lighthouseci/<preset>/` (artifact in CI).
+- **Due livelli (ADR-0013)**:
+  - a ogni commit (`lhci:mobile`, `lhci:desktop`): 3 esecuzioni per URL, mediana; Accessibility, Best Practices e SEO a 100, Performance ≥ 95;
+  - a chiusura di fase e alla release (`lhci:mobile:strict`, `lhci:desktop:strict`; nel deploy `ci.yml` riceve `strict-lighthouse: true`): 5 esecuzioni, mediana, **Performance 100**.
+- In entrambi i livelli LCP, FCP, TBT e CLS hanno budget fissi (§1), verificati da `scripts/lib/lighthouse.test.mjs` insieme alla regola.
+- Report in `.lighthouseci/<preset>/` e `.lighthouseci/<preset>-strict/` (artifact in CI).
 
 ## 3. Prerender e contenuto senza JavaScript
 
@@ -124,3 +182,9 @@ Pubblicato in `/storybook/` dalla F1A, escluso dall'indicizzazione: `meta robots
 - **CSP**: `scripts/postbuild.mjs` ignora la cartella `storybook`, quindi la CSP del sito non cambia. `scripts/postbuild-storybook.mjs` inserisce in `index.html` e `iframe.html` una **CSP dedicata** come primo elemento di `<head>`: script solo dal sito e con hash, `style-src 'self' 'unsafe-inline'` (Storybook inserisce stili a runtime), `font-src 'self' data:` (font incorporati delle pagine Docs), `frame-src 'self'`, niente `unsafe-eval`. La build fallisce se mancano i meta noindex o se compaiono risorse esterne.
 - `project.json`, che Storybook genera per la telemetria, viene tolto: elencherebbe le dipendenze di sviluppo. La telemetria è disattivata.
 - Test: prerender (noindex, CSP dedicata, `project.json` assente, robots.txt, nessun riferimento a Storybook nelle pagine del sito) ed e2e (manager senza errori né richieste esterne).
+
+## 13. React Aria e CSP
+
+React Aria inserisce a runtime uno `<style id="react-aria-pressable-style">` che la CSP del sito bloccherebbe. L'id sta sul link di `global.css`, che contiene la stessa regola: React Aria trova l'elemento e non inserisce nulla, e la CSP resta `style-src 'self'` (ADR-0012). Gli attributi `style` nell'HTML prerenderizzato restano vietati da un test: la soluzione per i componenti che li producono si decide in F2A.
+
+- Test: deriva sul sorgente di `usePress` (unit), sentinella, CSP e assenza di attributi `style` (prerender), nessuna violazione sulla 404 più un controllo in negativo (`tests/e2e/csp.spec.ts`), 404 senza JavaScript (`tests/e2e/no-javascript.spec.ts`).

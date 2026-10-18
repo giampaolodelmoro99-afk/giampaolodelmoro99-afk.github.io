@@ -1,0 +1,188 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  padding-block: var(--border-width-hairline);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+.trigger {
+  --_height: max(var(--target-min), var(--menu-item-height));
+  --_halo: var(--no-shadow);
+  --_bevel: var(--no-shadow);
+  --_shadow: var(--_halo), var(--_bevel);
+
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: var(--_height);
+  min-inline-size: var(--target-min);
+  padding: var(--space-0) var(--space-2);
+  border: 0;
+  border-radius: var(--radius-none);
+  background: transparent;
+  box-shadow: var(--_shadow);
+  color: var(--color-text);
+  font: inherit;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.trigger[data-hovered] {
+  --_bevel: var(--bevel-thin-raised);
+}
+
+.trigger[data-pressed],
+.trigger[aria-expanded="true"] {
+  --_bevel: var(--no-shadow);
+
+  background: var(--color-selection);
+  color: var(--color-selection-text);
+}
+
+.trigger[data-focus-visible] {
+  --_halo: var(--focus-halo-inset);
+
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+}
+
+.trigger[data-disabled] {
+  position: relative;
+  color: var(--color-text-disabled);
+  text-shadow: var(--text-etch);
+}
+
+.trigger[data-disabled]::after,
+.item[data-disabled]::after {
+  content: "";
+  position: absolute;
+  inset: var(--disabled-marker-inset);
+  border: var(--disabled-marker);
+  pointer-events: none;
+}
+
+.popover {
+  z-index: var(--z-menu);
+  min-inline-size: var(--menu-min-width);
+  padding: var(--space-1);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-window);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  overflow-y: auto;
+  outline: none;
+}
+
+.popover[data-entering] {
+  animation-name: drop;
+  animation-duration: var(--duration-fast);
+  animation-timing-function: var(--easing-standard);
+}
+
+@keyframes drop {
+  from {
+    clip-path: var(--clip-closed-down);
+  }
+
+  to {
+    clip-path: var(--clip-open);
+  }
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+.item {
+  --_halo: var(--no-shadow);
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--menu-item-height);
+  padding-inline: var(--space-0) var(--space-3);
+  box-shadow: var(--_halo);
+  color: var(--color-text);
+  cursor: default;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu[data-size="start"] .item {
+  --_start-height: max(var(--menu-item-height), var(--start-menu-item-min-height));
+
+  min-block-size: var(--_start-height);
+}
+
+.item[data-focused],
+.item[data-hovered],
+.item[data-open] {
+  background: var(--color-selection);
+  color: var(--color-selection-text);
+}
+
+.item[data-focus-visible] {
+  --_halo: var(--focus-halo-inset);
+
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+}
+
+.item[data-disabled] {
+  background: transparent;
+  color: var(--color-text-disabled);
+  text-shadow: var(--text-etch);
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  inline-size: var(--space-6);
+  flex: none;
+}
+
+.label {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.shortcut {
+  margin-inline-start: var(--space-5);
+  font: inherit;
+}
+
+.submenuArrow {
+  margin-inline-start: var(--space-4);
+}
+
+.separator {
+  block-size: var(--bevel-width);
+  margin: var(--space-1);
+  border: 0;
+  box-shadow: var(--bevel-thin-separator);
+}
+
+@media (forced-colors: active) {
+  .trigger[aria-expanded="true"] {
+    border: var(--forced-border-width) solid var(--color-selection);
+  }
+
+  .popover {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+
+  .item[data-focused] {
+    forced-color-adjust: none;
+    background: var(--color-selection);
+    color: var(--color-selection-text);
+  }
+}

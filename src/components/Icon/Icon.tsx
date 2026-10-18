@@ -1,15 +1,20 @@
 import type { SVGProps } from "react";
+import { cx } from "../cx";
 import { type IconData, type IconName, type IconSize, iconSizes, icons } from "./iconData";
 import styles from "./Icon.module.css";
 
 export type IconScale = 1 | 2 | 3;
+
+export type SmallIconName = {
+  [Name in IconName]: 16 extends IconSize<Name> ? Name : never;
+}[IconName];
 
 export type IconProps<Name extends IconName> = {
   name: Name;
   size?: IconSize<Name>;
   scale?: IconScale;
   label?: string;
-  className?: string;
+  className?: string | undefined;
 };
 
 export function Icon<Name extends IconName>({
@@ -29,7 +34,7 @@ export function Icon<Name extends IconName>({
 
   return (
     <svg
-      className={[styles.root, className].filter(Boolean).join(" ")}
+      className={cx(styles.root, className)}
       viewBox={`0 0 ${data.size} ${data.size}`}
       width={pixels}
       height={pixels}

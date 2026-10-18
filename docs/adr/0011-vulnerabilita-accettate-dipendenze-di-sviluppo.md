@@ -35,6 +35,10 @@ Le dipendenze aggiunte in Fase 1A (Storybook 10.6.2, subset-font, fontkit, rollu
 - Negative e rischi: `npm audit` senza `--omit=dev` resta "rosso"; serve leggere il dettaglio per distinguere le nuove vulnerabilità da quelle accettate qui.
 - Cosa va verificato e quando rivalutare: a ogni chiusura di fase (`close-phase`, security-auditor) e alla Fase 6 (revisione di sicurezza prima della release).
 
+## Verifiche alle chiusure di fase
+
+- **1B (18/10/2026)**: invariato, 27 vulnerabilità di sviluppo nelle stesse catene; le nuove dipendenze (`react-aria-components`, `react-aria`, `@react-aria/optimize-locales-plugin`, `@size-limit/esbuild`) non ne aggiungono; `npm audit --omit=dev` a 0.
+
 ## Riferimenti
 
 ADR-0009, `SECURITY.md`, `.github/dependabot.yml`, `docs/TESTING.md` §1.

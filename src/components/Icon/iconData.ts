@@ -412,35 +412,24 @@ export const icons: IconTable = {
       paths: [
         [
           "pixelOutline",
-          "M0 0h16v1h-16zM0 1h1v1h-1zM8 1h1v1h-1zM15 1h1v1h-1zM0 2h1v1h-1zM8 2h1v1h-1zM15 2h1v1h-1zM0 3h1v1h-1zM8 3h1v1h-1zM15 3h1v1h-1zM0 4h1v1h-1zM8 4h1v1h-1zM15 4h1v1h-1zM0 5h1v1h-1zM8 5h1v1h-1zM15 5h1v1h-1zM0 6h1v1h-1zM8 6h1v1h-1zM15 6h1v1h-1zM0 7h1v1h-1zM8 7h8v1h-8zM0 8h16v1h-16zM0 9h1v1h-1zM8 9h1v1h-1zM15 9h1v1h-1zM0 10h1v1h-1zM8 10h1v1h-1zM15 10h1v1h-1zM0 11h1v1h-1zM8 11h1v1h-1zM15 11h1v1h-1zM0 12h1v1h-1zM8 12h1v1h-1zM15 12h1v1h-1zM0 13h1v1h-1zM8 13h1v1h-1zM15 13h1v1h-1zM0 14h1v1h-1zM8 14h1v1h-1zM15 14h1v1h-1zM0 15h1v1h-1zM8 15h8v1h-8z",
+          "M0 0h16v1h-16zM0 1h1v1h-1zM15 1h1v1h-1zM0 2h1v1h-1zM15 2h1v1h-1zM0 3h1v1h-1zM15 3h1v1h-1zM0 4h1v1h-1zM15 4h1v1h-1zM0 5h1v1h-1zM15 5h1v1h-1zM0 6h1v1h-1zM15 6h1v1h-1zM0 7h1v1h-1zM15 7h1v1h-1zM0 8h1v1h-1zM15 8h1v1h-1zM0 9h1v1h-1zM15 9h1v1h-1zM0 10h1v1h-1zM15 10h1v1h-1zM0 11h1v1h-1zM15 11h1v1h-1zM0 12h1v1h-1zM15 12h1v1h-1zM0 13h1v1h-1zM15 13h1v1h-1zM0 14h1v1h-1zM15 14h1v1h-1zM0 15h16v1h-16z",
         ],
         [
-          "pixelLime",
-          "M1 1h6v1h-6zM1 2h1v1h-1zM1 3h1v1h-1zM1 4h1v1h-1zM1 5h1v1h-1zM1 6h1v1h-1zM9 9h5v1h-5zM9 10h1v1h-1zM9 11h1v1h-1zM9 12h1v1h-1zM9 13h1v1h-1z",
-        ],
-        [
-          "pixelTeal",
-          "M7 1h1v1h-1zM7 2h1v1h-1zM7 3h1v1h-1zM7 4h1v1h-1zM7 5h1v1h-1zM7 6h1v1h-1zM1 7h7v1h-7zM14 9h1v1h-1zM14 10h1v1h-1zM14 11h1v1h-1zM14 12h1v1h-1zM14 13h1v1h-1zM9 14h6v1h-6z",
+          "pixelWhite",
+          "M1 1h6v1h-6zM1 2h1v1h-1zM1 3h1v1h-1zM1 4h1v1h-1zM1 5h1v1h-1zM1 6h1v1h-1zM8 8h6v1h-6zM8 9h1v1h-1zM8 10h1v1h-1zM8 11h1v1h-1zM8 12h1v1h-1zM8 13h1v1h-1z",
         ],
         [
           "pixelGray",
-          "M9 1h6v1h-6zM9 2h1v1h-1zM9 3h1v1h-1zM9 4h1v1h-1zM9 5h1v1h-1zM9 6h1v1h-1zM1 9h7v1h-7zM1 10h1v1h-1zM1 11h1v1h-1zM1 12h1v1h-1zM1 13h1v1h-1zM1 14h1v1h-1zM1 15h1v1h-1z",
-        ],
-        [
-          "pixelGreen",
-          "M2 2h5v1h-5zM2 3h2v1h-2zM5 3h2v1h-2zM2 4h1v1h-1zM6 4h1v1h-1zM2 5h2v1h-2zM5 5h2v1h-2zM2 6h5v1h-5zM10 10h1v1h-1zM10 11h1v1h-1zM10 12h1v1h-1zM12 12h2v1h-2zM10 13h1v1h-1zM12 13h2v1h-2z",
+          "M7 1h8v1h-8zM7 2h2v1h-2zM7 3h2v1h-2zM7 4h2v1h-2zM7 5h2v1h-2zM7 6h2v1h-2zM1 7h8v1h-8zM1 8h7v1h-7zM14 8h1v1h-1zM1 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h1v1h-1zM14 11h1v1h-1zM1 12h1v1h-1zM14 12h1v1h-1zM1 13h1v1h-1zM14 13h1v1h-1zM1 14h1v1h-1zM8 14h7v1h-7z",
         ],
         [
           "pixelSilver",
-          "M10 2h2v1h-2zM13 2h2v1h-2zM10 3h1v1h-1zM13 3h2v1h-2zM10 4h2v1h-2zM13 4h2v1h-2zM10 5h2v1h-2zM13 5h2v1h-2zM10 6h1v1h-1zM14 6h1v1h-1zM2 10h6v1h-6zM2 11h6v1h-6zM2 12h6v1h-6zM2 13h6v1h-6zM2 14h6v1h-6zM2 15h6v1h-6z",
+          "M2 2h1v1h-1zM6 2h1v1h-1zM9 2h3v1h-3zM13 2h2v1h-2zM6 3h1v1h-1zM9 3h2v1h-2zM13 3h2v1h-2zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h3v1h-3zM13 4h2v1h-2zM2 5h3v1h-3zM6 5h1v1h-1zM9 5h3v1h-3zM13 5h2v1h-2zM2 6h1v1h-1zM9 6h2v1h-2zM14 6h1v1h-1zM9 7h6v1h-6zM2 9h2v1h-2zM6 9h2v1h-2zM9 9h5v1h-5zM2 10h4v1h-4zM7 10h1v1h-1zM9 10h5v1h-5zM2 11h3v1h-3zM6 11h2v1h-2zM9 11h5v1h-5zM2 12h2v1h-2zM5 12h3v1h-3zM9 12h5v1h-5zM2 13h2v1h-2zM7 13h1v1h-1zM9 13h5v1h-5zM2 14h6v1h-6z",
         ],
+        ["pixelRed", "M3 2h2v1h-2zM2 3h3v1h-3z"],
+        ["pixelBlack", "M5 2h1v1h-1zM5 3h1v1h-1zM5 4h1v1h-1zM5 5h1v1h-1zM3 6h4v1h-4z"],
         ["pixelBlue", "M12 2h1v1h-1zM11 3h2v1h-2zM12 4h1v1h-1zM12 5h1v1h-1zM11 6h3v1h-3z"],
-        [
-          "pixelRed",
-          "M4 3h1v1h-1zM3 4h1v1h-1zM5 4h1v1h-1zM4 5h1v1h-1zM12 10h2v1h-2zM12 11h2v1h-2z",
-        ],
-        ["pixelYellow", "M4 4h1v1h-1z"],
-        ["pixelBlack", "M11 10h1v1h-1zM11 11h1v1h-1zM11 12h1v1h-1zM11 13h1v1h-1z"],
+        ["pixelTeal", "M4 9h2v1h-2zM6 10h1v1h-1zM5 11h1v1h-1zM4 12h1v1h-1zM4 13h3v1h-3z"],
       ],
     },
     32: {
@@ -448,42 +437,33 @@ export const icons: IconTable = {
       paths: [
         [
           "pixelOutline",
-          "M0 0h32v1h-32zM0 1h1v1h-1zM10 1h1v1h-1zM20 1h1v1h-1zM30 1h2v1h-2zM0 2h1v1h-1zM10 2h1v1h-1zM20 2h1v1h-1zM30 2h2v1h-2zM0 3h1v1h-1zM10 3h1v1h-1zM20 3h1v1h-1zM30 3h2v1h-2zM0 4h1v1h-1zM10 4h1v1h-1zM20 4h1v1h-1zM30 4h2v1h-2zM0 5h1v1h-1zM10 5h1v1h-1zM20 5h1v1h-1zM30 5h2v1h-2zM0 6h1v1h-1zM10 6h1v1h-1zM20 6h1v1h-1zM30 6h2v1h-2zM0 7h1v1h-1zM10 7h1v1h-1zM20 7h1v1h-1zM30 7h2v1h-2zM0 8h1v1h-1zM10 8h1v1h-1zM20 8h1v1h-1zM30 8h2v1h-2zM0 9h1v1h-1zM10 9h1v1h-1zM20 9h1v1h-1zM30 9h2v1h-2zM0 10h32v1h-32zM0 11h1v1h-1zM10 11h1v1h-1zM20 11h1v1h-1zM30 11h2v1h-2zM0 12h1v1h-1zM10 12h1v1h-1zM20 12h1v1h-1zM30 12h2v1h-2zM0 13h1v1h-1zM10 13h1v1h-1zM20 13h1v1h-1zM30 13h2v1h-2zM0 14h1v1h-1zM10 14h1v1h-1zM20 14h1v1h-1zM30 14h2v1h-2zM0 15h1v1h-1zM10 15h1v1h-1zM20 15h1v1h-1zM30 15h2v1h-2zM0 16h1v1h-1zM10 16h1v1h-1zM20 16h1v1h-1zM30 16h2v1h-2zM0 17h1v1h-1zM10 17h1v1h-1zM20 17h1v1h-1zM30 17h2v1h-2zM0 18h1v1h-1zM10 18h1v1h-1zM20 18h1v1h-1zM30 18h2v1h-2zM0 19h1v1h-1zM10 19h1v1h-1zM20 19h1v1h-1zM30 19h2v1h-2zM0 20h32v1h-32zM0 21h1v1h-1zM10 21h1v1h-1zM20 21h1v1h-1zM30 21h2v1h-2zM0 22h1v1h-1zM10 22h1v1h-1zM20 22h1v1h-1zM30 22h2v1h-2zM0 23h1v1h-1zM10 23h1v1h-1zM20 23h1v1h-1zM30 23h2v1h-2zM0 24h1v1h-1zM10 24h1v1h-1zM20 24h1v1h-1zM30 24h2v1h-2zM0 25h1v1h-1zM10 25h1v1h-1zM20 25h1v1h-1zM30 25h2v1h-2zM0 26h1v1h-1zM10 26h1v1h-1zM20 26h1v1h-1zM30 26h2v1h-2zM0 27h1v1h-1zM10 27h1v1h-1zM20 27h1v1h-1zM30 27h2v1h-2zM0 28h1v1h-1zM10 28h1v1h-1zM20 28h1v1h-1zM30 28h2v1h-2zM0 29h1v1h-1zM10 29h1v1h-1zM20 29h1v1h-1zM30 29h2v1h-2zM0 30h32v1h-32zM0 31h32v1h-32z",
+          "M0 0h32v1h-32zM0 1h1v1h-1zM31 1h1v1h-1zM0 2h1v1h-1zM31 2h1v1h-1zM0 3h1v1h-1zM31 3h1v1h-1zM0 4h1v1h-1zM31 4h1v1h-1zM0 5h1v1h-1zM31 5h1v1h-1zM0 6h1v1h-1zM31 6h1v1h-1zM0 7h1v1h-1zM31 7h1v1h-1zM0 8h1v1h-1zM31 8h1v1h-1zM0 9h1v1h-1zM31 9h1v1h-1zM0 10h1v1h-1zM31 10h1v1h-1zM0 11h1v1h-1zM31 11h1v1h-1zM0 12h1v1h-1zM31 12h1v1h-1zM0 13h1v1h-1zM31 13h1v1h-1zM0 14h1v1h-1zM31 14h1v1h-1zM0 15h1v1h-1zM31 15h1v1h-1zM0 16h1v1h-1zM31 16h1v1h-1zM0 17h1v1h-1zM31 17h1v1h-1zM0 18h1v1h-1zM31 18h1v1h-1zM0 19h1v1h-1zM31 19h1v1h-1zM0 20h1v1h-1zM31 20h1v1h-1zM0 21h1v1h-1zM31 21h1v1h-1zM0 22h1v1h-1zM31 22h1v1h-1zM0 23h1v1h-1zM31 23h1v1h-1zM0 24h1v1h-1zM31 24h1v1h-1zM0 25h1v1h-1zM31 25h1v1h-1zM0 26h1v1h-1zM31 26h1v1h-1zM0 27h1v1h-1zM31 27h1v1h-1zM0 28h1v1h-1zM31 28h1v1h-1zM0 29h1v1h-1zM31 29h1v1h-1zM0 30h1v1h-1zM31 30h1v1h-1zM0 31h32v1h-32z",
         ],
         [
-          "pixelLime",
-          "M1 1h8v1h-8zM11 1h8v1h-8zM21 1h8v1h-8zM1 2h1v1h-1zM11 2h1v1h-1zM21 2h1v1h-1zM1 3h1v1h-1zM11 3h1v1h-1zM21 3h1v1h-1zM1 4h1v1h-1zM11 4h1v1h-1zM21 4h1v1h-1zM1 5h1v1h-1zM11 5h1v1h-1zM21 5h1v1h-1zM1 6h1v1h-1zM11 6h1v1h-1zM21 6h1v1h-1zM1 7h1v1h-1zM11 7h1v1h-1zM21 7h1v1h-1zM1 8h1v1h-1zM11 8h1v1h-1zM21 8h1v1h-1zM21 11h8v1h-8zM21 12h1v1h-1zM21 13h1v1h-1zM21 14h1v1h-1zM21 15h1v1h-1zM21 16h1v1h-1zM21 17h1v1h-1zM21 18h1v1h-1zM21 21h8v1h-8zM21 22h1v1h-1zM21 23h1v1h-1zM21 24h1v1h-1zM21 25h1v1h-1zM21 26h1v1h-1zM21 27h1v1h-1zM21 28h1v1h-1z",
-        ],
-        [
-          "pixelTeal",
-          "M9 1h1v1h-1zM19 1h1v1h-1zM29 1h1v1h-1zM9 2h1v1h-1zM19 2h1v1h-1zM29 2h1v1h-1zM9 3h1v1h-1zM19 3h1v1h-1zM29 3h1v1h-1zM9 4h1v1h-1zM19 4h1v1h-1zM29 4h1v1h-1zM9 5h1v1h-1zM19 5h1v1h-1zM29 5h1v1h-1zM9 6h1v1h-1zM19 6h1v1h-1zM29 6h1v1h-1zM9 7h1v1h-1zM19 7h1v1h-1zM29 7h1v1h-1zM9 8h1v1h-1zM19 8h1v1h-1zM29 8h1v1h-1zM1 9h9v1h-9zM11 9h9v1h-9zM21 9h9v1h-9zM29 11h1v1h-1zM29 12h1v1h-1zM29 13h1v1h-1zM29 14h1v1h-1zM29 15h1v1h-1zM29 16h1v1h-1zM29 17h1v1h-1zM29 18h1v1h-1zM21 19h9v1h-9zM29 21h1v1h-1zM29 22h1v1h-1zM29 23h1v1h-1zM29 24h1v1h-1zM29 25h1v1h-1zM29 26h1v1h-1zM29 27h1v1h-1zM25 28h1v1h-1zM29 28h1v1h-1zM21 29h9v1h-9z",
-        ],
-        [
-          "pixelGreen",
-          "M2 2h7v1h-7zM12 2h7v1h-7zM22 2h7v1h-7zM2 3h7v1h-7zM12 3h7v1h-7zM22 3h2v1h-2zM28 3h1v1h-1zM2 4h7v1h-7zM12 4h7v1h-7zM22 4h2v1h-2zM28 4h1v1h-1zM2 5h7v1h-7zM12 5h7v1h-7zM22 5h2v1h-2zM26 5h3v1h-3zM2 6h7v1h-7zM12 6h7v1h-7zM22 6h2v1h-2zM25 6h4v1h-4zM2 7h7v1h-7zM12 7h7v1h-7zM22 7h2v1h-2zM25 7h4v1h-4zM2 8h7v1h-7zM12 8h7v1h-7zM22 8h1v1h-1zM27 8h2v1h-2zM22 12h7v1h-7zM14 13h2v1h-2zM22 13h7v1h-7zM16 14h1v1h-1zM22 14h7v1h-7zM15 15h1v1h-1zM22 15h7v1h-7zM14 16h1v1h-1zM22 16h7v1h-7zM14 17h3v1h-3zM22 17h7v1h-7zM22 18h7v1h-7zM22 22h7v1h-7zM22 23h2v1h-2zM27 23h2v1h-2zM22 24h1v1h-1zM28 24h1v1h-1zM22 25h1v1h-1zM28 25h1v1h-1zM22 26h1v1h-1zM28 26h1v1h-1zM22 27h2v1h-2zM27 27h2v1h-2zM22 28h3v1h-3zM26 28h3v1h-3z",
-        ],
-        [
-          "pixelBlack",
-          "M24 3h1v1h-1zM24 4h1v1h-1zM24 5h1v1h-1zM24 6h1v1h-1zM24 7h1v1h-1zM23 8h4v1h-4z",
-        ],
-        [
-          "pixelRed",
-          "M25 3h3v1h-3zM25 4h3v1h-3zM25 5h1v1h-1zM24 23h3v1h-3zM23 24h1v1h-1zM27 24h1v1h-1zM23 25h1v1h-1zM27 25h1v1h-1zM23 26h1v1h-1zM27 26h1v1h-1zM24 27h3v1h-3z",
-        ],
-        [
-          "pixelGray",
-          "M1 11h9v1h-9zM11 11h9v1h-9zM1 12h1v1h-1zM11 12h1v1h-1zM1 13h1v1h-1zM11 13h1v1h-1zM1 14h1v1h-1zM11 14h1v1h-1zM1 15h1v1h-1zM11 15h1v1h-1zM1 16h1v1h-1zM11 16h1v1h-1zM1 17h1v1h-1zM11 17h1v1h-1zM1 18h1v1h-1zM11 18h1v1h-1zM1 19h1v1h-1zM11 19h1v1h-1zM1 21h9v1h-9zM11 21h9v1h-9zM1 22h1v1h-1zM11 22h1v1h-1zM1 23h1v1h-1zM11 23h1v1h-1zM1 24h1v1h-1zM11 24h1v1h-1zM1 25h1v1h-1zM11 25h1v1h-1zM1 26h1v1h-1zM11 26h1v1h-1zM1 27h1v1h-1zM11 27h1v1h-1zM1 28h1v1h-1zM11 28h1v1h-1zM1 29h1v1h-1zM11 29h1v1h-1z",
+          "pixelWhite",
+          "M1 1h9v1h-9zM11 1h9v1h-9zM21 1h9v1h-9zM1 2h8v1h-8zM11 2h8v1h-8zM21 2h8v1h-8zM1 3h2v1h-2zM11 3h2v1h-2zM21 3h2v1h-2zM1 4h2v1h-2zM11 4h2v1h-2zM21 4h2v1h-2zM1 5h2v1h-2zM11 5h2v1h-2zM21 5h2v1h-2zM1 6h2v1h-2zM11 6h2v1h-2zM21 6h2v1h-2zM1 7h2v1h-2zM11 7h2v1h-2zM21 7h2v1h-2zM1 8h2v1h-2zM11 8h2v1h-2zM21 8h2v1h-2zM1 9h1v1h-1zM11 9h1v1h-1zM21 9h1v1h-1zM21 11h9v1h-9zM21 12h8v1h-8zM21 13h2v1h-2zM21 14h2v1h-2zM21 15h2v1h-2zM21 16h2v1h-2zM21 17h2v1h-2zM21 18h2v1h-2zM21 19h1v1h-1zM21 21h9v1h-9zM21 22h8v1h-8zM21 23h2v1h-2zM21 24h2v1h-2zM21 25h2v1h-2zM21 26h2v1h-2zM21 27h2v1h-2zM21 28h2v1h-2zM21 29h1v1h-1z",
         ],
         [
           "pixelSilver",
-          "M2 12h8v1h-8zM12 12h8v1h-8zM2 13h3v1h-3zM6 13h4v1h-4zM12 13h2v1h-2zM16 13h4v1h-4zM2 14h2v1h-2zM6 14h4v1h-4zM12 14h4v1h-4zM17 14h3v1h-3zM2 15h3v1h-3zM6 15h4v1h-4zM12 15h3v1h-3zM16 15h4v1h-4zM2 16h3v1h-3zM6 16h4v1h-4zM12 16h2v1h-2zM15 16h5v1h-5zM2 17h2v1h-2zM7 17h3v1h-3zM12 17h2v1h-2zM17 17h3v1h-3zM2 18h8v1h-8zM12 18h8v1h-8zM2 19h8v1h-8zM12 19h8v1h-8zM2 22h8v1h-8zM12 22h8v1h-8zM2 23h8v1h-8zM12 23h3v1h-3zM16 23h4v1h-4zM2 24h8v1h-8zM12 24h2v1h-2zM16 24h4v1h-4zM2 25h8v1h-8zM12 25h3v1h-3zM16 25h4v1h-4zM2 26h8v1h-8zM12 26h3v1h-3zM16 26h4v1h-4zM2 27h8v1h-8zM12 27h2v1h-2zM17 27h3v1h-3zM2 28h8v1h-8zM12 28h8v1h-8zM2 29h8v1h-8zM12 29h8v1h-8z",
+          "M10 1h1v1h-1zM20 1h1v1h-1zM30 1h1v1h-1zM3 3h6v1h-6zM13 3h6v1h-6zM23 3h2v1h-2zM28 3h1v1h-1zM3 4h6v1h-6zM13 4h6v1h-6zM23 4h1v1h-1zM28 4h1v1h-1zM3 5h6v1h-6zM13 5h6v1h-6zM23 5h2v1h-2zM28 5h1v1h-1zM3 6h6v1h-6zM13 6h6v1h-6zM23 6h4v1h-4zM28 6h1v1h-1zM3 7h6v1h-6zM13 7h6v1h-6zM23 7h2v1h-2zM3 8h6v1h-6zM13 8h6v1h-6zM23 8h1v1h-1zM1 10h1v1h-1zM11 10h1v1h-1zM21 10h1v1h-1zM30 11h1v1h-1zM2 12h9v1h-9zM12 12h9v1h-9zM2 13h4v1h-4zM8 13h3v1h-3zM12 13h2v1h-2zM18 13h3v1h-3zM23 13h6v1h-6zM2 14h3v1h-3zM8 14h3v1h-3zM12 14h5v1h-5zM19 14h2v1h-2zM23 14h6v1h-6zM2 15h4v1h-4zM8 15h3v1h-3zM12 15h4v1h-4zM18 15h3v1h-3zM23 15h6v1h-6zM2 16h4v1h-4zM8 16h3v1h-3zM12 16h3v1h-3zM17 16h4v1h-4zM23 16h6v1h-6zM2 17h4v1h-4zM8 17h3v1h-3zM12 17h2v1h-2zM16 17h5v1h-5zM23 17h6v1h-6zM2 18h3v1h-3zM9 18h2v1h-2zM12 18h2v1h-2zM19 18h2v1h-2zM23 18h6v1h-6zM2 19h9v1h-9zM12 19h9v1h-9zM2 20h9v1h-9zM12 20h10v1h-10zM30 21h1v1h-1zM2 22h9v1h-9zM12 22h9v1h-9zM2 23h9v1h-9zM12 23h4v1h-4zM18 23h3v1h-3zM23 23h6v1h-6zM2 24h9v1h-9zM12 24h3v1h-3zM18 24h3v1h-3zM23 24h6v1h-6zM2 25h9v1h-9zM12 25h4v1h-4zM18 25h3v1h-3zM23 25h6v1h-6zM2 26h9v1h-9zM12 26h4v1h-4zM18 26h3v1h-3zM23 26h6v1h-6zM2 27h9v1h-9zM12 27h4v1h-4zM18 27h3v1h-3zM23 27h6v1h-6zM2 28h9v1h-9zM12 28h3v1h-3zM19 28h2v1h-2zM23 28h6v1h-6zM2 29h9v1h-9zM12 29h9v1h-9zM2 30h9v1h-9zM12 30h10v1h-10z",
+        ],
+        [
+          "pixelGray",
+          "M9 2h2v1h-2zM19 2h2v1h-2zM29 2h2v1h-2zM9 3h2v1h-2zM19 3h2v1h-2zM29 3h2v1h-2zM9 4h2v1h-2zM19 4h2v1h-2zM29 4h2v1h-2zM9 5h2v1h-2zM19 5h2v1h-2zM29 5h2v1h-2zM9 6h2v1h-2zM19 6h2v1h-2zM29 6h2v1h-2zM9 7h2v1h-2zM19 7h2v1h-2zM29 7h2v1h-2zM9 8h2v1h-2zM19 8h2v1h-2zM29 8h2v1h-2zM2 9h9v1h-9zM12 9h9v1h-9zM22 9h9v1h-9zM2 10h9v1h-9zM12 10h9v1h-9zM22 10h9v1h-9zM1 11h20v1h-20zM1 12h1v1h-1zM11 12h1v1h-1zM29 12h2v1h-2zM1 13h1v1h-1zM11 13h1v1h-1zM29 13h2v1h-2zM1 14h1v1h-1zM11 14h1v1h-1zM29 14h2v1h-2zM1 15h1v1h-1zM11 15h1v1h-1zM29 15h2v1h-2zM1 16h1v1h-1zM11 16h1v1h-1zM29 16h2v1h-2zM1 17h1v1h-1zM11 17h1v1h-1zM29 17h2v1h-2zM1 18h1v1h-1zM11 18h1v1h-1zM29 18h2v1h-2zM1 19h1v1h-1zM11 19h1v1h-1zM22 19h9v1h-9zM1 20h1v1h-1zM11 20h1v1h-1zM22 20h9v1h-9zM1 21h20v1h-20zM1 22h1v1h-1zM11 22h1v1h-1zM29 22h2v1h-2zM1 23h1v1h-1zM11 23h1v1h-1zM29 23h2v1h-2zM1 24h1v1h-1zM11 24h1v1h-1zM29 24h2v1h-2zM1 25h1v1h-1zM11 25h1v1h-1zM29 25h2v1h-2zM1 26h1v1h-1zM11 26h1v1h-1zM29 26h2v1h-2zM1 27h1v1h-1zM11 27h1v1h-1zM29 27h2v1h-2zM1 28h1v1h-1zM11 28h1v1h-1zM29 28h2v1h-2zM1 29h1v1h-1zM11 29h1v1h-1zM22 29h9v1h-9zM1 30h1v1h-1zM11 30h1v1h-1zM22 30h9v1h-9z",
+        ],
+        ["pixelRed", "M25 3h2v1h-2zM24 4h3v1h-3zM25 5h2v1h-2z"],
+        [
+          "pixelBlack",
+          "M27 3h1v1h-1zM27 4h1v1h-1zM27 5h1v1h-1zM27 6h1v1h-1zM25 7h4v1h-4zM24 8h5v1h-5z",
         ],
         [
           "pixelBlue",
-          "M5 13h1v1h-1zM4 14h2v1h-2zM5 15h1v1h-1zM5 16h1v1h-1zM4 17h3v1h-3zM15 23h1v1h-1zM14 24h2v1h-2zM15 25h1v1h-1zM15 26h1v1h-1zM14 27h3v1h-3z",
+          "M6 13h2v1h-2zM5 14h3v1h-3zM6 15h2v1h-2zM6 16h2v1h-2zM6 17h2v1h-2zM5 18h4v1h-4zM16 23h2v1h-2zM15 24h3v1h-3zM16 25h2v1h-2zM16 26h2v1h-2zM16 27h2v1h-2zM15 28h4v1h-4z",
         ],
-        ["pixelYellow", "M24 24h3v1h-3zM24 25h1v1h-1zM26 25h1v1h-1zM24 26h3v1h-3z"],
-        ["pixelOrange", "M25 25h1v1h-1z"],
+        [
+          "pixelTeal",
+          "M14 13h4v1h-4zM17 14h2v1h-2zM16 15h2v1h-2zM15 16h2v1h-2zM14 17h2v1h-2zM14 18h5v1h-5z",
+        ],
       ],
     },
   },

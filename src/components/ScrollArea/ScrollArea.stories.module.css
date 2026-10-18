@@ -1,0 +1,9 @@
+.short {
+  block-size: calc(var(--control-height) * 5);
+}
+
+.prose {
+  margin: var(--space-0) var(--space-0) var(--space-3);
+  font-family: var(--font-family-prose);
+  line-height: var(--line-height-body);
+}

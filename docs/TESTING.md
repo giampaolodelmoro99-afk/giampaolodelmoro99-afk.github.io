@@ -18,17 +18,18 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 
 ## 3. Soglie
 
-| Controllo       | Soglia                                                                                        | Dove                  |
-| --------------- | --------------------------------------------------------------------------------------------- | --------------------- |
-| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                    | `vitest.config.ts`    |
-| Lighthouse      | 100 in tutte e 4 le categorie, preset mobile e desktop, mediana di 3 esecuzioni               | `lighthouserc.*.json` |
-| JS iniziale     | ≤ 115 kB gzip (Fase 0: 112 kB)                                                                | `.size-limit.js`      |
-| CSS iniziale    | ≤ 12 kB gzip                                                                                  | `.size-limit.js`      |
-| Font in preload | ≤ 25 kB (woff2)                                                                               | `.size-limit.js`      |
-| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms | `performance.spec.ts` |
-| axe             | 0 violazioni WCAG 2.2 AA                                                                      | unit ed e2e           |
-| Console         | 0 errori e warning                                                                            | fixture e2e           |
-| Terze parti     | 0 richieste verso altre origini                                                               | fixture e2e           |
+| Controllo       | Soglia                                                                                                                                                             | Dove                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
+| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                         | `vitest.config.ts`    |
+| Lighthouse      | Accessibility, Best Practices, SEO 100; Performance ≥ 95 a ogni commit e 100 (mediana di 5) a fine fase e release; LCP, FCP, TBT e CLS con budget fissi (ADR-0013) | `lighthouserc.*.json` |
+| JS iniziale     | ≤ 115 kB gzip (F1B: 110,81 kB con il chunk `framework`)                                                                                                            | `.size-limit.js`      |
+| Componenti      | JS ≤ 99 kB, CSS ≤ 5 kB, guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)                                                                               | `.size-limit.js`      |
+| CSS iniziale    | ≤ 12 kB gzip                                                                                                                                                       | `.size-limit.js`      |
+| Font in preload | ≤ 25 kB (woff2)                                                                                                                                                    | `.size-limit.js`      |
+| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms                                                                      | `performance.spec.ts` |
+| axe             | 0 violazioni WCAG 2.2 AA                                                                                                                                           | unit ed e2e           |
+| Console         | 0 errori e warning                                                                                                                                                 | fixture e2e           |
+| Terze parti     | 0 richieste verso altre origini                                                                                                                                    | fixture e2e           |
 
 **Le soglie non si abbassano.** Un'eccezione richiede un ADR.
 
@@ -47,7 +48,7 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 | `performance`     | Pixel 7 (Chromium, CPU 4× via CDP) | esegue solo `performance.spec.ts` |
 | `storybook`       | Chromium 1024×768                  | esegue solo `tests/storybook/`    |
 
-Il progetto `storybook` apre le story da `build/client/storybook/` (`iframe.html?id=…&globals=…`): screenshot delle story con tag `visual` e axe con contrasto su tutte le story, in tema classico e alto contrasto, con input mouse e touch; in touch ogni controllo deve misurare almeno 44×44 px. L'addon a11y di Storybook è in modalità manuale nei test, per non eseguire axe due volte.
+Il progetto `storybook` avvia Chromium senza `--hide-scrollbars` (l'opzione predefinita di Playwright in headless nasconde le barre), così screenshot e test vedono la barra di scorrimento GDM 95. Apre le story da `build/client/storybook/` (`iframe.html?id=…&globals=…`): screenshot delle story con tag `visual` e axe con contrasto su tutte le story, in tema classico e alto contrasto, con input mouse e touch; in touch ogni controllo deve misurare almeno 44×44 px. Prima di misurare si aspetta la fine delle animazioni non infinite (per esempio l'apertura dei menu). Se l'elemento o un suo antenato è nascosto con lo schema di `VisuallyHidden` (`clip: rect(0 0 0 0)` o `clip-path: inset(50%)`; una `clip-path` decorativa non conta) (gli input di React Aria stanno in uno `<span>` `VisuallyHidden`), si misura l'etichetta che lo contiene, cioè l'area da toccare; se è nascosta anche l'etichetta (il `HiddenSelect` di React Aria per i form), l'elemento non è un bersaglio e non si misura. Gli elementi con `display: contents` (le celle di GridList) non hanno un riquadro proprio: il bersaglio è la riga che li contiene (`role=row`), misurata a sua volta. L'addon a11y di Storybook è in modalità manuale nei test, per non eseguire axe due volte.
 
 I test specifici di un tipo di input stanno in file dedicati (`keyboard.spec.ts`, `touch.spec.ts`), assegnati ai progetti dalla configurazione. Mai `test.skip` condizionali.
 
@@ -75,8 +76,11 @@ Le query si fanno per ruolo e nome (`getByRole`), non per classe o test id, salv
 - Baseline in `tests/e2e/__screenshots__/<progetto>/` e `tests/storybook/__screenshots__/storybook/`.
 - **Si generano solo nel container** (`npm run test:e2e:update-snapshots`): il rendering dei font dell'host differisce da quello della CI.
 - Si aggiornano solo per un cambio visivo voluto, verificato nel browser, con commit dedicato (skill `update-visual-snapshots`).
+- **Stati nelle story (dalla Fase 1B).** Hover, pressione e focus da tastiera non si forzano con le prop di React Aria: le story li creano nella funzione `play` con gli aiuti di `.storybook/interactions.ts` (`hover`, `press`, `focusWithKeyboard`). Gli aiuti aspettano un layout stabile, perché il mouse reale di Playwright resta in (0, 0) e, quando sparisce l'overlay di caricamento di Storybook, Chrome invia un `pointerover` reale che chiuderebbe hover e pressione. Le story con overlay (tooltip, menu, popover, dialog) usano il decoratore `overlaysInStoryRoot` di `.storybook/decorators.tsx`: React Aria rende l'overlay dentro `#storybook-root`, l'area fotografata. `openStory()` in `tests/storybook/stories.ts` aspetta la fase `finished` del rendering, cioè la fine della `play`, prima di fotografare o eseguire axe.
 
 ## 7. Test sull'HTML prerenderizzato
+
+`src/components/prerenderStyles.test.tsx` rende ogni story dei componenti con `renderToString` e confronta gli attributi `style` con l'elenco dei casi noti del tipo C (ADR-0012). Le story si cercano sul disco a ogni esecuzione: con `import.meta.glob` la cache dei moduli di Vitest 5 (`node_modules/.vitest-cache`) non vedeva i file nuovi.
 
 `tests/prerender/html.test.ts` legge `build/client` (serve prima `npm run build`). Per ogni route e lingua verifica:
 
@@ -111,7 +115,8 @@ npm run build && npm run test:prerender
 npm run test:e2e           # suite completa nel container (come la CI)
 npm run test:e2e:host      # e2e sull'host senza @visual, per iterare
 npm run size
-npm run lhci:mobile && npm run lhci:desktop
+npm run lhci:mobile && npm run lhci:desktop                 # livello commit
+npm run lhci:mobile:strict && npm run lhci:desktop:strict   # chiusura di fase e release
 ```
 
 ## 10. Flakiness

@@ -40,11 +40,14 @@ Piano: [phase-01-plan.md](phases/phase-01-plan.md) §1–§10.
 
 ## 1B. Design system: componenti
 
-Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconfermare in plan mode.
+Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 14/10/2026).
 
-- [ ] Sostituire le icone di Campo minato (16 e 32 px): il disegno attuale (erba e fiori) richiama "Prato fiorito". Nuova versione da Claude Design, SHA-256 in ASSETS.md, `npm run icons`, screenshot
-- [ ] CSP del sito e stile inserito a runtime da React Aria (`react-aria-pressable-style`), prima del primo componente nelle pagine
-- [ ] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
+- [x] Sostituire le icone di Campo minato (16 e 32 px): il disegno attuale (erba e fiori) richiama "Prato fiorito". Nuova versione da Claude Design, SHA-256 in ASSETS.md, `npm run icons`, screenshot
+- [x] CSP del sito e stile inserito a runtime da React Aria (`react-aria-pressable-style`), prima del primo componente nelle pagine
+- [x] Pagina 404 con il `Link` di React Aria e test e2e con la CSP reale (ADR-0012)
+- [x] Peso dei componenti con size-limit: totale, gruppo del desktop per la F2A, incremento per componente
+- [x] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
+- [ ] QA su Android reale, CI verde su GitHub per `phase/01b-components`, merge e tag `phase-01b`
 
 ## 2A. Window manager desktop
 
@@ -52,6 +55,21 @@ Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconferma
 - [ ] Finestre: drag, resize, focus, z-index, minimizza, massimizza, chiudi, animazioni
 - [ ] Taskbar con orologio, menu Start, menu contestuale (anche senza tasto destro), "Esegui…"
 - [ ] Scorciatoie da tastiera e annunci per screen reader
+- [ ] Attributi `style` dei componenti nell'HTML prerenderizzato (ADR-0012, tipo C), comprese le variabili inline di `Glyph` (`--glyph-width`, `--glyph-height`): soluzione con ADR ed e2e con la CSP reale sulla home per Checkbox, Select, Tooltip, AlertDialog e DesktopIcon
+- [ ] `I18nProvider` di React Aria nel root, con `intlLocales` della lingua della route: i testi interni dei componenti (`useUiStrings`) e le traduzioni di React Aria seguono quella lingua; senza, React Aria usa la lingua del browser
+- [ ] **Caricamento separato del codice del desktop dopo il primo disegno: requisito della F2A** (decisione del 14/10/2026). Stima: home 110,8 kB + base React Aria 13,0 + base delle collezioni 17,5 + base degli overlay ≈ 16 = **circa 157 kB contro un budget di 115** (PERFORMANCE_SEO.md, "Peso dei componenti"). Misura di fine 1B: il guscio del desktop (Window, Taskbar, TaskbarButton, StartButton, DesktopIcons) pesa **75,0 kB** gzip, quindi la home con il guscio nel JS iniziale arriverebbe a circa 186 kB. Il piano della F2A deve dire come il codice del desktop (finestre, taskbar, menu Start, icone) arriva in un chunk separato dopo il primo disegno, senza togliere contenuto dall'HTML prerenderizzato, prima di scrivere codice. Da decidere anche l'indice `src/components/index.ts`: oggi aggiunge circa 0,6 kB a chi importa anche solo Icon (`sideEffects` o import dalle cartelle)
+- [ ] Etichette del desktop con il carattere leggibile (alto contrasto, `data-font="readable"`): una parola più larga della cella va a capo con la sillabazione ("Compe-tenze"); verificare i testi definitivi delle icone a 320 px
+
+- [ ] Note dell'a11y-auditor (1B) da risolvere quando i componenti entrano nelle pagine:
+  - livello del titolo della Window (oggi `h2`, il contenuto parte da `h3`), insieme alla scelta `region`/`dialog`
+  - corpo `document` della Window scorrevole da tastiera anche in Safari (riusare `ScrollArea`)
+  - pulsante attivo della taskbar in alto contrasto distinto non solo dal grassetto; cerchio del Radio in `forced-colors`
+  - testi troncati (StatusBar, titoli, taskbar, voci di menu larghe a 320 px) leggibili per intero; taskbar con molte finestre a 320 px (ADR-0007, F2B)
+  - focus iniziale sul pulsante meno distruttivo nei dialog di conferma; pulsanti della barra del titolo senza callback non mostrati
+  - tooltip uguale all'`aria-label` letto due volte; `ScrollArea` focalizzabile solo quando scorre; segnaposto distinguibile dal testo
+  - progetto Storybook a 320 px con controllo dell'overflow; verifiche manuali con NVDA, VoiceOver, zoom 200/400% e `forced-colors`
+
+- [ ] Rimisurare con la preview compressa le correzioni fatte per l'oscillazione di Lighthouse (ADR-0013): togliere l'idratazione rinviata se Performance resta ≥ 95 con LCP e FCP nei budget; rivedere il preload di Pixel Operator bold; rivedere i budget di LCP e FCP
 
 ## 2B. Routing, persistenza e mobile
 
@@ -81,6 +99,7 @@ Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconferma
 - [ ] Pagina /privacy IT/EN (incluso l'eventuale antispam di terzi), link nel footer e vicino al pulsante del form
 - [ ] Disclaimer di non affiliazione a Microsoft
 - [ ] Vista semplice; Making of (da AI_WORKFLOW.md)
+- [ ] LEGAL.md §2 e ADR-0003: citare le chiavi `sessionStorage` tecniche di React Router (`react-router-scroll-positions`, `remix-router-transitions`, `react-router-manifest-version`) nell'informativa (security-auditor, 1B)
 
 ## 4A. Esperienza di sistema
 
@@ -112,6 +131,7 @@ Bozza in [phase-01-plan.md](phases/phase-01-plan.md), appendice B, da riconferma
 - [ ] security.txt, humans.txt, robots.txt definitivo
 - [ ] Verifica completa di LEGAL.md e ASSETS.md (security-auditor)
 - [ ] Valutazione dell'alias email sul dominio
+- [ ] File delle licenze di terze parti (React Aria è Apache-2.0, i bundle minificati non conservano gli header) citato in LEGAL.md §9 (security-auditor, 1B)
 
 ## 7. Release 1.0
 

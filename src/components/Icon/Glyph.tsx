@@ -1,9 +1,10 @@
+import { cx } from "../cx";
 import { type GlyphName, glyphs } from "./glyphData";
 import styles from "./Icon.module.css";
 
 export type GlyphProps = {
   name: GlyphName;
-  className?: string;
+  className?: string | undefined;
 };
 
 export function Glyph({ name, className }: GlyphProps) {
@@ -11,7 +12,7 @@ export function Glyph({ name, className }: GlyphProps) {
 
   return (
     <svg
-      className={[styles.glyph, className].filter(Boolean).join(" ")}
+      className={cx(styles.glyph, className)}
       style={{ "--glyph-width": width, "--glyph-height": height }}
       viewBox={`0 0 ${width} ${height}`}
       shapeRendering="crispEdges"

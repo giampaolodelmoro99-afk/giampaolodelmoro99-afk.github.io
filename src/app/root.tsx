@@ -12,6 +12,7 @@ import { defaultLocale, localeFromPathname } from "../routes/routeMap";
 import proseHref from "../assets/fonts/IBMPlexSans-Regular-Latin1.woff2?url";
 import pixelOperatorBoldHref from "../assets/fonts/pixel-operator-700.woff2?url";
 import globalHref from "../styles/global.css?url";
+import { pressableStyleId } from "../styles/reactAriaPressable";
 import type { Route } from "./+types/root";
 
 const fontPreload = (href: string) => ({
@@ -25,7 +26,7 @@ const fontPreload = (href: string) => ({
 export const links: Route.LinksFunction = () => [
   fontPreload(pixelOperatorBoldHref),
   fontPreload(proseHref),
-  { rel: "stylesheet", href: globalHref },
+  { rel: "stylesheet", href: globalHref, id: pressableStyleId },
   { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
 ];
 

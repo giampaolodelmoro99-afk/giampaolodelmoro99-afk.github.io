@@ -91,17 +91,17 @@ La v1 era indicizzata con quattro sottopagine. Non devono diventare 404 alla rel
 
 ## 8. Criteri di accettazione
 
-| Requisito       | Criterio verificabile                                                                                                                |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Lighthouse      | `npm run lhci:mobile` e `lhci:desktop` con 100 in ogni categoria, mediana di 3 esecuzioni, su tutte le route principali              |
-| HTML statico    | `npm run test:prerender` verde: lang, title, description, canonical, hreflang, OG, JSON-LD e contenuto della finestra per ogni route |
-| Navigazione SPA | e2e: cambio route senza reload (marcatore su `window` conservato)                                                                    |
-| Responsive      | e2e su 320, 375, 768, 1024, 1440 px + touch: nessuno scroll orizzontale, target ≥ 44 px, screenshot stabili                          |
-| Accessibilità   | zero violazioni axe (unit ed e2e, WCAG 2.2 AA); checklist manuale in `QA_CHECKLIST.md`                                               |
-| Privacy         | e2e: nessuna richiesta verso origini esterne al caricamento; test che nessun file statico contenga l'email                           |
-| Console         | e2e: nessun errore o warning in console                                                                                              |
-| Recruiter       | e2e: da ogni route, CV e contatti in ≤ 2 interazioni; contatto possibile con Web3Forms simulato giù                                  |
-| Peso            | `npm run size` entro i budget                                                                                                        |
+| Requisito       | Criterio verificabile                                                                                                                                                      |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lighthouse      | 100 in ogni categoria a fine fase e release (`lhci:*:strict`, mediana di 5); a ogni commit Performance ≥ 95 e metriche nei budget (ADR-0013), su tutte le route principali |
+| HTML statico    | `npm run test:prerender` verde: lang, title, description, canonical, hreflang, OG, JSON-LD e contenuto della finestra per ogni route                                       |
+| Navigazione SPA | e2e: cambio route senza reload (marcatore su `window` conservato)                                                                                                          |
+| Responsive      | e2e su 320, 375, 768, 1024, 1440 px + touch: nessuno scroll orizzontale, target ≥ 44 px, screenshot stabili                                                                |
+| Accessibilità   | zero violazioni axe (unit ed e2e, WCAG 2.2 AA); checklist manuale in `QA_CHECKLIST.md`                                                                                     |
+| Privacy         | e2e: nessuna richiesta verso origini esterne al caricamento; test che nessun file statico contenga l'email                                                                 |
+| Console         | e2e: nessun errore o warning in console                                                                                                                                    |
+| Recruiter       | e2e: da ogni route, CV e contatti in ≤ 2 interazioni; contatto possibile con Web3Forms simulato giù                                                                        |
+| Peso            | `npm run size` entro i budget                                                                                                                                              |
 
 ## 9. Fuori perimetro
 

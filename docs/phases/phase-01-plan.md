@@ -3,7 +3,7 @@
 La Fase 1 è divisa in due sotto-fasi:
 
 - **1A — Fondamenta** (`phase/01a-foundation-ds`, tag `phase-01a`): piano approvato il 13/10/2026, §1–§10.
-- **1B — Componenti** (`phase/01b-components`, tag `phase-01b`): bozza in appendice B, **da riconfermare in plan mode all'inizio della sotto-fase**.
+- **1B — Componenti** (`phase/01b-components`, tag `phase-01b`): piano approvato il 14/10/2026, appendice B.
 
 Branch, merge e tag li esegue il proprietario. La 1B parte da `main` dopo il merge della 1A.
 
@@ -260,63 +260,210 @@ Scelte prese durante il lavoro, documentate in ADR-0010, DESIGN_SYSTEM.md e PERF
 
 ---
 
-## Appendice B: bozza della Fase 1B (da riconfermare in plan mode)
+## Appendice B: Fase 1B, piano approvato il 14/10/2026
 
-**Ordine**: Button (con la variante a sola icona) → TextField → TextArea → Checkbox → Radio → GroupBox → ProgressBar → StatusBar → ScrollArea → Tooltip → Tabs → Select → MenuBar → Window → TaskbarButton + Taskbar → StartButton → DesktopIcon → AlertDialog. Ogni componente ha un commit con test, story e screenshot, e i testi in `ui.*` di it/en.
+Sostituisce la bozza riconfermata in plan mode. I riferimenti §N in questa appendice rimandano alle sezioni B.N.
 
-| Componente              | React Aria Components                                                       | Stati                                                                                 |
-| ----------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Button                  | `Button`                                                                    | normale, hover, premuto, focus, disabilitato, predefinito (anche premuto), solo icona |
-| TextField               | `TextField`, `Label`, `Input`, `Text`, `FieldError`                         | normale, focus, non valido, disabilitato, sola lettura                                |
-| TextArea                | `TextField`, `TextArea`…                                                    | come TextField, più la scrollbar                                                      |
-| Checkbox                | `Checkbox`                                                                  | selezionata, indeterminata, hover, premuta, focus, disabilitata, non valida           |
-| Radio                   | `RadioGroup`, `Radio`                                                       | come Checkbox, verticale e orizzontale                                                |
-| GroupBox                | `fieldset`/`legend` nativi                                                  | normale, alto contrasto                                                               |
-| ProgressBar             | `ProgressBar`, `Label`                                                      | determinata, indeterminata, movimento ridotto                                         |
-| StatusBar               | contenitore `role="group"`                                                  | campi, `grow`, testo troncato                                                         |
-| ScrollArea              | `div role="region" tabIndex=0`                                              | desktop con frecce, touch, focus                                                      |
-| Tooltip                 | `TooltipTrigger`, `Tooltip`                                                 | hover dopo 600 ms, focus, Esc                                                         |
-| Tabs                    | `Tabs`, `TabList`, `Tab`, `TabPanel`                                        | normale, hover, selezionata, focus, disabilitata, a capo a 320 px                     |
-| Select                  | `Select`, `Button`, `SelectValue`, `Popover`, `ListBox`, `ListBoxItem`      | campo e opzioni: tutti gli stati                                                      |
-| MenuBar                 | `Toolbar`, `MenuTrigger`, `Menu`, `MenuItem`, `Separator`, `SubmenuTrigger` | pulsante e voce: tutti gli stati, spunta, sottomenu                                   |
-| Window                  | `section` + `aria-labelledby`; `Button` per i comandi                       | attiva, inattiva, ingrandita, documento, solo Chiudi                                  |
-| TaskbarButton + Taskbar | `ToggleButton`; `Toolbar`                                                   | normale, hover, premuto, attivo retinato, focus, troncato                             |
-| StartButton             | `MenuTrigger`, `Button`, `Popover`, `Menu`                                  | chiuso, hover, aperto, focus                                                          |
-| DesktopIcon             | `GridList`, `GridListItem`                                                  | normale, hover, selezionata, focus, due righe                                         |
-| AlertDialog             | `ModalOverlay`, `Modal`, `Dialog role="alertdialog"`                        | avviso, errore, info; uno o due pulsanti                                              |
+### Contesto
 
-**Da sistemare in 1B**:
+La 1A (tag `phase-01a`) ha portato token, temi, font, icone, Icon e Glyph e Storybook pubblicato con test visivi e axe. La 1B costruisce i 18 componenti elencati in B.4. Prima, però, va risolto il debito più grave lasciato dalla 1A (retro §7): React Aria inserisce a runtime uno `<style>` che la CSP del sito blocca. Poi si sostituiscono le icone di Campo minato, già arrivate in `docs/design/gdm95-updates/`. Branch `phase/01b-components`, tag `phase-01b` a cura del proprietario.
 
-- `Taskbar` dentro TaskbarButton.
-- Export `DesktopIcons` dalla cartella `DesktopIcon/`.
-- `composes` al posto di `g95-scroll`.
-- Selettori `svg` e `[role=menuitem]` sostituiti da classi.
-- Verifica dei troncamenti con Pixel Operator a 320 px.
-- Peso delle icone (circa 11 kB gzip) da misurare quando entrano nella home in F2A.
+Decisioni prese con il proprietario in plan mode:
 
-### Test previsti per componente (bozza)
+- il test della CSP usa la **404**: i suoi due link diventano `Link` di React Aria (uso reale in produzione, chunk solo della route 404);
+- il peso dei componenti si misura **dopo ogni componente**, nelle condizioni della build del sito, con soglia di arresto a +10 kB gzip per componente e con i gruppi della F2A.
 
-Test comuni a tutti: ruolo e nome accessibile, interazione mouse e tastiera con user-event, attributi `data-*` per ogni stato, `expectNoAxeViolations`. Story comuni: `Default` e `AllStates` (tag `visual`), con `play` dove serve. Screenshot e axe reale in tema classico e alto contrasto, desktop e touch (§5.4).
+---
 
-| Componente              | Test specifici                                                                                                              |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Button                  | `onPress` con clic, Invio e Spazio; disabilitato non chiama; icona `aria-hidden`; solo icona richiede `aria-label` (tipo)   |
-| TextField               | `aria-describedby` collega descrizione ed errore; validazione `type="email"` e `isRequired`; font 16 px in touch            |
-| TextArea                | `rows`, resize solo verticale, classe di scorrimento applicata                                                              |
-| Checkbox                | clic sull'etichetta, Spazio, `aria-checked="mixed"`                                                                         |
-| Radio                   | le frecce spostano la selezione, Tab entra ed esce dal gruppo                                                               |
-| GroupBox                | ruolo `group` con nome dalla legenda                                                                                        |
-| ProgressBar             | `aria-valuenow`, `valueLabel`; con `data-motion="reduce"` nessuna animazione e testo "In corso…"                            |
-| StatusBar               | nome del gruppo; nessun `aria-live` implicito                                                                               |
-| ScrollArea              | regione con nome; frecce della tastiera scorrono (e2e)                                                                      |
-| Tooltip                 | compare al focus, Esc chiude                                                                                                |
-| Tabs                    | frecce cambiano scheda, `aria-selected`, pannello collegato                                                                 |
-| Select                  | apertura con Invio e frecce, scelta, Esc, lista larga `--trigger-width`                                                     |
-| MenuBar                 | frecce tra i menu, Invio o freccia giù apre, Esc chiude e restituisce il focus, `selectionMode`                             |
-| Window                  | nome dalla barra del titolo, nomi accessibili dei pulsanti (i18n), callback; pulsanti 24×24 desktop e 44×44 touch (e2e)     |
-| TaskbarButton + Taskbar | `aria-pressed`, frecce nella Toolbar, safe-area                                                                             |
-| StartButton             | `aria-expanded`, fascia `aria-hidden`, monogramma GDM                                                                       |
-| DesktopIcon             | frecce nella griglia, Invio e doppio clic chiamano `onAction`; in touch un tocco apre (e2e)                                 |
-| AlertDialog             | focus sul pulsante primario, intrappolato e restituito, Esc = secondario, clic fuori non chiude, icona con nome accessibile |
+### B.1 Cosa cambia rispetto alla bozza
 
-I componenti senza React Aria (GroupBox, StatusBar, ScrollArea, cornice di Window) non sono cliccabili: tutto ciò che si preme dentro di loro è React Aria.
+| Bozza                                                         | Ora                                                                                                                                                                                                                                                                  | Motivo                                                            |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Primo passo: Button                                           | Primi passi: dipendenze, CSP di React Aria, 404 con Link, Campo minato, misura del peso                                                                                                                                                                              | Retro 1A §7 e §9.4                                                |
+| Import da `react-aria-components`                             | Import **per sottopercorso** (`react-aria-components/Button`), imposto da una regola Oxlint `no-restricted-imports`                                                                                                                                                  | Misura realistica e chunk più piccoli (il pacchetto espone `./*`) |
+| Nessun controllo del peso dei componenti                      | size-limit con `@size-limit/esbuild` e optimize-locales attivo: totale, gruppi F2A, incremento per commit                                                                                                                                                            | Richiesta del proprietario                                        |
+| Font non indicato                                             | Pixel Operator per titoli, etichette, controlli e testo nei campi; **Plex (`--font-family-prose`)** per descrizioni ed errori dei campi, messaggio di AlertDialog, Window `variant="document"`                                                                       | Decisione 1A sul font delle frasi                                 |
+| Disabilitato come nel pacchetto                               | In alto contrasto il disabilitato ha un **secondo segnale** oltre al colore (decisione 2 in B.6)                                                                                                                                                                     | Retro 1A §7                                                       |
+| Window: barra inattiva `#6a6a6a` (README del pacchetto)       | Token `#666666` già in `tokens.css`                                                                                                                                                                                                                                  | Deroga in DESIGN_SYSTEM §9                                        |
+| StartButton: fascia "gianpaolodelmoro" scritta nel componente | Letta da `src/config/site.ts`                                                                                                                                                                                                                                        | CLAUDE.md: handle solo in `site.ts`                               |
+| `I18nProvider` non previsto                                   | `I18nProvider` di React Aria (it-IT / en-US) nel decoratore di Storybook; nel root solo in F2A                                                                                                                                                                       | Testi interni di React Aria (es. DismissButton) localizzati       |
+| Esempio di form Contatti                                      | Solo una story "Esempio di form" con nome, email e messaggio, **senza LinkedIn** e senza invio                                                                                                                                                                       | Il form vero è F3B                                                |
+| Restano invariati                                             | ordine dei 18 componenti, un commit per componente, "Da sistemare in 1B" (Taskbar dentro TaskbarButton, export `DesktopIcons` da `DesktopIcon/`, `composes` al posto di `g95-scroll`, classi al posto dei selettori `svg` e `[role=menuitem]`, troncamenti a 320 px) |                                                                   |
+
+La bozza precedente resta nella storia di git.
+
+---
+
+### B.2 CSP e stili di React Aria
+
+#### B.2.1 Inventario (analisi di `react-aria-components@1.22.1` e `react-aria@3.53.1`)
+
+Ho cercato in tutto il codice distribuito `createElement('style')`, `setAttribute('style')`, `cssText`, `insertRule`, `adoptedStyleSheets`, `.style.*`, `setProperty` e le prop `style`. Tre tipi di intervento, con effetti diversi sulla CSP (`style-src 'self'`, via meta):
+
+| Tipo                                                                                         | Dove                                                                                                                                                                                                                                                                                                                                                      | Componenti 1B coinvolti                                                                                                                                                                                                  | La CSP lo blocca?                                                                                                                                                                                                      |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A. Elemento `<style>`**                                                                    | **solo** `usePress` (`dist/private/interactions/usePress.mjs`): al primo montaggio di un elemento premibile, se `document.getElementById("react-aria-pressable-style")` non esiste, inserisce in `<head>` `@layer { [data-react-aria-pressable] { touch-action: pan-x pan-y pinch-zoom; } }`. Saltato con `NODE_ENV=test` (per questo Vitest non lo vede) | tutti quelli che si premono: Button, Link, ToggleButton (TaskbarButton), Checkbox, Radio, Tab, trigger di Select, MenuTrigger/MenuItem, StartButton, GridListItem, pulsanti di Window e AlertDialog, ScrollArea (frecce) | **Sì**: violazione in console, regola non applicata                                                                                                                                                                    |
+| **B. Scritture CSSOM** (`el.style.x = …`, `style.setProperty`, `Object.assign(el.style, …)`) | `textSelection` (user-select durante la pressione), `usePreventScroll` (Modal), `useOverlayPosition` (Popover, Tooltip), `LiveAnnouncer`, `useDescription`, `useSafelyMouseToSubmenu` (sottomenu), `domHelpers`                                                                                                                                           | Button e tutti i premibili, Tooltip, Select, MenuBar, StartButton, AlertDialog, DesktopIcon                                                                                                                              | **No**: la CSP non governa il CSSOM. Nessun `setAttribute('style')` né `cssText` nel codice                                                                                                                            |
+| **C. Prop `style` di React**                                                                 | `VisuallyHidden` (input di Checkbox e Radio, `HiddenSelect` di Select, `DismissButton` di Popover e Modal, parti di GridList); posizionamento di Popover, Tooltip, OverlayArrow; `--visual-viewport-*` di ModalOverlay; nostre variabili `style={{"--…"}}` (ProgressBar, Window in F2A)                                                                   | Checkbox, Radio, Select, Tooltip, MenuBar, StartButton, AlertDialog, DesktopIcon, ProgressBar                                                                                                                            | **Dopo l'idratazione no** (React le applica via CSSOM). **Nell'HTML prerenderizzato sì**: diventano attributi `style="…"`, bloccati, e l'idratazione non li riapplica (es. l'input della checkbox resterebbe visibile) |
+
+In 1B nessun componente con stili di tipo C finisce in una pagina prerenderizzata (la 404 usa solo `Link`, che non ne ha). Il tipo C diventa reale in F2A, quando i componenti arrivano sulla home.
+
+#### B.2.2 Alternative per il tipo A
+
+| Opzione                                                                              | Pro                                                                                                                                                                                                                                                                                              | Contro                                                                                                                                                            | Esito                                       |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Hash** dello stile in `style-src`                                                  | Meccanismo standard, nessun accoppiamento al DOM                                                                                                                                                                                                                                                 | Il testo dipende dalla versione di React Aria (spazi compresi): il post-build dovrebbe estrarlo da `node_modules`; allarga comunque la CSP; non risolve il tipo C | Scartata                                    |
+| **Nonce**                                                                            | —                                                                                                                                                                                                                                                                                                | Sito statico su GitHub Pages: il nonce sarebbe fisso, quindi inutile. React Aria non accetta un nonce per questo elemento                                         | Esclusa                                     |
+| `'unsafe-inline'`                                                                    | —                                                                                                                                                                                                                                                                                                | Vietata dai vincoli                                                                                                                                               | Esclusa                                     |
+| **Patch del pacchetto** (patch-package) o trasformazione Vite che toglie l'iniezione | Nessuno stile inline                                                                                                                                                                                                                                                                             | Nuova dipendenza o regex su codice di terzi, fragili a ogni aggiornamento                                                                                         | Scartata                                    |
+| **Stile statico più "sentinella"** (consigliata)                                     | La CSP non cambia di un carattere. Usa il controllo che React Aria fa già: se trova un elemento con id `react-aria-pressable-style`, non inserisce nulla. La regola identica va in `global.css` (già caricato, nessuna richiesta in più) e l'id va sul `<link rel="stylesheet">` di `global.css` | Dipende da un id interno, non da un'API pubblica                                                                                                                  | **Scelta**, con test che rilevano la deriva |
+
+#### B.2.3 Soluzione
+
+- `src/styles/global.css`: `@layer { [data-react-aria-pressable] { touch-action: pan-x pan-y pinch-zoom; } }`, identica a quella di React Aria (layer anonimo, quindi i nostri moduli possono sovrascriverla, per esempio `touch-action: none` per il trascinamento in F2A).
+- `src/app/root.tsx`, in `links()`: `{ rel: "stylesheet", href: globalHref, id: "react-aria-pressable-style" }`. Se `<Links />` non passasse `id`, ripiego su un `<link>` reso in `Layout` (da verificare al passo 2).
+- Storybook resta com'è: la sua CSP dedicata ha già `'unsafe-inline'` negli stili, e la sentinella lì non serve.
+- **Tipo B**: nessuna azione, coperto per costruzione; i test e2e lo confermano su Chromium, Firefox e WebKit.
+- **Tipo C**: guardia subito e decisione in F2A:
+  - test prerender: **nessun attributo `style=` nell'HTML prerenderizzato del sito**. Oggi passa; fallirà al primo componente di tipo C sulla home, obbligando a decidere;
+  - test di inventario (Vitest, `renderToString` sulle story con `composeStories`): elenca gli attributi `style` che ogni componente produce nel prerender e li confronta con una lista attesa nel test e nell'ADR. Un attributo nuovo, non dichiarato, fa fallire il test;
+  - opzioni da valutare in F2A con un ADR: post-build che calcola gli hash degli attributi (`style-src-attr 'unsafe-hashes' 'sha256-…'`, CSP3, da verificare su Safari), oppure resa dopo l'idratazione delle sole parti nascoste (`VisuallyHidden`), senza togliere contenuto dall'HTML. In PLAN.md, in F2A, aggiungo la voce "e2e con la CSP reale sulla home per Checkbox, Select, Tooltip, AlertDialog, DesktopIcon".
+
+#### B.2.4 Test
+
+- **Unit (deriva)**: legge `node_modules/react-aria/dist/private/interactions/usePress.mjs` e verifica che contenga l'id `react-aria-pressable-style` e la stessa regola di `global.css`. Un aggiornamento di React Aria (Dependabot) che cambia id o regola fa fallire il test prima dell'e2e.
+- **Prerender**: in tutti gli HTML del sito (`/`, `/en/`, 404) il link di `global.css` ha l'id sentinella; la CSP non contiene `unsafe-inline` né `unsafe-eval` (oggi verificato solo in parte, lo rendo esplicito); nessun attributo `style=`; nella 404 i link sono `<a href="/">` e `<a href="/en/">`.
+- **e2e `tests/e2e/csp.spec.ts`** sulla 404, con la CSP reale della build:
+  - uno script iniziale registra gli eventi `securitypolicyviolation`; dopo l'idratazione e un clic, la lista è vuota (più la fixture `consoleErrors`, già attiva);
+  - `getElementById("react-aria-pressable-style")` è un `LINK` e il `touch-action` calcolato del link è `pan-x pan-y pinch-zoom`;
+  - il clic naviga lato client verso il desktop, senza ricaricare (marcatore su `window`, come nei test di navigazione);
+  - **in negativo**: con `page.route` tolgo l'id sentinella dall'HTML e verifico che la violazione venga registrata. Dimostra che il test non passa a vuoto;
+  - progetti: Chromium (viewport), `firefox-1440`, `touch-iphone-14` (WebKit), `touch-pixel-7`.
+- **e2e senza JavaScript**: contesto con `javaScriptEnabled: false`, dalla 404 il clic su "Torna alla home" apre il desktop prerenderizzato.
+- **Screenshot della 404**: non devono cambiare. Il `Link` di React Aria rende lo stesso `<a>` con le stesse classi, più attributi `data-*`. Se un pixel cambia, mi fermo e lo motivo prima di aggiornare.
+
+#### B.2.5 ADR
+
+**ADR-0012 "Stile di React Aria e CSP del sito"**: inventario A/B/C, alternative, scelta, test di deriva, guardia del tipo C e opzioni rimandate alla F2A. Aggiorno anche PERFORMANCE_SEO.md (sezione CSP) e ARCHITECTURE.md.
+
+---
+
+### B.3 Passi e commit
+
+Ogni commit passa `lint`, `typecheck` e `test`. Gli screenshot si fanno solo nel container.
+
+| #    | Passo                                                                                                                                                                                                                                                                                                                             | Commit                                                                                                    |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 0    | Piano approvato al posto dell'appendice B di `phase-01-plan.md`; PLAN.md 1B aggiornata (voce F2A per il tipo C)                                                                                                                                                                                                                   | `docs: aggiorna il piano della fase 1B`                                                                   |
+| 1    | Dipendenze (§5); `optimizeLocales.vite({ locales: ["it-IT", "en-US"] })` in `vite.config.ts` e nel `viteFinal` di Storybook; regola Oxlint che vieta l'import dalla radice di `react-aria-components`; `I18nProvider` nel decoratore di Storybook, legato al comando Lingua                                                       | `chore: aggiunge react-aria-components e optimize-locales`                                                |
+| 2    | Sentinella e regola in `global.css`, id nel link, test di deriva e prerender (§2.4)                                                                                                                                                                                                                                               | `fix: evita lo stile inline di React Aria con la CSP del sito`                                            |
+| 3    | 404 con `Link` di React Aria e `RouterProvider` locale (`useNavigate`, `useHref`) solo in `NotFound`; e2e CSP, positivo e negativo, e senza JS; controllo che `JS iniziale della home` resti 112,25 kB                                                                                                                            | `feat: usa il link di React Aria nella pagina 404` · `test: verifica la CSP con un componente React Aria` |
+| 4    | ADR-0012, PERFORMANCE_SEO, ARCHITECTURE                                                                                                                                                                                                                                                                                           | `docs: aggiunge l'ADR-0012 su React Aria e la CSP`                                                        |
+| 5    | Campo minato: copia byte per byte in `src/assets/icons/`, `npm run icons` (`iconData.ts`), ASSETS.md (nuovi SHA-256, nota "sostituita il 14/10/2026: erba e fiori richiamavano un gioco Microsoft", vecchi hash tra i dismessi); PLAN.md spuntato. La cartella `gdm95-updates/` si committa come riferimento (decisione 4 in B.6) | `docs: aggiunge gli aggiornamenti del pacchetto GDM 95` · `feat: sostituisce le icone di Campo minato`    |
+| 6    | Screenshot delle story di Icon nel container, con la skill `update-visual-snapshots` dopo verifica visiva                                                                                                                                                                                                                         | `test: aggiorna gli screenshot delle icone di Campo minato`                                               |
+| 7    | size-limit dei componenti (§3.1) con Icon e Glyph come base                                                                                                                                                                                                                                                                       | `chore: misura il peso dei componenti con size-limit`                                                     |
+| 8–25 | I 18 componenti (§4), uno per commit, con skill `win95-component`, `i18n-strings` e `write-tests`. Nel corpo del commit: `Peso: +x,x kB gzip (totale y,y kB; home invariata)`                                                                                                                                                     | `feat: aggiunge il componente <Nome>`                                                                     |
+| 26   | DESIGN_SYSTEM §6 aggiornato man mano; QA_CHECKLIST con la nuova sezione "Componenti in Storybook su Android" (§3.2)                                                                                                                                                                                                               | `docs: aggiunge la QA dei componenti su Android`                                                          |
+| 27   | Chiusura con `close-phase` (§3.3)                                                                                                                                                                                                                                                                                                 | `docs: chiude la fase 1B`                                                                                 |
+
+#### B.3.1 Peso dei componenti
+
+- `.size-limit.js`: nuove voci con `@size-limit/esbuild`, `ignore: ["react", "react-dom", "react/jsx-runtime"]`, `modifyEsbuildConfig` che aggiunge `optimizeLocales.esbuild({ locales: ["it-IT", "en-US"] })` e minificazione come Vite. Import per sottopercorso già imposto da Oxlint.
+- Voci (JS gzip; il CSS dei moduli in una voce a parte):
+  - **Totale componenti**: `import { … tutti … } from "src/components"`;
+  - **Gruppo F2A, guscio del desktop**: `{ Window, Taskbar, TaskbarButton, StartButton, DesktopIcons }`, cioè il peso che entrerà nella home;
+  - **singolo componente**, uno per voce, per l'analisi.
+- Dopo ogni componente: riga nella tabella "Peso dei componenti" di PERFORMANCE_SEO.md (componente, peso isolato, incremento sul totale, totale, gruppo F2A) e nel messaggio di commit.
+- **Arresto**: se un componente aggiunge più di 10 kB gzip al totale, il lavoro si ferma e il proprietario riceve il treemap (esbuild metafile) con cosa pesa. Candidati probabili: il primo componente con overlay (Tooltip: posizionamento), Select (ListBox, collezioni, Popover), MenuBar (Menu e sottomenu), DesktopIcon (GridList).
+- Budget finale: il totale e il gruppo F2A misurati a fine fase, arrotondati per eccesso al kB; da lì non si alzano senza ADR.
+- **Home**: `JS iniziale della home` deve restare 112,25 kB a ogni commit (i componenti non sono importati dalle route della home in 1B).
+
+#### B.3.2 QA_CHECKLIST, nuova sezione (Android con `npm run build && npm run preview -- --host`, `/storybook/`)
+
+- [ ] Button: tocco, stato premuto visibile, nessun doppio tocco per lo zoom
+- [ ] MenuBar e StartButton: il tocco apre il menu, la voce si sceglie, un tocco fuori chiude
+- [ ] Select: la lista si apre sopra la tastiera virtuale e si sceglie al tocco
+- [ ] Tabs: cambio scheda al tocco, a capo a 320 px
+- [ ] Window: pulsanti della barra del titolo da 44 px, nessuno scroll orizzontale
+- [ ] DesktopIcon: un tocco apre (`onAction` nel pannello Actions)
+- [ ] AlertDialog: si apre, il focus va sul pulsante primario, Chiudi funziona
+- [ ] Checkbox, Radio, TextField: l'area di tocco comprende l'etichetta; nessuno zoom al focus (font ≥ 16 px)
+- [ ] Ogni punto anche con tema alto contrasto e input touch dalla toolbar
+
+#### B.3.3 Chiusura (`close-phase`)
+
+`lint`, `typecheck`, `test:coverage` ≥ 80%, `build`, `test:prerender`, `size`, `test:e2e` nel container, `lhci:mobile` e `lhci:desktop` a 100 su `/` e `/en/`; i quattro agenti (code-reviewer, security-auditor, a11y-auditor, content-reviewer); QA con Claude in Chrome su `/storybook/` (tutte le story, temi, input, tastiera, console e rete) e sulla 404; retrospettiva `phase-01b-retro.md`, CHANGELOG, PLAN; CI del branch verde. Merge e tag li esegue il proprietario.
+
+---
+
+### B.4 Componenti
+
+**Comune a tutti.** CSS Module ricavato da quello del pacchetto, ripulito con soli token (Stylelint), stati con `[data-*]`; touch ≥ `--touch-target-min`; testi e nomi accessibili in `ui.<componente>.*` di it/en. Test: ruolo e nome, mouse e tastiera con user-event, attributi `data-*` per stato, `expectNoAxeViolations`, inventario degli attributi `style` (§2.3). Story `Default` e `AllStates` (tag `visual`), con `play` dove serve; screenshot e axe in classico/alto contrasto × mouse/touch (test esistenti in `tests/storybook/`, non si toccano). Il movimento usa solo `transform`/`opacity` con durate dai token, quindi `data-motion="reduce"` e `prefers-reduced-motion` lo azzerano.
+
+| #   | Componente                | React Aria                                                                  | Stati                                                                                 | Test specifici                                                                                                                                                          | Story oltre Default/AllStates                                       |
+| --- | ------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| 1   | Button (anche solo icona) | `Button`                                                                    | normale, hover, premuto, focus, disabilitato, predefinito (anche premuto), solo icona | `onPress` con clic, Invio e Spazio; disabilitato non chiama; icona `aria-hidden`; solo icona richiede `aria-label` (test di tipo); `data-react-aria-pressable` presente | SoloIcona                                                           |
+| 2   | TextField                 | `TextField`, `Label`, `Input`, `Text`, `FieldError`                         | normale, focus, non valido, disabilitato, sola lettura                                | `aria-describedby` collega descrizione ed errore; `type="email"` e `isRequired`; font ≥ 16 px in touch (e2e su Storybook); descrizione ed errore in Plex                | EsempioForm (nome, email, messaggio; nessun invio, nessun LinkedIn) |
+| 3   | TextArea                  | `TextField`, `TextArea`                                                     | come TextField, più la scrollbar                                                      | `rows` (predefinito 5); resize solo verticale; classe di scorrimento con `composes`                                                                                     | —                                                                   |
+| 4   | Checkbox                  | `Checkbox`                                                                  | selezionata, indeterminata, hover, premuta, focus, disabilitata, non valida           | clic sull'etichetta, Spazio, `aria-checked="mixed"`; inventario: `style` di VisuallyHidden atteso                                                                       | —                                                                   |
+| 5   | Radio                     | `RadioGroup`, `Radio`                                                       | come Checkbox; verticale e orizzontale                                                | le frecce spostano la selezione; Tab entra ed esce dal gruppo                                                                                                           | Orizzontale                                                         |
+| 6   | GroupBox                  | `fieldset`/`legend` nativi                                                  | normale, alto contrasto                                                               | ruolo `group` con nome dalla legenda                                                                                                                                    | —                                                                   |
+| 7   | ProgressBar               | `ProgressBar`, `Label`                                                      | determinata, indeterminata, movimento ridotto                                         | `aria-valuenow`, `valueLabel` con unità; con `data-motion="reduce"` nessuna animazione e testo "In corso…"                                                              | Indeterminata                                                       |
+| 8   | StatusBar                 | contenitore `role="group"`                                                  | campi, `grow`, testo troncato                                                         | nome del gruppo; nessun `aria-live` implicito                                                                                                                           | —                                                                   |
+| 9   | ScrollArea                | `div role="region" tabIndex=0`, frecce con `Button`                         | desktop con frecce, touch, focus                                                      | regione con nome; le frecce della tastiera scorrono (e2e su Storybook); `g95-scroll` sostituita da `composes`                                                           | —                                                                   |
+| 10  | Tooltip                   | `TooltipTrigger`, `Tooltip`                                                 | hover dopo 600 ms, focus, Esc                                                         | compare al focus, Esc chiude; nessuna informazione disponibile solo nel tooltip (documentato)                                                                           | Aperto (`defaultOpen`) per lo screenshot                            |
+| 11  | Tabs                      | `Tabs`, `TabList`, `Tab`, `TabPanel`                                        | normale, hover, selezionata, focus, disabilitata, a capo a 320 px                     | le frecce cambiano scheda, `aria-selected`, pannello collegato                                                                                                          | Stretta (320 px)                                                    |
+| 12  | Select                    | `Select`, `Button`, `SelectValue`, `Popover`, `ListBox`, `ListBoxItem`      | campo e opzioni in tutti gli stati                                                    | apertura con Invio e frecce, scelta, Esc; lista larga `--trigger-width`; HiddenSelect nell'inventario                                                                   | Aperta                                                              |
+| 13  | MenuBar                   | `Toolbar`, `MenuTrigger`, `Menu`, `MenuItem`, `Separator`, `SubmenuTrigger` | pulsante e voce in tutti gli stati, spunta, sottomenu                                 | frecce tra i menu; Invio o freccia giù apre; Esc chiude e restituisce il focus; `selectionMode`; selettori `svg` e `[role=menuitem]` sostituiti da classi               | Aperto, ConSottomenu                                                |
+| 14  | Window                    | `section` + `aria-labelledby`; `Button` per i comandi                       | attiva, inattiva, ingrandita, documento (Plex), solo Chiudi                           | nome dalla barra del titolo; nomi i18n dei pulsanti; callback; pulsanti 24×24 con mouse e 44×44 in touch (e2e su Storybook). Niente trascinamento (F2A)                 | Documento, SoloChiudi, ConMenuEStatusBar                            |
+| 15  | TaskbarButton + Taskbar   | `ToggleButton`; `Toolbar`                                                   | normale, hover, premuto, attivo retinato, focus, troncato                             | `aria-pressed`; frecce nella Toolbar; safe-area; `Taskbar` dentro `TaskbarButton/`                                                                                      | Taskbar                                                             |
+| 16  | StartButton               | `MenuTrigger`, `Button`, `Popover`, `Menu`                                  | chiuso, hover, aperto, focus                                                          | `aria-expanded`; fascia `aria-hidden` con l'handle da `site.ts`; monogramma GDM                                                                                         | Aperto                                                              |
+| 17  | DesktopIcon               | `GridList`, `GridListItem`                                                  | normale, hover, selezionata, focus, due righe                                         | frecce nella griglia; Invio e doppio clic chiamano `onAction`; in touch un tocco apre (e2e su Storybook); export `DesktopIcons` dalla cartella `DesktopIcon/`           | DueRighe                                                            |
+| 18  | AlertDialog               | `ModalOverlay`, `Modal`, `Dialog role="alertdialog"`                        | avviso, errore, info; uno o due pulsanti                                              | focus sul primario, intrappolato e restituito; Esc = secondario; clic fuori non chiude; icona con nome accessibile; messaggio in Plex                                   | Errore, Info, UnPulsante                                            |
+
+**Complessità**: se MenuBar, Window o DesktopIcon si rivelano più complessi del previsto (sottomenu e Toolbar insieme, ruolo della finestra, GridList in touch con un tocco che apre), il lavoro si ferma e si segnala al proprietario prima di semplificare.
+
+---
+
+### B.5 Dipendenze nuove
+
+| Pacchetto                             | Versione                                                     | Tipo    |
+| ------------------------------------- | ------------------------------------------------------------ | ------- |
+| `react-aria-components`               | ^1.22.1 (porta `react-aria` 3.53.1 e `react-stately` 3.51.0) | runtime |
+| `@react-aria/optimize-locales-plugin` | ^2.1.0                                                       | dev     |
+| `@size-limit/esbuild`                 | ^14.2.0                                                      | dev     |
+
+Dopo l'installazione: `npm audit --omit=dev` a 0 e licenze (Apache-2.0 per React Aria) annotate nella review di sicurezza.
+
+---
+
+### B.6 Rischi e decisioni
+
+**Rischi**
+
+1. **Sentinella su un id interno**: se React Aria lo cambia, l'iniezione riprende. Coperto dal test di deriva (unit) e dall'e2e (violazione in console).
+2. **Tipo C in F2A**: sulla home, checkbox, select, dialog e posizioni delle finestre produrranno attributi `style` bloccati. La guardia prerender lo fa emergere subito; la soluzione va decisa con un ADR in F2A.
+3. **Peso**: un componente con overlay o collezioni potrebbe superare +10 kB. È previsto l'arresto con analisi.
+4. **Screenshot**: 18 componenti × 4 combinazioni aumentano molto le baseline e il tempo della CI (stima +2–4 minuti).
+5. **Testi in Pixel Operator a 320 px**: troncamenti nella Taskbar e nelle Tabs da verificare a ogni componente.
+6. **Claude in Chrome**: in 1A gli screenshot andavano in timeout; se si ripete, la QA visiva usa Playwright e le baseline del container, come in 1A.
+
+**Decisioni del proprietario (14/10/2026)**
+
+1. Sentinella con la regola in `global.css`, CSP invariata.
+2. **Disabilitato in alto contrasto**: bordo **punteggiato (`dotted`) di 1 px**, per non confonderlo con il focus a doppio anello (`dashed` di 2 px). Nuovi token se servono (D6). Una story `AllStates` affianca un controllo disabilitato e uno con focus: negli screenshot in alto contrasto i due devono essere distinguibili. Documentato in DESIGN_SYSTEM.md §9. Si applica dal Button (passo 8) a tutti i controlli che hanno lo stato disabilitato.
+3. **Tooltip** solo al focus e all'hover; nessun contenuto disponibile solo nel tooltip. Regola scritta nel README del componente (`src/components/Tooltip/` o DESIGN_SYSTEM §6) e nella skill `win95-component` (commit del Tooltip).
+4. `docs/design/gdm95-updates/` si committa come riferimento accanto al pacchetto (passo 5).
+
+### B.7 Scostamenti dall'implementazione (1B)
+
+| Piano                                           | Implementazione                                                                                                                                                                          | Motivo                                                                                                                                       |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Testi in `ui.<componente>.*` di `it.ts`/`en.ts` | Dizionario separato `src/i18n/ui.ts`, letto da `useUiStrings()` con la lingua dell'`I18nProvider` di React Aria                                                                          | Dentro `it.ts`/`en.ts` i testi entravano nel JS iniziale della home (+0,2 kB senza usarli); i componenti non conoscono la route (I18N.md §9) |
+| Story `Default` e `AllStates`                   | `Default` e `Stati`, più story per stato con `play` (Hover, Premuto, Focus…); `SoloChiudi`, `DueRighe`, `Orizzontale`, `Info` e `Taskbar` confluiti in `Stati`, `Default` e `UnPulsante` | Hover, pressione e focus non si forzano con le prop di React Aria (TESTING.md §6)                                                            |
+| ScrollArea con frecce come `Button`             | Barra nativa con lo stile GDM 95 (`Scrollbar.module.css`)                                                                                                                                | Le frecce `.sb` del pacchetto sono solo un'illustrazione                                                                                     |
+| Home a 112,25 kB                                | Base reale 112,27 kB; con il chunk `framework` 110,81 kB                                                                                                                                 | La retro 1A riportava un valore precedente; il chunk evita la divisione del codice condiviso con la 404 (ADR-0012)                           |
+| `react-aria-components` importato dalla radice  | Import per sottopercorso imposto da Oxlint; unica eccezione `RouterProvider`                                                                                                             | Misura realistica del peso                                                                                                                   |
+| Window senza opzioni per i dialog               | `titleId` e `isLandmark` per l'uso dentro `AlertDialog`                                                                                                                                  | Il titolo dà il nome al dialog senza una regione annidata                                                                                    |
+| `StartButton` con la fascia "gianpaolodelmoro"  | `siteHandle()` da `site.ts`, ricavato dal dominio                                                                                                                                        | CLAUDE.md: dominio e handle solo in `site.ts`                                                                                                |
+| Budget dei componenti a fine fase               | JS ≤ 99 kB, CSS ≤ 5 kB, guscio F2A ≤ 75 kB                                                                                                                                               | Basi una tantum di React Aria accettate: base (13,0 kB), collezioni (17,5 kB), overlay (≈ 8,9 kB)                                            |

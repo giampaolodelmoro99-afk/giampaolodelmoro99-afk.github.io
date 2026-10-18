@@ -17,8 +17,8 @@ npm run build
 npm run test:prerender
 npm run size
 npm run test:e2e          # container, suite completa con screenshot
-npm run lhci:mobile
-npm run lhci:desktop
+npm run lhci:mobile:strict   # Performance 100, mediana di 5 (ADR-0013)
+npm run lhci:desktop:strict
 ```
 
 Se un controllo fallisce: correggi la causa. **Mai** skip, only, test rimossi, soglie abbassate o screenshot aggiornati per far passare (CONTRIBUTING.md). Un'eccezione inevitabile richiede un ADR (skill `new-adr`) e l'approvazione di Gianpaolo.

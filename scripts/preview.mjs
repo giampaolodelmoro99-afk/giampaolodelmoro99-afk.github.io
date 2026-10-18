@@ -4,10 +4,13 @@ import { createServer } from "node:http";
 import { networkInterfaces } from "node:os";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createGzip } from "node:zlib";
+import { shouldGzip } from "./lib/preview.mjs";
 
 // Server statico che imita GitHub Pages: file esistente → 200,
 // cartella senza slash finale → 301, cartella con index.html → 200,
-// tutto il resto → 404.html con status 404.
+// tutto il resto → 404.html con status 404. Come Pages, comprime con gzip i
+// tipi testuali quando il client lo accetta (Lighthouse misura la produzione).
 // Ascolta solo in loopback (127.0.0.1 e, se disponibile, ::1, perché "localhost"
 // può risolvere su entrambi); con `npm run preview -- --host` ascolta su tutte
 // le interfacce, per provare il sito da un telefono sulla stessa rete Wi-Fi.
@@ -53,16 +56,23 @@ async function isDirectory(path) {
 }
 
 /**
+ * @param {import("node:http").IncomingMessage} req
  * @param {import("node:http").ServerResponse} res
  * @param {string} file
  * @param {number} status
  */
-function send(res, file, status) {
+function send(req, res, file, status) {
+  const contentType = types[extname(file)] ?? "application/octet-stream";
+  const gzip = shouldGzip(contentType, req.headers["accept-encoding"]);
   res.writeHead(status, {
-    "Content-Type": types[extname(file)] ?? "application/octet-stream",
+    "Content-Type": contentType,
     "Cache-Control": "no-cache",
+    Vary: "Accept-Encoding",
+    ...(gzip ? { "Content-Encoding": "gzip" } : {}),
   });
-  createReadStream(file).pipe(res);
+  const stream = createReadStream(file);
+  if (gzip) stream.pipe(createGzip()).pipe(res);
+  else stream.pipe(res);
 }
 
 /** @type {import("node:http").RequestListener} */
@@ -83,7 +93,7 @@ const handler = async (req, res) => {
   }
 
   if (await isFile(target)) {
-    send(res, target, 200);
+    send(req, res, target, 200);
     return;
   }
 
@@ -94,17 +104,17 @@ const handler = async (req, res) => {
     }
     const index = join(target, "index.html");
     if (await isFile(index)) {
-      send(res, index, 200);
+      send(req, res, index, 200);
       return;
     }
   }
 
   if (await isFile(`${target}.html`)) {
-    send(res, `${target}.html`, 200);
+    send(req, res, `${target}.html`, 200);
     return;
   }
 
-  send(res, join(root, "404.html"), 404);
+  send(req, res, join(root, "404.html"), 404);
 };
 
 createServer(handler).listen(port, host, () => {

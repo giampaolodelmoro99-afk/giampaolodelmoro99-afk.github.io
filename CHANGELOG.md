@@ -6,6 +6,28 @@ Ogni fase si chiude con un tag `phase-NN` (che non fa partire il deploy). Le rel
 
 ## [Unreleased]
 
+## [phase-01b] - Fase 1B: componenti del design system GDM 95
+
+### Aggiunto
+
+- 18 componenti su React Aria Components in `src/components/`: Button, TextField, TextArea, Checkbox, RadioGroup e Radio, GroupBox, ProgressBar, StatusBar, ScrollArea, Tooltip, Tabs, Select, MenuBar (con Menu, MenuItem, Submenu), Window, Taskbar e TaskbarButton, StartButton, DesktopIcons, AlertDialog. Ognuno ha test, story, screenshot nelle quattro combinazioni tema × input e axe.
+- ADR-0012: stile di React Aria e CSP del sito. Id sentinella sul link di `global.css`, CSP invariata, test di deriva, prerender ed e2e (anche in negativo).
+- 404 con il `Link` di React Aria e `AriaRouterProvider`; test senza JavaScript.
+- Misura del peso dei componenti con `@size-limit/esbuild` e budget: JS ≤ 99 kB, CSS ≤ 5 kB, guscio del desktop F2A ≤ 75 kB.
+- Test: inventario degli attributi `style` nel prerender, spec di comportamento dei componenti nel browser, aiuti per gli stati nelle `play` di Storybook.
+- Testi dei componenti in `src/i18n/ui.ts` con `useUiStrings()`; `siteHandle()` in `site.ts`.
+- QA_CHECKLIST §7.1: componenti in Storybook su Android.
+
+### Modificato
+
+- Icone di Campo minato ridisegnate (il primo disegno richiamava un gioco Microsoft).
+- Chunk `framework` con React, React DOM e React Router: JS iniziale della home da 112,27 a 110,81 kB.
+- Disabilitato in alto contrasto con bordo punteggiato di 1 px, distinto dal focus.
+- La regola globale `:focus-visible` esclude gli elementi React Aria, che usano `[data-focus-visible]`.
+- Controllo dei target touch adattato a `VisuallyHidden`, `HiddenSelect` e `display: contents`; misurate anche le righe delle griglie e le voci di menu con spunta.
+- Storybook nei test con le barre di scorrimento visibili; `openStory` attende la fine della `play`.
+- Import da `react-aria-components` solo per sottopercorso (Oxlint).
+
 ## [phase-01a] - Fase 1A: fondamenta del design system GDM 95
 
 ### Aggiunto

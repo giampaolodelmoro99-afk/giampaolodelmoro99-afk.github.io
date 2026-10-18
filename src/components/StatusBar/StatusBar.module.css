@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  gap: var(--space-bevel);
+  min-inline-size: 0;
+  padding-block-start: var(--space-bevel);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+.field {
+  display: block;
+  min-block-size: var(--statusbar-field-height);
+  min-inline-size: 0;
+  padding: var(--space-0) var(--space-2);
+  overflow: hidden;
+  box-shadow: var(--bevel-status);
+  line-height: var(--statusbar-field-height);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.field[data-grow] {
+  flex: 1;
+}
+
+@media (forced-colors: active) {
+  .field {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+}

@@ -90,6 +90,21 @@
         "property": "location",
         "message": "Naviga solo con React Router (useNavigate, Link)."
       }
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react-aria-components",
+            "message": "Importa per sottopercorso (es. react-aria-components/Button): docs/PERFORMANCE_SEO.md."
+          },
+          {
+            "name": "react-aria",
+            "message": "Importa per sottopercorso (es. react-aria/VisuallyHidden): docs/PERFORMANCE_SEO.md."
+          }
+        ]
+      }
     ]
   },
   "overrides": [
@@ -113,6 +128,25 @@
           "error",
           {
             "allow": ["**/*.css"]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/components/AriaRouterProvider/AriaRouterProvider.tsx"],
+      "rules": {
+        "no-restricted-imports": "off",
+        "react/hooks": "off"
+      }
+    },
+    {
+      "files": ["src/components/ScrollArea/ScrollArea.tsx"],
+      "rules": {
+        "jsx-a11y/no-noninteractive-tabindex": [
+          "error",
+          {
+            "roles": ["tabpanel"],
+            "tags": ["section"]
           }
         ]
       }

@@ -1,0 +1,42 @@
+.root {
+  composes: root from "../Button/Button.module.css";
+  flex: none;
+  gap: var(--space-2);
+  min-inline-size: var(--target-min);
+  padding-inline: var(--space-1) var(--space-2);
+  font-weight: var(--font-weight-bold);
+}
+
+.popover {
+  padding: var(--space-0);
+}
+
+.startMenu {
+  display: flex;
+  min-inline-size: var(--start-menu-min-width);
+  padding: var(--space-1);
+}
+
+.side {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  inline-size: var(--space-6);
+  padding-block: var(--space-2);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+}
+
+.sideText {
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-none);
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  rotate: var(--rotate-half);
+}
+
+.menu {
+  flex: 1;
+}

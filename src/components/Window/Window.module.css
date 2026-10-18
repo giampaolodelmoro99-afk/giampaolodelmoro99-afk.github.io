@@ -1,0 +1,144 @@
+.root {
+  --_padding: calc(var(--bevel-width) + var(--border-width-hairline));
+  --_min-width: min(var(--window-min-width), 100%);
+
+  display: flex;
+  flex-direction: column;
+  min-inline-size: var(--_min-width);
+  padding: var(--_padding);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-window);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+.titlebar {
+  --_border: var(--no-shadow);
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: var(--titlebar-height);
+  padding: var(--space-bevel) var(--space-bevel) var(--space-bevel) var(--space-1);
+  background: var(--color-titlebar-active);
+  box-shadow: var(--_border);
+  color: var(--color-titlebar-active-text);
+}
+
+.root[data-active="false"] .titlebar {
+  --_border: inset 0 0 0 var(--border-width-hairline) var(--color-titlebar-inactive-border);
+
+  background: var(--color-titlebar-inactive);
+  color: var(--color-titlebar-inactive-text);
+}
+
+.titleIcon {
+  margin-inline-end: var(--space-1);
+}
+
+.title {
+  flex: 1;
+  min-inline-size: 0;
+  margin: var(--space-0);
+  overflow: hidden;
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.root[data-active="false"] .title {
+  font-weight: var(--font-weight-regular);
+}
+
+.controls {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.control {
+  composes: root from "../Button/Button.module.css";
+  min-inline-size: var(--space-0);
+  inline-size: var(--titlebar-button-width);
+  block-size: var(--titlebar-button-height);
+  min-block-size: var(--space-0);
+  padding: var(--space-0);
+}
+
+.close {
+  margin-inline-start: var(--space-bevel);
+}
+
+.body {
+  flex: 1;
+  min-block-size: 0;
+  padding: var(--space-3);
+}
+
+.document {
+  margin: var(--space-1) var(--space-0);
+  padding: var(--space-5);
+  overflow: auto;
+  background: var(--color-document);
+  box-shadow: var(--bevel-field);
+  color: var(--color-text);
+  font-family: var(--font-family-prose);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+}
+
+.document > * {
+  max-inline-size: var(--measure-document);
+}
+
+.document h3 {
+  margin: var(--space-0) var(--space-0) var(--space-4);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.document h4 {
+  margin: var(--space-6) var(--space-0) var(--space-2);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-tight);
+}
+
+.document h5 {
+  margin: var(--space-5) var(--space-0) var(--space-2);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-tight);
+}
+
+.document p {
+  margin: var(--space-0) var(--space-0) var(--space-4);
+}
+
+.document small {
+  font-size: var(--font-size-sm);
+}
+
+.document a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: var(--underline-offset);
+}
+
+.document a:visited {
+  color: var(--color-link-visited);
+}
+
+@media (forced-colors: active) {
+  .root {
+    border: var(--forced-border-width) solid ButtonText;
+  }
+
+  .titlebar {
+    forced-color-adjust: none;
+  }
+}

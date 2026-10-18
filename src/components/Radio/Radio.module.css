@@ -1,0 +1,118 @@
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+
+.groupLabel {
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+.group[data-disabled] > .groupLabel {
+  color: var(--color-text-disabled);
+  text-shadow: var(--text-etch);
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+}
+
+.group[data-orientation="horizontal"] .items {
+  flex-flow: row wrap;
+  column-gap: var(--space-4);
+}
+
+.root {
+  --_box-bg: var(--color-field);
+  --_mark: var(--color-text);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--choice-row);
+  padding-inline-end: var(--space-1);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mark {
+  inline-size: var(--choice-box);
+  block-size: var(--choice-box);
+  flex: none;
+}
+
+.root[data-pressed] {
+  --_box-bg: var(--color-surface);
+}
+
+.root[data-hovered] .label {
+  text-decoration: underline;
+  text-decoration-thickness: var(--underline-thickness);
+  text-underline-offset: var(--underline-offset);
+}
+
+.root[data-focus-visible] .label {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-label);
+  box-shadow: var(--focus-halo-label);
+}
+
+.root[data-disabled] {
+  --_box-bg: var(--color-surface);
+  --_mark: var(--color-text-disabled);
+
+  color: var(--color-text-disabled);
+  text-shadow: var(--text-etch);
+}
+
+.root[data-disabled] .mark {
+  outline: var(--disabled-marker);
+}
+
+.shadow {
+  fill: var(--color-shadow);
+}
+
+.shadowDark {
+  fill: var(--color-shadow-dark);
+}
+
+.highlight {
+  fill: var(--color-highlight);
+}
+
+.surfaceLight {
+  fill: var(--color-surface-light);
+}
+
+.field {
+  fill: var(--_box-bg);
+}
+
+.dot {
+  fill: var(--_box-bg);
+}
+
+.root[data-selected] .dot {
+  fill: var(--_mark);
+}
+
+.root[data-invalid] .shadowDark {
+  fill: var(--color-error);
+}
+
+@media (forced-colors: active) {
+  .mark {
+    forced-color-adjust: none;
+  }
+}

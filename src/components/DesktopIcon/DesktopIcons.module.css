@@ -1,0 +1,86 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--desktop-icon-cell));
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  color: var(--color-desktop-text);
+  outline: none;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  inline-size: var(--desktop-icon-cell);
+  min-block-size: var(--touch-target-min);
+  padding: var(--space-1) var(--space-0);
+  color: var(--color-desktop-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  text-align: center;
+  cursor: default;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.image {
+  display: grid;
+  place-items: center;
+  inline-size: var(--desktop-icon-size);
+  block-size: var(--desktop-icon-size);
+}
+
+.label {
+  display: -webkit-box;
+  max-inline-size: 100%;
+  padding: var(--space-0) var(--space-bevel);
+  overflow: hidden;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--desktop-icon-label-lines);
+}
+
+.item[data-hovered] .label {
+  text-decoration: underline;
+  text-decoration-thickness: var(--underline-thickness);
+  text-underline-offset: var(--underline-offset);
+}
+
+.item[data-selected] .label {
+  background: var(--color-selection);
+  color: var(--color-selection-text);
+  -webkit-line-clamp: none;
+}
+
+.item[data-selected] .image {
+  background: var(--dither-selection);
+}
+
+.item[data-selected] .icon {
+  opacity: var(--opacity-dither);
+}
+
+.item[data-focus-visible] .label {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-label);
+  box-shadow: var(--focus-halo-label);
+}
+
+.item[data-disabled] {
+  opacity: var(--opacity-inactive);
+}
+
+.item[data-disabled] .label {
+  outline: var(--disabled-marker);
+  outline-offset: var(--focus-offset-label);
+}
+
+@media (forced-colors: active) {
+  .item[data-selected] .label {
+    forced-color-adjust: none;
+  }
+}

@@ -1,11 +1,12 @@
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { readFile, readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { JSDOM } from "jsdom";
 import { beforeAll, describe, expect, it } from "vitest";
 import { inlineScriptHashes, sha256Source } from "../../scripts/lib/csp.mjs";
 import { bootId } from "../../scripts/lib/hydration.mjs";
 import { githubUrl, siteUrl } from "../../src/config/site";
+import { pressableStyleId } from "../../src/styles/reactAriaPressable";
 import { getDictionary } from "../../src/i18n";
 import { type Locale, locales, routeKeys, routeMap } from "../../src/routes/routeMap";
 
@@ -101,6 +102,7 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
       expect(policy).toContain(hash);
     }
     expect(policy).not.toContain("unsafe-inline");
+    expect(policy).not.toContain("unsafe-eval");
   });
 
   it("rinvia l'idratazione: nessun modulepreload e payload di avvio consentito dalla CSP", async () => {
@@ -137,6 +139,64 @@ describe("404.html", () => {
     expect(document.querySelector("main h1")?.textContent).toBe(
       getDictionary("it").notFound.heading,
     );
+  });
+
+  it("ha link <a href> normali verso le due home, utilizzabili prima dell'idratazione", async () => {
+    const { document } = await load(join(client, "404.html"));
+    const links = [...document.querySelectorAll("main nav a")].map((link) => [
+      link.getAttribute("href"),
+      link.getAttribute("hreflang"),
+      link.textContent,
+    ]);
+    expect(links).toEqual([
+      [routeMap.desktop.it, null, getDictionary("it").notFound.home],
+      [routeMap.desktop.en, "en", getDictionary("en").notFound.home],
+    ]);
+  });
+});
+
+const siteHtmlFiles = existsSync(client)
+  ? readdirSync(client, { recursive: true, withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".html"))
+      .map((entry) => relative(client, join(entry.parentPath, entry.name)))
+      .filter((file) => !file.startsWith("storybook"))
+  : [];
+
+const styledPages = [
+  ...pages.map(([href]) => relative(client, fileFor(href))),
+  "404.html",
+  "__spa-fallback.html",
+];
+
+describe("React Aria e CSP del sito (ADR-0012)", () => {
+  it("trova tutti gli HTML del sito", () => {
+    expect(siteHtmlFiles).toEqual(expect.arrayContaining(styledPages));
+  });
+
+  it.each(siteHtmlFiles)(
+    "%s ha una CSP degli stili senza eccezioni inline né eval",
+    async (file) => {
+      const { document } = await load(join(client, file));
+      const policy = attr(document, 'meta[http-equiv="Content-Security-Policy"]', "content");
+      expect(policy).toContain("style-src 'self';");
+      expect(policy).not.toMatch(/unsafe-inline|unsafe-eval|unsafe-hashes|nonce-/);
+    },
+  );
+
+  it.each(siteHtmlFiles)(
+    "%s non contiene attributi style, che la CSP bloccherebbe",
+    async (file) => {
+      const { document } = await load(join(client, file));
+      expect(document.querySelectorAll("[style]")).toHaveLength(0);
+    },
+  );
+
+  it.each(styledPages)("%s ha il foglio globale con l'id sentinella di usePress", async (file) => {
+    const { document } = await load(join(client, file));
+    const sentinel = document.getElementById(pressableStyleId);
+    expect(sentinel?.tagName).toBe("LINK");
+    expect(sentinel?.getAttribute("rel")).toBe("stylesheet");
+    expect(sentinel?.getAttribute("href")).toMatch(/^\/assets\/global-[\w-]+\.css$/);
   });
 });
 

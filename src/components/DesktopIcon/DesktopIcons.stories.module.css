@@ -1,0 +1,11 @@
+.desktop {
+  min-block-size: calc(var(--desktop-icon-cell) * 2);
+  padding: var(--space-2);
+  background: var(--color-desktop);
+  color: var(--color-desktop-text);
+}
+
+.opened {
+  display: block;
+  margin: var(--space-2);
+}

@@ -13,10 +13,10 @@ Per ogni componente riutilizzabile in `src/components/` (pulsante, campo, checkb
 
 1. **Scegli la base React Aria**: il componente RAC corrispondente (`Button`, `TextField`, `Checkbox`, `Menu`, `ListBox`, `Dialog`…) o una composizione. Mai `div` o `span` cliccabili.
 2. **File** in `src/components/<Nome>/`:
-   - `<Nome>.tsx`: export nominale, props tipizzate, nessun commento, nessuna stringa visibile hardcoded (testi via props o `useT()`).
+   - `<Nome>.tsx`: export nominale, props tipizzate, nessun commento, nessuna stringa visibile hardcoded (testi via props o `useUiStrings()`, che legge la lingua dall'`I18nProvider` di React Aria: I18N.md).
    - `<Nome>.module.css`: solo `var(--token)`. Stati con i selettori `[data-hovered]`, `[data-pressed]`, `[data-focus-visible]`, `[data-selected]`, `[data-disabled]`, `[data-open]`. Se manca un token, aggiungilo prima in `src/styles/tokens.css` e in `docs/DESIGN_SYSTEM.md`.
    - `<Nome>.test.tsx` e `<Nome>.stories.tsx`.
-3. **Responsive mobile-first**: stile base valido a 320 px; target ≥ `var(--touch-target-min)` in modalità touch; nessuna funzione solo hover.
+3. **Responsive mobile-first**: stile base valido a 320 px; target ≥ `var(--touch-target-min)` in modalità touch; nessuna funzione solo hover. Il `Tooltip` compare solo con hover e focus: **nessun contenuto può stare solo nel tooltip**, lo stesso testo va anche nell'etichetta, nel nome accessibile o in chiaro (`src/components/Tooltip/README.md`).
 4. **Movimento**: solo `transform` e `opacity`, durate dai token (azzerate da reduced motion).
 5. **Temi**: verifica classico e alto contrasto (`[data-theme="high-contrast"]`) e `forced-colors`.
 6. **Test** (vedi skill `write-tests`):
