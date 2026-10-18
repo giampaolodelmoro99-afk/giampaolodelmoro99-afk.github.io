@@ -45,8 +45,8 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 - [x] Sostituire le icone di Campo minato (16 e 32 px): il disegno attuale (erba e fiori) richiama "Prato fiorito". Nuova versione da Claude Design, SHA-256 in ASSETS.md, `npm run icons`, screenshot
 - [x] CSP del sito e stile inserito a runtime da React Aria (`react-aria-pressable-style`), prima del primo componente nelle pagine
 - [x] Pagina 404 con il `Link` di React Aria e test e2e con la CSP reale (ADR-0012)
-- [ ] Peso dei componenti con size-limit: totale, gruppo del desktop per la F2A, incremento per componente
-- [ ] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
+- [x] Peso dei componenti con size-limit: totale, gruppo del desktop per la F2A, incremento per componente
+- [x] 18 componenti su React Aria Components (catalogo in DESIGN_SYSTEM.md §6), con test, story, screenshot e axe
 
 ## 2A. Window manager desktop
 
@@ -57,7 +57,7 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 - [ ] Attributi `style` dei componenti nell'HTML prerenderizzato (ADR-0012, tipo C), comprese le variabili inline di `Glyph` (`--glyph-width`, `--glyph-height`): soluzione con ADR ed e2e con la CSP reale sulla home per Checkbox, Select, Tooltip, AlertDialog e DesktopIcon
 - [ ] `I18nProvider` di React Aria nel root, con `intlLocales` della lingua della route: i testi interni dei componenti (`useUiStrings`) e le traduzioni di React Aria seguono quella lingua; senza, React Aria usa la lingua del browser
 - [ ] **Caricamento separato del codice del desktop dopo il primo disegno: requisito della F2A** (decisione del 14/10/2026). Stima: home 110,8 kB + base React Aria 13,0 + base delle collezioni 17,5 + base degli overlay ≈ 16 = **circa 157 kB contro un budget di 115** (PERFORMANCE_SEO.md, "Peso dei componenti"). Misura di fine 1B: il guscio del desktop (Window, Taskbar, TaskbarButton, StartButton, DesktopIcons) pesa **75,0 kB** gzip, quindi la home con il guscio nel JS iniziale arriverebbe a circa 186 kB. Il piano della F2A deve dire come il codice del desktop (finestre, taskbar, menu Start, icone) arriva in un chunk separato dopo il primo disegno, senza togliere contenuto dall'HTML prerenderizzato, prima di scrivere codice. Da decidere anche l'indice `src/components/index.ts`: oggi aggiunge circa 0,6 kB a chi importa anche solo Icon (`sideEffects` o import dalle cartelle)
-- [ ] Etichette del desktop con il carattere leggibile (alto contrasto, `data-font="readable"`): una parola più larga della cella va a capo in sillaba ("Compe-tenze"); verificare i testi definitivi delle icone a 320 px
+- [ ] Etichette del desktop con il carattere leggibile (alto contrasto, `data-font="readable"`): una parola più larga della cella va a capo con la sillabazione ("Compe-tenze"); verificare i testi definitivi delle icone a 320 px
 
 ## 2B. Routing, persistenza e mobile
 

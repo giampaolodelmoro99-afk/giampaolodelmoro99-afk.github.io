@@ -1,6 +1,6 @@
 # Design system GDM 95
 
-Stato: **Fase 1A** (token, temi, font, icone, Storybook). I componenti arrivano in Fase 1B.
+Stato: **Fase 1B** (token, temi, font, icone, Storybook e i 18 componenti).
 
 Il riferimento approvato è il pacchetto di consegna **GDM 95** (Claude Design, 13/10/2026) in [`docs/design/gdm95/`](design/gdm95/): token, linee guida, CSS di riferimento dei componenti, icone e pagine di esempio. Il pacchetto è documentazione: si conserva così com'è e non viene importato dal codice. Questo documento descrive come il pacchetto è stato portato in `src/` e le regole del repository.
 
@@ -126,7 +126,7 @@ I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither
 
 ## 6. Componenti (Fase 1B)
 
-Catalogo del pacchetto, da implementare in Fase 1B (piano in `docs/phases/phase-01-plan.md`, appendice B): Button (anche con sola icona e `aria-label`), TextField, TextArea, Checkbox, Radio/RadioGroup, Select, Window, MenuBar, Tabs, Tooltip, ScrollArea, ProgressBar, GroupBox, StatusBar, TaskbarButton e Taskbar, StartButton, DesktopIcon, AlertDialog. Icon e Glyph sono già in Fase 1A.
+Catalogo del pacchetto, implementato in Fase 1B (piano in `docs/phases/phase-01-plan.md`, appendice B): Button (anche con sola icona e `aria-label`), TextField, TextArea, Checkbox, Radio/RadioGroup, Select, Window, MenuBar, Tabs, Tooltip, ScrollArea, ProgressBar, GroupBox, StatusBar, TaskbarButton e Taskbar, StartButton, DesktopIcon (cartella `DesktopIcon/`, export `DesktopIcons`), AlertDialog. Icon e Glyph sono già in Fase 1A.
 
 | Componente                                                      | React Aria                                                                                                   | Note                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -158,7 +158,7 @@ Catalogo del pacchetto, da implementare in Fase 1B (piano in `docs/phases/phase-
 - 33 SVG originali in pixel art in `src/assets/icons/` (14 icone a 16 e 32 px, monogramma GDM, tre icone dei dialoghi a 32 px), registrati in `ASSETS.md`.
 - `npm run icons` genera `src/components/Icon/iconData.ts` e `glyphData.ts`. Ogni path ha un ruolo di colore (`pixelNavy`, `pixelYellow`…) che il CSS Module di Icon lega a `--color-pixel-*`. Regola per il nero: **il primo path `#000000` di un SVG è il contorno** (`--color-pixel-outline`, bianco in alto contrasto), gli altri sono riempimenti neri. Un test fallisce se i dati generati non sono allineati agli SVG.
 - `Icon`: `name`, `size` (16 o 32; le icone dei dialoghi solo 32, anche nei tipi), `scale` intera, `label`. Senza `label` è decorativa (`aria-hidden`), con `label` ha `role="img"`.
-- `Glyph`: glifi dei controlli (spunta, trattino, frecce, riduci, ingrandisci, ripristina, chiudi) a `--glyph-pixel` in `currentColor`; i dati del cerchio del radio sono pronti per la 1B.
+- `Glyph`: glifi dei controlli (spunta, trattino, frecce, riduci, ingrandisci, ripristina, chiudi) a `--glyph-pixel` in `currentColor`; i dati del cerchio sono usati dal Radio.
 - Gli SVG con i colori scritti dentro servono per favicon (`public/favicon.svg` = monogramma GDM 32), immagini Open Graph (F5) e documentazione.
 - Scala solo per interi, `shape-rendering="crispEdges"`, mai sfocare o ruotare.
 

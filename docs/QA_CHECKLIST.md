@@ -72,7 +72,7 @@ Su `/storybook/`, prima con tema classico e input automatico, poi di nuovo con *
 - [ ] **MenuBar e StartButton**: il tocco apre il menu, si sceglie una voce (anche nel sottomenu), un tocco fuori chiude.
 - [ ] **Tabs**: si cambia scheda al tocco; le linguette vanno a capo senza scroll.
 - [ ] **Window**: i pulsanti della barra del titolo misurano 44 px e rispondono al tocco.
-- [ ] **DesktopIcon** (story "ConApertura"): un tocco apre l'icona (compare "Aperta: …").
+- [ ] **DesktopIcon** (story "Con Apertura"): un tocco apre l'icona (compare "Aperta: …").
 - [ ] **AlertDialog** (story "Interattivo"): si apre, il focus va sul pulsante primario, i pulsanti e Chiudi funzionano, un tocco sul velo non chiude.
 - [ ] **Tooltip**: al tocco non compare (nessun contenuto vive solo lì); con tastiera Bluetooth compare al focus.
 - [ ] **Alto contrasto**: i controlli disabilitati hanno il bordo punteggiato, distinto dal focus tratteggiato.
