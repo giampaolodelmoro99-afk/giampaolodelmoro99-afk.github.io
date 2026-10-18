@@ -34,7 +34,6 @@ export const Stati: Story = {
       <Checkbox isDisabled defaultSelected>
         Disabilitata e selezionata
       </Checkbox>
-      <Checkbox isInvalid>Non valida</Checkbox>
     </>
   ),
 };

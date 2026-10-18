@@ -4,12 +4,14 @@
   z-index: var(--z-overlay);
   display: grid;
   place-items: center;
-  padding: var(--space-gutter);
+  padding: var(--space-safe-top) var(--space-gutter) var(--space-safe-bottom);
+  overflow-y: auto;
   background: var(--color-overlay);
 }
 
 .modal {
   max-inline-size: 100%;
+  max-block-size: 100%;
   outline: none;
 }
 

@@ -5,7 +5,8 @@
   align-items: center;
   gap: var(--space-1);
   min-block-size: var(--taskbar-height);
-  padding: var(--space-bevel) var(--space-bevel) var(--space-taskbar-bottom);
+  padding: var(--space-bevel) var(--space-taskbar-end) var(--space-taskbar-bottom)
+    var(--space-taskbar-start);
   background: var(--color-surface);
   box-shadow: var(--bevel-taskbar-top);
   color: var(--color-text);

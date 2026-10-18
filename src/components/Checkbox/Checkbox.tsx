@@ -7,7 +7,10 @@ import { cx } from "../cx";
 import { Glyph } from "../Icon";
 import styles from "./Checkbox.module.css";
 
-export type CheckboxProps = Omit<AriaCheckboxProps, "children" | "className" | "style"> & {
+export type CheckboxProps = Omit<
+  AriaCheckboxProps,
+  "children" | "className" | "style" | "isInvalid" | "validate"
+> & {
   children: ReactNode;
   className?: string | undefined;
 };

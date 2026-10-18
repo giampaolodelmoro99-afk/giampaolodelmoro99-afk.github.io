@@ -47,6 +47,7 @@ export function Window({
   const generatedId = useId();
   const titleId = titleIdProp ?? generatedId;
   const Frame = isLandmark ? "section" : "div";
+  const TitleBar = isLandmark ? "header" : "div";
   const strings = useUiStrings().window;
   const actions = {
     minimize: { label: strings.minimize, glyph: "minimize", onPress: onMinimize },
@@ -66,7 +67,7 @@ export function Window({
       data-maximized={isMaximized || undefined}
       data-variant={variant}
     >
-      <header className={styles.titlebar}>
+      <TitleBar className={styles.titlebar}>
         {icon && <Icon name={icon} size={16} className={cx(styles.titleIcon)} />}
         <h2 id={titleId} className={styles.title}>
           {title}
@@ -88,7 +89,7 @@ export function Window({
               );
             })}
         </span>
-      </header>
+      </TitleBar>
       {menu}
       <div className={variant === "document" ? cx(styles.body, styles.document) : styles.body}>
         {children}

@@ -32,6 +32,7 @@ export function AlertDialogFrame({
   className,
 }: AlertDialogFrameProps) {
   const titleId = useId();
+  const messageId = useId();
   const strings = useUiStrings().alertDialog;
   const primary = useRef<HTMLButtonElement>(null);
 
@@ -40,7 +41,12 @@ export function AlertDialogFrame({
   }, []);
 
   return (
-    <Dialog role="alertdialog" aria-labelledby={titleId} className={cx(styles.dialog, className)}>
+    <Dialog
+      role="alertdialog"
+      aria-labelledby={titleId}
+      aria-describedby={messageId}
+      className={cx(styles.dialog, className)}
+    >
       <Window
         title={title}
         titleId={titleId}
@@ -51,7 +57,9 @@ export function AlertDialogFrame({
       >
         <div className={styles.body}>
           <Icon name={kind} size={32} label={strings[kind]} />
-          <div className={styles.message}>{message}</div>
+          <div id={messageId} className={styles.message}>
+            {message}
+          </div>
         </div>
         <div className={styles.actions}>
           <Button ref={primary} variant="default" {...(onPrimary ? { onPress: onPrimary } : {})}>

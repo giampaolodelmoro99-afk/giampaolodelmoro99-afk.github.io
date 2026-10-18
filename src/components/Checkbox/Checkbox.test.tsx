@@ -29,21 +29,12 @@ describe("Checkbox", () => {
     expect(checkbox.closest("label")).toHaveAttribute("data-indeterminate", "true");
   });
 
-  it("disabilitata non cambia e non valida lo dichiara", async () => {
-    render(
-      <>
-        <Checkbox isDisabled>Disabilitata</Checkbox>
-        <Checkbox isInvalid>Accetto</Checkbox>
-      </>,
-    );
+  it("disabilitata non cambia", async () => {
+    render(<Checkbox isDisabled>Disabilitata</Checkbox>);
     const disabled = screen.getByRole("checkbox", { name: "Disabilitata" });
     await userEvent.click(screen.getByText("Disabilitata"));
     expect(disabled).not.toBeChecked();
     expect(disabled).toBeDisabled();
-    expect(screen.getByRole("checkbox", { name: "Accetto" })).toHaveAttribute(
-      "aria-invalid",
-      "true",
-    );
   });
 
   it("mostra la spunta solo da selezionata", () => {

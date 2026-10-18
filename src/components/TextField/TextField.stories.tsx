@@ -30,7 +30,7 @@ export const Stati: Story = {
   tags: ["visual"],
   render: () => (
     <>
-      <TextField label="Nome" description="Come vuoi essere chiamato" defaultValue="Ada" />
+      <TextField label="Nome" description="Come preferisci che ti chiami" defaultValue="Ada" />
       <TextField
         label="Email"
         defaultValue="ada@"

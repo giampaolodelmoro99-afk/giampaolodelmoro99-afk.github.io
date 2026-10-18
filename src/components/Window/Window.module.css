@@ -96,20 +96,20 @@
   max-inline-size: var(--measure-document);
 }
 
-.document h1 {
+.document h3 {
   margin: var(--space-0) var(--space-0) var(--space-4);
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
 }
 
-.document h2 {
+.document h4 {
   margin: var(--space-6) var(--space-0) var(--space-2);
   font-size: var(--font-size-xl);
   line-height: var(--line-height-tight);
 }
 
-.document h3 {
+.document h5 {
   margin: var(--space-5) var(--space-0) var(--space-2);
   font-size: var(--font-size-lg);
   line-height: var(--line-height-tight);

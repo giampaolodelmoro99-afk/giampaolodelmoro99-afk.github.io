@@ -60,12 +60,12 @@ export const Documento: Story = {
   tags: ["visual"],
   render: () => (
     <Window title="Chi sono" icon="about" variant="document">
-      <h1>Gianpaolo Del Moro</h1>
+      <h3>Gianpaolo Del Moro</h3>
       <p>
         Full Stack Developer in formazione. Questo è un esempio di finestra documento: il testo usa
         un carattere leggibile e righe di lunghezza limitata.
       </p>
-      <h2>Percorso</h2>
+      <h4>Percorso</h4>
       <p>
         Un paragrafo con un testo abbastanza lungo da andare a capo più volte nella colonna del
         documento, che resta entro la misura di lettura.

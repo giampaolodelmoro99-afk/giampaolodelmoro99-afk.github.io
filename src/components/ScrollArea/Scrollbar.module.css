@@ -96,6 +96,6 @@
 
 @supports not selector(::-webkit-scrollbar) {
   .scroll {
-    scrollbar-color: var(--color-shadow) var(--color-surface-light);
+    scrollbar-color: var(--color-shadow-dark) var(--color-surface-light);
   }
 }
