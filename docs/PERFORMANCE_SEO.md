@@ -2,15 +2,17 @@
 
 ## 1. Budget
 
-| Metrica               | Budget             | Misura Fase 0                          | Come si verifica |
-| --------------------- | ------------------ | -------------------------------------- | ---------------- |
-| JS iniziale (gzip)    | ≤ 115 kB           | 112 kB                                 | `npm run size`   |
-| CSS iniziale (gzip)   | ≤ 12 kB            | 1,3 kB                                 | `npm run size`   |
-| Font in preload       | ≤ 25 kB (dalla F1) | 24,1 kB (F1A)                          | `npm run size`   |
-| LCP (mobile simulato) | ≤ 1,2 s            | 0,9 s (F0); 1,2 s (F1A, frase in Plex) | Lighthouse CI    |
-| FCP (mobile simulato) | ≤ 1,0 s            | 0,9 s                                  | Lighthouse CI    |
-| TBT (mobile simulato) | ≤ 50 ms            | 0 ms                                   | Lighthouse CI    |
-| CLS                   | ≤ 0,01             | 0                                      | Lighthouse CI    |
+| Metrica                | Budget              | Misura Fase 0                          | Come si verifica |
+| ---------------------- | ------------------- | -------------------------------------- | ---------------- |
+| JS iniziale (gzip)     | ≤ 115 kB            | 112 kB                                 | `npm run size`   |
+| CSS iniziale (gzip)    | ≤ 12 kB             | 1,3 kB                                 | `npm run size`   |
+| Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                          | `npm run size`   |
+| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 98,1 kB (F1B, fuori dalla home)        | `npm run size`   |
+| Guscio del desktop F2A | ≤ 75 kB (dalla F1B) | 74,9 kB (F1B)                          | `npm run size`   |
+| LCP (mobile simulato)  | ≤ 1,2 s             | 0,9 s (F0); 1,2 s (F1A, frase in Plex) | Lighthouse CI    |
+| FCP (mobile simulato)  | ≤ 1,0 s             | 0,9 s                                  | Lighthouse CI    |
+| TBT (mobile simulato)  | ≤ 50 ms             | 0 ms                                   | Lighthouse CI    |
+| CLS                    | ≤ 0,01              | 0                                      | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
 
@@ -56,7 +58,7 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 
 **Base degli overlay di React Aria.** Il Select aggiunge **+16,90 kB** gzip. Misurato il 14/10/2026 aggiungendo i pezzi uno alla volta sopra il totale: base degli overlay (Popover, FocusScope, chiusura con clic esterno, `ariaHideOutside`, blocco dello scroll) ≈ 8,9 kB; navigazione delle liste condivisa con Menu (`ListKeyboardDelegate`, `useMenuTrigger`, `useSelectableList`) ≈ 5,4 kB; **parte specifica del Select** (Select, `useSelect`, `HiddenSelect`, ListBox, stato) **5,78 kB**, sotto la soglia. Accettata come terza base una tantum: MenuBar, StartButton e AlertDialog riusano overlay e navigazione.
 
-**Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. I budget si fissano alla chiusura della fase.
+**Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. Budget fissati alla chiusura della 1B (18/10/2026), misura arrotondata per eccesso al kB: **totale JS ≤ 99 kB**, **totale CSS ≤ 5 kB**, **guscio del desktop F2A ≤ 75 kB**; si alzano solo con un ADR.
 
 **Indice dei componenti.** Importare anche solo Icon da `src/components/index.ts` costa circa 0,6 kB in più che dalla sua cartella: l'indice trascina codice di React Aria eseguito al caricamento del modulo. La voce "Icon importato dall'indice" lo tiene d'occhio fino alla decisione della F2A (`sideEffects` o import dalle cartelle).
 

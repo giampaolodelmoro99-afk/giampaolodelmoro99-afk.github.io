@@ -74,7 +74,8 @@ export default [
 // Stesse condizioni della build del sito: import per sottopercorso da React
 // Aria, optimize-locales su it-IT ed en-US, NODE_ENV di produzione; React,
 // React DOM e React Router stanno nel chunk "framework" e restano fuori.
-// Senza limite fino alla chiusura della 1B, quando si fissano i budget.
+// Budget fissati alla chiusura della 1B (misura arrotondata per eccesso al kB):
+// si alzano solo con un ADR. Le altre voci servono all'analisi e non hanno limite.
 function componentChecks() {
   const folders = {
     Icon: "Icon",
@@ -119,11 +120,12 @@ function componentChecks() {
   const index = "src/components/index.ts";
 
   return [
-    check("Componenti: totale JS (gzip)", index, components, "js"),
-    check("Componenti: totale CSS (gzip)", index, components, "css"),
-    ...(desktopShell.length > 0
-      ? [check("Componenti: guscio del desktop F2A, JS (gzip)", index, desktopShell, "js")]
-      : []),
+    { ...check("Componenti: totale JS (gzip)", index, components, "js"), limit: "99 kB" },
+    { ...check("Componenti: totale CSS (gzip)", index, components, "css"), limit: "5 kB" },
+    {
+      ...check("Componenti: guscio del desktop F2A, JS (gzip)", index, desktopShell, "js"),
+      limit: "75 kB",
+    },
     check(
       "Base React Aria: Button di React Aria da solo, JS (gzip)",
       "node_modules/react-aria-components/dist/exports/Button.mjs",
