@@ -35,7 +35,6 @@
 
 .label {
   display: -webkit-box;
-  inline-size: min-content;
   max-inline-size: 100%;
   padding: var(--space-0) var(--space-bevel);
   overflow: hidden;

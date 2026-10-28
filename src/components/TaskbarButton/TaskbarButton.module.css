@@ -49,10 +49,17 @@
 
 .root[data-selected],
 .root[data-selected][data-hovered] {
-  --_bevel: var(--bevel-sunken);
+  --_bevel: var(--taskbar-active-bevel);
 
-  background: var(--dither);
+  background: var(--taskbar-active-background);
+  color: var(--taskbar-active-text);
   font-weight: var(--font-weight-bold);
+}
+
+.root[data-focus-visible] {
+  --_shadow: var(--_bevel), var(--focus-halo-inset);
+
+  outline-offset: var(--focus-offset-inset);
 }
 
 .root[data-selected] > .content,

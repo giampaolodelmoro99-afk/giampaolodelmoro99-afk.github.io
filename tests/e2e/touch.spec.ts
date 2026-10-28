@@ -1,7 +1,7 @@
-import { expect, openDesktop, openPage, test } from "./fixtures";
+import { expect, openDesktop, test } from "./fixtures";
 
 test("il collegamento della lingua funziona al tocco", async ({ page }) => {
-  await openPage(page, "/");
+  await openDesktop(page, "/");
   const link = page.getByRole("link", { name: "English version" });
   const box = await link.boundingBox();
   expect(box?.width).toBeGreaterThanOrEqual(44);

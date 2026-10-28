@@ -1,111 +1,115 @@
-.root {
-  --_bevel: var(--bevel-raised);
-  --_halo: var(--no-shadow);
-  --_shadow: var(--_halo), var(--_bevel);
-
-  appearance: none;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-block-size: var(--control-height);
-  min-inline-size: var(--button-min-width);
-  padding: var(--space-1) var(--space-3);
-  border: 0;
-  border-radius: var(--radius-none);
-  background: var(--color-surface);
-  box-shadow: var(--_shadow);
-  color: var(--color-text);
-  font-family: var(--font-family-ui);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-tight);
-  text-align: center;
-  cursor: default;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.iconOnly {
-  min-inline-size: var(--control-height);
-  padding: var(--space-1);
-}
-
-.content {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-}
-
-.root[data-variant="default"] {
-  --_bevel: var(--bevel-default);
-}
-
-.root[data-hovered] {
-  --_bevel: var(--bevel-hover);
-
-  background: var(--color-surface-hover);
-}
-
-.root[data-variant="default"][data-hovered] {
-  --_bevel: var(--bevel-default);
-}
-
-.root[data-pressed],
-.root[aria-expanded="true"] {
-  --_bevel: var(--bevel-pressed);
-
-  background: var(--color-surface);
-}
-
-.root[data-variant="default"][data-pressed] {
-  --_bevel: var(--bevel-default-pressed);
-}
-
-.root[data-pressed] > .content,
-.root[aria-expanded="true"] > .content {
-  translate: var(--offset-pressed) var(--offset-pressed);
-}
-
-.root[data-focus-visible] {
-  --_halo: var(--focus-halo);
-
-  z-index: var(--z-raised);
-  outline: var(--focus-width) var(--focus-style) var(--color-focus);
-  outline-offset: var(--focus-offset);
-}
-
-.root[data-disabled] {
-  --_bevel: var(--bevel-raised);
-
-  background: var(--color-surface);
-  color: var(--color-text-disabled);
-  text-shadow: var(--text-etch);
-}
-
-.root[data-disabled]::after {
-  content: "";
-  position: absolute;
-  inset: var(--disabled-marker-inset);
-  border: var(--disabled-marker);
-  pointer-events: none;
-}
-
-.root[data-disabled] .icon {
-  opacity: var(--opacity-disabled);
-}
-
-@media (forced-colors: active) {
+/* Modulo base composto da altri componenti: nel layer gdm-base le regole dei componenti
+   che lo compongono vincono in qualunque ordine arrivino i fogli (ADR-0014). */
+@layer gdm-base {
   .root {
-    border: var(--forced-border-width) solid ButtonText;
+    --_bevel: var(--bevel-raised);
+    --_halo: var(--no-shadow);
+    --_shadow: var(--_halo), var(--_bevel);
+
+    appearance: none;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--control-height);
+    min-inline-size: var(--button-min-width);
+    padding: var(--space-1) var(--space-3);
+    border: 0;
+    border-radius: var(--radius-none);
+    background: var(--color-surface);
+    box-shadow: var(--_shadow);
+    color: var(--color-text);
+    font-family: var(--font-family-ui);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-tight);
+    text-align: center;
+    cursor: default;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .root[data-pressed] {
-    border-width: var(--forced-border-width-pressed);
+  .iconOnly {
+    min-inline-size: var(--control-height);
+    padding: var(--space-1);
+  }
+
+  .content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+  }
+
+  .root[data-variant="default"] {
+    --_bevel: var(--bevel-default);
+  }
+
+  .root[data-hovered] {
+    --_bevel: var(--bevel-hover);
+
+    background: var(--color-surface-hover);
+  }
+
+  .root[data-variant="default"][data-hovered] {
+    --_bevel: var(--bevel-default);
+  }
+
+  .root[data-pressed],
+  .root[aria-expanded="true"] {
+    --_bevel: var(--bevel-pressed);
+
+    background: var(--color-surface);
+  }
+
+  .root[data-variant="default"][data-pressed] {
+    --_bevel: var(--bevel-default-pressed);
+  }
+
+  .root[data-pressed] > .content,
+  .root[aria-expanded="true"] > .content {
+    translate: var(--offset-pressed) var(--offset-pressed);
+  }
+
+  .root[data-focus-visible] {
+    --_halo: var(--focus-halo);
+
+    z-index: var(--z-raised);
+    outline: var(--focus-width) var(--focus-style) var(--color-focus);
+    outline-offset: var(--focus-offset);
   }
 
   .root[data-disabled] {
-    border-color: var(--color-text-disabled);
+    --_bevel: var(--bevel-raised);
+
+    background: var(--color-surface);
+    color: var(--color-text-disabled);
+    text-shadow: var(--text-etch);
+  }
+
+  .root[data-disabled]::after {
+    content: "";
+    position: absolute;
+    inset: var(--disabled-marker-inset);
+    border: var(--disabled-marker);
+    pointer-events: none;
+  }
+
+  .root[data-disabled] .icon {
+    opacity: var(--opacity-disabled);
+  }
+
+  @media (forced-colors: active) {
+    .root {
+      border: var(--forced-border-width) solid ButtonText;
+    }
+
+    .root[data-pressed] {
+      border-width: var(--forced-border-width-pressed);
+    }
+
+    .root[data-disabled] {
+      border-color: var(--color-text-disabled);
+    }
   }
 }

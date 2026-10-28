@@ -60,4 +60,28 @@ test.describe("desktop dopo l'idratazione", () => {
       page.getByRole("region", { name: "Projects" }).getByRole("button", { name: "Close" }),
     ).toBeVisible();
   });
+
+  test("in alto contrasto il pulsante attivo e Start aperto sono gialli, con il focus interno", async ({
+    page,
+  }) => {
+    await openDesktop(page);
+    await page.locator("html").evaluate((html) => {
+      html.dataset["theme"] = "high-contrast";
+    });
+    const yellow = "rgb(255, 255, 0)";
+    await expect(page.getByRole("button", { name: "About", pressed: true })).toHaveCSS(
+      "background-color",
+      yellow,
+    );
+    const start = page.getByRole("button", { name: "Start" });
+    await start.focus();
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+    await expect(start).toBeFocused();
+    await expect(start).toHaveCSS("outline-offset", "-4px");
+    await page.keyboard.press("Enter");
+    await expect(start).toHaveAttribute("aria-expanded", "true");
+    await expect(start).toHaveCSS("background-color", yellow);
+    await expect(start).toHaveCSS("color", "rgb(0, 0, 0)");
+  });
 });

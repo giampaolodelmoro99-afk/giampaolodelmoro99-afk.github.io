@@ -95,7 +95,7 @@ export const it = {
     simpleView: "Vista semplice",
     skills: "Skills",
     timeline: "Timeline",
-    makingOf: "Making\u00a0of",
+    makingOf: "Making of",
     terminal: "Terminale",
     minefield: "Campo minato",
     controlPanel: "Pannello di controllo",

@@ -7,6 +7,20 @@
   font-weight: var(--font-weight-bold);
 }
 
+.root[data-pressed],
+.root[aria-expanded="true"] {
+  --_bevel: var(--start-pressed-bevel);
+
+  background: var(--start-pressed-background);
+  color: var(--start-pressed-text);
+}
+
+.root[data-focus-visible] {
+  --_shadow: var(--_bevel), var(--focus-halo-inset);
+
+  outline-offset: var(--focus-offset-inset);
+}
+
 .popover {
   padding: var(--space-0);
 }

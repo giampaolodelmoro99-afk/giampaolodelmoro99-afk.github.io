@@ -340,6 +340,14 @@
 
   /* Aggiunta della Fase 1B: secondo segnale del disabilitato, solo in alto contrasto. */
   --disabled-marker: none;
+
+  /* Aggiunte della Fase 2A: pulsante attivo della taskbar e Start premuto (DESIGN_SYSTEM.md §9). */
+  --taskbar-active-background: var(--dither);
+  --taskbar-active-text: var(--color-text);
+  --taskbar-active-bevel: var(--bevel-sunken);
+  --start-pressed-background: var(--color-surface);
+  --start-pressed-text: var(--color-text);
+  --start-pressed-bevel: var(--bevel-pressed);
 }
 
 /* ---------- Font dell'interfaccia: predefinito del tema, poi data-font ---------- */
@@ -350,6 +358,12 @@
   --font-family-ui: var(--font-family-ui-readable);
   --dither: var(--color-surface);
   --disabled-marker: var(--border-width-hairline) dotted var(--color-text-disabled);
+  --taskbar-active-background: var(--color-accent);
+  --taskbar-active-text: var(--color-text-inverse);
+  --taskbar-active-bevel: var(--bevel-pressed);
+  --start-pressed-background: var(--color-accent);
+  --start-pressed-text: var(--color-text-inverse);
+  --start-pressed-bevel: var(--bevel-pressed);
 }
 
 [data-font="readable"] {

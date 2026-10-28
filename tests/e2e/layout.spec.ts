@@ -1,4 +1,4 @@
-import { expect, openPage, test } from "./fixtures";
+import { expect, openDesktop, openPage, test } from "./fixtures";
 
 for (const path of ["/", "/en/", "/profilo/", "/en/projects/"]) {
   test(`nessuno scroll orizzontale su ${path}`, async ({ page }) => {
@@ -12,7 +12,7 @@ for (const path of ["/", "/en/", "/profilo/", "/en/projects/"]) {
 
 // Con il mouse il bersaglio minimo è 24×24 px (WCAG 2.5.8); in touch 44×44, in touch.spec.ts.
 test("il collegamento della lingua nella taskbar misura almeno 24×24 px", async ({ page }) => {
-  await openPage(page, "/");
+  await openDesktop(page, "/");
   const box = await page.getByRole("link", { name: "English version" }).evaluate((element) => {
     const { width, height } = element.getBoundingClientRect();
     return { width, height };

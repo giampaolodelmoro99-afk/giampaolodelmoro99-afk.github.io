@@ -1,101 +1,105 @@
-.scroll {
-  overflow: auto;
-}
-
-.scroll::-webkit-scrollbar {
-  inline-size: var(--scrollbar-size);
-  block-size: var(--scrollbar-size);
-}
-
-.scroll::-webkit-scrollbar-track {
-  background: var(--dither);
-}
-
-.scroll::-webkit-scrollbar-thumb {
-  background: var(--color-surface);
-  box-shadow: var(--bevel-raised);
-}
-
-.scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--color-surface-hover);
-}
-
-.scroll::-webkit-scrollbar-corner {
-  background: var(--color-surface);
-}
-
-.scroll::-webkit-scrollbar-button:single-button {
-  display: var(--scrollbar-buttons);
-  inline-size: var(--scrollbar-size);
-  block-size: var(--scrollbar-size);
-  background-color: var(--color-surface);
-  background-repeat: no-repeat;
-  box-shadow: var(--bevel-raised);
-}
-
-.scroll::-webkit-scrollbar-button:single-button:hover {
-  background-color: var(--color-surface-hover);
-}
-
-.scroll::-webkit-scrollbar-button:single-button:active {
-  box-shadow: var(--bevel-pressed);
-}
-
-.scroll::-webkit-scrollbar-button:single-button:vertical:decrement,
-.scroll::-webkit-scrollbar-button:single-button:vertical:increment,
-.scroll::-webkit-scrollbar-button:single-button:horizontal:decrement,
-.scroll::-webkit-scrollbar-button:single-button:horizontal:increment {
-  background-image:
-    linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0),
-    linear-gradient(var(--color-text) 0 0);
-}
-
-.scroll::-webkit-scrollbar-button:single-button:vertical:decrement {
-  background-size:
-    var(--scroll-arrow-1) var(--scroll-arrow-1),
-    var(--scroll-arrow-3) var(--scroll-arrow-1),
-    var(--scroll-arrow-5) var(--scroll-arrow-1);
-  background-position:
-    center calc(50% - var(--scroll-arrow-1)),
-    center 50%,
-    center calc(50% + var(--scroll-arrow-1));
-}
-
-.scroll::-webkit-scrollbar-button:single-button:vertical:increment {
-  background-size:
-    var(--scroll-arrow-5) var(--scroll-arrow-1),
-    var(--scroll-arrow-3) var(--scroll-arrow-1),
-    var(--scroll-arrow-1) var(--scroll-arrow-1);
-  background-position:
-    center calc(50% - var(--scroll-arrow-1)),
-    center 50%,
-    center calc(50% + var(--scroll-arrow-1));
-}
-
-.scroll::-webkit-scrollbar-button:single-button:horizontal:decrement {
-  background-size:
-    var(--scroll-arrow-1) var(--scroll-arrow-1),
-    var(--scroll-arrow-1) var(--scroll-arrow-3),
-    var(--scroll-arrow-1) var(--scroll-arrow-5);
-  background-position:
-    calc(50% - var(--scroll-arrow-1)) center,
-    50% center,
-    calc(50% + var(--scroll-arrow-1)) center;
-}
-
-.scroll::-webkit-scrollbar-button:single-button:horizontal:increment {
-  background-size:
-    var(--scroll-arrow-1) var(--scroll-arrow-5),
-    var(--scroll-arrow-1) var(--scroll-arrow-3),
-    var(--scroll-arrow-1) var(--scroll-arrow-1);
-  background-position:
-    calc(50% - var(--scroll-arrow-1)) center,
-    50% center,
-    calc(50% + var(--scroll-arrow-1)) center;
-}
-
-@supports not selector(::-webkit-scrollbar) {
+/* Modulo base composto da altri componenti: nel layer gdm-base le regole dei componenti
+   che lo compongono vincono in qualunque ordine arrivino i fogli (ADR-0014). */
+@layer gdm-base {
   .scroll {
-    scrollbar-color: var(--color-shadow-dark) var(--color-surface-light);
+    overflow: auto;
+  }
+
+  .scroll::-webkit-scrollbar {
+    inline-size: var(--scrollbar-size);
+    block-size: var(--scrollbar-size);
+  }
+
+  .scroll::-webkit-scrollbar-track {
+    background: var(--dither);
+  }
+
+  .scroll::-webkit-scrollbar-thumb {
+    background: var(--color-surface);
+    box-shadow: var(--bevel-raised);
+  }
+
+  .scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--color-surface-hover);
+  }
+
+  .scroll::-webkit-scrollbar-corner {
+    background: var(--color-surface);
+  }
+
+  .scroll::-webkit-scrollbar-button:single-button {
+    display: var(--scrollbar-buttons);
+    inline-size: var(--scrollbar-size);
+    block-size: var(--scrollbar-size);
+    background-color: var(--color-surface);
+    background-repeat: no-repeat;
+    box-shadow: var(--bevel-raised);
+  }
+
+  .scroll::-webkit-scrollbar-button:single-button:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  .scroll::-webkit-scrollbar-button:single-button:active {
+    box-shadow: var(--bevel-pressed);
+  }
+
+  .scroll::-webkit-scrollbar-button:single-button:vertical:decrement,
+  .scroll::-webkit-scrollbar-button:single-button:vertical:increment,
+  .scroll::-webkit-scrollbar-button:single-button:horizontal:decrement,
+  .scroll::-webkit-scrollbar-button:single-button:horizontal:increment {
+    background-image:
+      linear-gradient(var(--color-text) 0 0), linear-gradient(var(--color-text) 0 0),
+      linear-gradient(var(--color-text) 0 0);
+  }
+
+  .scroll::-webkit-scrollbar-button:single-button:vertical:decrement {
+    background-size:
+      var(--scroll-arrow-1) var(--scroll-arrow-1),
+      var(--scroll-arrow-3) var(--scroll-arrow-1),
+      var(--scroll-arrow-5) var(--scroll-arrow-1);
+    background-position:
+      center calc(50% - var(--scroll-arrow-1)),
+      center 50%,
+      center calc(50% + var(--scroll-arrow-1));
+  }
+
+  .scroll::-webkit-scrollbar-button:single-button:vertical:increment {
+    background-size:
+      var(--scroll-arrow-5) var(--scroll-arrow-1),
+      var(--scroll-arrow-3) var(--scroll-arrow-1),
+      var(--scroll-arrow-1) var(--scroll-arrow-1);
+    background-position:
+      center calc(50% - var(--scroll-arrow-1)),
+      center 50%,
+      center calc(50% + var(--scroll-arrow-1));
+  }
+
+  .scroll::-webkit-scrollbar-button:single-button:horizontal:decrement {
+    background-size:
+      var(--scroll-arrow-1) var(--scroll-arrow-1),
+      var(--scroll-arrow-1) var(--scroll-arrow-3),
+      var(--scroll-arrow-1) var(--scroll-arrow-5);
+    background-position:
+      calc(50% - var(--scroll-arrow-1)) center,
+      50% center,
+      calc(50% + var(--scroll-arrow-1)) center;
+  }
+
+  .scroll::-webkit-scrollbar-button:single-button:horizontal:increment {
+    background-size:
+      var(--scroll-arrow-1) var(--scroll-arrow-5),
+      var(--scroll-arrow-1) var(--scroll-arrow-3),
+      var(--scroll-arrow-1) var(--scroll-arrow-1);
+    background-position:
+      calc(50% - var(--scroll-arrow-1)) center,
+      50% center,
+      calc(50% + var(--scroll-arrow-1)) center;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    .scroll {
+      scrollbar-color: var(--color-shadow-dark) var(--color-surface-light);
+    }
   }
 }

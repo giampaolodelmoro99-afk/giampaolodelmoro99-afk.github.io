@@ -97,7 +97,7 @@ export const en: Dictionary = {
     simpleView: "Simple view",
     skills: "Skills",
     timeline: "Timeline",
-    makingOf: "Making\u00a0of",
+    makingOf: "Making of",
     terminal: "Terminal",
     minefield: "Minefield",
     controlPanel: "Control Panel",
