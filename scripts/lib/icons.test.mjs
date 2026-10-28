@@ -25,6 +25,16 @@ describe("parseIcon", () => {
     });
   });
 
+  it("accetta i path chiusi con il tag di chiusura (icone del pacchetto F2A)", () => {
+    const icon = parseIcon(
+      svg('<path fill="#000000" d="M0 0h1v1h-1z"></path><path fill="#ffffff" d="M1 1h1v1h-1z"/>'),
+    );
+    expect(icon.paths).toEqual([
+      ["pixelOutline", "M0 0h1v1h-1z"],
+      ["pixelWhite", "M1 1h1v1h-1z"],
+    ]);
+  });
+
   it.each([
     ["un colore fuori tavolozza", svg('<path fill="#123456" d="M0 0h1v1h-1z"/>'), "tavolozza"],
     ["un elemento diverso da path", svg('<rect width="1" height="1"/>'), "non ammessi"],

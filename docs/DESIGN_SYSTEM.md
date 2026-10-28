@@ -155,7 +155,7 @@ Catalogo del pacchetto, implementato in Fase 1B (piano in `docs/phases/phase-01-
 
 ## 7. Icone
 
-- 33 SVG originali in pixel art in `src/assets/icons/` (14 icone a 16 e 32 px, monogramma GDM, tre icone dei dialoghi a 32 px), registrati in `ASSETS.md`.
+- 37 SVG originali in pixel art in `src/assets/icons/` (16 icone a 16 e 32 px, monogramma GDM, tre icone dei dialoghi a 32 px), registrati in `ASSETS.md`. Le icone `windows` e `power` (pulsante «Finestre» e Spegni…) vengono dal pacchetto della F2A (`docs/design/f2a-window-manager/icone/`), copiate byte per byte; chiudono i path con `</path>`, che il generatore accetta.
 - `npm run icons` genera `src/components/Icon/iconData.ts` e `glyphData.ts`. Ogni path ha un ruolo di colore (`pixelNavy`, `pixelYellow`…) che il CSS Module di Icon lega a `--color-pixel-*`. Regola per il nero: **il primo path `#000000` di un SVG è il contorno** (`--color-pixel-outline`, bianco in alto contrasto), gli altri sono riempimenti neri. Un test fallisce se i dati generati non sono allineati agli SVG.
 - `Icon`: `name`, `size` (16 o 32; le icone dei dialoghi solo 32, anche nei tipi), `scale` intera, `label`. Senza `label` è decorativa (`aria-hidden`), con `label` ha `role="img"`.
 - `Glyph`: glifi dei controlli (spunta, trattino, frecce, riduci, ingrandisci, ripristina, chiudi) a `--glyph-pixel` in `currentColor`; i dati del cerchio sono usati dal Radio.

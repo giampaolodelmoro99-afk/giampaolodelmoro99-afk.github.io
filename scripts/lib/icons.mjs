@@ -51,17 +51,19 @@ export function parseIcon(svg) {
 
   let outlineFound = false;
   /** @type {[string, string][]} */
-  const paths = [...svg.matchAll(/<path fill="(#[0-9a-f]{6})" d="([^"]+)"\/>/g)].map((match) => {
-    const fill = match[1] ?? "";
-    const d = match[2] ?? "";
-    const role = roles.get(fill);
-    if (!role) throw new Error(`colore fuori tavolozza: ${fill}`);
-    if (fill === "#000000" && !outlineFound) {
-      outlineFound = true;
-      return ["pixelOutline", d];
-    }
-    return [role, d];
-  });
+  const paths = [...svg.matchAll(/<path fill="(#[0-9a-f]{6})" d="([^"]+)"(?:\/>|><\/path>)/g)].map(
+    (match) => {
+      const fill = match[1] ?? "";
+      const d = match[2] ?? "";
+      const role = roles.get(fill);
+      if (!role) throw new Error(`colore fuori tavolozza: ${fill}`);
+      if (fill === "#000000" && !outlineFound) {
+        outlineFound = true;
+        return ["pixelOutline", d];
+      }
+      return [role, d];
+    },
+  );
   if (paths.length !== elements.length - 1) throw new Error("path in formato non previsto");
   return { size: Number(viewBox[1]), paths };
 }
