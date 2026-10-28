@@ -39,14 +39,15 @@ describe("Icon", () => {
     ]);
   });
 
-  it("disegna a pixel netti con il contorno per primo e i colori dai token", () => {
+  it("disegna a pixel netti dal simbolo dello sprite, con il contorno dal token", () => {
     const { container } = render(<Icon name="terminal" size={16} className="extra" />);
     const svg = container.querySelector("svg");
     expect(svg).toHaveAttribute("shape-rendering", "crispEdges");
     expect(svg).toHaveClass("root", "extra");
-    const roles = [...container.querySelectorAll("path")].map((path) => path.getAttribute("class"));
-    expect(roles[0]).toBe("pixelOutline");
-    expect(roles).toContain("pixelBlack");
+    expect(container.querySelector("path")).toBeNull();
+    expect(container.querySelector("use")?.getAttribute("href")).toMatch(
+      /iconSprite[^#]*\.svg#terminal-16$/,
+    );
   });
 
   it("esiste a 32 px per ogni nome e a 16 px per tutte tranne le icone dei dialoghi", () => {

@@ -23,6 +23,11 @@ export default defineConfig({
   ],
   build: {
     assetsInlineLimit: 0,
+    // Il post-build toglie i modulepreload e avvia il JS dopo load (ADR-0006):
+    // l'aiuto di Vite per i chunk dinamici non vedrebbe i moduli già caricati e
+    // li precaricherebbe di nuovo (WebKit avvisa in console). Il chunk del
+    // desktop importa da sé le sue dipendenze (ADR-0014).
+    modulePreload: false,
     rolldownOptions: {
       output: {
         codeSplitting: {

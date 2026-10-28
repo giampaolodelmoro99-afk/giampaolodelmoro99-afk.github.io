@@ -4,7 +4,9 @@
 
 | Metrica                | Budget              | Ultima misura                           | Come si verifica |
 | ---------------------- | ------------------- | --------------------------------------- | ---------------- |
-| JS iniziale (gzip)     | ≤ 115 kB            | 112 kB                                  | `npm run size`   |
+| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014) | 117,8 kB (F2A, guscio statico)          | `npm run size`   |
+| Chunk del desktop      | ≤ 59 kB (ADR-0014)  | 56,08 kB (F2A, dopo l'idratazione)      | `npm run size`   |
+| Sprite delle icone     | ≤ 14 kB (ADR-0014)  | 12,64 kB (F2A, SVG)                     | `npm run size`   |
 | CSS iniziale (gzip)    | ≤ 12 kB             | 1,3 kB                                  | `npm run size`   |
 | Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                           | `npm run size`   |
 | Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 98,1 kB (F1B, fuori dalla home)         | `npm run size`   |
@@ -33,7 +35,7 @@
 - React DOM e il nucleo di React Router sono il prezzo della modalità framework con prerender e idratazione (ADR-0006). Le alternative (Preact, un router scritto in casa) rompono React Aria Components o l'idratazione del prerender.
 - Dividere i dizionari per lingua farebbe risparmiare circa 0,4 kB gzip al costo di un caricamento asincrono dei testi: non vale la complessità.
 - Il JS parte dopo l'evento `load`, quindi non pesa su LCP né su TBT (Lighthouse mobile 100).
-- Il budget resta 115 kB. Dalla Fase 1B React Aria entra solo nei chunk delle app, con `@react-aria/optimize-locales-plugin` limitato a italiano e inglese; size-limit ha voci dedicate ai componenti (vedi «Peso dei componenti»).
+- Il budget resta 115 kB fino alla F2A (poi 124 kB, ADR-0014). Dalla Fase 1B React Aria entra solo nei chunk delle app, con `@react-aria/optimize-locales-plugin` limitato a italiano e inglese; size-limit ha voci dedicate ai componenti (vedi «Peso dei componenti»).
 
 ### Chunk `framework` (Fase 1B)
 
@@ -46,6 +48,19 @@ Con il `Link` di React Aria nella 404, Rolldown divideva React DOM e React Route
 | `not-found` (solo sulla 404) | 11,6 kB  | React Aria: `Link`, `usePress`, `RouterProvider` |
 
 Gli import da React Aria vanno sempre per sottopercorso (`react-aria-components/Button`): Oxlint vieta l'import dalla radice, con un'unica eccezione per `RouterProvider` (ADR-0012).
+
+### Guscio statico e chunk del desktop (Fase 2A)
+
+Dal 28/10/2026 la home prerenderizza un guscio statico del desktop in solo HTML e CSS, e il desktop interattivo arriva in un chunk separato dopo l'idratazione (ADR-0014). Le icone si disegnano da uno sprite SVG generato da `npm run icons`, non più da dati nel JavaScript.
+
+| Misura (gzip)                        | Valore   | Budget |
+| ------------------------------------ | -------- | ------ |
+| JS iniziale della home               | 117,8 kB | 124 kB |
+| Chunk del desktop dopo l'idratazione | 56,08 kB | 59 kB  |
+| Sprite delle icone                   | 12,64 kB | 14 kB  |
+| Componenti, totale JS                | 85,12 kB | 99 kB  |
+
+La ripartizione del JS iniziale e il motivo dei kB oltre i vecchi 115 sono in ADR-0014.
 
 ### Peso dei componenti (Fase 1B)
 

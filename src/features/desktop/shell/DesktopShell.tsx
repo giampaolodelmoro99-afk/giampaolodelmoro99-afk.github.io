@@ -27,15 +27,23 @@ export function DesktopShell({ routeKey }: DesktopShellProps) {
 
   return (
     <div className={styles.screen}>
-      <a href={`#${skipTarget}`} className={cx(buttonStyles.root, styles.skipLink)}>
+      <a
+        href={`#${skipTarget}`}
+        className={cx(buttonStyles.root, styles.skipLink)}
+        data-focus-key="skip"
+      >
         {t.desktop.skipLink}
       </a>
       <main className={styles.workspace}>
-        <nav aria-label={t.desktop.iconsLabel}>
+        <nav aria-label={t.desktop.iconsLabel} className={styles.iconArea}>
           <ul id={desktopIconsId} tabIndex={-1} className={cx(iconStyles.grid, styles.icons)}>
             {desktopApps.map((app) => (
               <li key={app.id} className={styles.iconCell}>
-                <Link to={routeMap[app.id][locale]} className={iconStyles.item}>
+                <Link
+                  to={routeMap[app.id][locale]}
+                  className={iconStyles.item}
+                  data-focus-key={`icon-${app.id}`}
+                >
                   <span className={iconStyles.image}>
                     <Icon name={app.icon} className={cx(iconStyles.icon)} />
                   </span>
@@ -47,9 +55,9 @@ export function DesktopShell({ routeKey }: DesktopShellProps) {
         </nav>
         {openApp && <ShellWindow app={openApp} />}
       </main>
-      <footer className={cx(taskbarStyles.taskbar, styles.taskbar)}>
+      <div className={cx(taskbarStyles.taskbar, styles.taskbar)}>
         <div className={taskbarStyles.buttons} aria-hidden="true">
-          <span className={startStyles.root}>
+          <span className={cx(startStyles.root, styles.start)}>
             <Icon name="gdm" size={16} />
             <span>{uiStrings[locale].startButton.label}</span>
           </span>
@@ -76,12 +84,13 @@ export function DesktopShell({ routeKey }: DesktopShellProps) {
             lang={other}
             aria-label={getDictionary(other).desktop.languageName}
             className={styles.language}
+            data-focus-key="language"
           >
             {getDictionary(other).desktop.languageShort}
           </Link>
           <span className={styles.clock} />
         </div>
-      </footer>
+      </div>
     </div>
   );
 }

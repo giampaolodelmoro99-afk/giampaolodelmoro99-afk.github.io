@@ -22,7 +22,7 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
 | Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                         | `vitest.config.ts`    |
 | Lighthouse      | Accessibility, Best Practices, SEO 100; Performance ≥ 95 a ogni commit e 100 (mediana di 5) a fine fase e release; LCP, FCP, TBT e CLS con budget fissi (ADR-0013) | `lighthouserc.*.json` |
-| JS iniziale     | ≤ 115 kB gzip (F1B: 110,81 kB con il chunk `framework`)                                                                                                            | `.size-limit.js`      |
+| JS iniziale     | ≤ 124 kB gzip (F2A: 117,8 kB con il guscio statico del desktop, ADR-0014); chunk del desktop ≤ 59 kB, sprite delle icone ≤ 14 kB                                   | `.size-limit.js`      |
 | Componenti      | JS ≤ 99 kB, CSS ≤ 5 kB, guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)                                                                               | `.size-limit.js`      |
 | CSS iniziale    | ≤ 12 kB gzip                                                                                                                                                       | `.size-limit.js`      |
 | Font in preload | ≤ 25 kB (woff2)                                                                                                                                                    | `.size-limit.js`      |

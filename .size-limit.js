@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { intlLocales } from "./src/routes/routeMap.ts";
 
@@ -32,6 +32,31 @@ if (initialJs.size === 0) {
   throw new Error("bootstrap di React Router non trovato in build/client/index.html");
 }
 
+// Chunk caricati dopo l'idratazione (ADR-0014): gli import dinamici del JS
+// iniziale, con i loro import statici che non sono già nel JS iniziale.
+const dynamicImport = /import\(["`]\.\/([^"`]+\.js)["`]\)/g;
+const lazyJs = new Set();
+const visitLazy = (file) => {
+  if (initialJs.has(file) || lazyJs.has(file)) return;
+  lazyJs.add(file);
+  const source = readFileSync(`${client}${file}`, "utf8");
+  for (const match of source.matchAll(staticImport)) visitLazy(`/assets/${match[1]}`);
+};
+for (const file of initialJs) {
+  const source = readFileSync(`${client}${file}`, "utf8");
+  for (const match of source.matchAll(dynamicImport)) visitLazy(`/assets/${match[1]}`);
+}
+const desktopChunk = [...lazyJs];
+if (!desktopChunk.some((file) => /\/DesktopApp-[^/]+\.js$/.test(file))) {
+  throw new Error("chunk del desktop (DesktopApp) non trovato tra gli import dinamici della home");
+}
+
+const iconSprite = readdirSync(`${client}/assets`).filter((file) =>
+  /^iconSprite-[\w-]+\.svg$/.test(file),
+);
+if (iconSprite.length !== 1)
+  throw new Error("sprite delle icone non trovato in build/client/assets");
+
 const stylesheets = [...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(
   (match) => `${client}${match[1]}`,
 );
@@ -48,7 +73,21 @@ export default [
   {
     name: "JS iniziale della home (gzip)",
     path: [...initialJs].map((file) => `${client}${file}`),
-    limit: "115 kB",
+    limit: "124 kB",
+    gzip: true,
+    disablePlugins: ["@size-limit/esbuild"],
+  },
+  {
+    name: "Chunk del desktop dopo l'idratazione, JS (gzip)",
+    path: desktopChunk.map((file) => `${client}${file}`),
+    limit: "59 kB",
+    gzip: true,
+    disablePlugins: ["@size-limit/esbuild"],
+  },
+  {
+    name: "Sprite delle icone (gzip)",
+    path: iconSprite.map((file) => `${client}/assets/${file}`),
+    limit: "14 kB",
     gzip: true,
     disablePlugins: ["@size-limit/esbuild"],
   },
@@ -157,6 +196,7 @@ function esbuildConfig(only) {
       ...(config.plugins ?? []),
       optimizeLocales.esbuild({ locales: Object.values(intlLocales) }),
       removedLocalesLoader,
+      urlImports,
       ...(only === "css" ? [dropOutputs(/\.js$/)] : []),
     ],
   });
@@ -172,6 +212,20 @@ const removedLocalesLoader = {
   setup(build) {
     build.onLoad({ filter: /.*/, namespace: "locales-plugin" }, (args) => ({
       contents: readFileSync(args.path, "utf8"),
+      loader: "js",
+    }));
+  },
+};
+
+// Gli import "?url" (lo sprite delle icone) in Vite diventano l'URL del file
+// copiato tra gli asset: qui diventano una stringa, così il peso misurato è
+// quello del JavaScript, senza il file.
+const urlImports = {
+  name: "url-imports",
+  setup(build) {
+    build.onResolve({ filter: /\?url$/ }, (args) => ({ path: args.path, namespace: "url-import" }));
+    build.onLoad({ filter: /.*/, namespace: "url-import" }, (args) => ({
+      contents: `export default ${JSON.stringify(`/assets/${args.path.replace(/\?url$/, "")}`)};`,
       loader: "js",
     }));
   },

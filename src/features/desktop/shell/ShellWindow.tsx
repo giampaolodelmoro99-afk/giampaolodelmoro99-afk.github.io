@@ -37,6 +37,7 @@ export function ShellWindow({ app }: { app: AppId }) {
       <div
         id={windowBodyId(app)}
         tabIndex={-1}
+        data-focus-key={`body-${app}`}
         className={cx(
           windowStyles.body,
           variant === "document" && windowStyles.document,

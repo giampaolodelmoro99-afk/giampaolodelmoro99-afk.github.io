@@ -92,44 +92,44 @@
   line-height: var(--line-height-body);
 }
 
-.document > * {
+:where(.document) > * {
   max-inline-size: var(--measure-document);
 }
 
-.document h3 {
+:where(.document) h2 {
   margin: var(--space-0) var(--space-0) var(--space-4);
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
 }
 
-.document h4 {
+:where(.document) h3 {
   margin: var(--space-6) var(--space-0) var(--space-2);
   font-size: var(--font-size-xl);
   line-height: var(--line-height-tight);
 }
 
-.document h5 {
+:where(.document) h4 {
   margin: var(--space-5) var(--space-0) var(--space-2);
   font-size: var(--font-size-lg);
   line-height: var(--line-height-tight);
 }
 
-.document p {
+:where(.document) p {
   margin: var(--space-0) var(--space-0) var(--space-4);
 }
 
-.document small {
+:where(.document) small {
   font-size: var(--font-size-sm);
 }
 
-.document a {
+:where(.document) a {
   color: var(--color-link);
   text-decoration: underline;
   text-underline-offset: var(--underline-offset);
 }
 
-.document a:visited {
+:where(.document) a:visited {
   color: var(--color-link-visited);
 }
 

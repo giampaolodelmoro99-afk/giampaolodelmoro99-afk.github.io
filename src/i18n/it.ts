@@ -95,7 +95,7 @@ export const it = {
     simpleView: "Vista semplice",
     skills: "Skills",
     timeline: "Timeline",
-    makingOf: "Making of",
+    makingOf: "Making\u00a0of",
     terminal: "Terminale",
     minefield: "Campo minato",
     controlPanel: "Pannello di controllo",
@@ -115,6 +115,8 @@ export const it = {
     iconsLabel: "Icone del desktop",
     taskbarLabel: "Barra delle applicazioni",
     placeholder: "Il contenuto di questa finestra è in arrivo.",
+    windowsButton: "Finestre aperte (Alt+W)",
+    clockLabel: "Ora",
   },
   about: {
     bio: "Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia, con Laravel e React, e continuo a studiare per crescere ogni giorno come sviluppatore.",

@@ -96,26 +96,28 @@ export function rowsToPath(rows, pixel) {
 
 /**
  * @param {Record<string, IconData>} icons
- * @returns {string}
+ * @returns {Record<string, number[]>}
  */
-export function renderIconModule(icons) {
-  /** @type {Record<string, Record<number, IconData>>} */
-  const table = {};
+function sizesByName(icons) {
+  /** @type {Record<string, number[]>} */
+  const sizes = {};
   for (const key of Object.keys(icons).toSorted()) {
     const icon = icons[key];
     if (!icon) continue;
     const name = key.replace(/-\d+$/, "");
-    table[name] = { ...table[name], [icon.size]: icon };
+    sizes[name] = [...(sizes[name] ?? []), icon.size];
   }
-  const sizes = Object.fromEntries(
-    Object.entries(table).map(([name, bySize]) => [name, Object.keys(bySize).map(Number)]),
-  );
-  const entries = Object.entries(table).map(([name, bySize]) => {
-    const variants = Object.values(bySize).map(
-      (icon) => `    ${icon.size}: { size: ${icon.size}, paths: ${JSON.stringify(icon.paths)} },`,
-    );
-    return [`  ${name}: {`, ...variants, "  },"].join("\n");
-  });
+  return sizes;
+}
+
+/**
+ * Nomi e misure delle icone: i disegni stanno nello sprite (renderIconSprite),
+ * fuori dal JavaScript.
+ * @param {Record<string, IconData>} icons
+ * @returns {string}
+ */
+export function renderIconModule(icons) {
+  const sizes = sizesByName(icons);
   return [
     "// File generato da scripts/icons.mjs a partire da src/assets/icons: non modificarlo a mano.",
     "",
@@ -125,21 +127,43 @@ export function renderIconModule(icons) {
     "",
     "export type IconSize<Name extends IconName> = (typeof iconSizes)[Name][number];",
     "",
-    `export const iconNames: readonly IconName[] = ${JSON.stringify(Object.keys(table))};`,
+    `export const iconNames: readonly IconName[] = ${JSON.stringify(Object.keys(sizes))};`,
     "",
-    "export type PixelRole =",
-    ...["pixelOutline", ...Object.values(colorRoles)].map((role) => `  | ${JSON.stringify(role)}`),
-    "  ;",
-    "",
-    "export type IconData = { size: number; paths: ReadonlyArray<readonly [PixelRole, string]> };",
-    "",
-    "export type IconTable = {",
-    "  readonly [Name in IconName]: Readonly<Record<IconSize<Name>, IconData>>;",
-    "};",
-    "",
-    "export const icons: IconTable = {",
-    ...entries,
-    "};",
+  ].join("\n");
+}
+
+/** @type {Map<string, string>} */
+const roleColors = new Map(Object.entries(colorRoles).map(([hex, role]) => [role, hex]));
+
+/**
+ * Sprite SVG con un <symbol> per icona e misura (id "nome-misura"). Il contorno
+ * usa currentColor, che Icon lega a --color-pixel-outline (bianco in alto
+ * contrasto, CanvasText in forced-colors); gli altri colori sono quelli della
+ * tavolozza, uguali nei due temi. Nessun elemento <style> né attributo style,
+ * così la CSP del sito non entra in gioco (ADR-0014).
+ * @param {Record<string, IconData>} icons
+ * @returns {string}
+ */
+export function renderIconSprite(icons) {
+  const symbols = Object.keys(icons)
+    .toSorted()
+    .map((key) => {
+      const icon = icons[key];
+      if (!icon) return "";
+      const paths = icon.paths
+        .map(([role, d]) => {
+          const fill = role === "pixelOutline" ? "currentColor" : roleColors.get(role);
+          if (!fill) throw new Error(`ruolo senza colore: ${role}`);
+          return `<path fill="${fill}" d="${d}"/>`;
+        })
+        .join("");
+      return `<symbol id="${key}" viewBox="0 0 ${icon.size} ${icon.size}">${paths}</symbol>`;
+    });
+  return [
+    '<svg xmlns="http://www.w3.org/2000/svg">',
+    "<!-- File generato da scripts/icons.mjs a partire da src/assets/icons: non modificarlo a mano. -->",
+    ...symbols,
+    "</svg>",
     "",
   ].join("\n");
 }

@@ -91,4 +91,10 @@ export async function openPage(page: Page, path: string): Promise<Response | nul
   return response;
 }
 
+export async function openDesktop(page: Page, path = "/"): Promise<Response | null> {
+  const response = await openPage(page, path);
+  await expect(page.locator("[role=grid]")).toBeVisible();
+  return response;
+}
+
 export { expect };

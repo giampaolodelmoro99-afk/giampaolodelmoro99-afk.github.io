@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { createRoutesStub } from "react-router";
 import { describe, expect, it } from "vitest";
@@ -78,6 +78,20 @@ describe("Desktop (guscio statico)", () => {
       expect(html.match(/<h1/g)).toHaveLength(1);
     },
   );
+
+  it("dopo l'idratazione lascia il posto al desktop interattivo e conserva il focus", async () => {
+    renderAt("/", Desktop);
+    screen.getByRole("link", { name: "Salta al contenuto" }).focus();
+    await waitFor(() => expect(screen.getByRole("grid")).toBeVisible());
+    expect(screen.queryByRole("navigation", { name: "Icone del desktop" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Salta al contenuto" })).toHaveFocus();
+  });
+
+  it("riporta il focus sull'icona che lo aveva nel guscio", async () => {
+    renderAt("/", Desktop);
+    screen.getByRole("link", { name: "CV" }).focus();
+    await waitFor(() => expect(screen.getByRole("row", { name: "CV" })).toHaveFocus());
+  });
 
   it("non ha violazioni axe", async () => {
     const { container } = renderAt("/", Desktop);

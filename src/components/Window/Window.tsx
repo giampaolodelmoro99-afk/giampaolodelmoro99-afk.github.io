@@ -1,4 +1,4 @@
-import { type ReactNode, useId } from "react";
+import { type CSSProperties, type ReactNode, useId } from "react";
 import { Button } from "react-aria-components/Button";
 import { cx } from "../cx";
 import { Glyph, Icon, type SmallIconName } from "../Icon";
@@ -22,7 +22,12 @@ export type WindowProps = {
   children: ReactNode;
   titleId?: string;
   isLandmark?: boolean;
+  bodyId?: string;
+  bodyClassName?: string | undefined;
+  isBodyInert?: boolean;
+  onActivate?: () => void;
   className?: string | undefined;
+  style?: CSSProperties | undefined;
 };
 
 const allControls: WindowControl[] = ["minimize", "maximize", "close"];
@@ -42,7 +47,12 @@ export function Window({
   children,
   titleId: titleIdProp,
   isLandmark = true,
+  bodyId,
+  bodyClassName,
+  isBodyInert = false,
+  onActivate,
   className,
+  style,
 }: WindowProps) {
   const generatedId = useId();
   const titleId = titleIdProp ?? generatedId;
@@ -63,15 +73,17 @@ export function Window({
     <Frame
       aria-labelledby={isLandmark ? titleId : undefined}
       className={cx(styles.root, className)}
+      style={style}
+      onPointerDownCapture={onActivate}
       data-active={isActive}
       data-maximized={isMaximized || undefined}
       data-variant={variant}
     >
       <TitleBar className={styles.titlebar}>
         {icon && <Icon name={icon} size={16} className={cx(styles.titleIcon)} />}
-        <h2 id={titleId} className={styles.title}>
+        <span id={titleId} className={styles.title}>
           {title}
-        </h2>
+        </span>
         <span className={styles.controls}>
           {allControls
             .filter((control) => controls.includes(control))
@@ -91,7 +103,12 @@ export function Window({
         </span>
       </TitleBar>
       {menu}
-      <div className={variant === "document" ? cx(styles.body, styles.document) : styles.body}>
+      <div
+        id={bodyId}
+        tabIndex={bodyId ? -1 : undefined}
+        inert={isBodyInert || undefined}
+        className={cx(styles.body, variant === "document" && styles.document, bodyClassName)}
+      >
         {children}
       </div>
       {statusBar}

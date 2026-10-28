@@ -1,4 +1,4 @@
-import { expect, openPage, test } from "./fixtures";
+import { expect, openDesktop, openPage, test } from "./fixtures";
 
 test("il collegamento della lingua funziona al tocco", async ({ page }) => {
   await openPage(page, "/");
@@ -12,12 +12,14 @@ test("il collegamento della lingua funziona al tocco", async ({ page }) => {
 });
 
 test("un tocco su un'icona del desktop apre la sua finestra", async ({ page }) => {
-  await openPage(page, "/");
-  const icon = page.getByRole("link", { name: "Progetti", exact: true });
+  await openDesktop(page, "/");
+  const icon = page.getByRole("row", { name: "Progetti", exact: true });
   const box = await icon.boundingBox();
   expect(box?.width).toBeGreaterThanOrEqual(44);
   expect(box?.height).toBeGreaterThanOrEqual(44);
   await icon.tap();
-  await expect(page).toHaveURL("/progetti/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Progetti");
+  await expect(page.getByRole("region", { name: "Progetti" })).toHaveAttribute(
+    "data-active",
+    "true",
+  );
 });

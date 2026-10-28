@@ -97,7 +97,7 @@ export const en: Dictionary = {
     simpleView: "Simple view",
     skills: "Skills",
     timeline: "Timeline",
-    makingOf: "Making of",
+    makingOf: "Making\u00a0of",
     terminal: "Terminal",
     minefield: "Minefield",
     controlPanel: "Control Panel",
@@ -117,6 +117,8 @@ export const en: Dictionary = {
     iconsLabel: "Desktop icons",
     taskbarLabel: "Taskbar",
     placeholder: "The content of this window is on its way.",
+    windowsButton: "Open windows (Alt+W)",
+    clockLabel: "Time",
   },
   about: {
     bio: "I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and I keep studying to grow as a developer every day.",

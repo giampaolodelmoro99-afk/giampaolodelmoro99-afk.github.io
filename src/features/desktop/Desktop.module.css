@@ -1,3 +1,11 @@
+.swap {
+  display: contents;
+}
+
+.swap[hidden] {
+  display: none;
+}
+
 .screen {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
@@ -44,6 +52,10 @@
   list-style: none;
 }
 
+.iconArea {
+  flex: none;
+}
+
 .iconCell {
   display: flex;
 }
@@ -52,9 +64,16 @@
   text-decoration: none;
 }
 
+.start {
+  inline-size: var(--taskbar-start-width);
+}
+
 .window {
+  --_z: calc(var(--z-window) + var(--window-z, 0));
+  --_cascade: calc(var(--window-cascade, 0) * var(--space-5));
+
   position: relative;
-  z-index: var(--z-window);
+  z-index: var(--_z);
   flex: 1 0 auto;
   min-block-size: min(var(--window-default-height), 100%);
   margin-block-start: var(--space-2);
@@ -86,6 +105,15 @@
   text-underline-offset: var(--underline-offset);
 }
 
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
 .clock {
   display: inline-block;
   inline-size: var(--taskbar-clock-width);
@@ -99,9 +127,13 @@
     overflow: hidden;
   }
 
+  .iconArea,
+  .workspace .icons {
+    block-size: 100%;
+  }
+
   .workspace .icons {
     flex-flow: column wrap;
-    block-size: 100%;
   }
 
   .window {
@@ -113,5 +145,6 @@
     inline-size: min(var(--window-default-width), 100% - var(--_icons-end) - var(--space-gutter));
     block-size: min(var(--window-default-height), 100% - var(--space-4) * 2);
     margin: auto;
+    translate: var(--_cascade) var(--_cascade);
   }
 }

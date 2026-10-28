@@ -305,6 +305,7 @@
   --window-default-width: 40rem;
   --window-default-height: 32rem;
   --taskbar-clock-width: 3.5rem;
+  --taskbar-start-width: 4.75rem;
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */
