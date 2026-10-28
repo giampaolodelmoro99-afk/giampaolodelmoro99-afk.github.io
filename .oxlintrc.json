@@ -109,6 +109,32 @@
   },
   "overrides": [
     {
+      "files": ["src/app/**", "src/features/**", "src/stores/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "react-aria-components",
+                "message": "Importa per sottopercorso (es. react-aria-components/Button): docs/PERFORMANCE_SEO.md."
+              },
+              {
+                "name": "react-aria",
+                "message": "Importa per sottopercorso (es. react-aria/VisuallyHidden): docs/PERFORMANCE_SEO.md."
+              }
+            ],
+            "patterns": [
+              {
+                "group": ["**/components", "**/components/index", "**/components/index.ts"],
+                "message": "Importa i componenti dalla loro cartella (es. ../../components/Window): l'indice aggiunge codice di React Aria a chi importa anche solo Icon (docs/PERFORMANCE_SEO.md, \"Indice dei componenti\")."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "files": ["src/**/*.tsx"],
       "rules": {
         "no-inline-comments": "error"
