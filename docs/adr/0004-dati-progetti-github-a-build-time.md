@@ -10,7 +10,7 @@ La finestra Progetti mostra i repository GitHub con stelle, linguaggi e ultimo a
 
 ## Decisione
 
-- **Elenco curato** in un file tipizzato (`src/content/projects.ts`) secondo il template di CONTENT.md §6: repo, slug, testi IT/EN, stack, contesto, ruolo, demo, immagini, in evidenza, case study.
+- **Elenco curato** in un file tipizzato (`src/content/projects.ts`) secondo il template di CONTENT.md §7: repo, slug, testi IT/EN, stack, contesto, ruolo, demo, immagini, in evidenza, case study.
 - **Script di build** (`scripts/fetch-github.mjs`) che, prima di `react-router build`, scarica dall'API GitHub REST i metadati dei repo elencati (stelle, linguaggi con percentuali, `pushed_at`, licenza, topic) e li salva in `src/content/github.generated.json`.
 - In CI usa `GITHUB_TOKEN` per un limite di richieste più alto.
 - Se l'API non risponde, la build usa l'ultimo JSON committato e stampa un avviso. Se manca un repo elencato, la build fallisce.
@@ -32,4 +32,4 @@ La finestra Progetti mostra i repository GitHub con stelle, linguaggi e ultimo a
 
 ## Riferimenti
 
-ARCHITECTURE.md §8, CONTENT.md §6, skill `add-project`.
+ARCHITECTURE.md §8, CONTENT.md §7, skill `add-project`.

@@ -10,7 +10,24 @@ Raccolta dei contenuti del sito. Fonte per i dizionari i18n, i dati tipizzati (`
 - **Tono**: diretto, concreto, in prima persona; niente superlativi vuoti. In inglese: stesso contenuto, non traduzione letterale.
 - **Bozze**: ogni testo marcato `BOZZA – da rivedere` è scritto da Claude e **non va online** finché Gianpaolo non lo approva. Dopo l'approvazione si toglie il marcatore e si annota la data.
 
-## 2. Testi della v1 (tag `v1.0.0-legacy`)
+## 2. Testi approvati
+
+Approvati da Gianpaolo il 28/10/2026: non sono più bozze e possono andare online. Non indicano stage né azienda.
+
+| Testo                                       | IT                                                                                                                                                                                                                                | EN                                                                                                                                                                                                                          |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Titolo                                      | Full Stack Developer · Studente ITS Academy Prodigi                                                                                                                                                                               | Full Stack Developer · ITS Academy Prodigi student                                                                                                                                                                          |
+| Bio                                         | Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia, con Laravel e React, e continuo a studiare per crescere ogni giorno come sviluppatore. | I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and I keep studying to grow as a developer every day. |
+| Meta description della home (147 caratteri) | Portfolio di Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Progetti con Laravel e React in stile Windows 95.                                                                               | Portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Laravel and React projects in a Windows 95 style.                                                                         |
+
+Uso sul sito (Fase 2A):
+
+- `<title>` di `/` e `/en/`: "Gianpaolo Del Moro · Full Stack Developer" (41 caratteri). Con il titolo completo il nome supererebbe i 60 caratteri (PERFORMANCE_SEO.md §4).
+- Il titolo completo è in `og:title`, `twitter:title` e nel `jobTitle` del JSON-LD.
+- La bio è nella finestra About, aperta all'avvio nella home e su `/profilo/` (`/en/about/`).
+- Slug delle app: dove l'app corrisponde a una pagina della v1 vale lo slug della v1, definitivo (SPECS.md §6): `/profilo/`, `/stack/`, `/progetti/`, `/contatti/`. Gli altri slug, con i title e le description delle app, sono **bozze fino alla Fase 3A**: il sito non è online prima di `v1.0.0`.
+
+## 3. Testi della v1 (tag `v1.0.0-legacy`)
 
 Riportati come fonte, solo in italiano. Non tutti verranno riusati.
 
@@ -85,14 +102,14 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 - Hobby: pianoforte, praticato da 5 anni.
 - Competenze nel CV, non sul sito: Java (OOP), Spring Boot, Python.
 
-## 3. Domande aperte (da chiudere in Fase 3)
+## 4. Domande aperte (da chiudere in Fase 3)
 
 - [ ] **Java, Spring Boot, Python**: vanno sul sito (Skills, llms.txt) o restano solo nel CV? Con quale livello e contesto d'uso?
 - [ ] **Indirizzo del liceo**: "Scienze Applicate" (sito v1) o "indirizzo informatico" (CV v1)?
 - [x] **LinkedIn**: chiusa il 13/10/2026, non compare sul sito (vedi §1).
 - [ ] **Disponibilità**: "Full-time", stage, località (Pisa, remoto, trasferimento)?
 
-## 4. Bozze da approvare
+## 5. Bozze da approvare
 
 > **BOZZA – da rivedere.** Giurisprudenza come punto di forza (bio e Timeline)
 >
@@ -118,18 +135,18 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 >
 > Livelli e contesti vanno confermati uno per uno.
 
-## 5. Mancante per l'inglese
+## 6. Mancante per l'inglese
 
-- [ ] Payoff e bio
+- [x] Payoff e bio (approvati il 28/10/2026, §2)
 - [ ] Descrizioni dei 6 progetti
 - [ ] Etichette e contesti delle skill
-- [ ] Metadati (title, description) di ogni route
+- [ ] Metadati (title, description) di ogni route (home approvata il 28/10/2026)
 - [ ] Testo della 404 (BSOD)
 - [ ] CV in inglese (confermato), generato dagli stessi dati del CV italiano
 - [ ] Informativa privacy
 - [ ] Alt, aria-label, titoli delle finestre, messaggi del form
 
-## 6. Template: scheda progetto GitHub
+## 7. Template: scheda progetto GitHub
 
 ```yaml
 repo: giampaolodelmoro99-afk/<nome-repo> # verificare "giampaolo" con M
@@ -143,12 +160,12 @@ demo: null # URL o null
 images: # AVIF/WebP, con dimensioni; registrate in ASSETS.md
   - { file: "", width: 0, height: 0, alt: { it: "", en: "" } }
 featured: false # in evidenza sì/no
-caseStudy: false # se esiste un case study (§7)
+caseStudy: false # se esiste un case study (§8)
 ```
 
 I metadati (stelle, linguaggi, ultimo aggiornamento) li scarica lo script di build (ADR-0004), non si scrivono a mano.
 
-## 7. Template: case study
+## 8. Template: case study
 
 ```markdown
 ## <Nome progetto> (IT ed EN)
@@ -170,7 +187,7 @@ Il problema più duro incontrato e come l'ho affrontato.
 Che cosa funziona, numeri se esistono (test, prestazioni), che cosa farei diversamente.
 ```
 
-## 8. CV pubblico (IT ed EN)
+## 9. CV pubblico (IT ed EN)
 
 **Sezioni**: intestazione (nome, ruolo, città, link al sito e a GitHub; email solo nel PDF e nella versione stampabile, mai nel markup prerenderizzato), profilo, competenze (livello e contesto), esperienza, istruzione e formazione, lingue, patente, interessi.
 

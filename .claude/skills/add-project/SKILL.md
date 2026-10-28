@@ -12,7 +12,7 @@ description: Aggiunge un progetto GitHub al portfolio con dati tipizzati, testi 
 3. **Testi**: descrizioni brevi e concrete, approvate da Gianpaolo (se scritte da Claude, marcale come bozza in CONTENT.md).
 4. **Immagini**: AVIF o WebP, con `width` e `height`, alt IT/EN, peso contenuto; registrale in `docs/ASSETS.md`. Niente loghi di terzi senza permesso.
 5. **Metadati**: esegui lo script di build (`scripts/fetch-github.mjs`, ADR-0004) e committa il JSON generato.
-6. **Case study** (opzionale): problema, scelte tecniche, difficoltà, risultato, in IT ed EN (CONTENT.md §7).
+6. **Case study** (opzionale): problema, scelte tecniche, difficoltà, risultato, in IT ed EN (CONTENT.md §8).
 7. **SEO**: verifica il JSON-LD `SoftwareSourceCode` nella pagina del progetto e nell'elenco.
 8. **Test**: unit sui dati (slug unici, testi IT/EN presenti), prerender (nome e descrizione nell'HTML), e2e (apertura della scheda e link al repo), screenshot se cambia l'elenco.
 
@@ -24,4 +24,4 @@ description: Aggiunge un progetto GitHub al portfolio con dati tipizzati, testi 
 
 ## Riferimenti
 
-docs/CONTENT.md §6-7, ADR-0004, docs/PERFORMANCE_SEO.md §5.
+docs/CONTENT.md §7-8, ADR-0004, docs/PERFORMANCE_SEO.md §5.
