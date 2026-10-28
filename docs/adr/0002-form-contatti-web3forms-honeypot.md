@@ -1,6 +1,6 @@
 # ADR-0002: Form contatti con Web3Forms, honeypot e protezioni senza cookie
 
-- **Stato**: **Proposta**. Diventa Accettata solo dopo la verifica in Fase 3B di privacy policy e DPA ufficiali di Web3Forms (gestore, regione dei dati, eventuale antispam di terzi). Altrimenti si applica il piano B.
+- **Stato**: **Sostituita in parte da [ADR-0017](0017-hcaptcha-su-consenso-nel-form-contatti.md)** (28/10/2026): la parte sul captcha (anti-abuso senza captcha di terze parti, piano B punto 2) vale ora come descritta in ADR-0017. Il resto resta **Proposta**: diventa Accettata solo dopo la verifica in Fase 3B di privacy policy e DPA ufficiali di Web3Forms (gestore, regione dei dati, eventuale antispam di terzi). Altrimenti si applica il resto del piano B.
 - **Data**: 2026-10-13
 - **Fase**: 0 (implementazione in Fase 3B)
 
@@ -59,4 +59,4 @@ Ognuna richiede un nuovo ADR che sostituisce questo.
 
 ## Riferimenti
 
-SPECS.md §7, LEGAL.md §3-4, DEPLOYMENT.md §5-6, TESTING.md §8, web3forms.com/dpa.
+SPECS.md §7, LEGAL.md §3-4, DEPLOYMENT.md §5-6, TESTING.md §8, web3forms.com/dpa. Sostituita in parte da ADR-0017.

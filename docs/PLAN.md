@@ -90,7 +90,11 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 
 ## 3B. Contatti, legale e accesso rapido
 
-- [ ] Verifica di privacy policy e DPA di Web3Forms; ADR-0002 accettata o piano B
+- [ ] Verifica di privacy policy e DPA di Web3Forms; ADR-0002 accettata o resto del piano B (la parte sul captcha è già decisa in ADR-0017)
+- [ ] **hCaptcha su consenso esplicito (ADR-0017)**: pulsante «Attiva la verifica» con riga informativa e link alla privacy, caricamento solo dopo il clic, hCaptcha attivo nel pannello di Web3Forms (DEPLOYMENT.md §6), opzione accessibile di hCaptcha, email offuscata e GitHub sempre visibili
+- [ ] CSP per i domini di hCaptcha (script, frame, connect, style) senza `'unsafe-inline'`, tenendo conto che in una SPA vale la CSP della prima pagina caricata: ADR dedicato
+- [ ] Informativa: hCaptcha con fornitore, dati, cookie, trasferimento extra UE e base giuridica del consenso
+- [ ] e2e hCaptcha: nessuna richiesta a `*.hcaptcha.com` prima del clic, form inviabile solo con la verifica (simulata), alternativa email sempre presente
 - [ ] Form contatti: `replyto`, nessuna email automatica, access key da variabile di build, validazione, honeypot, tempo minimo, pausa tra invii, stati accessibili
 - [ ] Gestione degli errori di invio con canale alternativo sempre funzionante (email offuscata e GitHub; LinkedIn non compare sul sito)
 - [ ] Email mai in chiaro in HTML prerenderizzato, JSON-LD, llms e sitemap (test sul build)

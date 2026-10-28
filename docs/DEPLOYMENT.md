@@ -50,18 +50,20 @@ Tutti i job usano **`runs-on: ubuntu-24.04`**, mai `ubuntu-latest`: GitHub spost
 
 ## 5. Variabili di build
 
-| Variabile                   | Dove                                                       | Uso                                                                                                                                 | Dalla fase |
-| --------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `VITE_WEB3FORMS_ACCESS_KEY` | Settings → Secrets and variables → Actions → **Variables** | access key pubblica di Web3Forms, letta in build. Non è un segreto ma non sta nel codice. La build di produzione fallisce se manca. | 3B         |
-| `GITHUB_TOKEN`              | automatico                                                 | script di build dei metadati dei progetti (limite di richieste più alto)                                                            | 3A         |
+| Variabile                   | Dove                                                       | Uso                                                                                                                                                             | Dalla fase |
+| --------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `VITE_WEB3FORMS_ACCESS_KEY` | Settings → Secrets and variables → Actions → **Variables** | access key pubblica di Web3Forms, letta in build. Non è un segreto ma non sta nel codice. La build di produzione fallisce se manca.                             | 3B         |
+| `VITE_HCAPTCHA_SITEKEY`     | Settings → Secrets and variables → Actions → **Variables** | sitekey pubblica di hCaptcha per il widget del form contatti (ADR-0017). Non è un segreto. Se Web3Forms usa una sitekey propria, si documenta qui al suo posto. | 3B         |
+| `GITHUB_TOKEN`              | automatico                                                 | script di build dei metadati dei progetti (limite di richieste più alto)                                                                                        | 3A         |
 
 ## 6. Configurazione manuale di Web3Forms (Fase 3B)
 
 1. Creare l'access key su web3forms.com con l'email di destinazione `giampaolo.delmoro99@gmail.com`.
 2. Nel pannello, attivare la **restrizione al dominio** `gianpaolodelmoro.it`. Gli invii da altre origini vengono rifiutati.
 3. Non attivare autorisposte al mittente.
-4. Salvare la chiave come variabile del repo (§5).
-5. Annotare qui la data di configurazione e le impostazioni scelte.
+4. Attivare **hCaptcha** nel pannello (ADR-0017): Web3Forms rifiuta gli invii senza un token hCaptcha valido, quindi la verifica è controllata lato server e non si aggira chiamando l'API direttamente. Verificare in F3B se serve una sitekey propria (account hCaptcha con il dominio `gianpaolodelmoro.it`) o quella fornita da Web3Forms, e quale piano lo consente.
+5. Salvare la chiave (e la sitekey, se propria) come variabili del repo (§5).
+6. Annotare qui la data di configurazione e le impostazioni scelte.
 
 ## 7. Verifiche dopo il deploy
 

@@ -51,6 +51,10 @@
 - Contrasto del testo ≥ 4,5:1 (≥ 3:1 per testo grande e componenti dell'interfaccia).
 - Testi alternativi per tutte le immagini informative, in IT ed EN.
 - Errori dei form associati al campo (`aria-describedby`), annunciati, con istruzioni per correggerli.
+- **Verifica anti-abuso del form contatti** (hCaptcha su consenso, ADR-0017, F3B). WCAG 2.2, criterio 3.3.8 (Accessible Authentication, Minimum), chiede di non imporre un test cognitivo come unica strada:
+  - l'**email offuscata** (e GitHub) è sempre visibile accanto al form, come alternativa per chi non attiva o non completa la verifica;
+  - si usa e si documenta nell'informativa l'**opzione accessibile di hCaptcha** (sfida alternativa o accesso senza sfida per chi usa tecnologie assistive);
+  - pulsante «Attiva la verifica», riga informativa e stato della verifica sono raggiungibili da tastiera e annunciati.
 - Nessuna informazione trasmessa solo dal colore.
 
 ## 8. Test

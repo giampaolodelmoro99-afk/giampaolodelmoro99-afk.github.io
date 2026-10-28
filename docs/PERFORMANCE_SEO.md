@@ -165,6 +165,7 @@ L'idratazione parte dopo `load` (§3), quindi non pesa su LCP. Resta da controll
   3. TBT di Lighthouse ≤ 50 ms (budget di §1) e un flusso Lighthouse "timespan" apri-finestra
   4. un clic prima dell'idratazione resta una navigazione completa verso il deep link (comportamento voluto, ADR-0006)
 - I suoni si caricano solo dopo un'interazione e mai nel chunk iniziale.
+- **hCaptcha** (form contatti, F3B, ADR-0017) si carica solo dopo il clic su «Attiva la verifica»: nessuno script di terzi al caricamento, nessun effetto su Lighthouse, sul JS iniziale né sulla CSP finché il visitatore non lo attiva.
 
 ## 11. Trailing slash e canonical su GitHub Pages
 

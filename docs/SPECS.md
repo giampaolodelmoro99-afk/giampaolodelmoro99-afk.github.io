@@ -76,11 +76,15 @@ La v1 era indicizzata con quattro sottopagine. Non devono diventare 404 alla rel
 - **Inoltro**: Web3Forms inoltra il messaggio alla mia email. L'email del visitatore è impostata come indirizzo di risposta (`replyto`). Al visitatore non parte nessuna email automatica.
 - **Campi**: solo nome, email, messaggio.
 - **Validazione lato client**: campi obbligatori, formato email, lunghezza massima per campo (indicativa: nome 100, email 254, messaggio 5000 caratteri; si conferma in F3). L'esistenza dell'email del mittente non è verificabile su un sito statico: si controlla solo il formato.
-- **Anti-abuso senza cookie**:
+- **Anti-abuso**:
   - campo honeypot
   - tempo minimo di compilazione
   - pausa minima tra due invii dallo stesso browser (`contact.lastSubmitAt` in localStorage)
+  - limiti di lunghezza dei campi
   - pulsante disabilitato durante l'invio
+  - restrizione al dominio nel pannello di Web3Forms
+  - **hCaptcha su consenso esplicito** (ADR-0017): si carica solo dopo un clic su «Attiva la verifica», con una riga informativa e il link alla privacy, mai al caricamento della pagina; nessun banner. La verifica è controllata anche lato server (hCaptcha attivo nel pannello di Web3Forms)
+- **Alternativa alla verifica**: email offuscata e GitHub sempre visibili, per chi non attiva la verifica o non riesce a completarla
 - **Stati di invio**: in corso, inviato ed errore, annunciati con una regione live e con il focus spostato sul messaggio.
 - **Errore di invio** (quota esaurita, servizio irraggiungibile, rete assente, risposta non valida, timeout):
   - messaggio chiaro e accessibile
@@ -105,4 +109,4 @@ La v1 era indicizzata con quattro sottopagine. Non devono diventare 404 alla rel
 
 ## 9. Fuori perimetro
 
-Backend proprio, account utente, CMS, analytics, commenti, newsletter, embed di terze parti, captcha di terze parti (salvo il piano B di ADR-0002).
+Backend proprio, account utente, CMS, analytics, commenti, newsletter, embed di terze parti, captcha di terze parti, salvo hCaptcha nel form Contatti su consenso esplicito (ADR-0017).
