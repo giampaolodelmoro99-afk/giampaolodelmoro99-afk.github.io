@@ -110,6 +110,22 @@ export const it = {
     tagline: "Full Stack Developer · Studente ITS Academy Prodigi",
     languageNavLabel: "Lingua",
     languageName: "Versione italiana",
+    languageShort: "IT",
+    skipLink: "Salta al contenuto",
+    iconsLabel: "Icone del desktop",
+    taskbarLabel: "Barra delle applicazioni",
+    placeholder: "Il contenuto di questa finestra è in arrivo.",
+  },
+  about: {
+    bio: "Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia, con Laravel e React, e continuo a studiare per crescere ogni giorno come sviluppatore.",
+    nextHeading: "Da qui puoi",
+    nextLabel: "Altre finestre",
+    links: {
+      projects: "Vedere i progetti",
+      cv: "Leggere il CV",
+      contacts: "Scrivermi",
+      github: "GitHub",
+    },
   },
   notFound: {
     title: "Pagina non trovata | Gianpaolo Del Moro",

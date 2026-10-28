@@ -11,7 +11,7 @@ test.describe("navigazione tra le lingue", () => {
     await page.getByRole("link", { name: "English version" }).click();
     await expect(page).toHaveURL("/en/");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    await expect(page).toHaveTitle("Gianpaolo Del Moro | Full Stack Developer");
+    await expect(page).toHaveTitle("Gianpaolo Del Moro · Full Stack Developer");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       "href",
       "https://gianpaolodelmoro.it/en/",

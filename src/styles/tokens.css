@@ -300,6 +300,11 @@
   --rotate-half: 180deg;
   --line-height-none: 1;
   --desktop-icon-label-lines: 2;
+
+  /* Aggiunte della Fase 2A (DESIGN_SYSTEM.md §2). */
+  --window-default-width: 40rem;
+  --window-default-height: 32rem;
+  --taskbar-clock-width: 3.5rem;
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */

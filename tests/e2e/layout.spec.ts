@@ -1,6 +1,6 @@
 import { expect, openPage, test } from "./fixtures";
 
-for (const path of ["/", "/en/"]) {
+for (const path of ["/", "/en/", "/profilo/", "/en/projects/"]) {
   test(`nessuno scroll orizzontale su ${path}`, async ({ page }) => {
     await openPage(page, path);
     const overflow = await page.evaluate(
@@ -10,12 +10,13 @@ for (const path of ["/", "/en/"]) {
   });
 }
 
-test("il collegamento della lingua misura almeno 44×44 px", async ({ page }) => {
+// Con il mouse il bersaglio minimo è 24×24 px (WCAG 2.5.8); in touch 44×44, in touch.spec.ts.
+test("il collegamento della lingua nella taskbar misura almeno 24×24 px", async ({ page }) => {
   await openPage(page, "/");
   const box = await page.getByRole("link", { name: "English version" }).evaluate((element) => {
     const { width, height } = element.getBoundingClientRect();
     return { width, height };
   });
-  expect(box.width).toBeGreaterThanOrEqual(44);
-  expect(box.height).toBeGreaterThanOrEqual(44);
+  expect(box.width).toBeGreaterThanOrEqual(24);
+  expect(box.height).toBeGreaterThanOrEqual(24);
 });

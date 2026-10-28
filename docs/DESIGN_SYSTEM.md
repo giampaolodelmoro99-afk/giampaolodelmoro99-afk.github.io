@@ -58,6 +58,13 @@ Il riferimento approvato è il pacchetto di consegna **GDM 95** (Claude Design, 
 | `--progress-indeterminate-size`, `-from`, `-to` | 30%; -100%; 340%                                                  | blocchi della barra indeterminata e loro corsa                                        |
 | `--progress-duration`, `--progress-easing`      | `calc(var(--duration-slow) * 5)`; `steps(10, end)`                | animazione a scatti della barra indeterminata (azzerata dal movimento ridotto)        |
 
+**Aggiunte della Fase 2A:**
+
+| Token                                               | Valore       | Uso                                                                                      |
+| --------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------- |
+| `--window-default-width`, `--window-default-height` | 40rem; 32rem | finestra aperta dalla route nel guscio statico del desktop, prima di qualsiasi geometria |
+| `--taskbar-clock-width`                             | 3.5rem       | spazio fisso dell'orologio: l'ora arriva dopo l'idratazione senza spostare la tray       |
+
 I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither-selection`, i bevel sottili) sono dichiarati su `:root, [data-theme]`, come `--focus-halo`: si ricalcolano dentro un contenitore con un tema diverso.
 
 **Regole:**

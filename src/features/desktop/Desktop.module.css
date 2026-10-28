@@ -1,45 +1,117 @@
-.desktop {
+.screen {
   display: grid;
-  place-content: center;
-  gap: var(--space-4);
-  min-block-size: 100dvh;
-  padding-block: var(--space-safe-top) var(--space-safe-bottom);
-  padding-inline: var(--space-gutter);
-  color: var(--color-desktop-text);
+  grid-template-rows: minmax(0, 1fr) auto;
+  block-size: 100dvh;
+  overflow: hidden;
   background: var(--color-desktop);
-  text-align: center;
+  color: var(--color-desktop-text);
 }
 
-.heading {
+.screen > .skipLink {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-start: var(--space-2);
+  z-index: var(--z-overlay);
+  text-decoration: none;
+}
+
+.screen > .skipLink:not(:focus) {
+  inline-size: 1px;
+  block-size: 1px;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: var(--space-0);
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.workspace {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  overflow-y: auto;
+  padding-block: var(--space-safe-top) var(--space-2);
+  padding-inline: var(--space-gutter);
+}
+
+.workspace .icons {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
   margin: var(--space-0);
-  font-size: var(--font-size-title);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
-  overflow-wrap: anywhere;
+  list-style: none;
 }
 
-.tagline {
-  max-inline-size: 40ch;
-  margin: var(--space-0) auto;
-  font-family: var(--font-family-prose);
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-body);
+.iconCell {
+  display: flex;
 }
 
-.languageLink {
+.iconCell > a {
+  text-decoration: none;
+}
+
+.window {
+  position: relative;
+  z-index: var(--z-window);
+  flex: 1 0 auto;
+  min-block-size: min(var(--window-default-height), 100%);
+  margin-block-start: var(--space-2);
+}
+
+.windowBody {
+  min-block-size: 0;
+}
+
+.taskbar {
+  min-inline-size: 0;
+}
+
+.language {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-block-size: var(--touch-target-min);
-  min-inline-size: var(--touch-target-min);
-  padding-inline: var(--space-3);
+  min-block-size: var(--target-min);
+  min-inline-size: var(--target-min);
   color: inherit;
+  font-family: var(--font-family-ui);
   font-size: var(--font-size-md);
+  text-decoration: none;
 }
 
-.languageLink:focus-visible,
-.languageLink[data-focus-visible] {
-  outline: var(--focus-width) var(--focus-style) var(--color-focus);
-  outline-offset: var(--focus-offset);
-  box-shadow: var(--focus-halo);
+.language:hover {
+  text-decoration: underline;
+  text-decoration-thickness: var(--underline-thickness);
+  text-underline-offset: var(--underline-offset);
+}
+
+.clock {
+  display: inline-block;
+  inline-size: var(--taskbar-clock-width);
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (width >= 768px) {
+  .workspace {
+    display: block;
+    overflow: hidden;
+  }
+
+  .workspace .icons {
+    flex-flow: column wrap;
+    block-size: 100%;
+  }
+
+  .window {
+    --_icons-end: calc(var(--desktop-icon-cell) + var(--space-gutter) + var(--space-4));
+
+    position: absolute;
+    inset: var(--space-0) var(--space-0) var(--space-0) var(--_icons-end);
+    min-block-size: auto;
+    inline-size: min(var(--window-default-width), 100% - var(--_icons-end) - var(--space-gutter));
+    block-size: min(var(--window-default-height), 100% - var(--space-4) * 2);
+    margin: auto;
+  }
 }

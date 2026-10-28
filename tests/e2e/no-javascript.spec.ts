@@ -29,3 +29,15 @@ test("dalla 404 il focus da tastiera è il doppio anello anche senza JavaScript"
   });
   expect(ring).toEqual({ outlineStyle: "dashed", outlineWidth: "2px" });
 });
+
+test("senza JavaScript le icone del desktop sono link che aprono la finestra dell'app", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Gianpaolo Del Moro");
+  const icon = page.getByRole("link", { name: "Progetti", exact: true });
+  await expect(icon).toHaveAttribute("href", "/progetti/");
+  await Promise.all([page.waitForURL("/progetti/", { waitUntil: "load" }), icon.click()]);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Progetti");
+  await expect(page.getByRole("region", { name: "Progetti" })).toBeVisible();
+});

@@ -1,16 +1,36 @@
+import type { Locator, Page } from "@playwright/test";
 import { expect, openPage, test } from "./fixtures";
+
+async function tabTo(page: Page, target: Locator, limit = 40) {
+  for (let step = 0; step < limit; step += 1) {
+    await page.keyboard.press("Tab");
+    if (await target.evaluate((element) => element === document.activeElement)) return;
+  }
+  throw new Error("elemento non raggiunto con Tab");
+}
+
+test("il primo Tab mostra «Salta al contenuto», che porta al corpo della finestra attiva", async ({
+  page,
+}) => {
+  await openPage(page, "/");
+  await page.keyboard.press("Tab");
+  const skip = page.getByRole("link", { name: "Salta al contenuto" });
+  await expect(skip).toBeFocused();
+  await expect(skip).toBeInViewport();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#window-about-body")).toBeFocused();
+});
 
 test("il collegamento della lingua si raggiunge e si attiva da tastiera", async ({ page }) => {
   await openPage(page, "/");
-  await page.keyboard.press("Tab");
   const link = page.getByRole("link", { name: "English version" });
-  await expect(link).toBeFocused();
+  await tabTo(page, link);
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL("/en/");
 });
 
 for (const [path, name] of [
-  ["/", "English version"],
+  ["/", "Salta al contenuto"],
   ["/pagina-inesistente", "Torna alla home"],
 ] as const) {
   test(`il focus da tastiera su ${path} è un doppio anello`, async ({ page }) => {
@@ -38,7 +58,7 @@ test("in forced-colors il focus da tastiera resta visibile con il colore di sist
   await page.emulateMedia({ forcedColors: "active" });
   await openPage(page, "/");
   await page.keyboard.press("Tab");
-  const link = page.getByRole("link", { name: "English version" });
+  const link = page.getByRole("link", { name: "Salta al contenuto" });
   await expect(link).toBeFocused();
   const outline = await link.evaluate((element) => {
     const style = getComputedStyle(element);

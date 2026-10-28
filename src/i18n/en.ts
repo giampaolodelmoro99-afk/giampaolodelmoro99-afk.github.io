@@ -112,6 +112,22 @@ export const en: Dictionary = {
     tagline: "Full Stack Developer · ITS Academy Prodigi student",
     languageNavLabel: "Language",
     languageName: "English version",
+    languageShort: "EN",
+    skipLink: "Skip to content",
+    iconsLabel: "Desktop icons",
+    taskbarLabel: "Taskbar",
+    placeholder: "The content of this window is on its way.",
+  },
+  about: {
+    bio: "I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and I keep studying to grow as a developer every day.",
+    nextHeading: "From here you can",
+    nextLabel: "Other windows",
+    links: {
+      projects: "See my projects",
+      cv: "Read my CV",
+      contacts: "Write to me",
+      github: "GitHub",
+    },
   },
   notFound: {
     title: "Page not found | Gianpaolo Del Moro",

@@ -91,8 +91,24 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
 
   it("mostra il contenuto principale senza eseguire JavaScript", async () => {
     const { document } = await load(fileFor(href));
-    expect(document.querySelector("main h1")?.textContent).toBe(t.desktop.heading);
-    expect(document.querySelector("main")?.textContent).toContain(t.desktop.tagline);
+    const isAbout = key === "desktop" || key === "about";
+    const app = key === "desktop" ? "about" : key;
+    const window = document.querySelector("main section[aria-labelledby]");
+    expect(document.querySelectorAll("h1")).toHaveLength(1);
+    expect(window?.querySelector("h1")?.textContent).toBe(
+      isAbout ? t.desktop.heading : t.apps[app],
+    );
+    expect(window?.textContent).toContain(isAbout ? t.about.bio : t.desktop.placeholder);
+  });
+
+  it("ha le icone del desktop come link normali e lo skip link come primo elemento", async () => {
+    const { document } = await load(fileFor(href));
+    const icons = [...document.querySelectorAll("main nav a")];
+    expect(icons.map((icon) => icon.getAttribute("href"))).toContain(routeMap.projects[locale]);
+    expect(icons).toHaveLength(11);
+    const skip = document.querySelector("body a");
+    expect(skip?.textContent).toBe(t.desktop.skipLink);
+    expect(document.querySelector(skip?.getAttribute("href") ?? "#niente")).not.toBeNull();
   });
 
   it("ha la CSP come primo meta dopo il charset, con l'hash di ogni script inline", async () => {
