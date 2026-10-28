@@ -1,10 +1,15 @@
+import { useLocale } from "react-aria-components/I18nProvider";
 import { renderToString } from "react-dom/server";
 import { createRoutesStub } from "react-router";
 import { describe, expect, it } from "vitest";
 import { pressableStyleId } from "../styles/reactAriaPressable";
 import App, { Layout, links } from "./root";
 
-function renderDocument(path: string, routeId: string) {
+function AriaLocale() {
+  return <output>{useLocale().locale}</output>;
+}
+
+function renderDocument(path: string, routeId: string, Child = () => <main>contenuto</main>) {
   const Stub = createRoutesStub([
     {
       id: "root",
@@ -14,7 +19,7 @@ function renderDocument(path: string, routeId: string) {
           <App />
         </Layout>
       ),
-      children: [{ id: routeId, path: "*", Component: () => <main>contenuto</main> }],
+      children: [{ id: routeId, path: "*", Component: Child }],
     },
   ]);
   return renderToString(<Stub initialEntries={[path]} />);
@@ -46,6 +51,16 @@ describe("root", () => {
 
   it("usa la lingua di default per la pagina non trovata", () => {
     expect(renderDocument("/en/inesistente", "not-found")).toContain('<html lang="it">');
+  });
+
+  it("passa a React Aria la lingua della route, non quella del browser", () => {
+    expect(renderDocument("/en/", "desktop-en", AriaLocale)).toContain("<output>en-US</output>");
+    expect(renderDocument("/profilo", "desktop-it", AriaLocale)).toContain(
+      "<output>it-IT</output>",
+    );
+    expect(renderDocument("/en/inesistente", "not-found", AriaLocale)).toContain(
+      "<output>it-IT</output>",
+    );
   });
 
   it("rende il contenuto della route figlia", () => {
