@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { iconSizes } from "../../components/Icon";
 import { appIds } from "../../routes/routeMap";
-import { appDefinition, apps, desktopApps, homeApp, openAppFor } from "./apps";
+import { appDefinition, apps, desktopApps } from "./apps";
 
 describe("registro delle app", () => {
   it("ha una voce per ogni app della routeMap, una volta sola", () => {
@@ -22,9 +22,8 @@ describe("registro delle app", () => {
     }
   });
 
-  it("apre About sulla home e l'app della route altrove", () => {
-    expect(openAppFor("desktop")).toBe(homeApp);
-    expect(openAppFor("projects")).toBe("projects");
+  it("distingue le app con il corpo documento", () => {
+    expect(appDefinition("about").variant).toBe("document");
     expect(appDefinition("terminal").variant).toBe("app");
   });
 });

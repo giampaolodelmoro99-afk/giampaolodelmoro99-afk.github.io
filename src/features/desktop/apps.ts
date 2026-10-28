@@ -1,5 +1,5 @@
 import type { SmallIconName } from "../../components/Icon";
-import type { AppId, RouteKey } from "../../routes/routeMap";
+import type { AppId } from "../../routes/routeMap";
 
 export type AppDefinition = {
   id: AppId;
@@ -30,10 +30,4 @@ export function appDefinition(id: AppId): AppDefinition {
   const app = apps.find((candidate) => candidate.id === id);
   if (!app) throw new Error(`app sconosciuta: ${id}`);
   return app;
-}
-
-export const homeApp: AppId = "about";
-
-export function openAppFor(routeKey: RouteKey): AppId {
-  return routeKey === "desktop" ? homeApp : routeKey;
 }
