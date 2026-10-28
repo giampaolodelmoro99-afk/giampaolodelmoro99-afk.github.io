@@ -1,7 +1,7 @@
 .glyph {
   display: block;
-  inline-size: calc(var(--glyph-width) * var(--glyph-pixel));
-  block-size: calc(var(--glyph-height) * var(--glyph-pixel));
+  inline-size: calc(var(--_glyph-width) * var(--glyph-pixel));
+  block-size: calc(var(--_glyph-height) * var(--glyph-pixel));
   flex: none;
   fill: currentcolor;
 }

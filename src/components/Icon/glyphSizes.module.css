@@ -1,0 +1,56 @@
+/* File generato da scripts/icons.mjs a partire da src/components/Icon/glyphs.json: non modificarlo a mano. */
+
+.check {
+  --_glyph-width: 7;
+  --_glyph-height: 7;
+}
+
+.close {
+  --_glyph-width: 8;
+  --_glyph-height: 7;
+}
+
+.dash {
+  --_glyph-width: 7;
+  --_glyph-height: 7;
+}
+
+.down {
+  --_glyph-width: 5;
+  --_glyph-height: 3;
+}
+
+.left {
+  --_glyph-width: 3;
+  --_glyph-height: 5;
+}
+
+.maximize {
+  --_glyph-width: 9;
+  --_glyph-height: 8;
+}
+
+.minimize {
+  --_glyph-width: 8;
+  --_glyph-height: 7;
+}
+
+.option {
+  --_glyph-width: 8;
+  --_glyph-height: 7;
+}
+
+.restore {
+  --_glyph-width: 8;
+  --_glyph-height: 8;
+}
+
+.right {
+  --_glyph-width: 3;
+  --_glyph-height: 5;
+}
+
+.up {
+  --_glyph-width: 5;
+  --_glyph-height: 3;
+}

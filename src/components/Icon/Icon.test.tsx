@@ -68,14 +68,13 @@ describe("Icon", () => {
 });
 
 describe("Glyph", () => {
-  it("è decorativo e riceve le dimensioni in pixel come variabili CSS", () => {
+  it("è decorativo e riceve le dimensioni in pixel da una classe, senza attributo style", () => {
     const { container } = render(<Glyph name="close" className="extra" />);
     const svg = container.querySelector("svg");
     expect(svg).toHaveAttribute("aria-hidden", "true");
     expect(svg).toHaveAttribute("viewBox", "0 0 8 7");
-    expect(svg).toHaveClass("glyph", "extra");
-    expect(svg?.style.getPropertyValue("--glyph-width")).toBe("8");
-    expect(svg?.style.getPropertyValue("--glyph-height")).toBe("7");
+    expect(svg).toHaveClass("glyph", "close", "extra");
+    expect(svg).not.toHaveAttribute("style");
   });
 
   it.each(glyphNames)("disegna il glifo %s", (name) => {

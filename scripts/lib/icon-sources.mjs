@@ -1,10 +1,11 @@
 import { readFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import { format } from "prettier";
-import { parseIcon, renderGlyphModule, renderIconModule } from "./icons.mjs";
+import { parseIcon, renderGlyphModule, renderGlyphSizes, renderIconModule } from "./icons.mjs";
 
 export const iconModulePath = "src/components/Icon/iconData.ts";
 export const glyphModulePath = "src/components/Icon/glyphData.ts";
+export const glyphSizesPath = "src/components/Icon/glyphSizes.module.css";
 
 /**
  * Legge le sorgenti (SVG e glyphs.json) e restituisce il contenuto dei moduli
@@ -36,5 +37,6 @@ export async function generatedModules(root) {
       renderGlyphModule(glyphSource.glyphs, glyphSource.radio.rows),
       options,
     ),
+    [glyphSizesPath]: await format(renderGlyphSizes(glyphSource.glyphs), { parser: "css" }),
   };
 }

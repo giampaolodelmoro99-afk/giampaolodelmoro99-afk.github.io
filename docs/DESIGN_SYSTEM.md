@@ -104,7 +104,7 @@ I token che dipendono dai colori (`--text-etch`, `--focus-halo-label`, `--dither
 - Proprietà personalizzate **private** di un modulo con il prefisso `_` (`--_bevel`, `--_halo`); Stylelint le ammette solo così.
 - Dipendenze tra moduli con `composes` (es. `composes: root from "../Button/Button.module.css"`); nessuna classe globale.
 - Mobile-first: lo stile base vale a 320 px, le `@media (min-width: …)` aggiungono.
-- Nessun `!important`. Gli unici stili inline ammessi sono variabili CSS con valori dinamici (es. `--glyph-width`), tipizzate in `src/types/css.d.ts`.
+- Nessun `!important`. Gli unici stili inline ammessi sono variabili CSS con valori dinamici (es. `--window-x`), tipizzate in `src/types/css.d.ts`, e mai nell'HTML prerenderizzato (ADR-0012).
 - Stylelint controlla con `declaration-strict-value` colori, sfondi, ombre, font, spaziature, z-index, durate e anche `text-shadow`, `opacity`, `translate`, `outline-offset`, `text-underline-offset`, `text-decoration-thickness` (test in `src/styles/stylelint.test.ts`).
 
 **Focus — doppio anello.** Ogni elemento interattivo ha un tratteggio `--color-focus` di 2 px sopra un alone pieno `--color-focus-halo` (6 px in tutto), visibile anche sul blu della barra del titolo e sul petrolio del desktop.
@@ -158,7 +158,7 @@ Catalogo del pacchetto, implementato in Fase 1B (piano in `docs/phases/phase-01-
 - 37 SVG originali in pixel art in `src/assets/icons/` (16 icone a 16 e 32 px, monogramma GDM, tre icone dei dialoghi a 32 px), registrati in `ASSETS.md`. Le icone `windows` e `power` (pulsante «Finestre» e Spegni…) vengono dal pacchetto della F2A (`docs/design/f2a-window-manager/icone/`), copiate byte per byte; chiudono i path con `</path>`, che il generatore accetta.
 - `npm run icons` genera `src/components/Icon/iconData.ts` e `glyphData.ts`. Ogni path ha un ruolo di colore (`pixelNavy`, `pixelYellow`…) che il CSS Module di Icon lega a `--color-pixel-*`. Regola per il nero: **il primo path `#000000` di un SVG è il contorno** (`--color-pixel-outline`, bianco in alto contrasto), gli altri sono riempimenti neri. Un test fallisce se i dati generati non sono allineati agli SVG.
 - `Icon`: `name`, `size` (16 o 32; le icone dei dialoghi solo 32, anche nei tipi), `scale` intera, `label`. Senza `label` è decorativa (`aria-hidden`), con `label` ha `role="img"`.
-- `Glyph`: glifi dei controlli (spunta, trattino, frecce, riduci, ingrandisci, ripristina, chiudi) a `--glyph-pixel` in `currentColor`; i dati del cerchio sono usati dal Radio.
+- `Glyph`: glifi dei controlli (spunta, trattino, frecce, riduci, ingrandisci, ripristina, chiudi, e dalla F2A `option`, il tasto ⌥ delle scorciatoie su Mac, che Pixel Operator non ha) a `--glyph-pixel` in `currentColor`; i dati del cerchio sono usati dal Radio. Le dimensioni arrivano da `glyphSizes.module.css`, generato da `npm run icons` con una classe per glifo: nessun attributo `style`, quindi nessun blocco della CSP nell'HTML prerenderizzato (ADR-0012, tipo C).
 - Gli SVG con i colori scritti dentro servono per favicon (`public/favicon.svg` = monogramma GDM 32), immagini Open Graph (F5) e documentazione.
 - Scala solo per interi, `shape-rendering="crispEdges"`, mai sfocare o ruotare.
 

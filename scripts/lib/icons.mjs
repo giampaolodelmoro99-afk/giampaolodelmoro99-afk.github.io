@@ -145,6 +145,28 @@ export function renderIconModule(icons) {
 }
 
 /**
+ * Dimensioni dei glifi come classi di un CSS Module, una per glifo: Glyph usa
+ * la classe al posto di un attributo style, che la CSP bloccherebbe nell'HTML
+ * prerenderizzato (ADR-0012, tipo C).
+ * @param {Record<string, string[]>} glyphs
+ * @returns {string}
+ */
+export function renderGlyphSizes(glyphs) {
+  const rules = Object.keys(glyphs)
+    .toSorted()
+    .map((name) => {
+      const rows = glyphs[name] ?? [];
+      return `.${name} {\n  --_glyph-width: ${rows[0]?.length ?? 0};\n  --_glyph-height: ${rows.length};\n}`;
+    });
+  return [
+    "/* File generato da scripts/icons.mjs a partire da src/components/Icon/glyphs.json: non modificarlo a mano. */",
+    "",
+    rules.join("\n\n"),
+    "",
+  ].join("\n");
+}
+
+/**
  * @param {Record<string, string[]>} glyphs
  * @param {string[]} radioRows
  * @returns {string}

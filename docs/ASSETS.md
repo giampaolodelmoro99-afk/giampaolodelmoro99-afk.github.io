@@ -80,6 +80,8 @@ Campi obbligatori: nome, file nel repo, fonte (URL ufficiale), autore, versione,
 
 Icone GDM 95 dal pacchetto di consegna approvato il 13/10/2026 (`docs/design/gdm95/icons/`), copiate byte per byte: gli SHA-256 coincidono con quelli del pacchetto. Gli SVG hanno i colori del tema classico scritti dentro; nell'interfaccia il componente `Icon` usa i dati generati da `npm run icons` e legge i colori dai token.
 
+**Glifi** (`src/components/Icon/glyphs.json`, dati del componente `Glyph`): dal pacchetto GDM 95, più il glifo `option` (⌥, 8×7 pixel) aggiunto il 28/10/2026 in Fase 2A, disegno originale di Claude per Gianpaolo Del Moro (contenuto del progetto, tutti i diritti riservati). Serve alle scorciatoie su Mac, perché Pixel Operator non ha U+2325 (verificato con fontkit sui due pesi).
+
 **Dismessi:**
 
 - _Campo minato, primo disegno_ (`src/assets/icons/minefield-16.svg` SHA-256 `81c79e02aba42e4e1ab72770b611b9f6a1f06318e237a7e5b102f4ff8a2c5998`, `minefield-32.svg` SHA-256 `2256a7a5307a7543c7544b24d2e1fee8c1cfe8062c6f05c006ae86d5770cc9ef`): caselle d'erba con fiore, troppo vicine a "Prato fiorito". Sostituite il 14/10/2026 in Fase 1B; restano nella storia di git e nel pacchetto `docs/design/gdm95/`.
