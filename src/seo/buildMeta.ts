@@ -11,6 +11,7 @@ export function jsonLd(locale: Locale, key: RouteKey): Record<string, unknown> {
   const t = getDictionary(locale);
   const personId = `${siteUrl}/#person`;
   const websiteId = `${siteUrl}/#website`;
+  const isProfile = key === "desktop" || key === "about";
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -31,13 +32,13 @@ export function jsonLd(locale: Locale, key: RouteKey): Record<string, unknown> {
         author: { "@id": personId },
       },
       {
-        "@type": "ProfilePage",
+        "@type": isProfile ? "ProfilePage" : "WebPage",
         "@id": `${absoluteUrl(routeMap[key][locale])}#page`,
         url: absoluteUrl(routeMap[key][locale]),
         name: t.meta[key].title,
         inLanguage: locale,
         isPartOf: { "@id": websiteId },
-        mainEntity: { "@id": personId },
+        ...(isProfile ? { mainEntity: { "@id": personId } } : { about: { "@id": personId } }),
       },
     ],
   };

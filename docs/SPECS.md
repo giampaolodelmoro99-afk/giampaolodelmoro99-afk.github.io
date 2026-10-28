@@ -68,6 +68,7 @@ La v1 era indicizzata con quattro sottopagine. Non devono diventare 404 alla rel
 | `/progetti` | finestra Progetti (IT) | stesso percorso (slug IT `progetti` previsto)                                                                                                                 |
 | `/contatti` | finestra Contatti (IT) | stesso percorso (slug IT `contatti` previsto)                                                                                                                 |
 
+- **Fase 2A** (28/10/2026): le quattro route esistono già con lo slug della v1, che è definitivo (`/profilo/`, `/stack/`, `/progetti/`, `/contatti/`; in inglese `/en/about/`, `/en/skills/`, `/en/projects/`, `/en/contact/`). GitHub Pages risponde agli URL della v1 senza slash finale con un 301 verso la cartella, quindi non servono pagine di reindirizzamento. Gli slug delle altre app sono provvisori fino alla Fase 3A (`src/routes/routeMap.ts`).
 - **Fase 3**: si scelgono gli slug definitivi e si generano le eventuali pagine di reindirizzamento in build, escluse dalla sitemap.
 - **Fase 7**: si verificano con `curl -I` in produzione, sitemap aggiornata e Google Search Console (copertura, reindirizzamenti, richiesta di nuova scansione).
 

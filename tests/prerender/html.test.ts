@@ -71,7 +71,7 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
     expect(attr(document, 'meta[name="twitter:card"]', "content")).toBeTruthy();
   });
 
-  it("contiene un JSON-LD valido con Person, WebSite e ProfilePage", async () => {
+  it("contiene un JSON-LD valido con Person, WebSite e la pagina (ProfilePage per home e About)", async () => {
     const { document } = await load(fileFor(href));
     const scripts = [...document.querySelectorAll('script[type="application/ld+json"]')];
     expect(scripts).toHaveLength(1);
@@ -81,7 +81,10 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
       "@graph": [
         { "@type": "Person", sameAs: [githubUrl] },
         { "@type": "WebSite" },
-        { "@type": "ProfilePage", inLanguage: locale },
+        {
+          "@type": key === "desktop" || key === "about" ? "ProfilePage" : "WebPage",
+          inLanguage: locale,
+        },
       ],
     });
   });

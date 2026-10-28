@@ -10,6 +10,99 @@ export const en: Dictionary = {
       description:
         "Portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Laravel and React projects in a Windows 95 style.",
     },
+    about: {
+      title: "About · Gianpaolo Del Moro",
+      socialTitle: "About · Gianpaolo Del Moro",
+      description:
+        "About me: Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa, working with Laravel and React.",
+    },
+    projects: {
+      title: "Projects · Gianpaolo Del Moro",
+      socialTitle: "Projects · Gianpaolo Del Moro",
+      description:
+        "Projects by Gianpaolo Del Moro with Laravel, Node.js and React: REST APIs, authentication and databases, with code on GitHub.",
+    },
+    cv: {
+      title: "CV · Gianpaolo Del Moro",
+      socialTitle: "CV · Gianpaolo Del Moro",
+      description:
+        "Résumé of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa, in a printable version.",
+    },
+    contacts: {
+      title: "Contact · Gianpaolo Del Moro",
+      socialTitle: "Contact · Gianpaolo Del Moro",
+      description:
+        "How to contact Gianpaolo Del Moro, Full Stack Developer in Pisa: contact form, email and GitHub.",
+    },
+    simpleView: {
+      title: "Simple view · Gianpaolo Del Moro",
+      socialTitle: "Simple view · Gianpaolo Del Moro",
+      description:
+        "Gianpaolo Del Moro's portfolio without windows: all the content on one easy-to-read page.",
+    },
+    skills: {
+      title: "Skills · Gianpaolo Del Moro",
+      socialTitle: "Skills · Gianpaolo Del Moro",
+      description:
+        "Gianpaolo Del Moro's technologies, with the level and context of use: Laravel, PHP, React, JavaScript and SQL.",
+    },
+    timeline: {
+      title: "Timeline · Gianpaolo Del Moro",
+      socialTitle: "Timeline · Gianpaolo Del Moro",
+      description:
+        "Gianpaolo Del Moro's path: studies, ITS Academy Prodigi and work experience, in chronological order.",
+    },
+    makingOf: {
+      title: "Making of · Gianpaolo Del Moro",
+      socialTitle: "Making of · Gianpaolo Del Moro",
+      description:
+        "How this Windows 95-style portfolio is built: technical choices, accessibility, performance and working with AI.",
+    },
+    terminal: {
+      title: "Terminal · Gianpaolo Del Moro",
+      socialTitle: "Terminal · Gianpaolo Del Moro",
+      description:
+        "A terminal in Gianpaolo Del Moro's portfolio: commands to open projects, CV and contact details from the keyboard.",
+    },
+    minefield: {
+      title: "Minefield · Gianpaolo Del Moro",
+      socialTitle: "Minefield · Gianpaolo Del Moro",
+      description:
+        "Minefield in Gianpaolo Del Moro's portfolio, playable with mouse, touch and keyboard.",
+    },
+    controlPanel: {
+      title: "Control Panel · Gianpaolo Del Moro",
+      socialTitle: "Control Panel · Gianpaolo Del Moro",
+      description:
+        "Portfolio settings: theme, high contrast, text size, animations, sound and language.",
+    },
+    privacy: {
+      title: "Privacy · Gianpaolo Del Moro",
+      socialTitle: "Privacy · Gianpaolo Del Moro",
+      description:
+        "Privacy notice of Gianpaolo Del Moro's portfolio: data processed, providers, storage and rights.",
+    },
+    trash: {
+      title: "Trash · Gianpaolo Del Moro",
+      socialTitle: "Trash · Gianpaolo Del Moro",
+      description:
+        "The portfolio's Trash: inside is the first version of Gianpaolo Del Moro's website.",
+    },
+  },
+  apps: {
+    about: "About",
+    projects: "Projects",
+    cv: "CV",
+    contacts: "Contact",
+    simpleView: "Simple view",
+    skills: "Skills",
+    timeline: "Timeline",
+    makingOf: "Making of",
+    terminal: "Terminal",
+    minefield: "Minefield",
+    controlPanel: "Control Panel",
+    privacy: "Privacy",
+    trash: "Trash",
   },
   person: {
     jobTitle: "Full Stack Developer · ITS Academy Prodigi student",
