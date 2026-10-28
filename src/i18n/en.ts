@@ -5,18 +5,18 @@ export const en: Dictionary = {
     siteName: "Gianpaolo Del Moro",
     ogLocale: "en_US",
     desktop: {
-      title: "Gianpaolo Del Moro | Full Stack Developer",
+      title: "Gianpaolo Del Moro · Full Stack Developer",
+      socialTitle: "Full Stack Developer · ITS Academy Prodigi student",
       description:
-        "Portfolio of Gianpaolo Del Moro, Full Stack Developer in training based in Pisa, Italy, with a Windows 95–style interface. Under construction.",
+        "Portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Laravel and React projects in a Windows 95 style.",
     },
   },
   person: {
-    jobTitle: "Full Stack Developer (in training)",
+    jobTitle: "Full Stack Developer · ITS Academy Prodigi student",
   },
   desktop: {
     heading: "Gianpaolo Del Moro",
-    tagline:
-      "Full Stack Developer in training. The new Windows 95–style portfolio is under construction.",
+    tagline: "Full Stack Developer · ITS Academy Prodigi student",
     languageNavLabel: "Language",
     languageName: "English version",
   },

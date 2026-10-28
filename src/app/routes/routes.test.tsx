@@ -30,7 +30,7 @@ describe("route desktop", () => {
     const html = renderDocument("/en/");
     expect(html).toContain('<link rel="canonical" href="https://gianpaolodelmoro.it/en/"/>');
     expect(html).toContain("<h1");
-    expect(html).toContain("under construction");
+    expect(html).toContain("Full Stack Developer · ITS Academy Prodigi student");
   });
 });
 

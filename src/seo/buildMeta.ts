@@ -45,7 +45,7 @@ export function jsonLd(locale: Locale, key: RouteKey): Record<string, unknown> {
 
 export function buildMeta(locale: Locale, key: RouteKey): MetaDescriptor[] {
   const t = getDictionary(locale);
-  const { title, description } = t.meta[key];
+  const { title, socialTitle, description } = t.meta[key];
   const canonical = absoluteUrl(routeMap[key][locale]);
   const alternates = locales.filter((other) => other !== locale);
   return [
@@ -68,7 +68,7 @@ export function buildMeta(locale: Locale, key: RouteKey): MetaDescriptor[] {
     },
     { property: "og:type", content: "website" },
     { property: "og:site_name", content: t.meta.siteName },
-    { property: "og:title", content: title },
+    { property: "og:title", content: socialTitle },
     { property: "og:description", content: description },
     { property: "og:url", content: canonical },
     { property: "og:locale", content: t.meta.ogLocale },
@@ -77,7 +77,7 @@ export function buildMeta(locale: Locale, key: RouteKey): MetaDescriptor[] {
       content: getDictionary(other).meta.ogLocale,
     })),
     { name: "twitter:card", content: "summary" },
-    { name: "twitter:title", content: title },
+    { name: "twitter:title", content: socialTitle },
     { name: "twitter:description", content: description },
     { "script:ld+json": jsonLd(locale, key) },
   ];

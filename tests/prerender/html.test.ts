@@ -65,7 +65,7 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
 
   it("ha Open Graph e Twitter card", async () => {
     const { document } = await load(fileFor(href));
-    expect(attr(document, 'meta[property="og:title"]', "content")).toBe(t.meta[key].title);
+    expect(attr(document, 'meta[property="og:title"]', "content")).toBe(t.meta[key].socialTitle);
     expect(attr(document, 'meta[property="og:url"]', "content")).toBe(`${siteUrl}${href}`);
     expect(attr(document, 'meta[property="og:locale"]', "content")).toBe(t.meta.ogLocale);
     expect(attr(document, 'meta[name="twitter:card"]', "content")).toBeTruthy();

@@ -3,18 +3,18 @@ export const it = {
     siteName: "Gianpaolo Del Moro",
     ogLocale: "it_IT",
     desktop: {
-      title: "Gianpaolo Del Moro | Full Stack Developer",
+      title: "Gianpaolo Del Moro · Full Stack Developer",
+      socialTitle: "Full Stack Developer · Studente ITS Academy Prodigi",
       description:
-        "Portfolio di Gianpaolo Del Moro, Full Stack Developer in formazione a Pisa, in un'interfaccia in stile Windows 95. Sito in costruzione.",
+        "Portfolio di Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Progetti con Laravel e React in stile Windows 95.",
     },
   },
   person: {
-    jobTitle: "Full Stack Developer (in formazione)",
+    jobTitle: "Full Stack Developer · Studente ITS Academy Prodigi",
   },
   desktop: {
     heading: "Gianpaolo Del Moro",
-    tagline:
-      "Full Stack Developer in formazione. Il nuovo portfolio in stile Windows 95 è in costruzione.",
+    tagline: "Full Stack Developer · Studente ITS Academy Prodigi",
     languageNavLabel: "Lingua",
     languageName: "Versione italiana",
   },

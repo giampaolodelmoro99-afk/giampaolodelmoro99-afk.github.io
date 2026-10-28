@@ -17,7 +17,9 @@ describe("Desktop", () => {
 
   it("mostra il collegamento alla versione italiana sulla route inglese", () => {
     renderAt("/en/", Desktop);
-    expect(screen.getByText(/under construction/)).toBeInTheDocument();
+    expect(
+      screen.getByText("Full Stack Developer · ITS Academy Prodigi student"),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Versione italiana" })).toHaveAttribute("href", "/");
   });
 
