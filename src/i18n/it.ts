@@ -115,7 +115,9 @@ export const it = {
     iconsLabel: "Icone del desktop",
     taskbarLabel: "Barra delle applicazioni",
     placeholder: "Il contenuto di questa finestra è in arrivo.",
-    windowsButton: "Finestre aperte (Alt+W)",
+    windowsButton: "Finestre aperte ({shortcut})",
+    windowsButtonEmpty: "Finestre aperte: nessuna",
+    switcherHint: "{alt}W avanza · Maiusc+{alt}W torna indietro · Invio attiva · Esc annulla",
     clockLabel: "Ora",
     minimizedSuffix: "ridotta a icona",
     announce: {

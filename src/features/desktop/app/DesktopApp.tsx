@@ -2,7 +2,6 @@ import { type Key, useEffect, useRef, useState } from "react";
 import { I18nProvider } from "react-aria-components/I18nProvider";
 import { Link } from "react-router";
 import { useStore } from "zustand";
-import { Button } from "../../../components/Button";
 import buttonStyles from "../../../components/Button/Button.module.css";
 import { DesktopIcons } from "../../../components/DesktopIcon";
 import { DragOutline } from "../../../components/DragOutline";
@@ -10,7 +9,8 @@ import { MoveControls } from "../../../components/MoveControls";
 import type { WindowMenuAction } from "../../../components/WindowMenu";
 import { MenuItem } from "../../../components/MenuBar";
 import { StartButton } from "../../../components/StartButton";
-import { Taskbar, TaskbarButton } from "../../../components/TaskbarButton";
+import { Taskbar, TaskbarButton, TaskbarIconButton } from "../../../components/TaskbarButton";
+import { WindowSwitcher } from "../../../components/WindowSwitcher";
 import { cx } from "../../../components/cx";
 import { getDictionary, useLocale, useT } from "../../../i18n";
 import {
@@ -31,7 +31,8 @@ import { apps, appDefinition, desktopApps } from "../apps";
 import styles from "../Desktop.module.css";
 import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
 import { DesktopWindow } from "./DesktopWindow";
-import { isTextEntry, matchShortcut } from "../shortcuts";
+import { isApplePlatform, isTextEntry, matchShortcut } from "../shortcuts";
+import { ShortcutText } from "./ShortcutText";
 import { useAnnouncer } from "./Announcer";
 import { useKeyboardGesture } from "./useKeyboardGesture";
 import { useWindowGestures, windowRect } from "./useWindowGestures";
@@ -61,6 +62,8 @@ function useIconsReady(onReady: (() => void) | undefined) {
 }
 
 const isDesktopLayout = () => window.matchMedia("(width >= 768px)").matches;
+
+type Switcher = { selected: AppId; viaShortcut: boolean };
 
 function useDesktopStore(routeKey: RouteKey): DesktopStore {
   const [store] = useState(() => createDesktopStore(initialStateFor(routeKey)));
@@ -165,18 +168,58 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
     }
   };
 
+  const recent = useStore(store, (state) => state.recent);
+  const [switcher, setSwitcher] = useState<Switcher | null>(null);
+  const [isApple] = useState(isApplePlatform);
+  const altShortcut = `${isApple ? "Option" : "Alt"}+W`;
+
+  const activateFromSwitcher = (id: string) => {
+    setSwitcher(null);
+    openApp(id);
+  };
+
+  const openSwitcher = (viaShortcut: boolean, step: 1 | -1) => {
+    const order = store.getState().recent;
+    if (order.length === 0) return;
+    setSwitcher((current) => {
+      const from = current ? order.indexOf(current.selected) : 0;
+      const next = order[(from + step + order.length) % order.length] ?? order[0] ?? null;
+      if (!next) return current;
+      return { selected: next, viaShortcut: current?.viaShortcut ?? viaShortcut };
+    });
+  };
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (isTextEntry(event.target)) return;
       const action = matchShortcut(event);
-      const active = store.getState().activeId;
-      if (action !== "windowMenu" || !active) return;
+      if (!action) return;
+      if (action === "windowMenu") {
+        const active = store.getState().activeId;
+        if (!active) return;
+        setMenuOpenFor(active);
+      } else {
+        openSwitcher(true, action === "switcherNext" ? 1 : -1);
+      }
       event.preventDefault();
-      setMenuOpenFor(active);
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [store]);
+  });
+
+  useEffect(() => {
+    if (!switcher?.viaShortcut) return undefined;
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (event.key === "Alt") activateFromSwitcher(switcher.selected);
+    };
+    const onBlur = () => setSwitcher(null);
+    document.addEventListener("keyup", onKeyUp);
+    window.addEventListener("blur", onBlur);
+    return () => {
+      document.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("blur", onBlur);
+    };
+  });
 
   const outline = gestures.outline ?? keyboard.gesture?.current ?? null;
 
@@ -249,6 +292,19 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
           </div>
         )}
         {region}
+        <WindowSwitcher
+          isOpen={switcher !== null}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setSwitcher(null);
+          }}
+          items={recent.map((id) => ({ id, label: t.apps[id], icon: appDefinition(id).icon }))}
+          selectedId={switcher?.selected ?? null}
+          onSelectionChange={(id) => {
+            if (isAppId(id)) setSwitcher((current) => current && { ...current, selected: id });
+          }}
+          onActivate={activateFromSwitcher}
+          hint={<ShortcutText text={t.desktop.switcherHint} isApple={isApple} />}
+        />
       </main>
       <Taskbar
         label={t.desktop.taskbarLabel}
@@ -276,7 +332,17 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
             </MenuItem>
           ))}
         </StartButton>
-        <Button icon="windows" aria-label={t.desktop.windowsButton} isDisabled />
+        <TaskbarIconButton
+          icon="windows"
+          aria-label={
+            recent.length === 0
+              ? t.desktop.windowsButtonEmpty
+              : t.desktop.windowsButton.replace("{shortcut}", altShortcut)
+          }
+          isUnavailable={recent.length === 0}
+          isPressed={switcher !== null && !switcher.viaShortcut}
+          onPress={() => openSwitcher(false, 1)}
+        />
         {Object.values(windows).map(({ id, minimized }) => (
           <TaskbarButton
             key={id}

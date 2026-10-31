@@ -80,3 +80,31 @@ test("Alt+Spazio e Alt+trattino aprono il menu della finestra attiva", async ({ 
   await page.keyboard.press("Alt+Minus");
   await expect(menu).toBeVisible();
 });
+
+test("Alt+W apre il selettore delle finestre e il rilascio di Alt attiva la scelta", async ({
+  page,
+}) => {
+  await openDesktop(page);
+  await page.getByRole("row", { name: "CV" }).dblclick();
+  await expect(page.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+  await page.keyboard.down("Alt");
+  await page.keyboard.press("w");
+  const dialog = page.getByRole("dialog", { name: "Finestre aperte" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("status")).toHaveText("About");
+  await page.keyboard.up("Alt");
+  await expect(dialog).toBeHidden();
+  await expect(page.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+  await expect(page.locator("#window-about-body")).toBeFocused();
+});
+
+test("Esc chiude il selettore senza cambiare finestra", async ({ page }) => {
+  await openDesktop(page);
+  await page.getByRole("button", { name: "Finestre aperte (Alt+W)" }).focus();
+  await page.keyboard.press("Enter");
+  const dialog = page.getByRole("dialog", { name: "Finestre aperte" });
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await expect(page.getByRole("button", { name: "Finestre aperte (Alt+W)" })).toBeFocused();
+});

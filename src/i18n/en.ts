@@ -117,7 +117,9 @@ export const en: Dictionary = {
     iconsLabel: "Desktop icons",
     taskbarLabel: "Taskbar",
     placeholder: "The content of this window is on its way.",
-    windowsButton: "Open windows (Alt+W)",
+    windowsButton: "Open windows ({shortcut})",
+    windowsButtonEmpty: "Open windows: none",
+    switcherHint: "{alt}W next · Shift+{alt}W back · Enter switch · Esc cancel",
     clockLabel: "Time",
     minimizedSuffix: "minimized",
     announce: {

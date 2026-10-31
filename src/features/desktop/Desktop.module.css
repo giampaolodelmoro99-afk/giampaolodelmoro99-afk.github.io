@@ -144,6 +144,11 @@
   block-size: var(--titlebar-height);
 }
 
+.inlineGlyph {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .visuallyHidden {
   position: absolute;
   inline-size: 1px;

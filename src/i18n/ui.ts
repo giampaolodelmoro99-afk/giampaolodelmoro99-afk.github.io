@@ -27,6 +27,9 @@ const it = {
     maximize: "Ingrandisci",
     close: "Chiudi",
   },
+  windowSwitcher: {
+    label: "Finestre aperte",
+  },
   moveControls: {
     label: "Spostamento e ridimensionamento",
     up: "Su",
@@ -66,6 +69,9 @@ const en: UiStrings = {
     minimize: "Minimize",
     maximize: "Maximize",
     close: "Close",
+  },
+  windowSwitcher: {
+    label: "Open windows",
   },
   moveControls: {
     label: "Move and resize",

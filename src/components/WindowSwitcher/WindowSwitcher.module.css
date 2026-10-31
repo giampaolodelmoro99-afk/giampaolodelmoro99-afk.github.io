@@ -1,0 +1,75 @@
+.overlay {
+  position: fixed;
+  inset: var(--space-0);
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding: var(--space-safe-top) var(--space-gutter) var(--space-safe-bottom);
+}
+
+.modal {
+  max-inline-size: 100%;
+  outline: none;
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  max-inline-size: 100%;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-window);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  outline: none;
+}
+
+.title {
+  font-weight: var(--font-weight-bold);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1);
+  outline: none;
+}
+
+.item {
+  display: grid;
+  place-items: center;
+  inline-size: var(--switcher-cell);
+  block-size: var(--switcher-cell);
+  outline: none;
+}
+
+.item[data-selected] {
+  box-shadow: var(--bevel-sunken);
+}
+
+.item[data-focus-visible] {
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+  box-shadow: var(--focus-halo-inset);
+}
+
+.name {
+  min-inline-size: 100%;
+  min-block-size: var(--control-height);
+  padding: var(--space-1) var(--space-2);
+  box-shadow: var(--bevel-status);
+  text-align: center;
+}
+
+.hint {
+  max-inline-size: var(--dialog-width);
+  margin: var(--space-0);
+  color: var(--color-text-muted);
+  font-family: var(--font-family-prose);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-body);
+  text-align: center;
+}

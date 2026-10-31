@@ -203,6 +203,50 @@ describe("DesktopApp", () => {
     input.remove();
   });
 
+  it("il pulsante Finestre apre il selettore sulla finestra successiva e una scelta la attiva", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    const windows = screen.getByRole("button", { name: "Finestre aperte (Alt+W)" });
+    await user.click(windows);
+    const dialog = await screen.findByRole("dialog", { name: "Finestre aperte" });
+    expect(within(dialog).getByRole("status")).toHaveTextContent("About");
+    expect(windows).toHaveAttribute("aria-expanded", "true");
+    await user.click(within(dialog).getByRole("option", { name: "About" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+  });
+
+  it("Alt+W apre il selettore, Alt+W avanza, il rilascio di Alt attiva la scelta", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "Skills" }));
+    await user.keyboard("{Alt>}w");
+    const dialog = await screen.findByRole("dialog", { name: "Finestre aperte" });
+    expect(within(dialog).getByRole("status")).toHaveTextContent("CV");
+    await user.keyboard("w");
+    expect(within(dialog).getByRole("status")).toHaveTextContent("About");
+    await user.keyboard("{Shift>}w{/Shift}");
+    expect(within(dialog).getByRole("status")).toHaveTextContent("CV");
+    await user.keyboard("{/Alt}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+  });
+
+  it("senza finestre il pulsante Finestre resta raggiungibile ma non apre nulla", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "Chiudi" }));
+    const windows = screen.getByRole("button", { name: "Finestre aperte: nessuna" });
+    expect(windows).toHaveAttribute("aria-disabled", "true");
+    await user.click(windows);
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
   it("segnala di essere pronto quando le icone sono nella griglia", async () => {
     const onReady = vi.fn<() => void>();
     renderDesktop("/", onReady);

@@ -21,3 +21,4 @@ export * from "./TextField";
 export * from "./Tooltip";
 export * from "./Window";
 export * from "./WindowMenu";
+export * from "./WindowSwitcher";

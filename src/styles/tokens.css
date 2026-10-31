@@ -311,6 +311,8 @@
   --drag-outline-width: 3px;
   --resize-grab-desktop: 8px;
   --resize-handle-size: 10px;
+  --opacity-unavailable: 0.55;
+  --switcher-cell: max(4rem, var(--touch-target-min));
   --z-drag-outline: 999;
 }
 
