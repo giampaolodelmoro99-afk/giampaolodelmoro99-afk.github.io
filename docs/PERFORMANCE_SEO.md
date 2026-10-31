@@ -2,6 +2,8 @@
 
 ## 1. Budget
 
+Le soglie di prestazioni e di Lighthouse si scrivono **solo** qui e in TESTING.md §3: gli altri documenti (README, SPECS, CLAUDE.md, PLAN, skill) rimandano a queste due fonti, così un cambio di regola si fa in un posto solo. Gli ADR restano come registro delle decisioni, con i valori del momento.
+
 | Metrica                | Budget              | Ultima misura                       | Come si verifica |
 | ---------------------- | ------------------- | ----------------------------------- | ---------------- |
 | JS iniziale (gzip)     | ≤ 124 kB (ADR-0014) | 117,8 kB (F2A, guscio statico)      | `npm run size`   |

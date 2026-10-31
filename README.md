@@ -13,7 +13,7 @@ Personal portfolio of **Gianpaolo Del Moro**, Full Stack Developer in training, 
 ### Highlights
 
 - **Static prerender + SPA.** React Router 8 in framework mode with `ssr: false` + `prerender`. Every route ships full semantic HTML, readable without JavaScript. After the first load, navigation is client-side only.
-- **Lighthouse**: Accessibility, Best Practices and SEO at 100 on mobile and desktop; Performance 100 on desktop and at least 90 on mobile at every phase close and release, at least 90 on every push; LCP ≤ 2.5 s, TBT ≤ 200 ms and CLS ≤ 0.1, Google's "good" thresholds (ADR-0018). Hydration starts after `load`, so the prerendered content paints without waiting for the bundle.
+- **Lighthouse** on mobile and desktop, at every push and at every phase close and release, with Google's "good" Web Vitals thresholds; the exact values live in `docs/PERFORMANCE_SEO.md` and `docs/TESTING.md`. Hydration starts after `load`, so the prerendered content paints without waiting for the bundle.
 - **Strict CSP without `unsafe-inline`.** The policy is a meta tag with a SHA-256 hash for every inline script, computed at build time, because GitHub Pages allows no custom headers.
 - **No third-party requests on page load**: no CDN, no analytics, no cookies. The e2e tests check this.
 - **Accessibility first**: WCAG 2.2 AA, axe in unit and e2e tests, 44 px touch targets, reduced motion.
@@ -40,13 +40,13 @@ npm run build && npm run preview   # production-like, served like GitHub Pages
 | `build`                         | Prerender + post-build (CSP hashes, 404, deferred hydration)                |
 | `preview`                       | Serves `build/client` like GitHub Pages (301 on trailing slash, 404 status) |
 | `lint` / `typecheck` / `format` | Oxlint + Stylelint / React Router typegen + tsc / Prettier                  |
-| `test` / `test:coverage`        | Vitest unit tests (coverage ≥ 80%)                                          |
+| `test` / `test:coverage`        | Vitest unit tests (coverage threshold in `docs/TESTING.md`)                 |
 | `test:prerender`                | Checks the prerendered HTML (needs `build`)                                 |
 | `test:e2e`                      | Full Playwright suite in the Playwright Docker image (same as CI)           |
 | `test:e2e:host`                 | Playwright on the host, without visual tests                                |
 | `size`                          | Bundle budgets (size-limit)                                                 |
-| `lhci:mobile` / `lhci:desktop`  | Lighthouse CI per push: Performance ≥ 90, the rest 100, Web Vitals limits   |
-| `lhci:*:strict`                 | Phase close and release: desktop Performance 100, mobile ≥ 90 (ADR-0018)    |
+| `lhci:mobile` / `lhci:desktop`  | Lighthouse CI per push (thresholds in `docs/PERFORMANCE_SEO.md` §2)         |
+| `lhci:*:strict`                 | Lighthouse at phase close and release (`docs/PERFORMANCE_SEO.md` §2)        |
 
 ### Docs
 
@@ -67,7 +67,7 @@ Portfolio personale di **Gianpaolo Del Moro**, Full Stack Developer in formazion
 ### Punti salienti
 
 - **Prerender statico + SPA.** React Router 8 in framework mode con `ssr: false` + `prerender`. Ogni route ha HTML semantico completo, leggibile senza JavaScript. Dopo il primo caricamento la navigazione è solo lato client.
-- **Lighthouse**: Accessibility, Best Practices e SEO a 100 su mobile e desktop; Performance 100 su desktop e almeno 90 su mobile alla chiusura di ogni fase e alla release, almeno 90 a ogni push; LCP ≤ 2,5 s, TBT ≤ 200 ms e CLS ≤ 0,1, le soglie "buone" di Google (ADR-0018). L'idratazione parte dopo il `load`, così il contenuto prerenderizzato si vede senza attendere il bundle.
+- **Lighthouse** su mobile e desktop, a ogni push e a ogni chiusura di fase e release, con le soglie "buone" di Google per i Web Vitals; i valori esatti stanno in `docs/PERFORMANCE_SEO.md` e `docs/TESTING.md`. L'idratazione parte dopo il `load`, così il contenuto prerenderizzato si vede senza attendere il bundle.
 - **CSP rigorosa senza `unsafe-inline`.** La policy sta in un meta tag con l'hash SHA-256 di ogni script inline, calcolato in build, perché GitHub Pages non permette header custom.
 - **Nessuna richiesta a terze parti al caricamento**: niente CDN, analytics o cookie. Lo verificano i test e2e.
 - **Accessibilità al centro**: WCAG 2.2 AA, axe nei test unitari ed e2e, target touch di 44 px, animazioni ridotte.

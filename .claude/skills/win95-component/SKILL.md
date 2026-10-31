@@ -30,7 +30,7 @@ Per ogni componente riutilizzabile in `src/components/` (pulsante, campo, checkb
 ## Checklist di uscita
 
 - [ ] `npm run lint`, `npm run typecheck`, `npm run test:coverage` verdi; e2e locali con `npm run test:e2e:chromium` (la matrice completa in CI)
-- [ ] `npm run size:components` per il peso del componente nuovo (10 kB gzip al massimo per la parte specifica); size-limit dei totali verde in CI; la tabella dei pesi in PERFORMANCE_SEO.md si aggiorna a fine fase
+- [ ] `npm run size:components` per il peso del componente nuovo (soglia di arresto in PERFORMANCE_SEO.md, "Peso dei componenti"); size-limit dei totali verde in CI; la tabella dei pesi in PERFORMANCE_SEO.md si aggiorna a fine fase
 - [ ] Nessun valore hardcoded (Stylelint verde), nessun commento nel `.tsx`
 - [ ] axe pulito, focus visibile, target touch rispettati
 - [ ] Story presente e verificata

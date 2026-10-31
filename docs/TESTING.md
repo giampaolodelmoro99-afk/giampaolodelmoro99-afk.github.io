@@ -18,6 +18,8 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 
 ## 3. Soglie
 
+Questa tabella e PERFORMANCE_SEO.md §1–2 sono le uniche fonti delle soglie: gli altri documenti rimandano qui.
+
 | Controllo       | Soglia                                                                                                                                                                                        | Dove                  |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
 | Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                                                    | `vitest.config.ts`    |

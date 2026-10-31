@@ -25,7 +25,7 @@ description: Indica e scrive i test necessari per un file o una modifica (compon
 - Test per un solo tipo di input in `keyboard.spec.ts` o `touch.spec.ts`. Mai `if` sul progetto, mai `test.skip` o `test.fail` condizionali.
 - Niente `waitForTimeout`: usa asserzioni con attesa.
 - Servizi esterni sempre simulati con `page.route` (TESTING.md §8).
-- Coverage ≥ 80% con test che verificano comportamento, non righe. Niente test senza `expect` (Oxlint `expect-expect`).
+- Coverage nella soglia di TESTING.md §3, con test che verificano comportamento, non righe. Niente test senza `expect` (Oxlint `expect-expect`).
 - **Vietato**: `skip`, `only`, `todo`, test commentati, soglie abbassate, asserzioni indebolite per far passare un test. Un test che fallisce indica un bug da correggere, oppure un requisito cambiato da discutere.
 
 ## Comandi

@@ -2,7 +2,7 @@
 
 ## 1. Visione
 
-Un portfolio che si presenta come un desktop Windows 95 e funziona come un sito moderno. Deve essere veloce (Lighthouse: categorie a 100, Performance desktop 100 e mobile ≥ 90, Web Vitals "buoni"; ADR-0018), accessibile (WCAG 2.2 AA), leggibile da motori di ricerca e assistenti AI senza eseguire JavaScript, rispettoso della privacy (nessuna terza parte al caricamento) e usabile da 320 px in su, con il dito come con mouse e tastiera.
+Un portfolio che si presenta come un desktop Windows 95 e funziona come un sito moderno. Deve essere veloce (Lighthouse e budget in PERFORMANCE_SEO.md), accessibile (WCAG 2.2 AA), leggibile da motori di ricerca e assistenti AI senza eseguire JavaScript, rispettoso della privacy (nessuna terza parte al caricamento) e usabile da 320 px in su, con il dito come con mouse e tastiera.
 
 Il tema 95 è un'interfaccia, non un ostacolo: chi ha fretta trova CV e contatti in pochi secondi.
 
@@ -35,14 +35,14 @@ Il dettaglio di ogni app si definisce nel piano della fase che la realizza.
 
 ## 4. Requisiti non funzionali
 
-- **Performance**: Lighthouse con Accessibility, Best Practices e SEO a 100, Performance desktop 100 e mobile ≥ 90, LCP ≤ 2,5 s, TBT ≤ 200 ms, CLS ≤ 0,1 (ADR-0018), su tutte le route principali IT ed EN. Budget in `PERFORMANCE_SEO.md`. Nessun errore in console.
+- **Performance**: Lighthouse nelle soglie di PERFORMANCE_SEO.md §2, su tutte le route principali IT ed EN. Budget in `PERFORMANCE_SEO.md`. Nessun errore in console.
 - **Leggibilità senza JS**: ogni route prerenderizzata contiene il contenuto completo della sua finestra in HTML semantico, con metadati, hreflang e JSON-LD.
 - **Responsive**: da 320 px ai monitor larghi, in verticale e in orizzontale, senza scroll orizzontale. Zoom del browser e safe-area supportati.
 - **Accessibilità**: WCAG 2.2 AA, tastiera completa, screen reader, reduced motion, alto contrasto (`ACCESSIBILITY.md`).
 - **Privacy**: nessuna richiesta a terze parti al caricamento, solo storage tecnico, nessun cookie banner (`LEGAL.md`).
 - **i18n**: italiano di default, inglese, slug tradotti (`I18N.md`).
 - **Sicurezza**: CSP senza `unsafe-inline`, dipendenze controllate.
-- **Manutenibilità**: TypeScript strict, coverage ≥ 80%, ADR per ogni decisione rilevante.
+- **Manutenibilità**: TypeScript strict, coverage nella soglia di TESTING.md §3, ADR per ogni decisione rilevante.
 - **Originalità e nomi**: nessun asset Microsoft (`ASSETS.md`) e nessun nome di prodotto Microsoft nelle etichette (nomi delle app, icone, menu e titoli delle finestre). Le descrizioni ("in stile Windows 95") e il disclaimer di non affiliazione di `LEGAL.md` possono nominare Windows. Le app si chiamano "Terminale" / "Terminal" e "Campo minato" / "Minefield", mai "MS-DOS", "Prato fiorito" o "Windows" (design system GDM 95, `docs/design/gdm95/README.md`).
 - **LinkedIn**: non compare in nessuna parte del sito (`CONTENT.md` §1).
 
@@ -96,17 +96,17 @@ La v1 era indicizzata con quattro sottopagine. Non devono diventare 404 alla rel
 
 ## 8. Criteri di accettazione
 
-| Requisito       | Criterio verificabile                                                                                                                                                               |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Lighthouse      | Categorie a 100; Performance desktop 100 e mobile ≥ 90 a fine fase e release, ≥ 90 a ogni push; LCP, TBT e CLS alle soglie buone di Google (ADR-0018), su tutte le route principali |
-| HTML statico    | `npm run test:prerender` verde: lang, title, description, canonical, hreflang, OG, JSON-LD e contenuto della finestra per ogni route                                                |
-| Navigazione SPA | e2e: cambio route senza reload (marcatore su `window` conservato)                                                                                                                   |
-| Responsive      | e2e su 320, 375, 768, 1024, 1440 px + touch: nessuno scroll orizzontale, target ≥ 44 px, screenshot stabili                                                                         |
-| Accessibilità   | zero violazioni axe (unit ed e2e, WCAG 2.2 AA); checklist manuale in `QA_CHECKLIST.md`                                                                                              |
-| Privacy         | e2e: nessuna richiesta verso origini esterne al caricamento; test che nessun file statico contenga l'email                                                                          |
-| Console         | e2e: nessun errore o warning in console                                                                                                                                             |
-| Recruiter       | e2e: da ogni route, CV e contatti in ≤ 2 interazioni; contatto possibile con Web3Forms simulato giù                                                                                 |
-| Peso            | `npm run size` entro i budget                                                                                                                                                       |
+| Requisito       | Criterio verificabile                                                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Lighthouse      | Nelle soglie di PERFORMANCE_SEO.md §2 (ADR-0018), su tutte le route principali                                                       |
+| HTML statico    | `npm run test:prerender` verde: lang, title, description, canonical, hreflang, OG, JSON-LD e contenuto della finestra per ogni route |
+| Navigazione SPA | e2e: cambio route senza reload (marcatore su `window` conservato)                                                                    |
+| Responsive      | e2e su 320, 375, 768, 1024, 1440 px + touch: nessuno scroll orizzontale, target ≥ 44 px, screenshot stabili                          |
+| Accessibilità   | zero violazioni axe (unit ed e2e, WCAG 2.2 AA); checklist manuale in `QA_CHECKLIST.md`                                               |
+| Privacy         | e2e: nessuna richiesta verso origini esterne al caricamento; test che nessun file statico contenga l'email                           |
+| Console         | e2e: nessun errore o warning in console                                                                                              |
+| Recruiter       | e2e: da ogni route, CV e contatti in ≤ 2 interazioni; contatto possibile con Web3Forms simulato giù                                  |
+| Peso            | `npm run size` entro i budget                                                                                                        |
 
 ## 9. Fuori perimetro
 

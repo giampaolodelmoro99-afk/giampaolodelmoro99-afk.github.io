@@ -66,7 +66,7 @@
 | Automatico, componenti   | @axe-core/playwright sulle story, temi classico e alto contrasto, input mouse e touch, con contrasto e target 44 px in touch | ogni story (progetto `storybook`) |
 | Tastiera                 | e2e `keyboard.spec.ts`                                                                                                       | ogni interazione nuova            |
 | Touch                    | e2e `touch.spec.ts`, target 44 px                                                                                            | ogni controllo nuovo              |
-| Lighthouse Accessibility | LHCI = 100                                                                                                                   | ogni build                        |
+| Lighthouse Accessibility | LHCI, soglia in PERFORMANCE_SEO.md §2                                                                                        | ogni build                        |
 | Manuale                  | NVDA + Firefox, VoiceOver + Safari iOS, zoom 200/400%, `forced-colors`                                                       | a fine fase (QA_CHECKLIST.md)     |
 
 ## 9. Eccezioni documentate

@@ -39,13 +39,13 @@ Un componente o una feature è finito solo se:
 1. è responsive da 320 px ai monitor larghi, con target touch ≥ 44 px in modalità touch
 2. ha test (`docs/TESTING.md`), una story in Storybook (dalla Fase 1) e zero violazioni axe
 3. ogni animazione rispetta `prefers-reduced-motion` e l'impostazione del Pannello di controllo
-4. rispetta Lighthouse (ADR-0018: Accessibility, Best Practices e SEO a 100; Performance desktop 100 e mobile ≥ 90 a fine fase, ≥ 90 a ogni push; LCP ≤ 2,5 s, TBT ≤ 200 ms, CLS ≤ 0,1) e non toglie contenuto dall'HTML prerenderizzato
+4. rispetta le soglie di Lighthouse e i budget (valori solo in `docs/PERFORMANCE_SEO.md` e `docs/TESTING.md`) e non toglie contenuto dall'HTML prerenderizzato
 5. **un lavoro visivo è verificato nel browser, anche su viewport mobile** (`docs/QA_CHECKLIST.md`, Claude in Chrome)
 
 ## Integrità dei test
 
 - Mai `test.skip`, `.only`, `.todo`, test commentati o rimossi senza motivo.
-- Mai abbassare soglie (coverage 80%, Lighthouse di ADR-0018, size-limit) né aggiornare screenshot solo per far passare la CI.
+- Mai abbassare soglie (coverage, Lighthouse, size-limit: valori in `docs/TESTING.md` §3 e `docs/PERFORMANCE_SEO.md` §1) né aggiornare screenshot solo per far passare la CI.
 - Eccezioni solo con un ADR.
 - Una fase si chiude solo con tutti i test verdi in locale e nella CI del branch (`CONTRIBUTING.md`).
 
