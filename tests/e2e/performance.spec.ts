@@ -1,10 +1,11 @@
-import { expect, openPage, test } from "./fixtures";
+import { expect, openDesktop, openPage, test } from "./fixtures";
 
-type Timing = { loadEnd: number; hydratedAt: number; longTasks: number[] };
+type Timing = { loadEnd: number; hydratedAt: number; swappedAt: number; longTasks: number[] };
 
 declare global {
   interface Window {
     hydrationTiming?: { hydratedAt: number; longTasks: number[] };
+    interactions?: number[];
     layoutShift?: number;
   }
 }
@@ -30,7 +31,9 @@ for (const path of ["/", "/en/projects/"]) {
 }
 
 for (const path of ["/", "/en/"]) {
-  test(`idratazione dopo load su ${path} con CPU rallentata 4×`, async ({ page }, testInfo) => {
+  test(`idratazione e swap del desktop dopo load su ${path} con CPU rallentata 4×`, async ({
+    page,
+  }, testInfo) => {
     const cdp = await page.context().newCDPSession(page);
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
     await page.addInitScript(() => {
@@ -48,25 +51,63 @@ for (const path of ["/", "/en/"]) {
     });
 
     await openPage(page, path);
-    const timing: Timing = await page.evaluate(() => {
+    await expect(page.locator("[role=grid]")).toBeVisible();
+    const swappedAt = await page.evaluate(() => Math.round(performance.now()));
+    const timing: Timing = await page.evaluate((swapped) => {
       const [navigation] = performance.getEntriesByType("navigation");
       const loadEnd =
         navigation && "loadEventEnd" in navigation ? Number(navigation.loadEventEnd) : 0;
       return {
         loadEnd: Math.round(loadEnd),
         hydratedAt: Math.round(window.hydrationTiming?.hydratedAt ?? 0),
+        swappedAt: swapped,
         longTasks: window.hydrationTiming?.longTasks ?? [],
       };
-    });
+    }, swappedAt);
 
     const hydration = timing.hydratedAt - timing.loadEnd;
     testInfo.annotations.push({
       type: "misura",
-      description: `load ${timing.loadEnd} ms, idratazione +${hydration} ms, long task ${JSON.stringify(timing.longTasks)}`,
+      description: `load ${timing.loadEnd} ms, idratazione +${hydration} ms, desktop interattivo entro ${timing.swappedAt - timing.loadEnd} ms, long task ${JSON.stringify(timing.longTasks)}`,
     });
 
     expect(timing.hydratedAt).toBeGreaterThan(timing.loadEnd);
     expect(hydration).toBeLessThan(1000);
     expect(Math.max(0, ...timing.longTasks)).toBeLessThan(200);
+  });
+}
+
+for (const path of ["/", "/en/"]) {
+  test(`INP del primo clic su un'icona dopo lo swap su ${path} con CPU rallentata 4×`, async ({
+    page,
+  }, testInfo) => {
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
+    await page.addInitScript(() => {
+      const eventTiming: PerformanceObserverInit & { durationThreshold: number } = {
+        type: "event",
+        buffered: true,
+        durationThreshold: 16,
+      };
+      window.interactions = [];
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (Number(Reflect.get(entry, "interactionId")) > 0) {
+            window.interactions?.push(Math.round(entry.duration));
+          }
+        }
+      }).observe(eventTiming);
+    });
+    await openDesktop(page, path);
+    await page.locator("[role=row]").nth(1).tap();
+    await expect(page.locator("section[data-active=true]")).toHaveCount(1);
+    await expect(page.locator("section[aria-labelledby]")).toHaveCount(2);
+    const durations = await page.evaluate(() => window.interactions ?? []);
+    const inp = Math.max(0, ...durations);
+    testInfo.annotations.push({
+      type: "misura",
+      description: `INP ${inp} ms (${JSON.stringify(durations)})`,
+    });
+    expect(inp).toBeLessThanOrEqual(200);
   });
 }
