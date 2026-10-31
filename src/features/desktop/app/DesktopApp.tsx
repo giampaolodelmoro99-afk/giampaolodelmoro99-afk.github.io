@@ -1,4 +1,4 @@
-import { type Key, Suspense, lazy, useEffect, useRef, useState } from "react";
+import { type Key, Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { I18nProvider } from "react-aria-components/I18nProvider";
 import { Link } from "react-router";
 import { useStore } from "zustand";
@@ -6,12 +6,14 @@ import buttonStyles from "../../../components/Button/Button.module.css";
 import { DesktopIcons } from "../../../components/DesktopIcon";
 import { DragOutline } from "../../../components/DragOutline";
 import { MoveControls } from "../../../components/MoveControls";
+import type { ShutdownChoice } from "../../../components/ShutdownDialog";
 import type { WindowMenuAction } from "../../../components/WindowMenu";
 import { ContextMenu, MenuItem, MenuSeparator, Submenu } from "../../../components/MenuBar";
 import { StartButton } from "../../../components/StartButton";
 import { Taskbar, TaskbarButton, TaskbarIconButton } from "../../../components/TaskbarButton";
 import { WindowSwitcher } from "../../../components/WindowSwitcher";
 import { cx } from "../../../components/cx";
+import { personName, siteUrl } from "../../../config/site";
 import { getDictionary, useLocale, useT } from "../../../i18n";
 import {
   type AppId,
@@ -24,6 +26,7 @@ import {
 import {
   type DesktopStore,
   createDesktopStore,
+  emptyState,
   initialStateFor,
   openAppFor,
 } from "../../../stores/desktop";
@@ -75,24 +78,99 @@ const RunDialog = lazy(() =>
   import("../../../components/RunDialog").then((module) => ({ default: module.RunDialog })),
 );
 
-function useDesktopStore(routeKey: RouteKey): DesktopStore {
-  const [store] = useState(() => createDesktopStore(initialStateFor(routeKey)));
+const ShutdownDialog = lazy(() =>
+  import("../../../components/ShutdownDialog").then((module) => ({
+    default: module.ShutdownDialog,
+  })),
+);
+
+const FarewellScreen = lazy(() =>
+  import("../../../components/FarewellScreen").then((module) => ({
+    default: module.FarewellScreen,
+  })),
+);
+
+type Power = "on" | "off" | "restarting";
+
+function useDesktopStore(routeKey: RouteKey, isClean: boolean): DesktopStore {
+  const [store] = useState(() =>
+    createDesktopStore(isClean ? emptyState : initialStateFor(routeKey)),
+  );
   return store;
 }
 
 export function DesktopApp(props: DesktopAppProps) {
   return (
     <I18nProvider locale={intlLocales[useLocale()]}>
-      <DesktopScreen {...props} />
+      <DesktopPower {...props} />
     </I18nProvider>
   );
 }
 
-function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
+function DesktopPower({ routeKey, onReady }: DesktopAppProps) {
+  const t = useT();
+  const [power, setPower] = useState<Power>("on");
+  const [boot, setBoot] = useState(0);
+  const turnOn = useCallback(() => {
+    setBoot((count) => count + 1);
+    setPower("on");
+  }, []);
+
+  useEffect(() => {
+    if (power !== "off") return undefined;
+    const previous = document.title;
+    document.title = t.desktop.farewell.tabTitle.replace("{name}", personName);
+    return () => {
+      document.title = previous;
+    };
+  }, [power, t]);
+
+  if (power === "restarting") return <PowerOff onDone={turnOn} />;
+  if (power === "off") {
+    return (
+      <Suspense fallback={<div className={styles.powerOff} />}>
+        <FarewellScreen
+          heading={t.desktop.farewell.heading}
+          message={t.desktop.farewell.message}
+          restartLabel={t.desktop.farewell.restart}
+          footer={new URL(siteUrl).host}
+          onRestart={turnOn}
+        />
+      </Suspense>
+    );
+  }
+  return (
+    <DesktopScreen
+      key={boot}
+      routeKey={routeKey}
+      isClean={boot > 0}
+      onPowerChange={setPower}
+      {...(boot === 0 && onReady ? { onReady } : {})}
+    />
+  );
+}
+
+function PowerOff({ onDone }: { onDone: () => void }) {
+  const [screen, setScreen] = useState<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!screen) return undefined;
+    const delay = Number.parseFloat(getComputedStyle(screen).getPropertyValue("--restart-delay"));
+    const timer = window.setTimeout(onDone, Number.isFinite(delay) ? delay : 0);
+    return () => window.clearTimeout(timer);
+  }, [screen, onDone]);
+  return <div ref={setScreen} className={styles.powerOff} />;
+}
+
+type DesktopScreenProps = DesktopAppProps & {
+  isClean: boolean;
+  onPowerChange: (power: Power) => void;
+};
+
+function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScreenProps) {
   const t = useT();
   const locale = useLocale();
   const other = locales.find((candidate) => candidate !== locale) ?? locale;
-  const store = useDesktopStore(routeKey);
+  const store = useDesktopStore(routeKey, isClean);
   const routeApp = openAppFor(routeKey);
   const windows = useStore(store, (state) => state.windows);
   const stack = useStore(store, (state) => state.stack);
@@ -127,7 +205,10 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
   });
   const [focusRequest, setFocusRequest] = useState<{ target: string } | null>(null);
 
-  const iconsReady = useIconsReady(onReady);
+  const [whenIconsReady] = useState(() =>
+    isClean ? () => setFocusRequest({ target: desktopIconsId }) : onReady,
+  );
+  const iconsReady = useIconsReady(whenIconsReady);
 
   useEffect(() => {
     if (!focusRequest) return;
@@ -233,6 +314,13 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
 
   const [contextMenu, setContextMenu] = useDesktopContextMenu(workspace, isDesktopLayout);
   const [isRunOpen, setRunOpen] = useState(false);
+  const [isShutdownOpen, setShutdownOpen] = useState(false);
+
+  const confirmShutdown = (choice: ShutdownChoice) => {
+    setShutdownOpen(false);
+    if (choice === "simpleView") openApp("simpleView");
+    else onPowerChange(choice === "shutdown" ? "off" : "restarting");
+  };
 
   const ranCommand = useRef(false);
 
@@ -240,7 +328,8 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
     if (key === "run") {
       ranCommand.current = false;
       setRunOpen(true);
-    } else openApp(key);
+    } else if (key === "shutdown") setShutdownOpen(true);
+    else openApp(key);
   };
 
   const runCommand = (command: string) => {
@@ -350,6 +439,19 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
             />
           </Suspense>
         )}
+        {isShutdownOpen && (
+          <Suspense fallback={null}>
+            <ShutdownDialog
+              isOpen
+              onOpenChange={(isOpen) => {
+                if (isOpen) return;
+                setShutdownOpen(false);
+                focusStart();
+              }}
+              onConfirm={confirmShutdown}
+            />
+          </Suspense>
+        )}
         {contextMenu && (
           <ContextMenu
             isOpen
@@ -423,6 +525,10 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
           </MenuItem>
           <MenuItem id="simpleView" icon="simpleview">
             {t.apps.simpleView}
+          </MenuItem>
+          <MenuSeparator />
+          <MenuItem id="shutdown" icon="power">
+            {t.desktop.shutdown}
           </MenuItem>
         </StartButton>
         <TaskbarIconButton

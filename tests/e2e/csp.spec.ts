@@ -101,4 +101,39 @@ test.describe("CSP del sito sulla home con il desktop interattivo (ADR-0015)", (
     );
     expect(violations).toEqual([]);
   });
+
+  test("Esegui con un errore, Spegni con i Radio nascosti e il congedo senza violazioni", async ({
+    page,
+  }) => {
+    const violations = await recordViolations(page);
+    await page.goto("/");
+    await expect(page.locator("[role=grid]")).toBeVisible();
+
+    await page.getByRole("button", { name: "Start" }).click();
+    await page.getByRole("menuitem", { name: "Esegui…" }).click();
+    const field = page.getByRole("textbox", { name: "Apri" });
+    await field.fill("xyz");
+    await page.keyboard.press("Enter");
+    await expect(field).toHaveAttribute("aria-invalid", "true");
+    await page.getByRole("button", { name: "Annulla" }).click();
+
+    await page.getByRole("button", { name: "Start" }).click();
+    await page.getByRole("menuitem", { name: "Spegni…" }).click();
+    const radio = page.getByRole("radio", { name: "Spegni" });
+    await expect(radio).toBeFocused();
+    const hidden = await radio.evaluate((element) => {
+      const style = getComputedStyle(element.parentElement ?? element);
+      return { position: style.position, width: style.width };
+    });
+    expect(hidden).toEqual({ position: "absolute", width: "1px" });
+    await page.getByRole("button", { name: "OK" }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Puoi chiudere questa scheda.",
+    );
+    await expect(page).toHaveTitle("Spento · Gianpaolo Del Moro");
+    await expect(page.getByRole("button", { name: "Riaccendi" })).toBeFocused();
+    await page.getByRole("button", { name: "Riaccendi" }).click();
+    await expect(page.getByRole("row", { name: "About" })).toBeFocused();
+    expect(violations).toEqual([]);
+  });
 });

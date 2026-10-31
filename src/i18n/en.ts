@@ -122,6 +122,14 @@ export const en: Dictionary = {
     switcherHint: "{alt}W next · Shift+{alt}W back · Enter switch · Esc cancel",
     run: "Run…",
     runNotFound: 'Can\'t find "{command}". Try projects, cv or contact.',
+    shutdown: "Shut down…",
+    farewell: {
+      tabTitle: "Off · {name}",
+      heading: "You can close this tab.",
+      message:
+        "The desktop is off. Thanks for stopping by: if you change your mind, turn it back on and start wherever you like.",
+      restart: "Turn back on",
+    },
     contextMenu: {
       label: "Desktop",
       open: "Open",

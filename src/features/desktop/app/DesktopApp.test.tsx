@@ -273,6 +273,51 @@ describe("DesktopApp", () => {
     await waitFor(() => expect(start).toHaveFocus());
   });
 
+  it("Spegni porta al congedo con il titolo della scheda; Riaccendi riporta un desktop vuoto", async () => {
+    const user = userEvent.setup();
+    const title = document.title;
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "Spegni…" }));
+    await screen.findByRole("dialog", { name: "Spegni" });
+    await user.click(screen.getByRole("button", { name: "OK" }));
+    const restart = await screen.findByRole("button", { name: "Riaccendi" });
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Puoi chiudere questa scheda.",
+    );
+    expect(document.title).toBe("Spento · Gianpaolo Del Moro");
+    expect(screen.queryByRole("toolbar")).toBeNull();
+    await waitFor(() => expect(restart).toHaveFocus());
+    await user.click(restart);
+    expect(document.title).toBe(title);
+    expect(await screen.findByRole("grid", { name: "Icone del desktop" })).toBeInTheDocument();
+    expect(screen.queryByRole("region")).toBeNull();
+    await waitFor(() => expect(screen.getByRole("row", { name: "About" })).toHaveFocus());
+  });
+
+  it("Riavvia riporta un desktop vuoto senza passare dal congedo", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "Spegni…" }));
+    await user.click(await screen.findByRole("radio", { name: "Riavvia" }));
+    await user.click(screen.getByRole("button", { name: "OK" }));
+    expect(await screen.findByRole("grid", { name: "Icone del desktop" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Riaccendi" })).toBeNull();
+    expect(screen.queryByRole("region")).toBeNull();
+  });
+
+  it("Annulla in Spegni… lascia il desktop com'era e riporta il focus su Start", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    const start = screen.getByRole("button", { name: /Start/ });
+    await user.click(start);
+    await user.click(screen.getByRole("menuitem", { name: "Spegni…" }));
+    await user.click(await screen.findByRole("button", { name: "Annulla" }));
+    await waitFor(() => expect(start).toHaveFocus());
+    expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
+  });
+
   it("segnala di essere pronto quando le icone sono nella griglia", async () => {
     const onReady = vi.fn<() => void>();
     renderDesktop("/", onReady);

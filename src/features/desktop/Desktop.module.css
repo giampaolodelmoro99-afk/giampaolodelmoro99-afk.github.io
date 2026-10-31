@@ -221,3 +221,8 @@
     translate: none;
   }
 }
+
+.powerOff {
+  block-size: 100dvh;
+  background: var(--color-power-off);
+}

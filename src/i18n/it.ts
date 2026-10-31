@@ -120,6 +120,14 @@ export const it = {
     switcherHint: "{alt}W avanza · Maiusc+{alt}W torna indietro · Invio attiva · Esc annulla",
     run: "Esegui…",
     runNotFound: 'Non trovo "{command}". Prova con progetti, cv o contatti.',
+    shutdown: "Spegni…",
+    farewell: {
+      tabTitle: "Spento · {name}",
+      heading: "Puoi chiudere questa scheda.",
+      message:
+        "Il desktop è spento. Grazie della visita: se cambi idea, riaccendilo e ricomincia da dove vuoi.",
+      restart: "Riaccendi",
+    },
     contextMenu: {
       label: "Desktop",
       open: "Apri",

@@ -30,6 +30,15 @@ const it = {
   windowSwitcher: {
     label: "Finestre aperte",
   },
+  shutdownDialog: {
+    title: "Spegni",
+    question: "Cosa vuoi fare?",
+    shutdown: "Spegni",
+    restart: "Riavvia",
+    simpleView: "Passa alla Vista semplice",
+    ok: "OK",
+    cancel: "Annulla",
+  },
   runDialog: {
     title: "Esegui",
     help: "Scrivi il nome di un'app e si aprirà in una finestra.",
@@ -80,6 +89,15 @@ const en: UiStrings = {
   },
   windowSwitcher: {
     label: "Open windows",
+  },
+  shutdownDialog: {
+    title: "Shut down",
+    question: "What do you want to do?",
+    shutdown: "Shut down",
+    restart: "Restart",
+    simpleView: "Switch to Simple view",
+    ok: "OK",
+    cancel: "Cancel",
   },
   runDialog: {
     title: "Run",

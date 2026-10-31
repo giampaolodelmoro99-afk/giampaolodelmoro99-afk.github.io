@@ -20,6 +20,7 @@
 [data-theme="classic"] {
   --color-desktop: #008080;
   --color-desktop-text: #ffffff;
+  --color-power-off: #000000;
   --color-surface: #c0c0c0;
   --color-surface-light: #dfdfdf;
   --color-highlight: #ffffff;
@@ -237,6 +238,7 @@
   --duration-fast: 100ms;
   --duration-base: 200ms;
   --duration-slow: 400ms;
+  --restart-delay: 600ms;
   --easing-standard: steps(4, end);
 
   --space-safe-top: max(var(--space-5), env(safe-area-inset-top));
@@ -451,6 +453,7 @@
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-slow: 0ms;
+    --restart-delay: 0ms;
   }
 }
 
@@ -458,6 +461,7 @@
   --duration-fast: 0ms;
   --duration-base: 0ms;
   --duration-slow: 0ms;
+  --restart-delay: 0ms;
 }
 
 /* ---------- Colori forzati (temi a contrasto del sistema) ---------- */
@@ -469,6 +473,7 @@
     --color-pixel-outline: CanvasText;
     --color-desktop: Canvas;
     --color-desktop-text: CanvasText;
+    --color-power-off: Canvas;
     --color-surface: ButtonFace;
     --color-surface-hover: ButtonFace;
     --color-text: ButtonText;
