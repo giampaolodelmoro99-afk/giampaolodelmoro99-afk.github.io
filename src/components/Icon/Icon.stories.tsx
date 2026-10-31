@@ -46,7 +46,6 @@ export const Tutte: Story = {
 };
 
 export const Scala: Story = {
-  tags: ["visual"],
   render: () => (
     <p className={styles.icons}>
       <Icon name="gdm" size={16} />

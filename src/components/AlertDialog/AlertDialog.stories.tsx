@@ -35,7 +35,6 @@ export const Avviso: Story = {
 };
 
 export const Errore: Story = {
-  tags: ["visual"],
   args: {
     title: "Invio non riuscito",
     kind: "error",
@@ -46,7 +45,6 @@ export const Errore: Story = {
 };
 
 export const UnPulsante: Story = {
-  tags: ["visual"],
   args: {
     title: "Informazioni",
     kind: "info",

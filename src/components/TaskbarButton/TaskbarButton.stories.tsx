@@ -34,14 +34,12 @@ export const Default: Story = {
 };
 
 export const Hover: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await hover(await canvas.findByRole("button", { name: "Chi sono" }));
   },
 };
 
 export const Premuto: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await press(await canvas.findByRole("button", { name: "Chi sono" }));
   },

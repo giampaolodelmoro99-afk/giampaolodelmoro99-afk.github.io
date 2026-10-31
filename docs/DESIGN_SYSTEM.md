@@ -63,7 +63,7 @@ Il riferimento approvato è il pacchetto di consegna **GDM 95** (Claude Design, 
 | Token                                               | Valore                                                        | Uso                                                                                      |
 | --------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `--window-default-width`, `--window-default-height` | 40rem; 32rem                                                  | finestra aperta dalla route nel guscio statico del desktop, prima di qualsiasi geometria |
-| `--taskbar-clock-width`                             | 3.5rem                                                        | spazio fisso dell'orologio: l'ora arriva dopo l'idratazione senza spostare la tray       |
+| `--taskbar-clock-width`                             | 4.5rem                                                        | spazio fisso dell'orologio: l'ora arriva dopo l'idratazione senza spostare la tray       |
 | `--taskbar-start-width`                             | 4.75rem                                                       | larghezza fissa di Start: il cambio di font non sposta i pulsanti accanto                |
 | `--taskbar-active-background`, `-text`, `-bevel`    | dither, testo, incavo; in HC giallo, nero, bordo di 3 px      | pulsante della finestra attiva nella taskbar (§9)                                        |
 | `--start-pressed-background`, `-text`, `-bevel`     | superficie, testo, premuto; in HC giallo, nero, bordo di 3 px | Start premuto o con il menu aperto (§9)                                                  |
@@ -180,7 +180,7 @@ Storybook 10 documenta il design system e serve i test visivi.
 - Toolbar: tema, font, input, movimento, dimensione del testo e lingua, applicati all'`<html>` dell'anteprima con gli stessi attributi del sito; si possono passare anche dall'URL (`&globals=theme:high-contrast;input:touch`).
 - Pagine "Fondamenta": Introduzione e Token (colori e bevel dei due temi affiancati, tipografia), in `.storybook/docs/`.
 - Le pagine "Fondamenta" e le story di esempio sono documentazione in italiano: la regola "testi solo nei dizionari" vale per il sito, non per Storybook. I componenti ricevono comunque i testi dalle props o dai dizionari.
-- Le story con tag `visual` vengono fotografate in tema classico e alto contrasto, con input mouse e touch; tutte le story passano axe con il contrasto (TESTING.md §6).
+- Le story con tag `visual` (solo gli stati principali) vengono fotografate in due combinazioni, classico con il mouse e alto contrasto con il touch (ADR-0019); tutte le story passano axe con il contrasto nelle quattro combinazioni (TESTING.md §6).
 
 ## 9. Scelte rispetto al 95 (deroghe)
 

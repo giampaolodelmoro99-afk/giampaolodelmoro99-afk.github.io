@@ -60,7 +60,6 @@ export const Stati: Story = {
 };
 
 export const Hover: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await hover(
       canvas.getByText("Alto contrasto").closest("label") ?? canvas.getByText("Alto contrasto"),
@@ -69,7 +68,6 @@ export const Hover: Story = {
 };
 
 export const Premuto: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await press(
       canvas.getByText("Alto contrasto").closest("label") ?? canvas.getByText("Alto contrasto"),

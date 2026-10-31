@@ -17,9 +17,10 @@ Se il fallimento è inatteso, **non aggiornare**: è una regressione da corregge
 
 1. `npm run build`
 2. `npm run test:e2e:update-snapshots`: gira nel container `mcr.microsoft.com/playwright:<versione>-noble`, perché le baseline generate sull'host differiscono.
-3. Rivedi **ogni** immagine cambiata in `tests/e2e/__screenshots__/` (`git diff --stat` e apertura dei PNG): devono cambiare solo le aree attese.
-4. `npm run test:e2e` per confermare che la suite completa è verde.
-5. Commit dedicato, con il motivo:
+3. Le story si fotografano solo negli stati principali e in due combinazioni (classico con il mouse, alto contrasto con il touch, ADR-0019): una baseline che non corrisponde più a una story `visual` o a una combinazione prevista va eliminata.
+4. Rivedi **ogni** immagine cambiata in `tests/e2e/__screenshots__/` (`git diff --stat` e apertura dei PNG): devono cambiare solo le aree attese.
+5. `npm run test:e2e` per confermare che la suite completa è verde.
+6. Commit dedicato, con il motivo:
    `test: aggiorna gli screenshot di riferimento per <cambiamento>`
 
 ## Vietato

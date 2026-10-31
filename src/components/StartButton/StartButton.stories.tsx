@@ -55,14 +55,12 @@ export const Default: Story = {
 };
 
 export const Hover: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await hover(await canvas.findByRole("button", { name: "Start" }));
   },
 };
 
 export const Focus: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await focusWithKeyboard(await canvas.findByRole("button", { name: "Start" }));
   },

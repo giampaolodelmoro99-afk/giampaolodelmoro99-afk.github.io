@@ -51,21 +51,18 @@ export const SoloIcona: Story = {
 };
 
 export const Hover: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await hover(canvas.getByRole("button", { name: "OK" }));
   },
 };
 
 export const Premuto: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await press(canvas.getByRole("button", { name: "OK" }));
   },
 };
 
 export const PredefinitoPremuto: Story = {
-  tags: ["visual"],
   args: { variant: "default", children: "Salva" },
   play: async ({ canvas }) => {
     await press(canvas.getByRole("button", { name: "Salva" }));

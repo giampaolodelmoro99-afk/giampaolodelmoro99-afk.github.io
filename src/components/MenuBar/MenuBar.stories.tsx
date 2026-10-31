@@ -64,7 +64,6 @@ export const Default: Story = {
 };
 
 export const HoverSuUnMenu: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await hover(await canvas.findByRole("button", { name: "Visualizza" }));
   },
@@ -76,7 +75,6 @@ export const Aperto: Story = {
 };
 
 export const ConSottomenu: Story = {
-  tags: ["visual"],
   render: () => <Bar openFile />,
   play: async ({ canvas }) => {
     const exportItem = await canvas.findByRole("menuitem", { name: "Esporta" });

@@ -75,7 +75,6 @@ export const Documento: Story = {
 };
 
 export const ConMenuEStatusBar: Story = {
-  tags: ["visual"],
   render: () => (
     <Window
       title="Progetti"

@@ -33,8 +33,8 @@ description: Indica e scrive i test necessari per un file o una modifica (compon
 ```bash
 npm run test:coverage
 npm run build && npm run test:prerender
-npm run test:e2e:host -- --project=chromium-320   # iterazione rapida
-npm run test:e2e                                  # suite completa nel container
+npm run test:e2e:chromium                          # durante il lavoro: solo Chromium, nel container
+npm run test:e2e                                   # matrice completa: in CI e a fine fase (ADR-0019)
 ```
 
 ## Riferimenti
