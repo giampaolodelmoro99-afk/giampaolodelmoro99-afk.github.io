@@ -55,9 +55,9 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 - [ ] Finestre: drag, resize, focus, z-index, minimizza, massimizza, chiudi, animazioni
 - [ ] Taskbar con orologio, menu Start, menu contestuale (anche senza tasto destro), "Esegui…"
 - [ ] Scorciatoie da tastiera e annunci per screen reader
-- [ ] Attributi `style` dei componenti nell'HTML prerenderizzato (ADR-0012, tipo C), comprese le variabili inline di `Glyph` (`--glyph-width`, `--glyph-height`): soluzione con ADR ed e2e con la CSP reale sulla home per Checkbox, Select, Tooltip, AlertDialog e DesktopIcon
-- [ ] `I18nProvider` di React Aria nel root, con `intlLocales` della lingua della route: i testi interni dei componenti (`useUiStrings`) e le traduzioni di React Aria seguono quella lingua; senza, React Aria usa la lingua del browser
-- [ ] **Caricamento separato del codice del desktop dopo il primo disegno: requisito della F2A** (decisione del 14/10/2026). Stima: home 110,8 kB + base React Aria 13,0 + base delle collezioni 17,5 + base degli overlay ≈ 16 = **circa 157 kB contro un budget di 115** (PERFORMANCE_SEO.md, "Peso dei componenti"). Misura di fine 1B: il guscio del desktop (Window, Taskbar, TaskbarButton, StartButton, DesktopIcons) pesa **75,0 kB** gzip, quindi la home con il guscio nel JS iniziale arriverebbe a circa 186 kB. Il piano della F2A deve dire come il codice del desktop (finestre, taskbar, menu Start, icone) arriva in un chunk separato dopo il primo disegno, senza togliere contenuto dall'HTML prerenderizzato, prima di scrivere codice. Da decidere anche l'indice `src/components/index.ts`: oggi aggiunge circa 0,6 kB a chi importa anche solo Icon (`sideEffects` o import dalle cartelle)
+- [x] Attributi `style` nell'HTML prerenderizzato (ADR-0012, tipo C): chiuso da ADR-0015 (guscio statico, Glyph con classi generate); e2e con la CSP reale sulla home per DesktopIcon, menu Start e finestre (2A-1). Tooltip, AlertDialog e Radio con la CSP reale quando entrano nella home (2A-2); Checkbox e Select quando entrano in una pagina (F3B o F4A)
+- [x] `I18nProvider` di React Aria con `intlLocales` della lingua della route, nel chunk del desktop invece che nel root: il guscio statico e la 404 non dipendono dalla lingua di React Aria (test), ADR-0014
+- [x] **Caricamento separato del codice del desktop dopo il primo disegno** (ADR-0014): guscio statico prerenderizzato e desktop interattivo in un chunk dopo l'idratazione; icone da sprite SVG; indice dei componenti vietato nel sito (Oxlint). JS iniziale 117,8 kB (budget 124), chunk del desktop 56,08 kB, componenti 85,12 kB
 - [ ] Etichette del desktop con il carattere leggibile (alto contrasto, `data-font="readable"`): una parola più larga della cella va a capo con la sillabazione ("Compe-tenze"); verificare i testi definitivi delle icone a 320 px
 
 - [ ] Note dell'a11y-auditor (1B) da risolvere quando i componenti entrano nelle pagine:
@@ -69,7 +69,7 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
   - tooltip uguale all'`aria-label` letto due volte; `ScrollArea` focalizzabile solo quando scorre; segnaposto distinguibile dal testo
   - progetto Storybook a 320 px con controllo dell'overflow; verifiche manuali con NVDA, VoiceOver, zoom 200/400% e `forced-colors`
 
-- [ ] Rimisurare con la preview compressa le correzioni fatte per l'oscillazione di Lighthouse (ADR-0013): togliere l'idratazione rinviata se Performance resta ≥ 95 con LCP e FCP nei budget; rivedere il preload di Pixel Operator bold; rivedere i budget di LCP e FCP
+- [x] Rimisure delle correzioni di ADR-0013 (esiti in ADR-0018): idratazione rinviata confermata, con i `modulepreload` inerti; preload di Pixel Operator bold confermato; soglie di Lighthouse sulle metriche "buone" di Google
 
 ## 2B. Routing, persistenza e mobile
 

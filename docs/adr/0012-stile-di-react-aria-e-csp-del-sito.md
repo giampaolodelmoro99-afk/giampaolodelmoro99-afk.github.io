@@ -1,6 +1,6 @@
 # ADR-0012: Stile di React Aria e CSP del sito
 
-- **Stato**: Accettata
+- **Stato**: Accettata; il tipo C è chiuso da [ADR-0015](0015-attributi-style-fuori-dal-prerender.md) (31/10/2026)
 - **Data**: 2026-10-14
 - **Fase**: 1B
 

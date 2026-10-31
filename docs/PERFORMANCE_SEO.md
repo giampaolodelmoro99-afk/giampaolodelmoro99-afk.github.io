@@ -167,7 +167,7 @@ Immagini 1200×630 per route e lingua, generate in build con i font liberi del p
 ## 10. Boot, animazioni e suoni
 
 - **Nessun cloaking**: nessun rilevamento dei crawler tramite user agent, nessun contenuto diverso tra bot e persone.
-- Il boot (F4A) è un overlay che non diventa l'elemento LCP, non sposta il layout, compare solo alla prima visita (chiave di storage "boot già visto"), si salta da tastiera e touch e viene saltato con reduced motion. Lighthouse lo misura come un visitatore nuovo, e deve comunque dare 100.
+- Il boot (F4A) è un overlay che non diventa l'elemento LCP, non sposta il layout, compare solo alla prima visita (chiave di storage "boot già visto"), si salta da tastiera e touch e viene saltato con reduced motion. Lighthouse lo misura come un visitatore nuovo, e deve comunque restare nelle soglie di ADR-0018.
 - Animazioni solo con `transform` e `opacity`, durate dai token.
 
 ### JavaScript dopo l'evento load
@@ -175,11 +175,12 @@ Immagini 1200×630 per route e lingua, generate in build con i font liberi del p
 L'idratazione parte dopo `load` (§3), quindi non pesa su LCP. Resta da controllare che non ritardi in modo percepibile la prima interazione.
 
 - **Misura attuale** (`tests/e2e/performance.spec.ts`, progetto Playwright `performance`: Pixel 7, CPU rallentata 4× via CDP): tempo da `load` a `html[data-hydrated]` e long task. Fase 1A: idratazione circa 260 ms dopo `load`, una long task di circa 60 ms. Soglie del test, **bloccanti come gli altri budget**: idratazione entro 1 s e nessuna long task oltre 200 ms. Sono circa 4 volte la misura di riferimento, per assorbire la variabilità dei runner; la misura di ogni esecuzione è nell'annotazione `misura` del report Playwright. Se una fase le supera va ottimizzato il codice: alzarle richiede un ADR.
-- **In Fase 2A**, con il window manager:
-  1. la stessa misura, con la home che contiene desktop, icone e taskbar
-  2. INP del primo clic su un'icona subito dopo l'idratazione (Event Timing API, `interactionId`), con soglia ≤ 200 ms su CPU 4×
-  3. TBT di Lighthouse ≤ 200 ms (ADR-0018)
-  4. un clic prima dell'idratazione resta una navigazione completa verso il deep link (comportamento voluto, ADR-0006)
+- **Fase 2A** (31/10/2026, stesso progetto `performance`), con il guscio statico e lo swap del desktop (ADR-0014):
+  1. idratazione +485 ms (`/`) e +506 ms (`/en/`) dopo `load`; desktop interattivo pronto entro 885 e 965 ms; long task più lunga 113–122 ms (soglia 200);
+  2. INP del primo clic su un'icona dopo lo swap (Event Timing API, `interactionId`): 144 ms su `/`, 128 ms su `/en/` (soglia ≤ 200 ms su CPU 4×);
+  3. CLS dal caricamento allo swap sotto 0,001 (resta solo il cambio di font delle etichette);
+  4. TBT di Lighthouse ≤ 200 ms (ADR-0018);
+  5. un clic prima dell'idratazione resta una navigazione completa verso la route dell'app (`no-javascript.spec.ts`, ADR-0006).
 - I suoni si caricano solo dopo un'interazione e mai nel chunk iniziale.
 - **hCaptcha** (form contatti, F3B, ADR-0017) si carica solo dopo il clic su «Attiva la verifica»: nessuno script di terzi al caricamento, nessun effetto su Lighthouse, sul JS iniziale né sulla CSP finché il visitatore non lo attiva.
 
@@ -202,6 +203,6 @@ Pubblicato in `/storybook/` dalla F1A, escluso dall'indicizzazione: `meta robots
 
 ## 13. React Aria e CSP
 
-React Aria inserisce a runtime uno `<style id="react-aria-pressable-style">` che la CSP del sito bloccherebbe. L'id sta sul link di `global.css`, che contiene la stessa regola: React Aria trova l'elemento e non inserisce nulla, e la CSP resta `style-src 'self'` (ADR-0012). Gli attributi `style` nell'HTML prerenderizzato restano vietati da un test: la soluzione per i componenti che li producono si decide in F2A.
+React Aria inserisce a runtime uno `<style id="react-aria-pressable-style">` che la CSP del sito bloccherebbe. L'id sta sul link di `global.css`, che contiene la stessa regola: React Aria trova l'elemento e non inserisce nulla, e la CSP resta `style-src 'self'` (ADR-0012). Gli attributi `style` nell'HTML prerenderizzato restano vietati da un test: dalla F2A il prerender contiene solo il guscio statico in HTML e CSS, e i componenti React Aria si rendono dopo l'idratazione (ADR-0015).
 
 - Test: deriva sul sorgente di `usePress` (unit), sentinella, CSP e assenza di attributi `style` (prerender), nessuna violazione sulla 404 più un controllo in negativo (`tests/e2e/csp.spec.ts`), 404 senza JavaScript (`tests/e2e/no-javascript.spec.ts`).
