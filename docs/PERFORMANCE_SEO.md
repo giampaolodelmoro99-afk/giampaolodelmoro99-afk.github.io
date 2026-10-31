@@ -4,18 +4,18 @@
 
 Le soglie di prestazioni e di Lighthouse si scrivono **solo** qui e in TESTING.md §3: gli altri documenti (README, SPECS, CLAUDE.md, PLAN, skill) rimandano a queste due fonti, così un cambio di regola si fa in un posto solo. Gli ADR restano come registro delle decisioni, con i valori del momento.
 
-| Metrica                | Budget              | Ultima misura                       | Come si verifica |
-| ---------------------- | ------------------- | ----------------------------------- | ---------------- |
-| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014) | 117,8 kB (F2A, guscio statico)      | `npm run size`   |
-| Chunk del desktop      | ≤ 59 kB (ADR-0014)  | 56,08 kB (F2A, dopo l'idratazione)  | `npm run size`   |
-| Sprite delle icone     | ≤ 14 kB (ADR-0014)  | 12,64 kB (F2A, SVG)                 | `npm run size`   |
-| CSS iniziale (gzip)    | ≤ 12 kB             | 1,3 kB                              | `npm run size`   |
-| Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                       | `npm run size`   |
-| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 98,1 kB (F1B, fuori dalla home)     | `npm run size`   |
-| Guscio del desktop F2A | ≤ 75 kB (dalla F1B) | 74,9 kB (F1B)                       | `npm run size`   |
-| LCP                    | ≤ 2,5 s (ADR-0018)  | mobile 1,20 s, desktop 0,32 s (F2A) | Lighthouse CI    |
-| TBT                    | ≤ 200 ms (ADR-0018) | mobile 30–35 ms, desktop 0 (F2A)    | Lighthouse CI    |
-| CLS                    | ≤ 0,1 (ADR-0018)    | 0,0001 (F2A)                        | Lighthouse CI    |
+| Metrica                | Budget                                   | Ultima misura                       | Come si verifica |
+| ---------------------- | ---------------------------------------- | ----------------------------------- | ---------------- |
+| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014)                      | 117,8 kB (F2A, guscio statico)      | `npm run size`   |
+| Chunk del desktop      | ≤ 80 kB provvisorio (ADR-0014, ADR-0020) | 56,08 kB (F2A, dopo l'idratazione)  | `npm run size`   |
+| Sprite delle icone     | ≤ 14 kB (ADR-0014)                       | 12,64 kB (F2A, SVG)                 | `npm run size`   |
+| CSS iniziale (gzip)    | ≤ 12 kB                                  | 1,3 kB                              | `npm run size`   |
+| Font in preload        | ≤ 25 kB (dalla F1)                       | 24,1 kB (F1A)                       | `npm run size`   |
+| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B)                      | 98,1 kB (F1B, fuori dalla home)     | `npm run size`   |
+| Guscio del desktop F2A | ≤ 75 kB (dalla F1B)                      | 74,9 kB (F1B)                       | `npm run size`   |
+| LCP                    | ≤ 2,5 s (ADR-0018)                       | mobile 1,20 s, desktop 0,32 s (F2A) | Lighthouse CI    |
+| TBT                    | ≤ 200 ms (ADR-0018)                      | mobile 30–35 ms, desktop 0 (F2A)    | Lighthouse CI    |
+| CLS                    | ≤ 0,1 (ADR-0018)                         | 0,0001 (F2A)                        | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
 
@@ -53,12 +53,12 @@ Gli import da React Aria vanno sempre per sottopercorso (`react-aria-components/
 
 Dal 28/10/2026 la home prerenderizza un guscio statico del desktop in solo HTML e CSS, e il desktop interattivo arriva in un chunk separato dopo l'idratazione (ADR-0014). Le icone si disegnano da uno sprite SVG generato da `npm run icons`, non più da dati nel JavaScript.
 
-| Misura (gzip)                        | Valore   | Budget |
-| ------------------------------------ | -------- | ------ |
-| JS iniziale della home               | 117,8 kB | 124 kB |
-| Chunk del desktop dopo l'idratazione | 56,08 kB | 59 kB  |
-| Sprite delle icone                   | 12,64 kB | 14 kB  |
-| Componenti, totale JS                | 85,12 kB | 99 kB  |
+| Misura (gzip)                        | Valore                                     | Budget                                               |
+| ------------------------------------ | ------------------------------------------ | ---------------------------------------------------- |
+| JS iniziale della home               | 117,8 kB                                   | 124 kB                                               |
+| Chunk del desktop dopo l'idratazione | 56,08 kB (2A-1); 72,72 kB (2A-2, in corso) | 59 kB; 80 kB provvisorio fino a fine 2A-2 (ADR-0020) |
+| Sprite delle icone                   | 12,64 kB                                   | 14 kB                                                |
+| Componenti, totale JS                | 85,12 kB                                   | 99 kB                                                |
 
 La ripartizione del JS iniziale e il motivo dei kB oltre i vecchi 115 sono in ADR-0014.
 

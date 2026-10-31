@@ -436,3 +436,8 @@ Decisione del proprietario del 28/10/2026: il piano B si attiva subito e si impl
   - trascinamento, ridimensionamento, menu, selettore, scorciatoie, Spegni.
 - **QA su Android** con `preview -- --host`, seguendo la nuova sezione desktop di QA_CHECKLIST: trascinamento al tocco, pressione lunga, menu, selettore, tastiera Bluetooth se disponibile. La fai tu.
 - **Chiusura** con `close-phase`: code-reviewer, security-auditor, a11y-auditor e content-reviewer, poi retrospettiva, CHANGELOG e PLAN. Merge, tag e push li fai tu.
+
+## Note aperte della 2A-2
+
+- `aria-haspopup="dialog"` sulle voci Esegui… e Spegni… del menu Start (NOTES della tavola D05): da fare entro la chiusura della 2A e da annotare nell'ADR-0016.
+- Budget del chunk del desktop: 80 kB provvisorio, da fissare a fine tappa secondo ADR-0020.
