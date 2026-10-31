@@ -118,6 +118,16 @@ export const it = {
     windowsButton: "Finestre aperte ({shortcut})",
     windowsButtonEmpty: "Finestre aperte: nessuna",
     switcherHint: "{alt}W avanza · Maiusc+{alt}W torna indietro · Invio attiva · Esc annulla",
+    contextMenu: {
+      label: "Desktop",
+      open: "Apri",
+      arrange: "Disponi icone",
+      byName: "Per nome",
+      byType: "Per tipo",
+      lineUp: "Allinea alla griglia",
+      refresh: "Aggiorna",
+      properties: "Proprietà",
+    },
     clockLabel: "Ora",
     minimizedSuffix: "ridotta a icona",
     announce: {

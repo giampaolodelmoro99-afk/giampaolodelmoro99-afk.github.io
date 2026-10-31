@@ -99,15 +99,16 @@ export function MenuSeparator() {
 export type SubmenuProps = {
   label: string;
   icon?: SmallIconName;
+  onAction?: MenuProps["onAction"];
   children: ReactNode;
 };
 
-export function Submenu({ label, icon, children }: SubmenuProps) {
+export function Submenu({ label, icon, onAction, children }: SubmenuProps) {
   return (
     <SubmenuTrigger>
       <MenuItem {...(icon ? { icon } : {})}>{label}</MenuItem>
       <MenuPopover>
-        <Menu>{children}</Menu>
+        <Menu {...(onAction ? { onAction } : {})}>{children}</Menu>
       </MenuPopover>
     </SubmenuTrigger>
   );

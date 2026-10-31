@@ -36,6 +36,7 @@
 
 .workspace {
   position: relative;
+  -webkit-touch-callout: none;
   display: flex;
   flex-direction: column;
   min-block-size: 0;

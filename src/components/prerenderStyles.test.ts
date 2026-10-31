@@ -64,7 +64,8 @@ const styleAttributes = (html: string) =>
 // variabile della ProgressBar e alcuni stili interni di React Aria:
 // VisuallyHidden (input di Checkbox e Radio; HiddenSelect, nella variante con
 // position:fixed) e display:contents (celle di GridList nel DesktopIcon); posizione
-// e misura del DragOutline, che compare solo durante un trascinamento.
+// e misura del DragOutline, che compare solo durante un trascinamento; punto di
+// apertura del ContextMenu, che si apre solo su richiesta.
 // Glyph non ne produce più: le dimensioni arrivano da glyphSizes.module.css.
 const hiddenRule =
   "border:0;clip:rect\\(0 0 0 0\\);clip-path:inset\\(50%\\);height:1px;margin:-1px;overflow:hidden;padding:0;position:";
@@ -74,6 +75,7 @@ const visuallyHiddenFixed = new RegExp(
 );
 const displayContents = /^display:contents$/;
 const progressValue = /^--progress-value:\d+(\.\d+)?%$/;
+const anchorPoint = /^--anchor-x:-?\d+px;--anchor-y:-?\d+px$/;
 const outlineRect = /^--outline-x:-?\d+px;--outline-y:-?\d+px;--outline-w:\d+px;--outline-h:\d+px$/;
 const known = [
   { pattern: visuallyHidden, example: "Componenti/Checkbox/Stati" },
@@ -81,6 +83,7 @@ const known = [
   { pattern: visuallyHiddenFixed, example: "Componenti/Select/Stati" },
   { pattern: displayContents, example: "Componenti/DesktopIcon/Default" },
   { pattern: outlineRect, example: "Componenti/DragOutline/Default" },
+  { pattern: anchorPoint, example: "Componenti/MenuBar/MenuContestuale" },
 ];
 
 describe("attributi style nel prerender (ADR-0012)", () => {

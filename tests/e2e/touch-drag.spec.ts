@@ -58,3 +58,13 @@ test("al tocco la finestra si ridimensiona dall'angolo, con una zona di presa di
     .poll(async () => (await about.boundingBox())?.width)
     .toBeCloseTo(before.width + 60, 0);
 });
+
+test("la pressione lunga sul desktop apre il menu contestuale", async ({ page }) => {
+  await openDesktop(page);
+  const cdp = await page.context().newCDPSession(page);
+  const point = [{ x: 950, y: 120, id: 1 }];
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: point });
+  await expect(page.getByRole("menu", { name: "Desktop" })).toBeVisible({ timeout: 3000 });
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  await expect(page.getByRole("menu", { name: "Desktop" })).toBeVisible();
+});

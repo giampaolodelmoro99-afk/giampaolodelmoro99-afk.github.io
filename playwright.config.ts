@@ -6,7 +6,7 @@ const visual = /visual\.spec\.ts$/;
 const keyboard = /keyboard\.spec\.ts$/;
 const touch = /touch\.spec\.ts$/;
 const performance = /performance\.spec\.ts$/;
-const wide = /window-drag\.spec\.ts$/;
+const wide = /(window-drag|context-menu)\.spec\.ts$/;
 const touchDrag = /touch-drag\.spec\.ts$/;
 
 const viewports = [

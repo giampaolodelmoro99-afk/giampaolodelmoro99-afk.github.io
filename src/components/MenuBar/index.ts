@@ -9,3 +9,4 @@ export {
   Submenu,
   type SubmenuProps,
 } from "./Menu";
+export { ContextMenu, type ContextMenuProps } from "./ContextMenu";

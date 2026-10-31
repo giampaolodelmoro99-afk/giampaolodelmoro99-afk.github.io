@@ -7,7 +7,7 @@ import { DesktopIcons } from "../../../components/DesktopIcon";
 import { DragOutline } from "../../../components/DragOutline";
 import { MoveControls } from "../../../components/MoveControls";
 import type { WindowMenuAction } from "../../../components/WindowMenu";
-import { MenuItem, MenuSeparator } from "../../../components/MenuBar";
+import { ContextMenu, MenuItem, MenuSeparator, Submenu } from "../../../components/MenuBar";
 import { StartButton } from "../../../components/StartButton";
 import { Taskbar, TaskbarButton, TaskbarIconButton } from "../../../components/TaskbarButton";
 import { WindowSwitcher } from "../../../components/WindowSwitcher";
@@ -34,6 +34,7 @@ import { DesktopWindow } from "./DesktopWindow";
 import { isApplePlatform, isTextEntry, matchShortcut } from "../shortcuts";
 import { ShortcutText } from "./ShortcutText";
 import { useAnnouncer } from "./Announcer";
+import { useDesktopContextMenu } from "./useDesktopContextMenu";
 import { useKeyboardGesture } from "./useKeyboardGesture";
 import { useWindowGestures, windowRect } from "./useWindowGestures";
 import { useWorkspaceViewport } from "./useWorkspaceViewport";
@@ -221,6 +222,23 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
     };
   });
 
+  const [contextMenu, setContextMenu] = useDesktopContextMenu(workspace, isDesktopLayout);
+  const [iconOrder, setIconOrder] = useState<"type" | "name">("type");
+  const [iconsVersion, setIconsVersion] = useState(0);
+  const icons = desktopApps
+    .map((app) => ({ id: app.id, label: t.apps[app.id], icon: app.icon }))
+    .toSorted((a, b) => (iconOrder === "name" ? a.label.localeCompare(b.label, locale) : 0));
+
+  const contextAction = (key: Key) => {
+    const iconId = contextMenu?.iconId;
+    setContextMenu(null);
+    if (key === "open" && iconId) openApp(iconId);
+    else if (key === "byName") setIconOrder("name");
+    else if (key === "byType" || key === "lineUp") setIconOrder("type");
+    else if (key === "refresh") setIconsVersion((version) => version + 1);
+    else if (key === "controlPanel" || key === "properties") openApp("controlPanel");
+  };
+
   const outline = gestures.outline ?? keyboard.gesture?.current ?? null;
 
   const skipTarget = activeId ? windowBodyId(activeId) : desktopIconsId;
@@ -247,13 +265,10 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
         </div>
         <div className={styles.iconArea} ref={iconsReady}>
           <DesktopIcons
+            key={iconsVersion}
             id={desktopIconsId}
             label={t.desktop.iconsLabel}
-            items={desktopApps.map((app) => ({
-              id: app.id,
-              label: t.apps[app.id],
-              icon: app.icon,
-            }))}
+            items={icons}
             onAction={openApp}
             className={styles.icons}
           />
@@ -292,6 +307,31 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
           </div>
         )}
         {region}
+        {contextMenu && (
+          <ContextMenu
+            isOpen
+            onOpenChange={(isOpen) => {
+              if (!isOpen) setContextMenu(null);
+            }}
+            x={contextMenu.x}
+            y={contextMenu.y}
+            label={t.desktop.contextMenu.label}
+            onAction={contextAction}
+          >
+            {contextMenu.iconId && <MenuItem id="open">{t.desktop.contextMenu.open}</MenuItem>}
+            {contextMenu.iconId && <MenuSeparator />}
+            <Submenu label={t.desktop.contextMenu.arrange} onAction={contextAction}>
+              <MenuItem id="byName">{t.desktop.contextMenu.byName}</MenuItem>
+              <MenuItem id="byType">{t.desktop.contextMenu.byType}</MenuItem>
+              <MenuItem id="lineUp">{t.desktop.contextMenu.lineUp}</MenuItem>
+            </Submenu>
+            <MenuItem id="refresh">{t.desktop.contextMenu.refresh}</MenuItem>
+            <MenuSeparator />
+            <MenuItem id="controlPanel">{t.apps.controlPanel}</MenuItem>
+            <MenuSeparator />
+            <MenuItem id="properties">{t.desktop.contextMenu.properties}</MenuItem>
+          </ContextMenu>
+        )}
         <WindowSwitcher
           isOpen={switcher !== null}
           onOpenChange={(isOpen) => {

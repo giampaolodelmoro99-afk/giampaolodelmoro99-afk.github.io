@@ -120,6 +120,16 @@ export const en: Dictionary = {
     windowsButton: "Open windows ({shortcut})",
     windowsButtonEmpty: "Open windows: none",
     switcherHint: "{alt}W next · Shift+{alt}W back · Enter switch · Esc cancel",
+    contextMenu: {
+      label: "Desktop",
+      open: "Open",
+      arrange: "Arrange icons",
+      byName: "By name",
+      byType: "By type",
+      lineUp: "Line up icons",
+      refresh: "Refresh",
+      properties: "Properties",
+    },
     clockLabel: "Time",
     minimizedSuffix: "minimized",
     announce: {
