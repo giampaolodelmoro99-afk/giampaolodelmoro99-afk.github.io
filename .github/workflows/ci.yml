@@ -101,11 +101,38 @@ jobs:
         with:
           name: build
           path: build
-      - run: npx playwright test --shard=${{ matrix.shard }}/2
+      - run: npx playwright test --grep-invert @performance --shard=${{ matrix.shard }}/2
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report-${{ matrix.shard }}
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7
+
+  performance:
+    name: E2E prestazioni (CPU 4x, da sole)
+    needs: build
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.0-noble
+      options: --user 1001
+    env:
+      HOME: /tmp
+      CI: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - run: npm ci
+      - uses: actions/download-artifact@v8
+        with:
+          name: build
+          path: build
+      - run: npx playwright test --project=performance --workers=1
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-performance
           path: |
             playwright-report
             test-results

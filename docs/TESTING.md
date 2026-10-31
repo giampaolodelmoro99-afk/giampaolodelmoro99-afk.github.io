@@ -35,18 +35,18 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 
 ## 4. Viewport e progetti Playwright
 
-| Progetto          | Viewport / dispositivo             | Esclude                           |
-| ----------------- | ---------------------------------- | --------------------------------- |
-| `chromium-320`    | 320×640                            | `touch.spec.ts`                   |
-| `chromium-375`    | 375×667                            | `touch.spec.ts`                   |
-| `chromium-768`    | 768×1024                           | `touch.spec.ts`                   |
-| `chromium-1024`   | 1024×768                           | `touch.spec.ts`                   |
-| `chromium-1440`   | 1440×900                           | `touch.spec.ts`                   |
-| `touch-pixel-7`   | Pixel 7 (Chromium, touch)          | `visual`, `keyboard`              |
-| `touch-iphone-14` | iPhone 14 (WebKit, touch)          | `visual`, `keyboard`              |
-| `firefox-1440`    | Firefox 1440×900                   | `visual`, `touch`                 |
-| `performance`     | Pixel 7 (Chromium, CPU 4× via CDP) | esegue solo `performance.spec.ts` |
-| `storybook`       | Chromium 1024×768                  | esegue solo `tests/storybook/`    |
+| Progetto          | Viewport / dispositivo             | Esclude                                                                                                                                                                                                      |
+| ----------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `chromium-320`    | 320×640                            | `touch.spec.ts`                                                                                                                                                                                              |
+| `chromium-375`    | 375×667                            | `touch.spec.ts`                                                                                                                                                                                              |
+| `chromium-768`    | 768×1024                           | `touch.spec.ts`                                                                                                                                                                                              |
+| `chromium-1024`   | 1024×768                           | `touch.spec.ts`                                                                                                                                                                                              |
+| `chromium-1440`   | 1440×900                           | `touch.spec.ts`                                                                                                                                                                                              |
+| `touch-pixel-7`   | Pixel 7 (Chromium, touch)          | `visual`, `keyboard`                                                                                                                                                                                         |
+| `touch-iphone-14` | iPhone 14 (WebKit, touch)          | `visual`, `keyboard`                                                                                                                                                                                         |
+| `firefox-1440`    | Firefox 1440×900                   | `visual`, `touch`                                                                                                                                                                                            |
+| `performance`     | Pixel 7 (Chromium, CPU 4× via CDP) | esegue solo `performance.spec.ts` (tag `@performance`), **da solo con un worker**: job dedicato in CI, dopo il resto in `npm run test:e2e`; con altri test in parallelo la CPU contesa falsa long task e INP |
+| `storybook`       | Chromium 1024×768                  | esegue solo `tests/storybook/`                                                                                                                                                                               |
 
 Il progetto `storybook` avvia Chromium senza `--hide-scrollbars` (l'opzione predefinita di Playwright in headless nasconde le barre), così screenshot e test vedono la barra di scorrimento GDM 95. Apre le story da `build/client/storybook/` (`iframe.html?id=…&globals=…`): screenshot delle story con tag `visual` in due combinazioni, classico con il mouse e alto contrasto con il touch (ADR-0019); axe con contrasto su tutte le story in tutte e quattro le combinazioni (tema × input); in touch ogni controllo deve misurare almeno 44×44 px. Prima di misurare si aspetta la fine delle animazioni non infinite (per esempio l'apertura dei menu). Se l'elemento o un suo antenato è nascosto con lo schema di `VisuallyHidden` (`clip: rect(0 0 0 0)` o `clip-path: inset(50%)`; una `clip-path` decorativa non conta) (gli input di React Aria stanno in uno `<span>` `VisuallyHidden`), si misura l'etichetta che lo contiene, cioè l'area da toccare; se è nascosta anche l'etichetta (il `HiddenSelect` di React Aria per i form), l'elemento non è un bersaglio e non si misura. Gli elementi con `display: contents` (le celle di GridList) non hanno un riquadro proprio: il bersaglio è la riga che li contiene (`role=row`), misurata a sua volta. L'addon a11y di Storybook è in modalità manuale nei test, per non eseguire axe due volte.
 

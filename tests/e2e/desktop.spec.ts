@@ -1,23 +1,31 @@
+import type { Page } from "@playwright/test";
 import { expect, openDesktop, test } from "./fixtures";
+
+function boxes(target: Page) {
+  return Promise.all(
+    [
+      target.getByRole("region", { name: "About" }),
+      target.getByText("Cestino", { exact: true }),
+      target.getByText("Start", { exact: true }),
+    ].map((locator) => locator.boundingBox()),
+  );
+}
 
 test.describe("desktop dopo l'idratazione", () => {
   test("il desktop interattivo prende il posto del guscio con le stesse posizioni", async ({
     page,
+    browser,
   }) => {
-    await page.goto("/");
-    const boxes = () =>
-      Promise.all(
-        [
-          page.getByRole("region", { name: "About" }),
-          page.getByText("Cestino", { exact: true }),
-          page.getByText("Start", { exact: true }),
-        ].map((locator) => locator.boundingBox()),
-      );
-    await page.waitForLoadState("load");
+    const shell = await browser.newPage({
+      viewport: page.viewportSize(),
+      javaScriptEnabled: false,
+    });
+    await shell.goto("/", { waitUntil: "load" });
+    const before = await boxes(shell);
+    await shell.close();
+    await openDesktop(page);
     await page.evaluate(() => document.fonts.ready);
-    const before = await boxes();
-    await expect(page.locator("[role=grid]")).toBeVisible();
-    expect(await boxes()).toEqual(before);
+    expect(await boxes(page)).toEqual(before);
   });
 
   test("un'icona apre la finestra senza ricaricare la pagina", async ({ page }) => {
