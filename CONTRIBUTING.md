@@ -28,7 +28,7 @@ Branch, merge, tag e push li fa solo il proprietario. Claude Code non li esegue 
 
 Una fase si chiude **solo se passano tutti i test**: quelli nuovi e quelli di tutte le fasi precedenti. Devono essere verdi:
 
-- in locale: `npm run lint`, `npm run typecheck`, `npm run test:coverage`, `npm run build`, `npm run test:prerender`, `npm run size`, `npm run test:e2e`, `npm run lhci:mobile`, `npm run lhci:desktop`
+- in locale: `npm run lint`, `npm run typecheck`, `npm run test:coverage`, `npm run build` (completo, Storybook compreso), `npm run test:prerender`, `npm run size`, `npm run test:e2e`, `npm run lhci:mobile`, `npm run lhci:desktop`
 - nella CI di GitHub, sull'ultimo commit del branch della fase
 
 `close-phase` controlla lo stato dell'ultima CI del branch. Se non è verde, non propone i comandi di merge.

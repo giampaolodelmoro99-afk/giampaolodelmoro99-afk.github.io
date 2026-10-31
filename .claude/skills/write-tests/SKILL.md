@@ -32,7 +32,7 @@ description: Indica e scrive i test necessari per un file o una modifica (compon
 
 ```bash
 npm run test:coverage
-npm run build && npm run test:prerender
+npm run build:site && npm run test:prerender:site   # durante il lavoro (build completo se cambiano le story)
 npm run test:e2e:chromium                          # durante il lavoro: solo Chromium, nel container
 npm run test:e2e                                   # matrice completa: in CI e a fine fase (ADR-0019)
 ```

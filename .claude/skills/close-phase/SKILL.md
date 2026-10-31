@@ -13,7 +13,7 @@ npm run format:check
 npm run lint
 npm run typecheck
 npm run test:coverage
-npm run build
+npm run build             # completo: sito + Storybook (durante la fase basta build:site)
 npm run test:prerender
 npm run size
 npm run test:e2e          # container, matrice completa con screenshot (durante la fase basta test:e2e:chromium)

@@ -86,7 +86,7 @@ Le query si fanno per ruolo e nome (`getByRole`), non per classe o test id, salv
 
 `src/components/prerenderStyles.test.tsx` rende ogni story dei componenti con `renderToString` e confronta gli attributi `style` con l'elenco dei casi noti del tipo C (ADR-0012). Le story si cercano sul disco a ogni esecuzione: con `import.meta.glob` la cache dei moduli di Vitest 5 (`node_modules/.vitest-cache`) non vedeva i file nuovi.
 
-`tests/prerender/html.test.ts` legge `build/client` (serve prima `npm run build`). Per ogni route e lingua verifica:
+`tests/prerender/html.test.ts` legge `build/client` (basta `npm run build:site`, poi `npm run test:prerender:site`); `tests/prerender/storybook.test.ts` controlla i file di Storybook e serve la build completa (`npm run build`, poi `npm run test:prerender`). Per ogni route e lingua verifica:
 
 - `lang`, title, description
 - canonical e hreflang (incluso x-default)
@@ -115,7 +115,8 @@ Per ogni caso si verificano messaggio, canale alternativo, dati conservati e axe
 ```bash
 npm run test               # unit (anche nel pre-push)
 npm run test:coverage      # unit con soglie
-npm run build && npm run test:prerender
+npm run build:site && npm run test:prerender:site   # durante il lavoro
+npm run build && npm run test:prerender             # quando cambiano le story, a fine fase, in CI
 npm run test:e2e:chromium  # durante il lavoro: solo Chromium, nel container
 npm run test:e2e           # suite completa nel container (come la CI), a fine fase
 npm run test:e2e:host      # e2e sull'host senza @visual, per iterare

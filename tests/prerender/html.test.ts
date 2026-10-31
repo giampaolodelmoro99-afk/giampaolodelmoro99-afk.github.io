@@ -235,30 +235,8 @@ describe("dati personali nel build", () => {
   });
 });
 
+// I controlli sui file di Storybook stanno in storybook.test.ts: servono la build completa.
 describe("Storybook in /storybook/", () => {
-  const storybook = join(client, "storybook");
-
-  it.each(["index.html", "iframe.html"])(
-    "%s non è indicizzabile e ha una CSP dedicata come primo elemento di head",
-    async (name) => {
-      const { html, document } = await load(join(storybook, name));
-      expect(attr(document, 'meta[name="robots"]', "content")).toBe("noindex, nofollow");
-      expect(html).toMatch(/<head><meta http-equiv="Content-Security-Policy"/);
-      const policy = attr(document, 'meta[http-equiv="Content-Security-Policy"]', "content") ?? "";
-      for (const hash of inlineScriptHashes(html)) {
-        expect(policy).toContain(hash);
-      }
-      expect(policy).not.toMatch(/unsafe-eval|https?:/);
-      expect(policy).not.toMatch(/script-src[^;]*unsafe-inline/);
-      expect(html.indexOf("<meta charset")).toBeGreaterThan(0);
-      expect(html.indexOf("<meta charset")).toBeLessThan(1024);
-    },
-  );
-
-  it("non pubblica project.json con le dipendenze di sviluppo", () => {
-    expect(existsSync(join(storybook, "project.json"))).toBe(false);
-  });
-
   it("robots.txt esclude Storybook", async () => {
     const robots = await readFile(join(client, "robots.txt"), "utf8");
     expect(robots.split("\n")).toContain("Disallow: /storybook/");

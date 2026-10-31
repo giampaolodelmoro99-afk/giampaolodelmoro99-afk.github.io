@@ -5,7 +5,7 @@ Un lavoro visivo non è finito finché non è stato verificato nel browser, anch
 ## 1. Prima di iniziare
 
 ```bash
-npm run build && npm run preview   # http://localhost:4173
+npm run build:site && npm run preview   # http://localhost:4173 (npm run build se serve anche /storybook/)
 ```
 
 **Mai verificare su `npm run dev`**: non applica CSP, prerender, `404.html` né l'idratazione rinviata.

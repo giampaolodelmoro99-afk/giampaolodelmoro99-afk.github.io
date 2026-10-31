@@ -19,6 +19,7 @@
     "test:watch": "vitest --project unit",
     "test:coverage": "vitest run --project unit --coverage",
     "test:prerender": "vitest run --project prerender",
+    "test:prerender:site": "vitest run --project prerender tests/prerender/html.test.ts",
     "test:e2e": "docker run --rm -v \"$PWD\":/work -w /work -u \"$(id -u):$(id -g)\" -e HOME=/tmp -e CI=1 mcr.microsoft.com/playwright:v1.64.0-noble sh -c \"npx playwright test --grep-invert @performance && npx playwright test --project=performance --workers=1\"",
     "test:e2e:chromium": "docker run --rm -v \"$PWD\":/work -w /work -u \"$(id -u):$(id -g)\" -e HOME=/tmp -e CI=1 mcr.microsoft.com/playwright:v1.64.0-noble npx playwright test --project=chromium-1440 --project=chromium-375 --project=touch-pixel-7",
     "test:e2e:update-snapshots": "docker run --rm -v \"$PWD\":/work -w /work -u \"$(id -u):$(id -g)\" -e HOME=/tmp -e CI=1 mcr.microsoft.com/playwright:v1.64.0-noble npx playwright test --grep @visual --update-snapshots",

@@ -196,7 +196,7 @@ GitHub Pages risponde a `/en` con un 301 verso `/en/` (cartella con `index.html`
 
 Pubblicato in `/storybook/` dalla F1A, escluso dall'indicizzazione: `meta robots noindex, nofollow` nel manager e nell'anteprima, `Disallow: /storybook/` in robots.txt, fuori da sitemap, llms.txt e Lighthouse CI (gli URL di `lighthouserc` sono espliciti).
 
-- **Build**: `npm run build` costruisce il sito e poi Storybook in `build/client/storybook/`; `build:site` costruisce solo il sito.
+- **Build**: `npm run build` costruisce il sito e poi Storybook in `build/client/storybook/` (in CI, a fine fase e quando cambiano le story); `build:site` costruisce solo il sito ed è quella da usare durante il lavoro.
 - **CSP**: `scripts/postbuild.mjs` ignora la cartella `storybook`, quindi la CSP del sito non cambia. `scripts/postbuild-storybook.mjs` inserisce in `index.html` e `iframe.html` una **CSP dedicata** come primo elemento di `<head>`: script solo dal sito e con hash, `style-src 'self' 'unsafe-inline'` (Storybook inserisce stili a runtime), `font-src 'self' data:` (font incorporati delle pagine Docs), `frame-src 'self'`, niente `unsafe-eval`. La build fallisce se mancano i meta noindex o se compaiono risorse esterne.
 - `project.json`, che Storybook genera per la telemetria, viene tolto: elencherebbe le dipendenze di sviluppo. La telemetria è disattivata.
 - Test: prerender (noindex, CSP dedicata, `project.json` assente, robots.txt, nessun riferimento a Storybook nelle pagine del sito) ed e2e (manager senza errori né richieste esterne).
