@@ -8,7 +8,6 @@ import { DesktopIcons } from "../../../components/DesktopIcon";
 import { MenuItem } from "../../../components/MenuBar";
 import { StartButton } from "../../../components/StartButton";
 import { Taskbar, TaskbarButton } from "../../../components/TaskbarButton";
-import { Window } from "../../../components/Window";
 import { cx } from "../../../components/cx";
 import { getDictionary, useLocale, useT } from "../../../i18n";
 import {
@@ -26,9 +25,10 @@ import {
   openAppFor,
 } from "../../../stores/desktop";
 import { apps, appDefinition, desktopApps } from "../apps";
-import { AppContent } from "../content/AppContent";
 import styles from "../Desktop.module.css";
-import { desktopIconsId, windowBodyId, windowTitleId } from "../ids";
+import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
+import { DesktopWindow } from "./DesktopWindow";
+import { useWorkspaceViewport } from "./useWorkspaceViewport";
 import { Clock } from "./Clock";
 
 export type DesktopAppProps = {
@@ -75,7 +75,8 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
   const windows = useStore(store, (state) => state.windows);
   const stack = useStore(store, (state) => state.stack);
   const activeId = useStore(store, (state) => state.activeId);
-  const { open, close, focus } = store.getState();
+  const { open, close, focus, minimize, toggleMaximize, setViewport } = store.getState();
+  const { workspaceRef, metricsRef } = useWorkspaceViewport(setViewport);
   const [focusRequest, setFocusRequest] = useState<{ target: string } | null>(null);
 
   const iconsReady = useIconsReady(onReady);
@@ -95,6 +96,16 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
     setFocusRequest({ target: windowBodyId(id) });
   };
 
+  const minimizeApp = (id: AppId) => {
+    minimize(id);
+    setFocusRequest({ target: taskbarButtonId(id) });
+  };
+
+  const pressTaskbarButton = (id: AppId) => {
+    if (id === store.getState().activeId) minimizeApp(id);
+    else openApp(id);
+  };
+
   const closeApp = (id: AppId) => {
     close(id);
     const next = store.getState().activeId;
@@ -112,7 +123,11 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
       >
         {t.desktop.skipLink}
       </a>
-      <main className={styles.workspace}>
+      <main className={styles.workspace} ref={workspaceRef}>
+        <div className={styles.metrics} ref={metricsRef} aria-hidden="true">
+          <span data-metric="window" />
+          <span data-metric="titlebar" />
+        </div>
         <div className={styles.iconArea} ref={iconsReady}>
           <DesktopIcons
             id={desktopIconsId}
@@ -126,31 +141,21 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
             className={styles.icons}
           />
         </div>
-        {Object.values(windows).map((window) => {
-          if (window.status === "minimized") return null;
-          const { id } = window;
-          const { icon, variant } = appDefinition(id);
-          const isActive = id === activeId;
-          return (
-            <Window
-              key={id}
-              title={t.apps[id]}
-              titleId={windowTitleId(id)}
-              icon={icon}
-              variant={variant}
-              isActive={isActive}
-              isBodyInert={!isActive}
-              onActivate={() => focus(id)}
-              onClose={() => closeApp(id)}
-              bodyId={windowBodyId(id)}
-              bodyClassName={styles.windowBody}
-              className={styles.window}
-              style={{ "--window-z": stack.indexOf(id), "--window-cascade": window.cascade }}
-            >
-              <AppContent app={id} headingLevel={id === routeApp ? 1 : 2} />
-            </Window>
-          );
-        })}
+        {Object.values(windows).map((window) =>
+          window.minimized ? null : (
+            <DesktopWindow
+              key={window.id}
+              window={window}
+              zIndex={stack.indexOf(window.id)}
+              isActive={window.id === activeId}
+              headingLevel={window.id === routeApp ? 1 : 2}
+              onActivate={focus}
+              onMinimize={minimizeApp}
+              onToggleMaximize={toggleMaximize}
+              onClose={closeApp}
+            />
+          ),
+        )}
       </main>
       <Taskbar
         label={t.desktop.taskbarLabel}
@@ -179,12 +184,14 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
           ))}
         </StartButton>
         <Button icon="windows" aria-label={t.desktop.windowsButton} isDisabled />
-        {stack.map((id) => (
+        {Object.values(windows).map(({ id, minimized }) => (
           <TaskbarButton
             key={id}
+            id={taskbarButtonId(id)}
             icon={appDefinition(id).icon}
             isSelected={id === activeId}
-            onChange={() => openApp(id)}
+            onChange={() => pressTaskbarButton(id)}
+            {...(minimized ? { "aria-label": `${t.apps[id]}, ${t.desktop.minimizedSuffix}` } : {})}
           >
             {t.apps[id]}
           </TaskbarButton>

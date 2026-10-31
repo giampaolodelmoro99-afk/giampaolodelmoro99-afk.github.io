@@ -306,6 +306,8 @@
   --window-default-height: 32rem;
   --taskbar-clock-width: 4.5rem;
   --taskbar-start-width: 4.75rem;
+  --window-min-height: 10rem;
+  --window-keep-visible: 3rem;
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */

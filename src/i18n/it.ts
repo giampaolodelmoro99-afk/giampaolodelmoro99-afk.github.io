@@ -117,6 +117,7 @@ export const it = {
     placeholder: "Il contenuto di questa finestra è in arrivo.",
     windowsButton: "Finestre aperte (Alt+W)",
     clockLabel: "Ora",
+    minimizedSuffix: "ridotta a icona",
   },
   about: {
     bio: "Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia, con Laravel e React, e continuo a studiare per crescere ogni giorno come sviluppatore.",

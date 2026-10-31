@@ -119,6 +119,7 @@ export const en: Dictionary = {
     placeholder: "The content of this window is on its way.",
     windowsButton: "Open windows (Alt+W)",
     clockLabel: "Time",
+    minimizedSuffix: "minimized",
   },
   about: {
     bio: "I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and I keep studying to grow as a developer every day.",

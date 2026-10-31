@@ -86,6 +86,48 @@ describe("DesktopApp", () => {
     expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
   });
 
+  it("riduce a icona: la finestra sparisce e il focus va al suo pulsante nella taskbar", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "Riduci a icona" }));
+    expect(screen.queryByRole("region", { name: "About" })).not.toBeInTheDocument();
+    const button = screen.getByRole("button", { name: "About, ridotta a icona" });
+    expect(button).toHaveFocus();
+    expect(button).toHaveAttribute("aria-pressed", "false");
+    await user.click(button);
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+  });
+
+  it("il pulsante della finestra attiva nella taskbar la riduce a icona", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "About", pressed: true }));
+    expect(screen.queryByRole("region", { name: "About" })).not.toBeInTheDocument();
+  });
+
+  it("ingrandisce e ripristina dallo stesso pulsante, che cambia nome", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "Ingrandisci" }));
+    const about = screen.getByRole("region", { name: "About" });
+    expect(about).toHaveAttribute("data-maximized", "true");
+    await user.click(screen.getByRole("button", { name: "Ripristina" }));
+    expect(about).not.toHaveAttribute("data-maximized");
+  });
+
+  it("i pulsanti della taskbar restano nell'ordine di apertura", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("button", { name: "About" }));
+    const toolbar = screen.getByRole("toolbar", { name: "Barra delle applicazioni" });
+    const names = within(toolbar)
+      .getAllByRole("button")
+      .map((button) => button.getAttribute("aria-label") ?? button.textContent);
+    expect(names.slice(-2)).toEqual(["About", "CV"]);
+  });
+
   it("segnala di essere pronto quando le icone sono nella griglia", async () => {
     const onReady = vi.fn<() => void>();
     renderDesktop("/", onReady);

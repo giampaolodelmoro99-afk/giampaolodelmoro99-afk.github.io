@@ -112,6 +112,25 @@
   text-underline-offset: var(--underline-offset);
 }
 
+.metrics {
+  position: absolute;
+  inset: var(--space-0) auto auto var(--space-0);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.metrics > [data-metric="window"] {
+  display: block;
+  inline-size: var(--window-min-width);
+  block-size: var(--window-min-height);
+}
+
+.metrics > [data-metric="titlebar"] {
+  display: block;
+  inline-size: var(--window-keep-visible);
+  block-size: var(--titlebar-height);
+}
+
 .visuallyHidden {
   position: absolute;
   inline-size: 1px;
@@ -157,5 +176,21 @@
     block-size: min(var(--window-default-height), 100% - var(--space-4) * 2);
     margin: auto;
     translate: var(--_cascade) var(--_cascade);
+  }
+
+  .window.placed {
+    inset: var(--space-0) auto auto var(--space-0);
+    inline-size: var(--window-w);
+    block-size: var(--window-h);
+    margin: var(--space-0);
+    translate: var(--window-x) var(--window-y);
+  }
+
+  .window[data-maximized] {
+    inset: var(--space-0);
+    inline-size: auto;
+    block-size: auto;
+    margin: var(--space-0);
+    translate: none;
   }
 }

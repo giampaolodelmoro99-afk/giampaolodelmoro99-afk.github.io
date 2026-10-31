@@ -1,14 +1,11 @@
 import { type AppId, type RouteKey, appIds } from "../../routes/routeMap";
-
-export type WindowStatus = "normal" | "minimized" | "maximized";
-
-export type Geometry = { x: number; y: number; width: number; height: number };
+import { type Geometry, type Viewport, clampGeometry, isGeometry, isNumber } from "./geometry";
 
 export type WindowState = {
   id: AppId;
-  status: WindowStatus;
+  maximized: boolean;
+  minimized: boolean;
   geometry: Geometry | null;
-  restore: Geometry | null;
   cascade: number;
 };
 
@@ -21,6 +18,7 @@ export type DesktopState = {
   recent: AppId[];
   activeId: AppId | null;
   layoutMode: LayoutMode;
+  viewport: Viewport | null;
 };
 
 export const homeApp: AppId = "about";
@@ -36,6 +34,7 @@ export const emptyState: DesktopState = {
   recent: [],
   activeId: null,
   layoutMode: "desktop",
+  viewport: null,
 };
 
 export function initialStateFor(routeKey: RouteKey): DesktopState {
@@ -45,18 +44,21 @@ export function initialStateFor(routeKey: RouteKey): DesktopState {
 const withoutId = (ids: AppId[], id: AppId) => ids.filter((candidate) => candidate !== id);
 
 function topVisible(state: Pick<DesktopState, "windows" | "recent">): AppId | null {
-  return state.recent.find((id) => state.windows[id]?.status !== "minimized") ?? null;
+  return state.recent.find((id) => state.windows[id]?.minimized === false) ?? null;
+}
+
+function update(state: DesktopState, id: AppId, change: Partial<WindowState>): DesktopState {
+  const window = state.windows[id];
+  if (!window) return state;
+  return { ...state, windows: { ...state.windows, [id]: { ...window, ...change } } };
 }
 
 export function focus(state: DesktopState, id: AppId): DesktopState {
   const window = state.windows[id];
   if (!window) return state;
+  const restored = window.minimized ? update(state, id, { minimized: false }) : state;
   return {
-    ...state,
-    windows:
-      window.status === "minimized"
-        ? { ...state.windows, [id]: { ...window, status: "normal" } }
-        : state.windows,
+    ...restored,
     stack: [...withoutId(state.stack, id), id],
     recent: [id, ...withoutId(state.recent, id)],
     activeId: id,
@@ -67,9 +69,9 @@ export function open(state: DesktopState, id: AppId): DesktopState {
   if (state.windows[id]) return focus(state, id);
   const window: WindowState = {
     id,
-    status: "normal",
+    maximized: false,
+    minimized: false,
     geometry: null,
-    restore: null,
     cascade: state.stack.length,
   };
   return focus({ ...state, windows: { ...state.windows, [id]: window } }, id);
@@ -88,6 +90,34 @@ export function close(state: DesktopState, id: AppId): DesktopState {
   };
 }
 
+export function minimize(state: DesktopState, id: AppId): DesktopState {
+  if (!state.windows[id]) return state;
+  const minimized = update(state, id, { minimized: true });
+  return { ...minimized, activeId: topVisible(minimized) };
+}
+
+export function toggleMaximize(state: DesktopState, id: AppId): DesktopState {
+  const window = state.windows[id];
+  if (!window) return state;
+  return focus(update(state, id, { maximized: !window.maximized }), id);
+}
+
+export function place(state: DesktopState, id: AppId, geometry: Geometry): DesktopState {
+  if (!state.windows[id]) return state;
+  const placed = state.viewport ? clampGeometry(geometry, state.viewport) : geometry;
+  return update(state, id, { geometry: placed, maximized: false });
+}
+
+export function setViewport(state: DesktopState, viewport: Viewport): DesktopState {
+  const windows: DesktopState["windows"] = {};
+  for (const window of Object.values(state.windows)) {
+    windows[window.id] = window.geometry
+      ? { ...window, geometry: clampGeometry(window.geometry, viewport) }
+      : window;
+  }
+  return { ...state, windows, viewport };
+}
+
 export function zIndexOf(state: DesktopState, id: AppId): number {
   return state.stack.indexOf(id);
 }
@@ -95,34 +125,19 @@ export function zIndexOf(state: DesktopState, id: AppId): number {
 const isAppId = (value: unknown): value is AppId =>
   typeof value === "string" && appIds.some((id) => id === value);
 
-const isNumber = (value: unknown): value is number =>
-  typeof value === "number" && Number.isFinite(value);
-
-const isGeometry = (value: unknown): value is Geometry =>
-  typeof value === "object" &&
-  value !== null &&
-  ["x", "y", "width", "height"].every((key) => isNumber(Reflect.get(value, key)));
-
-const statuses: readonly WindowStatus[] = ["normal", "minimized", "maximized"];
-
 function parseWindow(value: unknown): WindowState | null {
   if (typeof value !== "object" || value === null) return null;
   const id: unknown = Reflect.get(value, "id");
-  const status: unknown = Reflect.get(value, "status");
+  const maximized: unknown = Reflect.get(value, "maximized");
+  const minimized: unknown = Reflect.get(value, "minimized");
   const geometry: unknown = Reflect.get(value, "geometry");
-  const restore: unknown = Reflect.get(value, "restore");
   const cascade: unknown = Reflect.get(value, "cascade");
-  if (!isAppId(id) || !statuses.some((candidate) => candidate === status)) return null;
+  if (!isAppId(id) || typeof maximized !== "boolean" || typeof minimized !== "boolean") {
+    return null;
+  }
   if (geometry !== null && !isGeometry(geometry)) return null;
-  if (restore !== null && !isGeometry(restore)) return null;
   if (!isNumber(cascade)) return null;
-  return {
-    id,
-    status: statuses.find((candidate) => candidate === status) ?? "normal",
-    geometry,
-    restore,
-    cascade,
-  };
+  return { id, maximized, minimized, geometry, cascade };
 }
 
 export function serialize(state: DesktopState): string {
@@ -167,5 +182,6 @@ export function deserialize(text: string, layoutMode: LayoutMode = "desktop"): D
     recent,
     activeId: topVisible({ windows, recent }),
     layoutMode,
+    viewport: null,
   };
 }

@@ -6,6 +6,10 @@ export function windowTitleId(app: AppId): string {
   return `window-${app}-title`;
 }
 
+export function taskbarButtonId(app: AppId): string {
+  return `taskbar-${app}`;
+}
+
 export function windowBodyId(app: AppId): string {
   return `window-${app}-body`;
 }
