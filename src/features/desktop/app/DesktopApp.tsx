@@ -165,6 +165,7 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
               window={window}
               zIndex={stack.indexOf(window.id)}
               isActive={window.id === activeId}
+              isResizing={gestures.resizing === window.id}
               headingLevel={window.id === routeApp ? 1 : 2}
               onActivate={focus}
               onMinimize={minimizeApp}

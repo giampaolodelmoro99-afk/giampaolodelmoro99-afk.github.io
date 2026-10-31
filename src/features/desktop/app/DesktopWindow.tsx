@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { ResizeHandles } from "../../../components/ResizeHandles";
 import { Window } from "../../../components/Window";
 import { cx } from "../../../components/cx";
 import { useT } from "../../../i18n";
@@ -13,6 +14,7 @@ export type DesktopWindowProps = {
   window: WindowState;
   zIndex: number;
   isActive: boolean;
+  isResizing: boolean;
   headingLevel: HeadingLevel;
   onActivate: (id: AppId) => void;
   onMinimize: (id: AppId) => void;
@@ -25,6 +27,7 @@ export function DesktopWindow({
   window,
   zIndex,
   isActive,
+  isResizing,
   headingLevel,
   onActivate,
   onMinimize,
@@ -80,6 +83,17 @@ export function DesktopWindow({
       onToggleMaximize={() => onToggleMaximize(id)}
       onClose={() => onClose(id)}
       titleBarRef={setTitleBar}
+      overlay={
+        maximized ? null : (
+          <ResizeHandles
+            isResizing={isResizing}
+            className={styles.resizeHandles}
+            onResizeStart={(edge, event) => {
+              if (frame.current) onGestureStart(id, edge, event, frame.current);
+            }}
+          />
+        )
+      }
       frameRef={(element) => {
         frame.current = element;
       }}

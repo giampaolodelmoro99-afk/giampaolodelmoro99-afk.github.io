@@ -7,6 +7,7 @@ export * from "./GroupBox";
 export * from "./Icon";
 export * from "./MenuBar";
 export * from "./ProgressBar";
+export * from "./ResizeHandles";
 export * from "./Radio";
 export * from "./ScrollArea";
 export * from "./Select";

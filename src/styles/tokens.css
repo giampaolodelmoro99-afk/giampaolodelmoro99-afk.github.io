@@ -309,6 +309,8 @@
   --window-min-height: 10rem;
   --window-keep-visible: 3rem;
   --drag-outline-width: 3px;
+  --resize-grab-desktop: 8px;
+  --resize-handle-size: 10px;
   --z-drag-outline: 999;
 }
 
@@ -398,6 +400,8 @@
   --target-min: var(--target-min-desktop);
   --desktop-icon-size: var(--icon-size-lg);
   --scrollbar-buttons: block;
+  --resize-grab: var(--resize-grab-desktop);
+  --resize-grab-offset: calc(var(--resize-grab-desktop) / -2);
 }
 
 @media (pointer: coarse) {
@@ -415,6 +419,8 @@
     --target-min: var(--touch-target-min);
     --desktop-icon-size: var(--icon-size-lg);
     --scrollbar-buttons: none;
+    --resize-grab: var(--touch-target-min);
+    --resize-grab-offset: calc(var(--touch-target-min) * -1);
   }
 }
 
@@ -432,6 +438,8 @@
   --target-min: var(--touch-target-min);
   --desktop-icon-size: var(--icon-size-lg);
   --scrollbar-buttons: none;
+  --resize-grab: var(--touch-target-min);
+  --resize-grab-offset: calc(var(--touch-target-min) * -1);
 }
 
 /* ---------- Movimento ridotto ---------- */

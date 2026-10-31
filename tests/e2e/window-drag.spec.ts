@@ -74,4 +74,49 @@ test.describe("finestre: trascinamento", () => {
     await about.locator("header span[id]").dblclick();
     await expect(about).not.toHaveAttribute("data-maximized");
   });
+
+  test("si ridimensiona dall'angolo, con la misura minima", async ({ page }) => {
+    await openDesktop(page);
+    const about = page.getByRole("region", { name: "About" });
+    const before = await about.boundingBox();
+    const corner = about.locator('[data-edge="se"]');
+    const handle = await corner.boundingBox();
+    if (!before || !handle) throw new Error("maniglia non visibile");
+    const x = handle.x + handle.width / 2;
+    const y = handle.y + handle.height / 2;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x + 80, y + 60, { steps: 5 });
+    await expect(about.locator("[data-resizing]")).toHaveCount(1);
+    await page.mouse.up();
+    const after = await about.boundingBox();
+    expect(after?.width).toBeCloseTo(before.width + 80, 0);
+    expect(after?.height).toBeCloseTo(before.height + 60, 0);
+    expect(after?.x).toBeCloseTo(before.x, 0);
+
+    const grown = await corner.boundingBox();
+    if (!grown) throw new Error("maniglia non visibile");
+    await page.mouse.move(grown.x + grown.width / 2, grown.y + grown.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(0, 0, { steps: 5 });
+    await page.mouse.up();
+    const smallest = await about.boundingBox();
+    expect(smallest?.width).toBe(240);
+    expect(smallest?.height).toBe(160);
+  });
+
+  test("dal bordo sinistro il ridimensionamento sposta anche l'origine", async ({ page }) => {
+    await openDesktop(page);
+    const about = page.getByRole("region", { name: "About" });
+    const before = await about.boundingBox();
+    const edge = await about.locator('[data-edge="w"]').boundingBox();
+    if (!before || !edge) throw new Error("maniglia non visibile");
+    await page.mouse.move(edge.x + edge.width / 2, edge.y + edge.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(edge.x + edge.width / 2 - 50, edge.y + edge.height / 2, { steps: 5 });
+    await page.mouse.up();
+    const after = await about.boundingBox();
+    expect(after?.x).toBeCloseTo(before.x - 50, 0);
+    expect(after?.width).toBeCloseTo(before.width + 50, 0);
+  });
 });

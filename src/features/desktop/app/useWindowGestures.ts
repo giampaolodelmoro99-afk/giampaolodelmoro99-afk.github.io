@@ -48,6 +48,7 @@ export function useWindowGestures({
   onPlace,
 }: WindowGestureOptions) {
   const [outline, setOutline] = useState<Geometry | null>(null);
+  const [resizing, setResizing] = useState<AppId | null>(null);
   const gesture = useRef<Gesture | null>(null);
   const frame = useRef(0);
 
@@ -61,6 +62,7 @@ export function useWindowGestures({
     gesture.current = null;
     cancelAnimationFrame(frame.current);
     setOutline(null);
+    setResizing(null);
     if (!active) return;
     if (active.target.hasPointerCapture(active.pointerId)) {
       active.target.releasePointerCapture(active.pointerId);
@@ -85,6 +87,7 @@ export function useWindowGestures({
         target,
       };
       target.setPointerCapture(event.pointerId);
+      if (edge) setResizing(id);
 
       const onMove = (move: PointerEvent) => {
         const active = gesture.current;
@@ -125,5 +128,5 @@ export function useWindowGestures({
     [workspace, viewport, isEnabled, onPlace, end, show],
   );
 
-  return { outline, start };
+  return { outline, resizing, start };
 }

@@ -37,3 +37,24 @@ test("al tocco la finestra si trascina dalla barra del titolo", async ({ page })
     .toBeCloseTo((before?.x ?? 0) + 120, 0);
   expect((await about.boundingBox())?.y).toBeCloseTo((before?.y ?? 0) + 60, 0);
 });
+
+test("al tocco la finestra si ridimensiona dall'angolo, con una zona di presa di 44 px", async ({
+  page,
+}) => {
+  await openDesktop(page);
+  const cdp = await page.context().newCDPSession(page);
+  const about = page.getByRole("region", { name: "About" });
+  const before = await about.boundingBox();
+  const corner = await about.locator('[data-edge="se"]').boundingBox();
+  if (!before || !corner) throw new Error("maniglia non visibile");
+  expect(corner.width).toBeGreaterThanOrEqual(44);
+  expect(corner.height).toBeGreaterThanOrEqual(44);
+  await touchDrag(
+    cdp,
+    { x: corner.x + corner.width / 2, y: corner.y + corner.height / 2 },
+    { x: 60, y: 40 },
+  );
+  await expect
+    .poll(async () => (await about.boundingBox())?.width)
+    .toBeCloseTo(before.width + 60, 0);
+});

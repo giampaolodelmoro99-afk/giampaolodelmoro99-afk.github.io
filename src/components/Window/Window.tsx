@@ -28,6 +28,7 @@ export type WindowProps = {
   onActivate?: () => void;
   titleBarRef?: RefCallback<HTMLElement>;
   frameRef?: RefCallback<HTMLElement>;
+  overlay?: ReactNode;
   className?: string | undefined;
   style?: CSSProperties | undefined;
 };
@@ -55,6 +56,7 @@ export function Window({
   onActivate,
   titleBarRef,
   frameRef,
+  overlay,
   className,
   style,
 }: WindowProps) {
@@ -117,6 +119,7 @@ export function Window({
         {children}
       </div>
       {statusBar}
+      {overlay}
     </Frame>
   );
 }

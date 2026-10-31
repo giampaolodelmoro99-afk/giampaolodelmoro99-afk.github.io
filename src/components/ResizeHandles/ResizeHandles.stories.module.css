@@ -1,0 +1,12 @@
+.stage {
+  padding: var(--space-6);
+  background: var(--color-desktop);
+}
+
+.frame {
+  position: relative;
+  inline-size: 16rem;
+  block-size: 10rem;
+  background: var(--color-surface);
+  box-shadow: var(--bevel-window);
+}
