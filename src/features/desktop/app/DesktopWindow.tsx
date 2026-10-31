@@ -1,8 +1,9 @@
+import { useEffect, useRef, useState } from "react";
 import { Window } from "../../../components/Window";
 import { cx } from "../../../components/cx";
 import { useT } from "../../../i18n";
 import type { AppId } from "../../../routes/routeMap";
-import type { WindowState } from "../../../stores/desktop";
+import type { Edge, WindowState } from "../../../stores/desktop";
 import { appDefinition } from "../apps";
 import { AppContent, type HeadingLevel } from "../content/AppContent";
 import styles from "../Desktop.module.css";
@@ -17,6 +18,7 @@ export type DesktopWindowProps = {
   onMinimize: (id: AppId) => void;
   onToggleMaximize: (id: AppId) => void;
   onClose: (id: AppId) => void;
+  onGestureStart: (id: AppId, edge: Edge | null, event: PointerEvent, frame: Element) => void;
 };
 
 export function DesktopWindow({
@@ -28,10 +30,33 @@ export function DesktopWindow({
   onMinimize,
   onToggleMaximize,
   onClose,
+  onGestureStart,
 }: DesktopWindowProps) {
+  const frame = useRef<HTMLElement | null>(null);
   const t = useT();
   const { id, geometry, maximized, cascade } = window;
   const { icon, variant } = appDefinition(id);
+  const [titleBar, setTitleBar] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!titleBar) return undefined;
+    const onButton = (event: Event) =>
+      event.target instanceof Element && event.target.closest("button") !== null;
+    const onPointerDown = (event: PointerEvent) => {
+      if (maximized || !frame.current || onButton(event)) return;
+      onGestureStart(id, null, event, frame.current);
+    };
+    const onDoubleClick = (event: MouseEvent) => {
+      if (!onButton(event)) onToggleMaximize(id);
+    };
+    titleBar.addEventListener("pointerdown", onPointerDown);
+    titleBar.addEventListener("dblclick", onDoubleClick);
+    return () => {
+      titleBar.removeEventListener("pointerdown", onPointerDown);
+      titleBar.removeEventListener("dblclick", onDoubleClick);
+    };
+  }, [titleBar, maximized, id, onGestureStart, onToggleMaximize]);
+
   const placement = geometry
     ? {
         "--window-x": `${geometry.x}px`,
@@ -54,6 +79,10 @@ export function DesktopWindow({
       onMinimize={() => onMinimize(id)}
       onToggleMaximize={() => onToggleMaximize(id)}
       onClose={() => onClose(id)}
+      titleBarRef={setTitleBar}
+      frameRef={(element) => {
+        frame.current = element;
+      }}
       bodyId={windowBodyId(id)}
       bodyClassName={styles.windowBody}
       className={cx(styles.window, geometry && styles.placed)}

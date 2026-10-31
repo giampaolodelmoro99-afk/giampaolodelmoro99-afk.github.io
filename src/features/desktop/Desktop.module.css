@@ -186,6 +186,10 @@
     translate: var(--window-x) var(--window-y);
   }
 
+  .window:not([data-maximized]) > header {
+    touch-action: none;
+  }
+
   .window[data-maximized] {
     inset: var(--space-0);
     inline-size: auto;

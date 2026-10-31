@@ -2,6 +2,7 @@ export * from "./AlertDialog";
 export * from "./Button";
 export * from "./Checkbox";
 export * from "./DesktopIcon";
+export * from "./DragOutline";
 export * from "./GroupBox";
 export * from "./Icon";
 export * from "./MenuBar";

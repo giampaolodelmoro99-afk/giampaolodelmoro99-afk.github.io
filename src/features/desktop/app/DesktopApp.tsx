@@ -5,6 +5,7 @@ import { useStore } from "zustand";
 import { Button } from "../../../components/Button";
 import buttonStyles from "../../../components/Button/Button.module.css";
 import { DesktopIcons } from "../../../components/DesktopIcon";
+import { DragOutline } from "../../../components/DragOutline";
 import { MenuItem } from "../../../components/MenuBar";
 import { StartButton } from "../../../components/StartButton";
 import { Taskbar, TaskbarButton } from "../../../components/TaskbarButton";
@@ -28,6 +29,7 @@ import { apps, appDefinition, desktopApps } from "../apps";
 import styles from "../Desktop.module.css";
 import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
 import { DesktopWindow } from "./DesktopWindow";
+import { useWindowGestures } from "./useWindowGestures";
 import { useWorkspaceViewport } from "./useWorkspaceViewport";
 import { Clock } from "./Clock";
 
@@ -53,6 +55,8 @@ function useIconsReady(onReady: (() => void) | undefined) {
   return setArea;
 }
 
+const isDesktopLayout = () => window.matchMedia("(width >= 768px)").matches;
+
 function useDesktopStore(routeKey: RouteKey): DesktopStore {
   const [store] = useState(() => createDesktopStore(initialStateFor(routeKey)));
   return store;
@@ -76,7 +80,14 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
   const stack = useStore(store, (state) => state.stack);
   const activeId = useStore(store, (state) => state.activeId);
   const { open, close, focus, minimize, toggleMaximize, setViewport } = store.getState();
+  const [workspace, setWorkspace] = useState<HTMLElement | null>(null);
   const { workspaceRef, metricsRef } = useWorkspaceViewport(setViewport);
+  const gestures = useWindowGestures({
+    workspace,
+    viewport: () => store.getState().viewport,
+    isEnabled: isDesktopLayout,
+    onPlace: store.getState().place,
+  });
   const [focusRequest, setFocusRequest] = useState<{ target: string } | null>(null);
 
   const iconsReady = useIconsReady(onReady);
@@ -123,7 +134,13 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
       >
         {t.desktop.skipLink}
       </a>
-      <main className={styles.workspace} ref={workspaceRef}>
+      <main
+        className={styles.workspace}
+        ref={(element) => {
+          workspaceRef(element);
+          setWorkspace(element);
+        }}
+      >
         <div className={styles.metrics} ref={metricsRef} aria-hidden="true">
           <span data-metric="window" />
           <span data-metric="titlebar" />
@@ -153,9 +170,14 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
               onMinimize={minimizeApp}
               onToggleMaximize={toggleMaximize}
               onClose={closeApp}
+              onGestureStart={(id, edge, event, frame) => {
+                focus(id);
+                gestures.start(id, edge, event, frame);
+              }}
             />
           ),
         )}
+        {gestures.outline && <DragOutline rect={gestures.outline} />}
       </main>
       <Taskbar
         label={t.desktop.taskbarLabel}

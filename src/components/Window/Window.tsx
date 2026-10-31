@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useId } from "react";
+import { type CSSProperties, type ReactNode, type RefCallback, useId } from "react";
 import { Button } from "react-aria-components/Button";
 import { cx } from "../cx";
 import { Glyph, Icon, type SmallIconName } from "../Icon";
@@ -26,6 +26,8 @@ export type WindowProps = {
   bodyClassName?: string | undefined;
   isBodyInert?: boolean;
   onActivate?: () => void;
+  titleBarRef?: RefCallback<HTMLElement>;
+  frameRef?: RefCallback<HTMLElement>;
   className?: string | undefined;
   style?: CSSProperties | undefined;
 };
@@ -51,6 +53,8 @@ export function Window({
   bodyClassName,
   isBodyInert = false,
   onActivate,
+  titleBarRef,
+  frameRef,
   className,
   style,
 }: WindowProps) {
@@ -71,6 +75,7 @@ export function Window({
 
   return (
     <Frame
+      ref={frameRef}
       aria-labelledby={isLandmark ? titleId : undefined}
       className={cx(styles.root, className)}
       style={style}
@@ -79,7 +84,7 @@ export function Window({
       data-maximized={isMaximized || undefined}
       data-variant={variant}
     >
-      <TitleBar className={styles.titlebar}>
+      <TitleBar ref={titleBarRef} className={styles.titlebar}>
         {icon && <Icon name={icon} size={16} className={cx(styles.titleIcon)} />}
         <span id={titleId} className={styles.title}>
           {title}

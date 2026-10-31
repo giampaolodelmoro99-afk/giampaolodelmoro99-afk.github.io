@@ -308,6 +308,8 @@
   --taskbar-start-width: 4.75rem;
   --window-min-height: 10rem;
   --window-keep-visible: 3rem;
+  --drag-outline-width: 3px;
+  --z-drag-outline: 999;
 }
 
 /* Composti che dipendono dai colori: ricalcolati su ogni elemento con data-theme. */
@@ -350,6 +352,9 @@
   --start-pressed-background: var(--color-surface);
   --start-pressed-text: var(--color-text);
   --start-pressed-bevel: var(--bevel-pressed);
+  --drag-outline-halo:
+    0 0 0 var(--border-width-hairline) var(--color-focus-halo),
+    inset 0 0 0 var(--border-width-hairline) var(--color-focus-halo);
 }
 
 /* ---------- Font dell'interfaccia: predefinito del tema, poi data-font ---------- */
