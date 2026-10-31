@@ -1,4 +1,4 @@
-import type { Key } from "react";
+import { type Key, useEffect, useState } from "react";
 import { Button } from "react-aria-components/Button";
 import { MenuTrigger } from "react-aria-components/Menu";
 import { cx } from "../cx";
@@ -38,6 +38,16 @@ export function WindowMenu({
   className,
 }: WindowMenuProps) {
   const strings = useUiStrings().windowMenu;
+  const [menu, setMenu] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!menu) return undefined;
+    const frame = requestAnimationFrame(() => {
+      if (document.activeElement !== menu) return;
+      menu.querySelector<HTMLElement>('[role="menuitem"]:not([aria-disabled="true"])')?.focus();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [menu]);
   const disabledKeys: WindowMenuAction[] = isMaximized
     ? ["move", "resize", "maximize"]
     : ["restore"];
@@ -51,6 +61,7 @@ export function WindowMenu({
       </Button>
       <MenuPopover placement="bottom start">
         <Menu
+          ref={setMenu}
           aria-label={strings.label}
           disabledKeys={disabledKeys}
           onAction={(key) => {

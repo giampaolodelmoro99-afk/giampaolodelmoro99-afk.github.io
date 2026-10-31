@@ -184,6 +184,25 @@ describe("DesktopApp", () => {
     expect(screen.getByText("About: ridimensionata")).toBeInTheDocument();
   });
 
+  it("Alt+Spazio e Alt+trattino aprono il menu della finestra attiva, non nei campi di testo", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    document.getElementById("window-about-body")?.focus();
+    await user.keyboard("{Alt>}{ }{/Alt}");
+    expect(await screen.findByRole("menu", { name: "Menu della finestra" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    await user.keyboard("{Alt>}-{/Alt}");
+    expect(await screen.findByRole("menu", { name: "Menu della finestra" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    const input = document.createElement("input");
+    document.body.append(input);
+    input.focus();
+    await user.keyboard("{Alt>}{ }{/Alt}");
+    expect(screen.queryByRole("menu")).toBeNull();
+    input.remove();
+  });
+
   it("segnala di essere pronto quando le icone sono nella griglia", async () => {
     const onReady = vi.fn<() => void>();
     renderDesktop("/", onReady);

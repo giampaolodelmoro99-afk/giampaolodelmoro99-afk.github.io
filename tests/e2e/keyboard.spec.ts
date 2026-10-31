@@ -1,5 +1,5 @@
 import type { Locator, Page } from "@playwright/test";
-import { expect, openPage, test } from "./fixtures";
+import { expect, openDesktop, openPage, test } from "./fixtures";
 
 async function tabTo(page: Page, target: Locator, limit = 40) {
   for (let step = 0; step < limit; step += 1) {
@@ -65,4 +65,18 @@ test("in forced-colors il focus da tastiera resta visibile con il colore di sist
     return { style: style.outlineStyle, width: style.outlineWidth };
   });
   expect(outline).toEqual({ style: "dashed", width: "2px" });
+});
+
+test("Alt+Spazio e Alt+trattino aprono il menu della finestra attiva", async ({ page }) => {
+  await openDesktop(page);
+  await page.locator("#window-about-body").focus();
+  await page.keyboard.press("Alt+Space");
+  const menu = page.getByRole("menu", { name: "Menu della finestra" });
+  await expect(menu).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "Sposta" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(menu).toBeHidden();
+  await expect(page.locator("#window-about-body")).toBeFocused();
+  await page.keyboard.press("Alt+Minus");
+  await expect(menu).toBeVisible();
 });

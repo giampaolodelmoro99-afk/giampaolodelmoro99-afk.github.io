@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { Keyboard } from "react-aria-components/Keyboard";
 import {
   Menu as AriaMenu,
@@ -14,6 +14,7 @@ import { Glyph, type GlyphName, Icon, type SmallIconName } from "../Icon";
 import styles from "./Menu.module.css";
 
 export type MenuProps = Omit<AriaMenuProps<object>, "className" | "style" | "children"> & {
+  ref?: Ref<HTMLDivElement> | undefined;
   children: ReactNode;
   size?: "default" | "start";
   className?: string | undefined;
@@ -34,10 +35,11 @@ export function MenuPopover({
   );
 }
 
-export function Menu({ children, size = "default", className, ...props }: MenuProps) {
+export function Menu({ ref, children, size = "default", className, ...props }: MenuProps) {
   return (
     <AriaMenu
       {...props}
+      ref={ref}
       className={cx(styles.menu, className)}
       data-size={size === "start" ? size : undefined}
     >

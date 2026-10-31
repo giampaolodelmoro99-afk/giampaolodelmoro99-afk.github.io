@@ -31,6 +31,7 @@ import { apps, appDefinition, desktopApps } from "../apps";
 import styles from "../Desktop.module.css";
 import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
 import { DesktopWindow } from "./DesktopWindow";
+import { isTextEntry, matchShortcut } from "../shortcuts";
 import { useAnnouncer } from "./Announcer";
 import { useKeyboardGesture } from "./useKeyboardGesture";
 import { useWindowGestures, windowRect } from "./useWindowGestures";
@@ -163,6 +164,19 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
       );
     }
   };
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (isTextEntry(event.target)) return;
+      const action = matchShortcut(event);
+      const active = store.getState().activeId;
+      if (action !== "windowMenu" || !active) return;
+      event.preventDefault();
+      setMenuOpenFor(active);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [store]);
 
   const outline = gestures.outline ?? keyboard.gesture?.current ?? null;
 
