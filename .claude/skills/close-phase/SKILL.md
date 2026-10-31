@@ -16,6 +16,7 @@ npm run test:coverage
 npm run build             # completo: sito + Storybook (durante la fase basta build:site)
 npm run test:prerender
 npm run size
+npm run size:components   # voci per componente, per la tabella di PERFORMANCE_SEO.md
 npm run test:e2e          # container, matrice completa con screenshot (durante la fase basta test:e2e:chromium)
 npm run lhci:mobile:strict   # una sola misura locale a fine fase: 3 esecuzioni, mediana; mobile ≥ 90
 npm run lhci:desktop:strict  # desktop 100; categorie a 100; LCP ≤ 2,5 s, TBT ≤ 200 ms, CLS ≤ 0,1 (ADR-0018)

@@ -72,7 +72,7 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 
 **Base degli overlay di React Aria.** Il Select aggiunge **+16,90 kB** gzip. Misurato il 14/10/2026 aggiungendo i pezzi uno alla volta sopra il totale: base degli overlay (Popover, FocusScope, chiusura con clic esterno, `ariaHideOutside`, blocco dello scroll) ≈ 8,9 kB; navigazione delle liste condivisa con Menu (`ListKeyboardDelegate`, `useMenuTrigger`, `useSelectableList`) ≈ 5,4 kB; **parte specifica del Select** (Select, `useSelect`, `HiddenSelect`, ListBox, stato) **5,78 kB**, sotto la soglia. Accettata come terza base una tantum: MenuBar, StartButton e AlertDialog riusano overlay e navigazione.
 
-**Dalla F2A (ADR-0019)** size-limit controlla i budget in CI a ogni push; questa tabella si aggiorna solo a fine fase, con le misure della chiusura.
+**Dalla F2A (ADR-0019)** `npm run size` (anche in CI a ogni push) controlla solo totali e chunk; le voci per componente si misurano con `npm run size:components`, a fine fase o quando si aggiunge un componente, e questa tabella si aggiorna solo a fine fase.
 
 **Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. Budget fissati alla chiusura della 1B (18/10/2026), misura arrotondata per eccesso al kB: **totale JS ≤ 99 kB**, **totale CSS ≤ 5 kB**, **guscio del desktop F2A ≤ 75 kB**; si alzano solo con un ADR.
 

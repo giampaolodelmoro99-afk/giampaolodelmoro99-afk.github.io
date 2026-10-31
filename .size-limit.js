@@ -114,7 +114,10 @@ export default [
 // Aria, optimize-locales su it-IT ed en-US, NODE_ENV di produzione; React,
 // React DOM e React Router stanno nel chunk "framework" e restano fuori.
 // Budget fissati alla chiusura della 1B (misura arrotondata per eccesso al kB):
-// si alzano solo con un ADR. Le altre voci servono all'analisi e non hanno limite.
+// si alzano solo con un ADR. Le altre voci servono all'analisi e non hanno limite:
+// da ADR-0019 si misurano solo con `npm run size:components` (SIZE_COMPONENTS=1),
+// a fine fase o quando si aggiunge un componente; `npm run size` (anche in CI)
+// controlla i totali e i chunk.
 function componentChecks() {
   const folders = {
     Icon: "Icon",
@@ -158,13 +161,18 @@ function componentChecks() {
   });
   const index = "src/components/index.ts";
 
-  return [
+  const totals = [
     { ...check("Componenti: totale JS (gzip)", index, components, "js"), limit: "99 kB" },
     { ...check("Componenti: totale CSS (gzip)", index, components, "css"), limit: "5 kB" },
     {
       ...check("Componenti: guscio del desktop F2A, JS (gzip)", index, desktopShell, "js"),
       limit: "75 kB",
     },
+  ];
+  if (process.env["SIZE_COMPONENTS"] !== "1") return totals;
+
+  return [
+    ...totals,
     check(
       "Base React Aria: Button di React Aria da solo, JS (gzip)",
       "node_modules/react-aria-components/dist/exports/Button.mjs",

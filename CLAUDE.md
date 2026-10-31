@@ -4,16 +4,16 @@ Portfolio v2 di Gianpaolo Del Moro (gianpaolodelmoro.it) in stile Windows 95: Re
 
 ## Comandi
 
-| Comando                                                 | Uso                                                                                                          |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `npm run dev`                                           | dev server: **non** prova CSP, prerender, deep link e 404                                                    |
-| `npm run build:site && npm run preview`                 | durante il lavoro: verifica reale del sito, come su GitHub Pages; `preview -- --host` per la LAN             |
-| `npm run build` · `storybook` · `analyze`               | sito + Storybook (quando cambiano le story, a fine fase, in CI) · Storybook in sviluppo · treemap del bundle |
-| `npm run fonts` · `icons`                               | rigenera il subset di Pixel Operator · i dati di Icon e Glyph dagli SVG                                      |
-| `npm run lint` · `typecheck` · `test` · `test:coverage` | Oxlint + Stylelint · typegen + tsc · Vitest                                                                  |
-| `npm run test:prerender:site` · `test:prerender`        | HTML statico dopo `build:site` · tutto, Storybook compreso, dopo `build`                                     |
-| `npm run test:e2e:chromium` · `test:e2e`                | durante il lavoro solo Chromium nel container; la matrice completa in CI e a fine fase (ADR-0019)            |
-| `npm run size` · `lhci:mobile` · `lhci:desktop`         | budget (dopo `build`) e Lighthouse: in CI; in locale solo `lhci:*:strict` a fine fase (ADR-0018)             |
+| Comando                                                 | Uso                                                                                                                                       |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                                           | dev server: **non** prova CSP, prerender, deep link e 404                                                                                 |
+| `npm run build:site && npm run preview`                 | durante il lavoro: verifica reale del sito, come su GitHub Pages; `preview -- --host` per la LAN                                          |
+| `npm run build` · `storybook` · `analyze`               | sito + Storybook (quando cambiano le story, a fine fase, in CI) · Storybook in sviluppo · treemap del bundle                              |
+| `npm run fonts` · `icons`                               | rigenera il subset di Pixel Operator · i dati di Icon e Glyph dagli SVG                                                                   |
+| `npm run lint` · `typecheck` · `test` · `test:coverage` | Oxlint + Stylelint · typegen + tsc · Vitest                                                                                               |
+| `npm run test:prerender:site` · `test:prerender`        | HTML statico dopo `build:site` · tutto, Storybook compreso, dopo `build`                                                                  |
+| `npm run test:e2e:chromium` · `test:e2e`                | durante il lavoro solo Chromium nel container; la matrice completa in CI e a fine fase (ADR-0019)                                         |
+| `npm run size` · `size:components` · `lhci:*`           | totali e chunk (anche in CI) · voci per componente a fine fase · Lighthouse: in CI, in locale solo `lhci:*:strict` a fine fase (ADR-0018) |
 
 ## Lingue
 

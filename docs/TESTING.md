@@ -120,7 +120,8 @@ npm run build && npm run test:prerender             # quando cambiano le story, 
 npm run test:e2e:chromium  # durante il lavoro: solo Chromium, nel container
 npm run test:e2e           # suite completa nel container (come la CI), a fine fase
 npm run test:e2e:host      # e2e sull'host senza @visual, per iterare
-npm run size
+npm run size              # totali e chunk (anche in CI)
+npm run size:components   # in più le voci per componente: a fine fase o con un componente nuovo
 npm run lhci:mobile && npm run lhci:desktop                 # livello commit
 npm run lhci:mobile:strict && npm run lhci:desktop:strict   # chiusura di fase e release
 ```
