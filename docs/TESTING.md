@@ -8,7 +8,7 @@
 | Unit e componenti    | Vitest + React Testing Library + user-event + vitest-axe (jsdom) | Logica, rendering, interazione, accessibilità strutturale                                             |
 | HTML prerenderizzato | Vitest (node) + jsdom sul build                                  | Contenuto, metadati, JSON-LD, CSP leggibili senza JS                                                  |
 | End-to-end           | Playwright + @axe-core/playwright                                | Navigazione reale, viewport, touch, tastiera, console pulita, nessuna terza parte, regressione visiva |
-| Budget               | size-limit, Lighthouse CI                                        | Peso del JS e del CSS iniziali, punteggio 100 su mobile e desktop                                     |
+| Budget               | size-limit, Lighthouse CI                                        | Peso del JS e del CSS iniziali, Lighthouse e Web Vitals (ADR-0018)                                    |
 
 ## 2. Strumenti e versioni
 
@@ -18,18 +18,18 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 
 ## 3. Soglie
 
-| Controllo       | Soglia                                                                                                                                                             | Dove                  |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
-| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                         | `vitest.config.ts`    |
-| Lighthouse      | Accessibility, Best Practices, SEO 100; Performance ≥ 95 a ogni commit e 100 (mediana di 5) a fine fase e release; LCP, FCP, TBT e CLS con budget fissi (ADR-0013) | `lighthouserc.*.json` |
-| JS iniziale     | ≤ 124 kB gzip (F2A: 117,8 kB con il guscio statico del desktop, ADR-0014); chunk del desktop ≤ 59 kB, sprite delle icone ≤ 14 kB                                   | `.size-limit.js`      |
-| Componenti      | JS ≤ 99 kB, CSS ≤ 5 kB, guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)                                                                               | `.size-limit.js`      |
-| CSS iniziale    | ≤ 12 kB gzip                                                                                                                                                       | `.size-limit.js`      |
-| Font in preload | ≤ 25 kB (woff2)                                                                                                                                                    | `.size-limit.js`      |
-| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms                                                                      | `performance.spec.ts` |
-| axe             | 0 violazioni WCAG 2.2 AA                                                                                                                                           | unit ed e2e           |
-| Console         | 0 errori e warning                                                                                                                                                 | fixture e2e           |
-| Terze parti     | 0 richieste verso altre origini                                                                                                                                    | fixture e2e           |
+| Controllo       | Soglia                                                                                                                                                                                        | Dove                  |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                                                    | `vitest.config.ts`    |
+| Lighthouse      | Accessibility, Best Practices, SEO 100; Performance ≥ 90 a ogni push; a fine fase e release desktop 100 e mobile ≥ 90; LCP ≤ 2,5 s, TBT ≤ 200 ms, CLS ≤ 0,1; 3 esecuzioni, mediana (ADR-0018) | `lighthouserc.*.json` |
+| JS iniziale     | ≤ 124 kB gzip (F2A: 117,8 kB con il guscio statico del desktop, ADR-0014); chunk del desktop ≤ 59 kB, sprite delle icone ≤ 14 kB                                                              | `.size-limit.js`      |
+| Componenti      | JS ≤ 99 kB, CSS ≤ 5 kB, guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)                                                                                                          | `.size-limit.js`      |
+| CSS iniziale    | ≤ 12 kB gzip                                                                                                                                                                                  | `.size-limit.js`      |
+| Font in preload | ≤ 25 kB (woff2)                                                                                                                                                                               | `.size-limit.js`      |
+| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms                                                                                                 | `performance.spec.ts` |
+| axe             | 0 violazioni WCAG 2.2 AA                                                                                                                                                                      | unit ed e2e           |
+| Console         | 0 errori e warning                                                                                                                                                                            | fixture e2e           |
+| Terze parti     | 0 richieste verso altre origini                                                                                                                                                               | fixture e2e           |
 
 **Le soglie non si abbassano.** Un'eccezione richiede un ADR.
 
@@ -90,7 +90,7 @@ Le query si fanno per ruolo e nome (`getByRole`), non per classe o test id, salv
 - JSON-LD valido
 - contenuto principale senza JS
 - CSP come primo meta, con l'hash di ogni script inline e del payload di avvio
-- assenza di `modulepreload`
+- `modulepreload` solo inerti (`media="not all"`)
 
 Verifica anche `404.html` (noindex) e che **nessun file statico contenga l'email in chiaro**.
 

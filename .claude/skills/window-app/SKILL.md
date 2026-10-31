@@ -25,7 +25,7 @@ description: Aggiunge una nuova app/finestra al desktop Win95 con route IT/EN e 
 
 - [ ] Deep link IT ed EN funzionanti e prerenderizzati con contenuto completo
 - [ ] Chunk lazy: `npm run size` entro budget
-- [ ] Lighthouse 100 mobile e desktop sui nuovi URL
+- [ ] Lighthouse nelle soglie di ADR-0018 sui nuovi URL (in CI)
 - [ ] axe pulito, tastiera e touch verificati
 - [ ] SPECS.md, ARCHITECTURE.md e PLAN.md aggiornati se serve
 

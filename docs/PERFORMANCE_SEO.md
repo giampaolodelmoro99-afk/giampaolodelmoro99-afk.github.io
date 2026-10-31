@@ -2,20 +2,18 @@
 
 ## 1. Budget
 
-| Metrica                | Budget              | Ultima misura                           | Come si verifica |
-| ---------------------- | ------------------- | --------------------------------------- | ---------------- |
-| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014) | 117,8 kB (F2A, guscio statico)          | `npm run size`   |
-| Chunk del desktop      | ≤ 59 kB (ADR-0014)  | 56,08 kB (F2A, dopo l'idratazione)      | `npm run size`   |
-| Sprite delle icone     | ≤ 14 kB (ADR-0014)  | 12,64 kB (F2A, SVG)                     | `npm run size`   |
-| CSS iniziale (gzip)    | ≤ 12 kB             | 1,3 kB                                  | `npm run size`   |
-| Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                           | `npm run size`   |
-| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 98,1 kB (F1B, fuori dalla home)         | `npm run size`   |
-| Guscio del desktop F2A | ≤ 75 kB (dalla F1B) | 74,9 kB (F1B)                           | `npm run size`   |
-| LCP (mobile simulato)  | ≤ 1,35 s (ADR-0013) | 1,20 s mediana (F1B, preview compressa) | Lighthouse CI    |
-| FCP (mobile simulato)  | ≤ 1,05 s (ADR-0013) | 0,91 s mediana (F1B)                    | Lighthouse CI    |
-| LCP / FCP desktop      | ≤ 0,5 s / ≤ 0,425 s | 0,32 / 0,27 s mediana (F1B)             | Lighthouse CI    |
-| TBT (mobile simulato)  | ≤ 50 ms             | 0 ms                                    | Lighthouse CI    |
-| CLS                    | ≤ 0,01              | 0                                       | Lighthouse CI    |
+| Metrica                | Budget              | Ultima misura                       | Come si verifica |
+| ---------------------- | ------------------- | ----------------------------------- | ---------------- |
+| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014) | 117,8 kB (F2A, guscio statico)      | `npm run size`   |
+| Chunk del desktop      | ≤ 59 kB (ADR-0014)  | 56,08 kB (F2A, dopo l'idratazione)  | `npm run size`   |
+| Sprite delle icone     | ≤ 14 kB (ADR-0014)  | 12,64 kB (F2A, SVG)                 | `npm run size`   |
+| CSS iniziale (gzip)    | ≤ 12 kB             | 1,3 kB                              | `npm run size`   |
+| Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                       | `npm run size`   |
+| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 98,1 kB (F1B, fuori dalla home)     | `npm run size`   |
+| Guscio del desktop F2A | ≤ 75 kB (dalla F1B) | 74,9 kB (F1B)                       | `npm run size`   |
+| LCP                    | ≤ 2,5 s (ADR-0018)  | mobile 1,20 s, desktop 0,32 s (F2A) | Lighthouse CI    |
+| TBT                    | ≤ 200 ms (ADR-0018) | mobile 30–35 ms, desktop 0 (F2A)    | Lighthouse CI    |
+| CLS                    | ≤ 0,1 (ADR-0018)    | 0,0001 (F2A)                        | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
 
@@ -34,7 +32,7 @@
 
 - React DOM e il nucleo di React Router sono il prezzo della modalità framework con prerender e idratazione (ADR-0006). Le alternative (Preact, un router scritto in casa) rompono React Aria Components o l'idratazione del prerender.
 - Dividere i dizionari per lingua farebbe risparmiare circa 0,4 kB gzip al costo di un caricamento asincrono dei testi: non vale la complessità.
-- Il JS parte dopo l'evento `load`, quindi non pesa su LCP né su TBT (Lighthouse mobile 100).
+- Il JS parte dopo l'evento `load`, quindi non pesa su LCP né su TBT.
 - Il budget resta 115 kB fino alla F2A (poi 124 kB, ADR-0014). Dalla Fase 1B React Aria entra solo nei chunk delle app, con `@react-aria/optimize-locales-plugin` limitato a italiano e inglese; size-limit ha voci dedicate ai componenti (vedi «Peso dei componenti»).
 
 ### Chunk `framework` (Fase 1B)
@@ -106,17 +104,18 @@ Valori in kB gzip. Il guscio F2A scende da 75,03 a 74,92 kB con l'AlertDialog, c
 
 - Configurazioni: `lighthouserc.mobile.json` (preset mobile, default di Lighthouse) e `lighthouserc.desktop.json` (`preset: desktop`).
 - Server: `scripts/preview.mjs`, lo stesso comportamento di GitHub Pages, compressione gzip compresa (ADR-0013).
-- URL: `/` e `/en/`, poi tutte le route principali IT ed EN man mano che nascono. Storybook è escluso.
-- **Due livelli (ADR-0013)**:
-  - a ogni commit (`lhci:mobile`, `lhci:desktop`): 3 esecuzioni per URL, mediana; Accessibility, Best Practices e SEO a 100, Performance ≥ 95;
-  - a chiusura di fase e alla release (`lhci:mobile:strict`, `lhci:desktop:strict`; nel deploy `ci.yml` riceve `strict-lighthouse: true`): 5 esecuzioni, mediana, **Performance 100**.
-- In entrambi i livelli LCP, FCP, TBT e CLS hanno budget fissi (§1), verificati da `scripts/lib/lighthouse.test.mjs` insieme alla regola.
+- URL: `/`, `/en/`, `/profilo/` ed `/en/projects/` (home e una route di app per lingua). Storybook è escluso.
+- **Due livelli (ADR-0013), soglie di ADR-0018**, 3 esecuzioni per URL e mediana in entrambi:
+  - a ogni push (`lhci:mobile`, `lhci:desktop`): Accessibility, Best Practices e SEO a 100, Performance ≥ 90;
+  - a chiusura di fase e alla release (`lhci:mobile:strict`, `lhci:desktop:strict`; nel deploy `ci.yml` riceve `strict-lighthouse: true`): **Performance desktop 100**, mobile ≥ 90.
+- In entrambi i livelli LCP ≤ 2500 ms, TBT ≤ 200 ms e CLS ≤ 0,1, le soglie "buone" di Google; nessun limite su FCP. Verificati da `scripts/lib/lighthouse.test.mjs` insieme alla regola.
+- **In locale Lighthouse non si lancia durante il lavoro**: basta la CI. Una sola misura a fine fase, senza indagare differenze che restano dentro le soglie (ADR-0018).
 - Report in `.lighthouseci/<preset>/` e `.lighthouseci/<preset>-strict/` (artifact in CI).
 
 ## 3. Prerender e contenuto senza JavaScript
 
 - Ogni route è prerenderizzata da React Router (`ssr: false` + `prerender`, ADR-0006). L'HTML contiene il contenuto completo della finestra in HTML semantico (`main`, `h1`, liste, link).
-- **Idratazione rinviata**: il post-build toglie i `modulepreload` e avvia il bootstrap dopo `load`. Il contenuto prerenderizzato viene dipinto senza attendere il bundle. È la scelta che porta Performance a 100 su mobile: senza, la simulazione mobile di Lighthouse conta i 112 kB di JS nel percorso critico dell'LCP (Performance 93).
+- **Idratazione rinviata**: il post-build rende inerti i `modulepreload` (`media="not all"`, ADR-0013) e avvia il bootstrap dopo `load`. Il contenuto prerenderizzato viene dipinto senza attendere il bundle. È la scelta che porta Performance a 100 su mobile: senza, la simulazione mobile di Lighthouse conta i 112 kB di JS nel percorso critico dell'LCP (Performance 93).
 - **Vincolo**: nessuna modifica può togliere contenuto dall'HTML prerenderizzato. Lo verifica `npm run test:prerender`.
 
 ## 4. Metadati per route
@@ -177,7 +176,7 @@ L'idratazione parte dopo `load` (§3), quindi non pesa su LCP. Resta da controll
 - **In Fase 2A**, con il window manager:
   1. la stessa misura, con la home che contiene desktop, icone e taskbar
   2. INP del primo clic su un'icona subito dopo l'idratazione (Event Timing API, `interactionId`), con soglia ≤ 200 ms su CPU 4×
-  3. TBT di Lighthouse ≤ 50 ms (budget di §1) e un flusso Lighthouse "timespan" apri-finestra
+  3. TBT di Lighthouse ≤ 200 ms (ADR-0018)
   4. un clic prima dell'idratazione resta una navigazione completa verso il deep link (comportamento voluto, ADR-0006)
 - I suoni si caricano solo dopo un'interazione e mai nel chunk iniziale.
 - **hCaptcha** (form contatti, F3B, ADR-0017) si carica solo dopo il clic su «Attiva la verifica»: nessuno script di terzi al caricamento, nessun effetto su Lighthouse, sul JS iniziale né sulla CSP finché il visitatore non lo attiva.

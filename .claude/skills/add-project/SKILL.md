@@ -20,7 +20,7 @@ description: Aggiunge un progetto GitHub al portfolio con dati tipizzati, testi 
 
 - [ ] Repo con "giampaolo" (M), dati senza metadati a mano
 - [ ] Testi IT/EN approvati, immagini registrate
-- [ ] `npm run build && npm run test:prerender` verdi, Lighthouse 100
+- [ ] `npm run build && npm run test:prerender` verdi, Lighthouse nelle soglie di ADR-0018 (in CI)
 
 ## Riferimenti
 

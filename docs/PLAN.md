@@ -6,7 +6,7 @@ Ogni fase:
 - parte in plan mode, con il piano salvato in `docs/phases/phase-NN-plan.md`
 - si chiude con la skill `close-phase` e con la retrospettiva `phase-NN-retro.md`
 
-Il proprietario esegue merge `--no-ff` e tag `phase-NN`. Criterio di uscita comune a tutte le fasi: **tutti i test verdi in locale e nella CI del branch**, Lighthouse 100 mobile e desktop, nessuna violazione axe.
+Il proprietario esegue merge `--no-ff` e tag `phase-NN`. Criterio di uscita comune a tutte le fasi: **tutti i test verdi in locale e nella CI del branch**, Lighthouse nelle soglie di ADR-0018, nessuna violazione axe.
 
 Le fasi 1, 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per una sola review.
 
@@ -124,7 +124,7 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 
 - [ ] Audit di accessibilità completo (a11y-auditor + manuale con screen reader)
 - [ ] SEO e crawler AI: sitemap con hreflang, robots.txt, llms.txt e llms-full.txt IT/EN, Open Graph generate in build
-- [ ] Lighthouse 100 mobile e desktop su tutte le route IT/EN
+- [ ] Lighthouse nelle soglie di ADR-0018 su tutte le route IT/EN
 - [ ] size-limit con budget per chunk di ogni app
 - [ ] i18n completo e rivisto (content-reviewer)
 - [ ] Rivalutazione di TypeScript 7

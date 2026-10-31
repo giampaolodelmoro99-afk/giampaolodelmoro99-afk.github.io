@@ -4,16 +4,16 @@ Portfolio v2 di Gianpaolo Del Moro (gianpaolodelmoro.it) in stile Windows 95: Re
 
 ## Comandi
 
-| Comando                                                 | Uso                                                                                     |
-| ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `npm run dev`                                           | dev server: **non** prova CSP, prerender, deep link e 404                               |
-| `npm run build && npm run preview`                      | verifica reale, come su GitHub Pages (sito + Storybook); `preview -- --host` per la LAN |
-| `npm run build:site` · `storybook` · `analyze`          | solo il sito · Storybook in sviluppo · treemap del bundle in `build/stats.html`         |
-| `npm run fonts` · `icons`                               | rigenera il subset di Pixel Operator · i dati di Icon e Glyph dagli SVG                 |
-| `npm run lint` · `typecheck` · `test` · `test:coverage` | Oxlint + Stylelint · typegen + tsc · Vitest                                             |
-| `npm run test:prerender`                                | HTML statico (dopo `build`)                                                             |
-| `npm run test:e2e`                                      | Playwright completo nel container Docker (come la CI); `test:e2e:host` senza screenshot |
-| `npm run size` · `lhci:mobile` · `lhci:desktop`         | budget e Lighthouse del commit (dopo `build`); `lhci:*:strict` a fine fase (ADR-0013)   |
+| Comando                                                 | Uso                                                                                              |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `npm run dev`                                           | dev server: **non** prova CSP, prerender, deep link e 404                                        |
+| `npm run build && npm run preview`                      | verifica reale, come su GitHub Pages (sito + Storybook); `preview -- --host` per la LAN          |
+| `npm run build:site` · `storybook` · `analyze`          | solo il sito · Storybook in sviluppo · treemap del bundle in `build/stats.html`                  |
+| `npm run fonts` · `icons`                               | rigenera il subset di Pixel Operator · i dati di Icon e Glyph dagli SVG                          |
+| `npm run lint` · `typecheck` · `test` · `test:coverage` | Oxlint + Stylelint · typegen + tsc · Vitest                                                      |
+| `npm run test:prerender`                                | HTML statico (dopo `build`)                                                                      |
+| `npm run test:e2e`                                      | Playwright completo nel container Docker (come la CI); `test:e2e:host` senza screenshot          |
+| `npm run size` · `lhci:mobile` · `lhci:desktop`         | budget (dopo `build`) e Lighthouse: in CI; in locale solo `lhci:*:strict` a fine fase (ADR-0018) |
 
 ## Lingue
 
@@ -39,13 +39,13 @@ Un componente o una feature è finito solo se:
 1. è responsive da 320 px ai monitor larghi, con target touch ≥ 44 px in modalità touch
 2. ha test (`docs/TESTING.md`), una story in Storybook (dalla Fase 1) e zero violazioni axe
 3. ogni animazione rispetta `prefers-reduced-motion` e l'impostazione del Pannello di controllo
-4. non abbassa Lighthouse sotto 100 alla chiusura della fase (mobile e desktop, ADR-0013) e non toglie contenuto dall'HTML prerenderizzato
+4. rispetta Lighthouse (ADR-0018: Accessibility, Best Practices e SEO a 100; Performance desktop 100 e mobile ≥ 90 a fine fase, ≥ 90 a ogni push; LCP ≤ 2,5 s, TBT ≤ 200 ms, CLS ≤ 0,1) e non toglie contenuto dall'HTML prerenderizzato
 5. **un lavoro visivo è verificato nel browser, anche su viewport mobile** (`docs/QA_CHECKLIST.md`, Claude in Chrome)
 
 ## Integrità dei test
 
 - Mai `test.skip`, `.only`, `.todo`, test commentati o rimossi senza motivo.
-- Mai abbassare soglie (coverage 80%, Lighthouse 100, size-limit) né aggiornare screenshot solo per far passare la CI.
+- Mai abbassare soglie (coverage 80%, Lighthouse di ADR-0018, size-limit) né aggiornare screenshot solo per far passare la CI.
 - Eccezioni solo con un ADR.
 - Una fase si chiude solo con tutti i test verdi in locale e nella CI del branch (`CONTRIBUTING.md`).
 
@@ -78,6 +78,7 @@ La v1 si consulta solo dal tag: `git ls-tree -r --name-only v1.0.0-legacy`, `git
 ## Trappole
 
 - `dev` non applica CSP, prerender, `404.html` né l'idratazione rinviata: verifica sempre con `build` + `preview`.
+- Lighthouse non si lancia in locale durante il lavoro: basta la CI. Una sola misura locale a fine fase (ADR-0018).
 - Nessun file `CNAME` e nessun `base` in Vite: il dominio vive in Settings → Pages (`docs/DEPLOYMENT.md`).
 - Gli script inline sono ammessi solo perché il post-build ne calcola l'hash. Non aggiungere script o stili inline a mano (`docs/PERFORMANCE_SEO.md`).
 - L'id `react-aria-pressable-style` sul link di `global.css` impedisce a React Aria di inserire uno `<style>` bloccato dalla CSP: non toglierlo (ADR-0012).

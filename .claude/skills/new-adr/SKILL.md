@@ -11,7 +11,7 @@ description: Scrive una nuova decisione architetturale (ADR) numerata partendo d
 2. Crea `docs/adr/NNNN-titolo-breve-in-kebab-italiano.md` copiando `docs/adr/TEMPLATE.md`.
 3. Compila:
    - **Stato**: Proposta (finché non è approvata da Gianpaolo), poi Accettata.
-   - **Contesto**: problema e vincoli, citando i requisiti non negoziabili coinvolti (Lighthouse 100, WCAG 2.2 AA, LEGAL.md, budget).
+   - **Contesto**: problema e vincoli, citando i requisiti non negoziabili coinvolti (Lighthouse di ADR-0018, WCAG 2.2 AA, LEGAL.md, budget).
    - **Decisione**: verificabile.
    - **Alternative**: almeno due, con il motivo dello scarto.
    - **Conseguenze**: positive, negative, cosa misurare e quando rivalutare.

@@ -17,9 +17,11 @@ npm run build
 npm run test:prerender
 npm run size
 npm run test:e2e          # container, suite completa con screenshot
-npm run lhci:mobile:strict   # Performance 100, mediana di 5 (ADR-0013)
-npm run lhci:desktop:strict
+npm run lhci:mobile:strict   # una sola misura locale a fine fase: 3 esecuzioni, mediana; mobile ≥ 90
+npm run lhci:desktop:strict  # desktop 100; categorie a 100; LCP ≤ 2,5 s, TBT ≤ 200 ms, CLS ≤ 0,1 (ADR-0018)
 ```
+
+Lighthouse in locale si lancia **solo qui**, una volta: durante la fase basta la CI. Non si indagano differenze che restano dentro le soglie (ADR-0018).
 
 Se un controllo fallisce: correggi la causa. **Mai** skip, only, test rimossi, soglie abbassate o screenshot aggiornati per far passare (CONTRIBUTING.md). Un'eccezione inevitabile richiede un ADR (skill `new-adr`) e l'approvazione di Gianpaolo.
 

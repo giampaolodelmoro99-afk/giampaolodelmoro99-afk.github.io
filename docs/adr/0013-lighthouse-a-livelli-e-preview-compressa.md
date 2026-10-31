@@ -1,6 +1,6 @@
 # ADR-0013: Lighthouse a due livelli e preview compressa come GitHub Pages
 
-- **Stato**: Accettata
+- **Stato**: Sostituita in parte da [ADR-0018](0018-soglie-lighthouse-buone-di-google.md) (31/10/2026) per le soglie e il numero di esecuzioni; restano valide la preview compressa e i due livelli
 - **Data**: 2026-10-18
 - **Fase**: 1B
 

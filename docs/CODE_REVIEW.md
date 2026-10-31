@@ -71,7 +71,7 @@ Comando utile: `git diff main...HEAD --stat -- tests '**/*.test.*' vitest.config
 
 - [ ] App caricate in lazy loading; nessuna dipendenza pesante nel chunk iniziale.
 - [ ] Immagini in formati moderni con `width` e `height`; font in woff2 con subset.
-- [ ] `npm run size` e Lighthouse 100 su mobile e desktop.
+- [ ] `npm run size` e Lighthouse nelle soglie di ADR-0018 (in CI; in locale solo a fine fase).
 
 ## 10. Legale, privacy e sicurezza
 

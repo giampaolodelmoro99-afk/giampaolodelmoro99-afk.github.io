@@ -7,7 +7,7 @@ on:
   workflow_call:
     inputs:
       strict-lighthouse:
-        description: "Lighthouse Performance 100 su 5 esecuzioni (chiusura di fase e release, ADR-0013)"
+        description: "Lighthouse di chiusura: Performance desktop 100, mobile almeno 90 (chiusura di fase e release, ADR-0018)"
         type: boolean
         default: false
 
