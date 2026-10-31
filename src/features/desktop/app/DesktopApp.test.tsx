@@ -247,6 +247,32 @@ describe("DesktopApp", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
+  it("Start › Esegui… apre un'app per nome; un nome sconosciuto mostra l'errore", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "Esegui…" }));
+    const field = await screen.findByRole("textbox", { name: "Apri" });
+    await user.type(field, "xyz{Enter}");
+    expect(field).toHaveAccessibleDescription(
+      'Non trovo "xyz". Prova con progetti, cv o contatti.',
+    );
+    await user.clear(field);
+    await user.type(field, "progetti{Enter}");
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Esegui" })).toBeNull());
+    expect(screen.getByRole("region", { name: "Progetti" })).toHaveAttribute("data-active", "true");
+  });
+
+  it("Annulla in Esegui… riporta il focus su Start", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    const start = screen.getByRole("button", { name: /Start/ });
+    await user.click(start);
+    await user.click(screen.getByRole("menuitem", { name: "Esegui…" }));
+    await user.click(await screen.findByRole("button", { name: "Annulla" }));
+    await waitFor(() => expect(start).toHaveFocus());
+  });
+
   it("segnala di essere pronto quando le icone sono nella griglia", async () => {
     const onReady = vi.fn<() => void>();
     renderDesktop("/", onReady);

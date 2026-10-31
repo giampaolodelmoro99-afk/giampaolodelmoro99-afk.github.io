@@ -92,4 +92,28 @@ test.describe("desktop dopo l'idratazione", () => {
     await expect(start).toHaveCSS("background-color", yellow);
     await expect(start).toHaveCSS("color", "rgb(0, 0, 0)");
   });
+
+  test("Esegui… apre un'app scritta per nome, con i suggerimenti dentro il dialog", async ({
+    page,
+  }) => {
+    await openDesktop(page);
+    await page.getByRole("button", { name: "Start" }).click();
+    await page.getByRole("menuitem", { name: "Esegui…" }).click();
+    const dialog = page.getByRole("dialog", { name: "Esegui" });
+    const field = dialog.getByRole("textbox", { name: "Apri" });
+    await expect(field).toBeFocused();
+    await field.fill("cont");
+    const list = dialog.getByRole("listbox", { name: "Suggerimenti" });
+    await expect(list.getByRole("option")).toHaveCount(2);
+    const listBox = await list.boundingBox();
+    const okBox = await dialog.getByRole("button", { name: "OK" }).boundingBox();
+    expect((listBox?.y ?? 0) + (listBox?.height ?? 0)).toBeLessThanOrEqual(okBox?.y ?? 0);
+    await field.fill("contatti");
+    await page.keyboard.press("Enter");
+    await expect(dialog).toBeHidden();
+    await expect(page.getByRole("region", { name: "Contatti" })).toHaveAttribute(
+      "data-active",
+      "true",
+    );
+  });
 });

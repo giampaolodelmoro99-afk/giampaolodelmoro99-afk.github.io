@@ -1,4 +1,4 @@
-import { type Key, useEffect, useRef, useState } from "react";
+import { type Key, Suspense, lazy, useEffect, useRef, useState } from "react";
 import { I18nProvider } from "react-aria-components/I18nProvider";
 import { Link } from "react-router";
 import { useStore } from "zustand";
@@ -31,6 +31,7 @@ import { appDefinition, desktopApps, startMenuApps, startMenuSystemApps } from "
 import styles from "../Desktop.module.css";
 import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
 import { DesktopWindow } from "./DesktopWindow";
+import { resolveCommand } from "../run";
 import { isApplePlatform, isTextEntry, matchShortcut } from "../shortcuts";
 import { ShortcutText } from "./ShortcutText";
 import { useAnnouncer } from "./Announcer";
@@ -65,6 +66,14 @@ function useIconsReady(onReady: (() => void) | undefined) {
 const isDesktopLayout = () => window.matchMedia("(width >= 768px)").matches;
 
 type Switcher = { selected: AppId; viaShortcut: boolean };
+
+function focusStart() {
+  requestAnimationFrame(() => document.querySelector<HTMLElement>(`.${styles.start}`)?.focus());
+}
+
+const RunDialog = lazy(() =>
+  import("../../../components/RunDialog").then((module) => ({ default: module.RunDialog })),
+);
 
 function useDesktopStore(routeKey: RouteKey): DesktopStore {
   const [store] = useState(() => createDesktopStore(initialStateFor(routeKey)));
@@ -223,6 +232,24 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
   });
 
   const [contextMenu, setContextMenu] = useDesktopContextMenu(workspace, isDesktopLayout);
+  const [isRunOpen, setRunOpen] = useState(false);
+
+  const ranCommand = useRef(false);
+
+  const startAction = (key: Key) => {
+    if (key === "run") {
+      ranCommand.current = false;
+      setRunOpen(true);
+    } else openApp(key);
+  };
+
+  const runCommand = (command: string) => {
+    const id = resolveCommand(command);
+    if (!id) return t.desktop.runNotFound.replace("{command}", command.trim());
+    ranCommand.current = true;
+    openApp(id);
+    return null;
+  };
   const [iconOrder, setIconOrder] = useState<"type" | "name">("type");
   const [iconsVersion, setIconsVersion] = useState(0);
   const icons = desktopApps
@@ -307,6 +334,22 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
           </div>
         )}
         {region}
+        {isRunOpen && (
+          <Suspense fallback={null}>
+            <RunDialog
+              isOpen
+              onOpenChange={(isOpen) => {
+                if (isOpen) return;
+                setRunOpen(false);
+                if (!ranCommand.current) focusStart();
+              }}
+              suggestions={startMenuApps
+                .concat(startMenuSystemApps)
+                .map((id) => ({ id, label: t.apps[id] }))}
+              onRun={runCommand}
+            />
+          </Suspense>
+        )}
         {contextMenu && (
           <ContextMenu
             isOpen
@@ -365,18 +408,22 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
           </>
         }
       >
-        <StartButton onAction={openApp} className={styles.start}>
+        <StartButton onAction={startAction} className={styles.start}>
           {startMenuApps.map((id) => (
             <MenuItem key={id} id={id} icon={appDefinition(id).icon}>
               {t.apps[id]}
             </MenuItem>
           ))}
           <MenuSeparator />
-          {startMenuSystemApps.map((id) => (
-            <MenuItem key={id} id={id} icon={appDefinition(id).icon}>
-              {t.apps[id]}
-            </MenuItem>
-          ))}
+          <MenuItem id="controlPanel" icon="controlpanel">
+            {t.apps.controlPanel}
+          </MenuItem>
+          <MenuItem id="run" icon="run">
+            {t.desktop.run}
+          </MenuItem>
+          <MenuItem id="simpleView" icon="simpleview">
+            {t.apps.simpleView}
+          </MenuItem>
         </StartButton>
         <TaskbarIconButton
           icon="windows"

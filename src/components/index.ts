@@ -9,6 +9,7 @@ export * from "./MenuBar";
 export * from "./MoveControls";
 export * from "./ProgressBar";
 export * from "./ResizeHandles";
+export * from "./RunDialog";
 export * from "./Radio";
 export * from "./ScrollArea";
 export * from "./Select";

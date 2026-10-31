@@ -118,6 +118,8 @@ export const it = {
     windowsButton: "Finestre aperte ({shortcut})",
     windowsButtonEmpty: "Finestre aperte: nessuna",
     switcherHint: "{alt}W avanza · Maiusc+{alt}W torna indietro · Invio attiva · Esc annulla",
+    run: "Esegui…",
+    runNotFound: 'Non trovo "{command}". Prova con progetti, cv o contatti.',
     contextMenu: {
       label: "Desktop",
       open: "Apri",

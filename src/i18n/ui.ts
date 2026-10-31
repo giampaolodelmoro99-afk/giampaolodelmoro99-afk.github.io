@@ -30,6 +30,14 @@ const it = {
   windowSwitcher: {
     label: "Finestre aperte",
   },
+  runDialog: {
+    title: "Esegui",
+    help: "Scrivi il nome di un'app e si aprirà in una finestra.",
+    label: "Apri",
+    suggestions: "Suggerimenti",
+    ok: "OK",
+    cancel: "Annulla",
+  },
   moveControls: {
     label: "Spostamento e ridimensionamento",
     up: "Su",
@@ -72,6 +80,14 @@ const en: UiStrings = {
   },
   windowSwitcher: {
     label: "Open windows",
+  },
+  runDialog: {
+    title: "Run",
+    help: "Type the name of an app and it will open in a window.",
+    label: "Open",
+    suggestions: "Suggestions",
+    ok: "OK",
+    cancel: "Cancel",
   },
   moveControls: {
     label: "Move and resize",

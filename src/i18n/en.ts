@@ -120,6 +120,8 @@ export const en: Dictionary = {
     windowsButton: "Open windows ({shortcut})",
     windowsButtonEmpty: "Open windows: none",
     switcherHint: "{alt}W next · Shift+{alt}W back · Enter switch · Esc cancel",
+    run: "Run…",
+    runNotFound: 'Can\'t find "{command}". Try projects, cv or contact.',
     contextMenu: {
       label: "Desktop",
       open: "Open",
