@@ -163,7 +163,7 @@ function componentChecks() {
 
   const totals = [
     { ...check("Componenti: totale JS (gzip)", index, components, "js"), limit: "99 kB" },
-    { ...check("Componenti: totale CSS (gzip)", index, components, "css"), limit: "5 kB" },
+    { ...check("Componenti: totale CSS (gzip)", index, components, "css"), limit: "7 kB" },
     {
       ...check("Componenti: guscio del desktop F2A, JS (gzip)", index, desktopShell, "js"),
       limit: "75 kB",

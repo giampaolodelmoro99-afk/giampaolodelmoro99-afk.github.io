@@ -1,4 +1,4 @@
-# ADR-0020: Budget provvisorio del chunk del desktop nella 2A-2
+# ADR-0020: Budget provvisori del chunk del desktop e del CSS dei componenti nella 2A-2
 
 - **Stato**: Accettata
 - **Data**: 2026-10-31
@@ -10,6 +10,8 @@ Il budget del chunk del desktop (59 kB gzip, ADR-0014) è stato fissato alla fer
 
 Al commit `37b3706` il chunk misura 72,72 kB: il budget è superato di 13,7 kB e `npm run size` fallisce in CI. Il budget era già superato da alcuni commit della 2A-2 senza che fosse segnalato. Esegui, Spegni e il congedo non pesano sul chunk: stanno in chunk caricati solo all'apertura.
 
+Al passo 26 anche il **totale CSS dei componenti** (`Componenti: totale CSS`, budget di 5 kB fissato alla chiusura della 1B) risulta superato: 5,69 kB, cioè 692 B in più, per i fogli dei componenti nuovi della 2A-2 (DragOutline, ResizeHandles, WindowMenu, MoveControls, WindowSwitcher, TaskbarIconButton, ContextMenu, RunDialog, ShutdownDialog, FarewellScreen). Anche questo superamento non era stato segnalato nei commit precedenti. Una ricerca dei duplicati evidenti, limitata a 20 minuti, ha trovato solo le regole di overlay, modal, dialog e window ripetute da AlertDialog in RunDialog e ShutdownDialog: con `composes` il totale scendeva di 36 B, perché gzip comprime già le ripetizioni. Il cambio avrebbe anche richiesto di mettere AlertDialog nel layer `gdm-base` (DESIGN_SYSTEM.md), quindi non è stato tenuto.
+
 Il chunk arriva dopo l'idratazione, quindi non pesa sul JS iniziale (120,24 kB su 124) né su LCP e FCP. Il rischio vero è la valutazione del chunk sul thread principale: task lunghe e reattività del primo clic.
 
 ## Decisione
@@ -19,9 +21,10 @@ Il chunk arriva dopo l'idratazione, quindi non pesa sul JS iniziale (120,24 kB s
    - la task più lunga tra idratazione e swap resta sotto i 200 ms;
    - l'INP del primo clic su un'icona resta entro i 200 ms.
 3. **Se una delle due supera i 200 ms**, le soglie non si alzano: il chunk si divide. Il window manager e i menu restano nel chunk del desktop; selettore e menu contestuale passano in un chunk caricato nel tempo libero (`requestIdleCallback`) o alla prima apertura.
-4. Da ora `npm run size` si esegue prima di ogni commit; se un budget è superato il lavoro si ferma e decide il proprietario.
+4. **Totale CSS dei componenti**: tetto provvisorio di **7 kB** gzip fino alla fine della 2A-2; a fine tappa diventa la misura reale più il 5%, arrotondata per eccesso al kB.
+5. Da ora `npm run size` si esegue prima di ogni commit; se un budget è superato il lavoro si ferma e decide il proprietario.
 
-Decisione del proprietario del 31/10/2026.
+Decisioni del proprietario del 31/10/2026.
 
 ## Alternative considerate
 
@@ -34,6 +37,7 @@ Decisione del proprietario del 31/10/2026.
 ## Conseguenze
 
 - Positive: la CI della 2A-2 resta verde senza perdere il controllo; il budget finale si basa sul peso reale e su metriche di reattività, non su una stima.
+- Negative e rischi: il CSS dei componenti cresce con ogni componente nuovo; a fine tappa va riletto per cercare regole che possano passare ai componenti esistenti.
 - Negative e rischi: fino a fine tappa il margine è largo (circa 7 kB sopra la misura attuale); una crescita inattesa si vede solo con `npm run size` a ogni commit.
 - Cosa va verificato: a fine tappa, `npm run size` e il job «E2E prestazioni» nella CI del branch. Poi si aggiorna questo ADR con le misure e il budget definitivo (o con la divisione del chunk), insieme a PERFORMANCE_SEO.md e TESTING.md.
 
