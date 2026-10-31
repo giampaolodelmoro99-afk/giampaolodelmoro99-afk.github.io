@@ -7,7 +7,7 @@ import { DesktopIcons } from "../../../components/DesktopIcon";
 import { DragOutline } from "../../../components/DragOutline";
 import { MoveControls } from "../../../components/MoveControls";
 import type { WindowMenuAction } from "../../../components/WindowMenu";
-import { MenuItem } from "../../../components/MenuBar";
+import { MenuItem, MenuSeparator } from "../../../components/MenuBar";
 import { StartButton } from "../../../components/StartButton";
 import { Taskbar, TaskbarButton, TaskbarIconButton } from "../../../components/TaskbarButton";
 import { WindowSwitcher } from "../../../components/WindowSwitcher";
@@ -27,7 +27,7 @@ import {
   initialStateFor,
   openAppFor,
 } from "../../../stores/desktop";
-import { apps, appDefinition, desktopApps } from "../apps";
+import { appDefinition, desktopApps, startMenuApps, startMenuSystemApps } from "../apps";
 import styles from "../Desktop.module.css";
 import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
 import { DesktopWindow } from "./DesktopWindow";
@@ -326,9 +326,15 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
         }
       >
         <StartButton onAction={openApp} className={styles.start}>
-          {apps.map((app) => (
-            <MenuItem key={app.id} id={app.id} icon={app.icon}>
-              {t.apps[app.id]}
+          {startMenuApps.map((id) => (
+            <MenuItem key={id} id={id} icon={appDefinition(id).icon}>
+              {t.apps[id]}
+            </MenuItem>
+          ))}
+          <MenuSeparator />
+          {startMenuSystemApps.map((id) => (
+            <MenuItem key={id} id={id} icon={appDefinition(id).icon}>
+              {t.apps[id]}
             </MenuItem>
           ))}
         </StartButton>

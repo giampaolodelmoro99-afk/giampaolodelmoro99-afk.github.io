@@ -31,3 +31,18 @@ export function appDefinition(id: AppId): AppDefinition {
   if (!app) throw new Error(`app sconosciuta: ${id}`);
   return app;
 }
+
+export const startMenuApps: readonly AppId[] = [
+  "about",
+  "projects",
+  "cv",
+  "contacts",
+  "skills",
+  "timeline",
+  "makingOf",
+  "terminal",
+  "minefield",
+  "privacy",
+];
+
+export const startMenuSystemApps: readonly AppId[] = ["controlPanel", "simpleView"];
