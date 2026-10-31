@@ -128,6 +128,62 @@ describe("DesktopApp", () => {
     expect(names.slice(-2)).toEqual(["About", "CV"]);
   });
 
+  it("il menu della finestra riduce, ingrandisce e chiude, con un annuncio", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    const about = screen.getByRole("region", { name: "About" });
+    await user.click(within(about).getByRole("button", { name: "Menu della finestra" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Ingrandisci" }));
+    expect(about).toHaveAttribute("data-maximized", "true");
+    await user.click(within(about).getByRole("button", { name: "Menu della finestra" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Chiudi" }));
+    expect(screen.queryByRole("region", { name: "About" })).not.toBeInTheDocument();
+    expect(screen.getByText("About: finestra chiusa")).toBeInTheDocument();
+  });
+
+  it("Sposta dal menu: frecce, Maiusc per i passi lunghi, Invio conferma", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    const about = screen.getByRole("region", { name: "About" });
+    await user.click(within(about).getByRole("button", { name: "Menu della finestra" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Sposta" }));
+    expect(screen.getByText(/Spostamento di About: usa le frecce/)).toBeInTheDocument();
+    expect(
+      screen.getByRole("group", { name: "Spostamento e ridimensionamento" }),
+    ).toBeInTheDocument();
+    await user.keyboard("{ArrowRight}{ArrowRight}{Shift>}{ArrowDown}{/Shift}{Enter}");
+    expect(about.style.getPropertyValue("--window-x")).toBe("16px");
+    expect(about.style.getPropertyValue("--window-y")).toBe("32px");
+    expect(screen.getByText("About: spostata")).toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: "Spostamento e ridimensionamento" })).toBeNull();
+    expect(document.getElementById("window-about-body")).toHaveFocus();
+  });
+
+  it("Esc durante Sposta riporta la finestra com'era", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    const about = screen.getByRole("region", { name: "About" });
+    await user.click(within(about).getByRole("button", { name: "Menu della finestra" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Sposta" }));
+    await user.keyboard("{ArrowLeft}{Escape}");
+    expect(about.style.getPropertyValue("--window-x")).toBe("");
+    expect(screen.getByText("Annullato")).toBeInTheDocument();
+  });
+
+  it("Ridimensiona con le frecce sullo schermo e OK", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    const about = screen.getByRole("region", { name: "About" });
+    await user.click(within(about).getByRole("button", { name: "Menu della finestra" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Ridimensiona" }));
+    await user.click(screen.getByRole("button", { name: "Destra" }));
+    await user.click(screen.getByRole("button", { name: "Giù" }));
+    await user.click(screen.getByRole("button", { name: "OK" }));
+    expect(about.style.getPropertyValue("--window-w")).toBe("8px");
+    expect(about.style.getPropertyValue("--window-h")).toBe("8px");
+    expect(screen.getByText("About: ridimensionata")).toBeInTheDocument();
+  });
+
   it("segnala di essere pronto quando le icone sono nella griglia", async () => {
     const onReady = vi.fn<() => void>();
     renderDesktop("/", onReady);

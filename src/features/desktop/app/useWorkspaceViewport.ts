@@ -10,6 +10,7 @@ export function useWorkspaceViewport(onChange: (viewport: Viewport) => void) {
     const size = (name: string) =>
       metrics.querySelector(`[data-metric="${name}"]`)?.getBoundingClientRect();
     const measure = () => {
+      if (workspace.clientWidth === 0 || workspace.clientHeight === 0) return;
       const window = size("window");
       const titlebar = size("titlebar");
       onChange({

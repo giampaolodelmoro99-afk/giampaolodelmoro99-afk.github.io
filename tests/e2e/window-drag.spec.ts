@@ -119,4 +119,36 @@ test.describe("finestre: trascinamento", () => {
     expect(after?.x).toBeCloseTo(before.x - 50, 0);
     expect(after?.width).toBeCloseTo(before.width + 50, 0);
   });
+
+  test("Sposta dal menu della finestra, solo da tastiera (WCAG 2.5.7)", async ({ page }) => {
+    await openDesktop(page);
+    const about = page.getByRole("region", { name: "About" });
+    const before = await about.boundingBox();
+    const menuButton = about.getByRole("button", { name: "Menu della finestra" });
+    await menuButton.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("menuitem", { name: "Sposta" })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("Shift+ArrowDown");
+    await expect(page.locator("[aria-hidden=true][style*='--outline-x']")).toBeVisible();
+    await page.keyboard.press("Enter");
+    const after = await about.boundingBox();
+    expect(after?.x).toBeCloseTo((before?.x ?? 0) + 8, 0);
+    expect(after?.y).toBeCloseTo((before?.y ?? 0) + 32, 0);
+    await expect(page.getByText("About: spostata")).toBeAttached();
+  });
+
+  test("Ridimensiona con le frecce sullo schermo", async ({ page }) => {
+    await openDesktop(page);
+    const about = page.getByRole("region", { name: "About" });
+    const before = await about.boundingBox();
+    await about.getByRole("button", { name: "Menu della finestra" }).click();
+    await page.getByRole("menuitem", { name: "Ridimensiona" }).click();
+    const controls = page.getByRole("group", { name: "Spostamento e ridimensionamento" });
+    await controls.getByRole("button", { name: "Destra" }).click();
+    await controls.getByRole("button", { name: "Destra" }).click();
+    await controls.getByRole("button", { name: "OK" }).click();
+    expect((await about.boundingBox())?.width).toBeCloseTo((before?.width ?? 0) + 16, 0);
+  });
 });

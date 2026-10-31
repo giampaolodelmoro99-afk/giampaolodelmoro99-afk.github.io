@@ -120,6 +120,18 @@ export const en: Dictionary = {
     windowsButton: "Open windows (Alt+W)",
     clockLabel: "Time",
     minimizedSuffix: "minimized",
+    announce: {
+      opened: "{app}: window opened",
+      closed: "{app}: window closed",
+      minimized: "{app}: minimized",
+      moveStart:
+        "Moving {app}: use the arrow keys, Shift for longer steps, Enter to confirm, Esc to cancel.",
+      resizeStart:
+        "Resizing {app}: use the arrow keys, Shift for longer steps, Enter to confirm, Esc to cancel.",
+      moved: "{app}: moved",
+      resized: "{app}: resized",
+      cancelled: "Cancelled",
+    },
   },
   about: {
     bio: "I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and I keep studying to grow as a developer every day.",

@@ -1,4 +1,4 @@
-import { type Key, useEffect, useState } from "react";
+import { type Key, useEffect, useRef, useState } from "react";
 import { I18nProvider } from "react-aria-components/I18nProvider";
 import { Link } from "react-router";
 import { useStore } from "zustand";
@@ -6,6 +6,8 @@ import { Button } from "../../../components/Button";
 import buttonStyles from "../../../components/Button/Button.module.css";
 import { DesktopIcons } from "../../../components/DesktopIcon";
 import { DragOutline } from "../../../components/DragOutline";
+import { MoveControls } from "../../../components/MoveControls";
+import type { WindowMenuAction } from "../../../components/WindowMenu";
 import { MenuItem } from "../../../components/MenuBar";
 import { StartButton } from "../../../components/StartButton";
 import { Taskbar, TaskbarButton } from "../../../components/TaskbarButton";
@@ -29,7 +31,9 @@ import { apps, appDefinition, desktopApps } from "../apps";
 import styles from "../Desktop.module.css";
 import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
 import { DesktopWindow } from "./DesktopWindow";
-import { useWindowGestures } from "./useWindowGestures";
+import { useAnnouncer } from "./Announcer";
+import { useKeyboardGesture } from "./useKeyboardGesture";
+import { useWindowGestures, windowRect } from "./useWindowGestures";
 import { useWorkspaceViewport } from "./useWorkspaceViewport";
 import { Clock } from "./Clock";
 
@@ -82,6 +86,25 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
   const { open, close, focus, minimize, toggleMaximize, setViewport } = store.getState();
   const [workspace, setWorkspace] = useState<HTMLElement | null>(null);
   const { workspaceRef, metricsRef } = useWorkspaceViewport(setViewport);
+  const { announce, region } = useAnnouncer();
+  const [menuOpenFor, setMenuOpenFor] = useState<AppId | null>(null);
+  const controls = useRef<HTMLDivElement | null>(null);
+  const appName = (id: AppId, text: string) => text.replace("{app}", t.apps[id]);
+  const keyboard = useKeyboardGesture({
+    viewport: () => store.getState().viewport,
+    isOutside: (target) => !controls.current?.contains(target),
+    onConfirm: ({ id, kind, current }) => {
+      store.getState().place(id, current);
+      announce(
+        appName(id, kind === "move" ? t.desktop.announce.moved : t.desktop.announce.resized),
+      );
+      setFocusRequest({ target: windowBodyId(id) });
+    },
+    onCancel: ({ id }) => {
+      announce(t.desktop.announce.cancelled);
+      setFocusRequest({ target: windowBodyId(id) });
+    },
+  });
   const gestures = useWindowGestures({
     workspace,
     viewport: () => store.getState().viewport,
@@ -103,12 +126,14 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
 
   const openApp = (id: Key) => {
     if (!isAppId(id)) return;
+    if (!store.getState().windows[id]) announce(appName(id, t.desktop.announce.opened));
     open(id);
     setFocusRequest({ target: windowBodyId(id) });
   };
 
   const minimizeApp = (id: AppId) => {
     minimize(id);
+    announce(appName(id, t.desktop.announce.minimized));
     setFocusRequest({ target: taskbarButtonId(id) });
   };
 
@@ -119,9 +144,27 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
 
   const closeApp = (id: AppId) => {
     close(id);
+    announce(appName(id, t.desktop.announce.closed));
     const next = store.getState().activeId;
     setFocusRequest({ target: next ? windowBodyId(next) : desktopIconsId });
   };
+
+  const menuAction = (id: AppId, action: WindowMenuAction, frame: Element | null) => {
+    if (action === "restore" || action === "maximize") toggleMaximize(id);
+    else if (action === "minimize") minimizeApp(id);
+    else if (action === "close") closeApp(id);
+    else if (frame && workspace) {
+      keyboard.start(id, action, windowRect(frame, workspace));
+      announce(
+        appName(
+          id,
+          action === "move" ? t.desktop.announce.moveStart : t.desktop.announce.resizeStart,
+        ),
+      );
+    }
+  };
+
+  const outline = gestures.outline ?? keyboard.gesture?.current ?? null;
 
   const skipTarget = activeId ? windowBodyId(activeId) : desktopIconsId;
 
@@ -171,6 +214,9 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
               onMinimize={minimizeApp}
               onToggleMaximize={toggleMaximize}
               onClose={closeApp}
+              isMenuOpen={menuOpenFor === window.id}
+              onMenuOpenChange={(id, isOpen) => setMenuOpenFor(isOpen ? id : null)}
+              onMenuAction={menuAction}
               onGestureStart={(id, edge, event, frame) => {
                 focus(id);
                 gestures.start(id, edge, event, frame);
@@ -178,7 +224,17 @@ function DesktopScreen({ routeKey, onReady }: DesktopAppProps) {
             />
           ),
         )}
-        {gestures.outline && <DragOutline rect={gestures.outline} />}
+        {outline && <DragOutline rect={outline} />}
+        {keyboard.gesture && (
+          <div ref={controls} className={styles.moveControls}>
+            <MoveControls
+              onStep={(direction) => keyboard.step(direction)}
+              onConfirm={keyboard.confirm}
+              onCancel={keyboard.cancel}
+            />
+          </div>
+        )}
+        {region}
       </main>
       <Taskbar
         label={t.desktop.taskbarLabel}

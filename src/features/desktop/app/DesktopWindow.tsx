@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ResizeHandles } from "../../../components/ResizeHandles";
 import { Window } from "../../../components/Window";
+import { WindowMenu, type WindowMenuAction } from "../../../components/WindowMenu";
 import { cx } from "../../../components/cx";
 import { useT } from "../../../i18n";
 import type { AppId } from "../../../routes/routeMap";
@@ -21,6 +22,9 @@ export type DesktopWindowProps = {
   onToggleMaximize: (id: AppId) => void;
   onClose: (id: AppId) => void;
   onGestureStart: (id: AppId, edge: Edge | null, event: PointerEvent, frame: Element) => void;
+  isMenuOpen: boolean;
+  onMenuOpenChange: (id: AppId, isOpen: boolean) => void;
+  onMenuAction: (id: AppId, action: WindowMenuAction, frame: Element | null) => void;
 };
 
 export function DesktopWindow({
@@ -34,6 +38,9 @@ export function DesktopWindow({
   onToggleMaximize,
   onClose,
   onGestureStart,
+  isMenuOpen,
+  onMenuOpenChange,
+  onMenuAction,
 }: DesktopWindowProps) {
   const frame = useRef<HTMLElement | null>(null);
   const t = useT();
@@ -83,6 +90,15 @@ export function DesktopWindow({
       onToggleMaximize={() => onToggleMaximize(id)}
       onClose={() => onClose(id)}
       titleBarRef={setTitleBar}
+      windowMenu={
+        <WindowMenu
+          icon={icon}
+          isMaximized={maximized}
+          isOpen={isMenuOpen}
+          onOpenChange={(isOpen) => onMenuOpenChange(id, isOpen)}
+          onAction={(action) => onMenuAction(id, action, frame.current)}
+        />
+      }
       overlay={
         maximized ? null : (
           <ResizeHandles

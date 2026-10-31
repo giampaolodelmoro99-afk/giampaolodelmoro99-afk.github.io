@@ -118,6 +118,18 @@ export const it = {
     windowsButton: "Finestre aperte (Alt+W)",
     clockLabel: "Ora",
     minimizedSuffix: "ridotta a icona",
+    announce: {
+      opened: "{app}: finestra aperta",
+      closed: "{app}: finestra chiusa",
+      minimized: "{app}: ridotta a icona",
+      moveStart:
+        "Spostamento di {app}: usa le frecce, Maiusc per passi più lunghi, Invio per confermare, Esc per annullare.",
+      resizeStart:
+        "Ridimensionamento di {app}: usa le frecce, Maiusc per passi più lunghi, Invio per confermare, Esc per annullare.",
+      moved: "{app}: spostata",
+      resized: "{app}: ridimensionata",
+      cancelled: "Annullato",
+    },
   },
   about: {
     bio: "Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia, con Laravel e React, e continuo a studiare per crescere ogni giorno come sviluppatore.",

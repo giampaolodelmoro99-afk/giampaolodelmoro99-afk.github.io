@@ -29,6 +29,7 @@ export type WindowProps = {
   titleBarRef?: RefCallback<HTMLElement>;
   frameRef?: RefCallback<HTMLElement>;
   overlay?: ReactNode;
+  windowMenu?: ReactNode;
   className?: string | undefined;
   style?: CSSProperties | undefined;
 };
@@ -57,6 +58,7 @@ export function Window({
   titleBarRef,
   frameRef,
   overlay,
+  windowMenu,
   className,
   style,
 }: WindowProps) {
@@ -87,7 +89,7 @@ export function Window({
       data-variant={variant}
     >
       <TitleBar ref={titleBarRef} className={styles.titlebar}>
-        {icon && <Icon name={icon} size={16} className={cx(styles.titleIcon)} />}
+        {windowMenu ?? (icon && <Icon name={icon} size={16} className={cx(styles.titleIcon)} />)}
         <span id={titleId} className={styles.title}>
           {title}
         </span>

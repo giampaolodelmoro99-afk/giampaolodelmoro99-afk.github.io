@@ -10,7 +10,7 @@ import {
 import { Popover, type PopoverProps } from "react-aria-components/Popover";
 import { Separator } from "react-aria-components/Separator";
 import { cx } from "../cx";
-import { Glyph, Icon, type SmallIconName } from "../Icon";
+import { Glyph, type GlyphName, Icon, type SmallIconName } from "../Icon";
 import styles from "./Menu.module.css";
 
 export type MenuProps = Omit<AriaMenuProps<object>, "className" | "style" | "children"> & {
@@ -49,17 +49,37 @@ export function Menu({ children, size = "default", className, ...props }: MenuPr
 export type MenuItemProps = Omit<AriaMenuItemProps, "className" | "style" | "children"> & {
   children: ReactNode;
   icon?: SmallIconName;
+  glyph?: GlyphName;
   shortcut?: string;
+  isDefault?: boolean;
   className?: string | undefined;
 };
 
-export function MenuItem({ children, icon, shortcut, className, ...props }: MenuItemProps) {
+export function MenuItem({
+  children,
+  icon,
+  glyph,
+  shortcut,
+  isDefault = false,
+  className,
+  ...props
+}: MenuItemProps) {
   return (
-    <AriaMenuItem {...props} className={cx(styles.item, className)}>
+    <AriaMenuItem
+      {...props}
+      className={cx(styles.item, className)}
+      data-default={isDefault || undefined}
+    >
       {({ isSelected, hasSubmenu }) => (
         <>
           <span className={styles.check} aria-hidden="true">
-            {isSelected ? <Glyph name="check" /> : icon && <Icon name={icon} size={16} />}
+            {isSelected ? (
+              <Glyph name="check" />
+            ) : glyph ? (
+              <Glyph name={glyph} />
+            ) : (
+              icon && <Icon name={icon} size={16} />
+            )}
           </span>
           <span className={styles.label}>{children}</span>
           {shortcut && <Keyboard className={cx(styles.shortcut)}>{shortcut}</Keyboard>}

@@ -1,0 +1,30 @@
+.trigger {
+  --_halo: var(--no-shadow);
+
+  appearance: none;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  min-inline-size: var(--target-min);
+  min-block-size: var(--target-min);
+  margin-inline-end: var(--space-1);
+  padding: var(--space-0);
+  border: 0;
+  border-radius: var(--radius-none);
+  background: transparent;
+  box-shadow: var(--_halo);
+  color: inherit;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.trigger[data-focus-visible] {
+  --_halo: var(--focus-halo);
+
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+}
+
+.trigger[aria-expanded="true"] {
+  background: var(--color-selection);
+}
