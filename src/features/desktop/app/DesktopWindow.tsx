@@ -11,8 +11,13 @@ import { AppContent, type HeadingLevel } from "../content/AppContent";
 import styles from "../Desktop.module.css";
 import { windowBodyId, windowTitleId } from "../ids";
 
+export type WindowExit = "close" | "minimize";
+
 export type DesktopWindowProps = {
   window: WindowState;
+  animateIn: boolean;
+  exit: WindowExit | null;
+  onExited: () => void;
   zIndex: number;
   isActive: boolean;
   isResizing: boolean;
@@ -29,6 +34,9 @@ export type DesktopWindowProps = {
 
 export function DesktopWindow({
   window,
+  animateIn,
+  exit,
+  onExited,
   zIndex,
   isActive,
   isResizing,
@@ -47,6 +55,28 @@ export function DesktopWindow({
   const { id, geometry, maximized, cascade } = window;
   const { icon, variant } = appDefinition(id);
   const [titleBar, setTitleBar] = useState<HTMLElement | null>(null);
+  const [enters] = useState(animateIn);
+
+  useEffect(() => {
+    const element = frame.current;
+    if (!exit || !element) return undefined;
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      onExited();
+    };
+    const onEnd = (event: AnimationEvent) => {
+      if (event.target === element) finish();
+    };
+    const seconds = Number.parseFloat(getComputedStyle(element).animationDuration);
+    const timer = setTimeout(finish, (Number.isFinite(seconds) ? seconds * 1000 : 0) + 100);
+    element.addEventListener("animationend", onEnd);
+    return () => {
+      clearTimeout(timer);
+      element.removeEventListener("animationend", onEnd);
+    };
+  }, [exit, onExited]);
 
   useEffect(() => {
     if (!titleBar) return undefined;
@@ -84,7 +114,7 @@ export function DesktopWindow({
       variant={variant}
       isActive={isActive}
       isMaximized={maximized}
-      isBodyInert={!isActive}
+      isBodyInert={!isActive || exit !== null}
       onActivate={() => onActivate(id)}
       onMinimize={() => onMinimize(id)}
       onToggleMaximize={() => onToggleMaximize(id)}
@@ -115,7 +145,13 @@ export function DesktopWindow({
       }}
       bodyId={windowBodyId(id)}
       bodyClassName={styles.windowBody}
-      className={cx(styles.window, geometry && styles.placed)}
+      className={cx(
+        styles.window,
+        geometry && styles.placed,
+        enters && !exit && styles.entering,
+        exit === "close" && styles.closing,
+        exit === "minimize" && styles.minimizing,
+      )}
       style={{ "--window-z": zIndex, "--window-cascade": cascade, ...placement }}
     >
       <AppContent app={id} headingLevel={headingLevel} />

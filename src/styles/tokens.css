@@ -239,6 +239,9 @@
   --duration-base: 200ms;
   --duration-slow: 400ms;
   --restart-delay: 600ms;
+  --window-motion-scale: 0.9;
+  --window-motion-shrink: 0.5;
+  --window-motion-drop: 50%;
   --easing-standard: steps(4, end);
 
   --space-safe-top: max(var(--space-5), env(safe-area-inset-top));

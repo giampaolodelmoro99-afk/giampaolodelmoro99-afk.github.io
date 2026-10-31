@@ -33,7 +33,7 @@ import {
 import { appDefinition, desktopApps, startMenuApps, startMenuSystemApps } from "../apps";
 import styles from "../Desktop.module.css";
 import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
-import { DesktopWindow } from "./DesktopWindow";
+import { DesktopWindow, type WindowExit } from "./DesktopWindow";
 import { resolveCommand } from "../run";
 import { isApplePlatform, isTextEntry, matchShortcut } from "../shortcuts";
 import { ShortcutText } from "./ShortcutText";
@@ -219,6 +219,30 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
     focusable?.focus();
   }, [focusRequest]);
 
+  const [initialIds] = useState(() => new Set(Object.keys(store.getState().windows)));
+  const [exiting, setExiting] = useState<{ id: AppId; kind: WindowExit } | null>(null);
+  const afterExit = useRef<(() => void) | null>(null);
+
+  const finishExit = useCallback(() => {
+    const done = afterExit.current;
+    afterExit.current = null;
+    setExiting(null);
+    done?.();
+  }, []);
+
+  const animateOut = (id: AppId, kind: WindowExit, done: () => void) => {
+    finishExit();
+    initialIds.delete(id);
+    const value = workspace ? getComputedStyle(workspace).getPropertyValue("--duration-base") : "";
+    const duration = Number.parseFloat(value);
+    if (!Number.isFinite(duration) || duration <= 0) {
+      done();
+      return;
+    }
+    afterExit.current = done;
+    setExiting({ id, kind });
+  };
+
   const openApp = (id: Key) => {
     if (!isAppId(id)) return;
     if (!store.getState().windows[id]) announce(appName(id, t.desktop.announce.opened));
@@ -227,9 +251,11 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
   };
 
   const minimizeApp = (id: AppId) => {
-    minimize(id);
-    announce(appName(id, t.desktop.announce.minimized));
-    setFocusRequest({ target: taskbarButtonId(id) });
+    animateOut(id, "minimize", () => {
+      minimize(id);
+      announce(appName(id, t.desktop.announce.minimized));
+      setFocusRequest({ target: taskbarButtonId(id) });
+    });
   };
 
   const pressTaskbarButton = (id: AppId) => {
@@ -238,10 +264,12 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
   };
 
   const closeApp = (id: AppId) => {
-    close(id);
-    announce(appName(id, t.desktop.announce.closed));
-    const next = store.getState().activeId;
-    setFocusRequest({ target: next ? windowBodyId(next) : desktopIconsId });
+    animateOut(id, "close", () => {
+      close(id);
+      announce(appName(id, t.desktop.announce.closed));
+      const next = store.getState().activeId;
+      setFocusRequest({ target: next ? windowBodyId(next) : desktopIconsId });
+    });
   };
 
   const menuAction = (id: AppId, action: WindowMenuAction, frame: Element | null) => {
@@ -394,6 +422,9 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
             <DesktopWindow
               key={window.id}
               window={window}
+              animateIn={!initialIds.has(window.id)}
+              exit={exiting?.id === window.id ? exiting.kind : null}
+              onExited={finishExit}
               zIndex={stack.indexOf(window.id)}
               isActive={window.id === activeId}
               isResizing={gestures.resizing === window.id}

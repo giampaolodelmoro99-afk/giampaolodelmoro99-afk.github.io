@@ -87,6 +87,50 @@
   margin-block-start: var(--space-2);
 }
 
+.entering {
+  animation-name: window-open;
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--easing-standard);
+}
+
+.closing,
+.minimizing {
+  pointer-events: none;
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--easing-standard);
+  animation-fill-mode: forwards;
+}
+
+.closing {
+  animation-name: window-close;
+}
+
+.minimizing {
+  transform-origin: bottom left;
+  animation-name: window-minimize;
+}
+
+@keyframes window-open {
+  from {
+    opacity: 0;
+    transform: scale(var(--window-motion-scale));
+  }
+}
+
+@keyframes window-close {
+  to {
+    opacity: 0;
+    transform: scale(var(--window-motion-scale));
+  }
+}
+
+@keyframes window-minimize {
+  to {
+    opacity: 0;
+    transform: translateY(var(--window-motion-drop)) scale(var(--window-motion-shrink));
+  }
+}
+
 .moveControls {
   position: absolute;
   inset-block-end: var(--space-4);
