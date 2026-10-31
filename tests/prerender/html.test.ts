@@ -124,9 +124,12 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
     expect(policy).not.toContain("unsafe-eval");
   });
 
-  it("rinvia l'idratazione: nessun modulepreload e payload di avvio consentito dalla CSP", async () => {
+  it("rinvia l'idratazione: modulepreload inerti e payload di avvio consentito dalla CSP", async () => {
     const { html, document } = await load(fileFor(href));
-    expect(html).not.toContain("modulepreload");
+    const preloads = [...document.querySelectorAll('link[rel="modulepreload"]')];
+    expect(preloads.length).toBeGreaterThan(0);
+    expect(preloads.every((link) => link.getAttribute("media") === "not all")).toBe(true);
+    expect(html).not.toMatch(/<link rel="modulepreload" href="[^"]+"\/>/);
     const payload = document.getElementById(bootId);
     expect(payload?.getAttribute("type")).toBe("text/plain");
     expect(attr(document, 'meta[http-equiv="Content-Security-Policy"]', "content")).toContain(

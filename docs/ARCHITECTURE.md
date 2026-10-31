@@ -68,7 +68,7 @@ docs/                   documentazione, ADR, piani e retrospettive
 - **Modalità**: `ssr: false` + `prerender` (ADR-0006). Ogni path diventa `build/client/<path>/index.html` con il contenuto completo. `routeDiscovery: initial` perché un hosting statico non ha l'endpoint `/__manifest`.
 - **URL**: italiano senza prefisso, inglese con `/en/`. Canonical con slash finale, perché GitHub Pages reindirizza `/en` → `/en/` con un 301.
 - **404**: la route splat `*` (id `not-found`) è prerenderizzata su `/404`. Il post-build la copia in `404.html`, che GitHub Pages serve con status 404 per ogni URL non previsto. L'idratazione combacia perché la route è la stessa.
-- **Idratazione rinviata**: il post-build toglie i `modulepreload` e sposta il bootstrap di React Router in uno script inerte, avviato dopo l'evento `load`. La pagina si vede subito; il JS arriva dopo e non pesa su LCP. Un link cliccato prima dell'idratazione è un normale `<a>`, che funziona con una navigazione completa.
+- **Idratazione rinviata**: il post-build rende inerti i `modulepreload` (`media="not all"`: il browser non li scarica e React non li reinserisce all'idratazione) e sposta il bootstrap di React Router in uno script inerte, avviato dopo l'evento `load`. La pagina si vede subito; il JS arriva dopo e non pesa su LCP. Un link cliccato prima dell'idratazione è un normale `<a>`, che funziona con una navigazione completa.
 - **Post-build** (`scripts/postbuild.mjs`):
   1. verifica che ogni route abbia il suo HTML
   2. crea `404.html`

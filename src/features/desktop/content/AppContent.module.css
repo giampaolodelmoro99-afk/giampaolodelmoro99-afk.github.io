@@ -7,10 +7,6 @@
   overflow-wrap: anywhere;
 }
 
-.subtitle {
-  font-weight: var(--font-weight-bold);
-}
-
 .subheading {
   margin: var(--space-5) var(--space-0) var(--space-2);
   font-family: var(--font-family-ui);

@@ -36,7 +36,7 @@ export function AppContent({ app, headingLevel }: AppContentProps) {
   return (
     <>
       <Heading className={styles.heading}>{personName}</Heading>
-      <p className={styles.subtitle}>{t.person.jobTitle}</p>
+      <p>{t.person.jobTitle}</p>
       <p>{t.about.bio}</p>
       <Subheading className={styles.subheading}>{t.about.nextHeading}</Subheading>
       <ul className={styles.links} aria-label={t.about.nextLabel}>
