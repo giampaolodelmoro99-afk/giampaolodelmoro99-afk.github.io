@@ -37,6 +37,8 @@ Data, browser, viewport, esito (QA_CHECKLIST.md).
 
 ## 7. Debito tecnico e rischi aperti
 
-## 8. Lezioni per AI_WORKFLOW.md
+## 8. Lezioni sul lavoro con l'AI
+
+Stanno solo qui: AI_WORKFLOW.md §5 rimanda alle retrospettive.
 
 ## 9. Azioni per la fase successiva

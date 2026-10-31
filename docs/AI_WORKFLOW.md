@@ -41,6 +41,8 @@ Come uso gli strumenti di Anthropic in questo progetto. È anche la fonte della 
 
 ## 5. Lezioni imparate
 
+**Dalla Fase 2A le lezioni stanno solo nella retrospettiva di ogni fase** (`docs/phases/phase-NN-retro.md`, §8 "Lezioni sul lavoro con l'AI"), per non scriverle due volte. Le sezioni qui sotto restano come registro delle fasi 0, 1A e 1B.
+
 ### Fase 0
 
 - **Il piano va scritto prima, ma misurato dopo.** Il budget di 90 kB di JS stimato nel piano era irrealistico con React 19 + React Router 8 (112 kB misurati). È stato corretto a 115 kB con motivazione scritta, non abbassato in silenzio.

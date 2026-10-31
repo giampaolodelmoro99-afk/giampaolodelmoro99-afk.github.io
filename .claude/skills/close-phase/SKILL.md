@@ -54,7 +54,7 @@ Con `npm run preview` e Claude in Chrome, esegui `docs/QA_CHECKLIST.md`: desktop
 - PERFORMANCE_SEO.md: tabella del peso dei componenti con le misure di chiusura (durante la fase size-limit gira solo in CI, ADR-0019).
 - `CHANGELOG.md`: sezione `[phase-NN]`.
 - `docs/PLAN.md`: checkbox della fase.
-- `docs/AI_WORKFLOW.md` §5: lezioni della fase.
+- Lezioni sul lavoro con l'AI solo nella retrospettiva (§8): AI_WORKFLOW.md §5 rimanda lì, non si aggiorna.
 - Altri docs toccati dalla fase.
 
 Commit: `docs: chiude la fase NN con retrospettiva e changelog`.
