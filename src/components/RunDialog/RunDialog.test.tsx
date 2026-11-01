@@ -49,6 +49,15 @@ describe("RunDialog", () => {
     ).toEqual(["Contatti", "Pannello di controllo"]);
   });
 
+  it("senza suggerimenti corrispondenti la lista non compare e axe resta pulito", async () => {
+    const user = userEvent.setup();
+    render(<Run />);
+    await user.type(await screen.findByRole("textbox", { name: "Apri" }), "xyz");
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(screen.queryByRole("option")).toBeNull();
+    await expectNoAxeViolations(document.body);
+  });
+
   it("Invio esegue il testo scritto e chiude se il comando esiste", async () => {
     const onRun = vi.fn<(command: string) => string | null>(() => null);
     const onClose = vi.fn<() => void>();

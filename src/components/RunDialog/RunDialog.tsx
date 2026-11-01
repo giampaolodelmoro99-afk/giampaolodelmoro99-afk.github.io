@@ -28,6 +28,8 @@ const normalize = (text: string) =>
     .toLowerCase()
     .trim();
 
+const matches = (label: string, text: string) => normalize(label).includes(normalize(text));
+
 export function RunDialog({ isOpen, onOpenChange, suggestions, onRun, className }: RunDialogProps) {
   const strings = useUiStrings().runDialog;
   const titleId = useId();
@@ -38,6 +40,9 @@ export function RunDialog({ isOpen, onOpenChange, suggestions, onRun, className 
   useEffect(() => {
     form?.querySelector("input")?.focus();
   }, [form]);
+
+  const hasSuggestions =
+    command.trim() !== "" && suggestions.some((item) => matches(item.label, command));
 
   const run = (text: string) => {
     const problem = onRun(text);
@@ -81,9 +86,7 @@ export function RunDialog({ isOpen, onOpenChange, suggestions, onRun, className 
                   setCommand(value);
                   setError(null);
                 }}
-                filter={(textValue, inputValue) =>
-                  normalize(textValue).includes(normalize(inputValue))
-                }
+                filter={matches}
                 disableAutoFocusFirst
               >
                 <TextField
@@ -93,14 +96,13 @@ export function RunDialog({ isOpen, onOpenChange, suggestions, onRun, className 
                   autoComplete="off"
                   className={styles.field}
                 />
-                {command.trim() !== "" && (
+                {hasSuggestions && (
                   <ListBox
                     aria-label={strings.suggestions}
                     items={suggestions}
                     onAction={(key) =>
                       run(suggestions.find((item) => item.id === key)?.label ?? "")
                     }
-                    renderEmptyState={() => null}
                     className={cx(styles.suggestions)}
                   >
                     {(item) => (
