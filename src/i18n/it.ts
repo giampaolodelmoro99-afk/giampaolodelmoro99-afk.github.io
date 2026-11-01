@@ -117,6 +117,8 @@ export const it = {
     placeholder: "Il contenuto di questa finestra è in arrivo.",
     windowsButton: "Finestre aperte ({shortcut})",
     windowsButtonEmpty: "Finestre aperte: nessuna",
+    altKey: "Alt+",
+    optionKey: "Option+",
     switcherHint: "{alt}W avanza · Maiusc+{alt}W torna indietro · Invio attiva · Esc annulla",
     run: "Esegui…",
     runNotFound: 'Non trovo "{command}". Prova con progetti, cv o contatti.',

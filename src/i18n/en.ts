@@ -119,6 +119,8 @@ export const en: Dictionary = {
     placeholder: "The content of this window is on its way.",
     windowsButton: "Open windows ({shortcut})",
     windowsButtonEmpty: "Open windows: none",
+    altKey: "Alt+",
+    optionKey: "Option+",
     switcherHint: "{alt}W next · Shift+{alt}W back · Enter switch · Esc cancel",
     run: "Run…",
     runNotFound: 'Can\'t find "{command}". Try projects, cv or contact.',

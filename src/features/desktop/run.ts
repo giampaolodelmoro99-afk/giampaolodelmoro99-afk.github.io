@@ -14,7 +14,7 @@ export function normalizeCommand(text: string): string {
 
 function namesOf(id: AppId): string[] {
   return locales.flatMap((locale) => {
-    const slug = routeMap[id][locale].split("/").filter(Boolean).at(-1) ?? "";
+    const slug = routeMap[id][locale].split("/").findLast((segment) => segment !== "") ?? "";
     return [getDictionary(locale).apps[id], slug, id];
   });
 }
