@@ -12,9 +12,9 @@ Nella F2A la home diventa un desktop GDM 95: icone, finestre sovrapposte, taskba
 
 1. **Finestre come `region`, non `dialog`.** Ogni finestra è una `section` con `aria-labelledby` sul titolo. I contenuti sono documenti da leggere: dentro una region NVDA e VoiceOver restano in modalità lettura, mentre un `dialog` non modale porta NVDA in modalità focus e viene annunciato come modale in modo incoerente. Il landmark `main` contiene tutto il desktop (icone e finestre); la taskbar è un `Toolbar` etichettato fuori da `main`.
 2. **Titoli.** Il titolo della barra non è un heading: dà il nome alla region. Il contenuto della finestra della route parte da `h1` (About su `/`: «Gianpaolo Del Moro»); le finestre aperte dopo partono da `h2`. Ogni pagina ha un solo `h1`. Il congedo di Spegni è un `main` con il suo `h1`.
-3. **Finestre inattive `inert`.** Il corpo delle finestre non attive è `inert`; la barra del titolo resta cliccabile per attivarle. Durante l'animazione di chiusura o riduzione anche il corpo della finestra che esce è `inert`.
+3. **Finestre inattive `inert`.** Il corpo delle finestre non attive è `inert`; la barra del titolo resta cliccabile per attivarle, ma i suoi pulsanti (menu della finestra, Riduci, Ingrandisci, Chiudi) escono dall'ordine di Tab (`tabIndex=-1`): da tastiera si cambia finestra con la taskbar e il selettore. Durante l'animazione di chiusura o riduzione anche il corpo della finestra che esce è `inert`.
 4. **Focus.**
-   - Apertura e riattivazione di una finestra: il focus va sul corpo (`tabindex=-1`).
+   - Apertura e riattivazione di una finestra: il focus va sul corpo (`tabindex=-1`). Attivando una finestra con il puntatore, se il focus finirebbe su `<body>` (il corpo della finestra prima attiva diventa `inert`) va sul corpo della finestra attivata; un clic su un link o un campo tiene il suo focus.
    - Chiusura: sul corpo della nuova finestra attiva, altrimenti sulle icone del desktop.
    - Riduzione: sul pulsante della finestra nella taskbar.
    - Esc chiude menu e dialog, **mai le finestre**.
@@ -37,9 +37,11 @@ Nella F2A la home diventa un desktop GDM 95: icone, finestre sovrapposte, taskba
    - il tasto si riconosce da `event.key`, e da `event.code` solo quando `key` non è un carattere ASCII previsto (Option su Mac, tasti morti, layout non latini);
    - non scattano nei campi di testo né dentro `[data-shortcuts="off"]` (il Terminale);
    - su Mac le etichette usano il glifo ⌥ (disegnato a pixel, `aria-hidden`); il nome accessibile del pulsante Finestre contiene la scorciatoia per esteso, perché il `Button` di React Aria non inoltra `aria-keyshortcuts`.
-10. **Esegui.** Campo con `Autocomplete` di React Aria: il focus resta nel campo e le frecce scorrono i suggerimenti con `aria-activedescendant`. La lista compare solo se c'è almeno un suggerimento (lo stato vuoto di React Aria sarebbe un `option` senza nome). Un nome sconosciuto rende il campo `aria-invalid` con l'errore collegato da `aria-describedby`.
-11. **Skip link e ordine di Tab.** Lo skip link «Salta al contenuto» è il primo elemento, è un'ancora (funziona prima dell'idratazione) e porta al corpo della finestra attiva, altrimenti alle icone. Ordine: skip link › icone (un solo punto di Tab, frecce dentro) › finestra attiva › Start › Finestre › pulsanti delle finestre (`Toolbar`, un solo punto di Tab).
-12. **Movimento.** Animazioni di finestre e riavvio solo con le durate dei token, azzerate da `prefers-reduced-motion` e da `data-motion="reduce"`; con durata 0 chiusura e riduzione sono immediate.
+10. **Esegui.** Campo con `Autocomplete` di React Aria: il focus resta nel campo e le frecce scorrono i suggerimenti con `aria-activedescendant`. La lista compare solo se c'è almeno un suggerimento (lo stato vuoto di React Aria sarebbe un `option` senza nome). Un nome sconosciuto rende il campo `aria-invalid` con l'errore collegato da `aria-describedby`; il focus torna nel campo e l'errore passa anche dall'`Announcer`, perché con il focus già nel campo il lettore non lo rileggerebbe. Invio con il campo vuoto non fa nulla.
+11. **Collegamento della lingua.** Il nome accessibile comincia con il testo visibile (WCAG 2.5.3): «EN, English version», «IT, Versione italiana».
+12. **Errori di caricamento.** Se il chunk del desktop non arriva resta il guscio statico, che funziona con i link. Se non arriva il chunk di Esegui, Spegni o del congedo, un error boundary chiude il dialog, annuncia «Non riesco ad aprire questa finestra: ricarica la pagina.» e riporta il focus su Start (il congedo riaccende il desktop).
+13. **Skip link e ordine di Tab.** Lo skip link «Salta al contenuto» è il primo elemento, è un'ancora (funziona prima dell'idratazione) e porta al corpo della finestra attiva, altrimenti alle icone. Ordine: skip link › icone (un solo punto di Tab, frecce dentro) › finestra attiva › Start › Finestre › pulsanti delle finestre (`Toolbar`, un solo punto di Tab).
+14. **Movimento.** Animazioni di finestre e riavvio solo con le durate dei token, azzerate da `prefers-reduced-motion` e da `data-motion="reduce"`; con durata 0 chiusura e riduzione sono immediate.
 
 ## Alternative considerate
 
@@ -55,6 +57,14 @@ Nella F2A la home diventa un desktop GDM 95: icone, finestre sovrapposte, taskba
 
 - Positive: il desktop si usa per intero da tastiera, mouse e touch; i lettori restano in modalità lettura nei contenuti; ogni gesto ha un'alternativa a puntatore singolo e da tastiera.
 - Negative e rischi: il modello «region + `inert`» non dice al lettore quante finestre ci sono dietro; lo compensano il pulsante Finestre e il selettore. Le scorciatoie con Alt possono essere intercettate dal sistema (Alt+Spazio su Windows e GNOME): c'è Alt+trattino come riserva.
+- Rinvii alla 2B (dalla review di chiusura della 2A, non bloccanti):
+  - sotto i 768 px Sposta, Ridimensiona e Ingrandisci del menu della finestra non hanno effetto visibile: si disattivano o cambiano con la modalità mobile;
+  - durante Sposta da tastiera il focus resta sul pulsante del menu: in modalità lettura NVDA può prendersi le frecce; da valutare il focus su `MoveControls` e un annuncio che citi i pulsanti;
+  - in `forced-colors` la voce scelta nel selettore aperto con il mouse si distingue solo dal nome sotto le icone, e il cerchio del Radio va verificato: serve un bordo `Highlight`;
+  - in Spegni il focus iniziale è su «Spegni», quindi Invio spegne subito; l'azione si annulla con Riaccendi, senza perdite;
+  - su Windows Maiusc+Alt cambia la lingua di input: Maiusc+Alt+W può cambiare layout prima di arrivare alla pagina; resta il pulsante Finestre;
+  - `touch-action: none` sulla barra del titolo blocca anche il pinch-zoom iniziato lì; lo zoom resta possibile dal resto della pagina;
+  - con molte finestre a 320 px i pulsanti della taskbar scorrono in orizzontale dentro il loro spazio (senza coprire lingua e orologio); il disegno della taskbar stretta è della modalità mobile (ADR-0007).
 - Cosa va verificato: test unitari e e2e (`keyboard.spec.ts`, `context-menu.spec.ts`, `window-drag.spec.ts`, `touch-drag.spec.ts`, `csp.spec.ts`), axe su story e pagine; a fine fase la QA manuale con NVDA + Firefox e VoiceOver + Safari iOS (QA_CHECKLIST.md, sezione Desktop). Si rivaluta in 2B con la modalità mobile (MobileHome, App aperte) e la memoria del focus per finestra.
 
 ## Riferimenti

@@ -26,7 +26,8 @@ Uso sul sito (Fase 2A):
 - Il titolo completo è in `og:title`, `twitter:title` e nel `jobTitle` del JSON-LD.
 - La bio è nella finestra About, aperta all'avvio nella home e su `/profilo/` (`/en/about/`).
 - **WordPress** (01/11/2026): compare nella bio e nella meta description, quindi va anche nell'app Skills in F3A (§5) e, con i suoi progetti, nell'app Progetti (§5, progetti candidati). Le description provvisorie di About e Skills lo includono già; quella di Progetti si riscrive in F3A con l'elenco definitivo dei progetti.
-- Slug delle app: dove l'app corrisponde a una pagina della v1 vale lo slug della v1, definitivo (SPECS.md §6): `/profilo/`, `/stack/`, `/progetti/`, `/contatti/`. Gli altri slug, con i title e le description delle app, sono **bozze fino alla Fase 3A**: il sito non è online prima di `v1.0.0`.
+- Slug delle app: dove l'app corrisponde a una pagina della v1 vale lo slug della v1, definitivo (SPECS.md §6): `/profilo/`, `/stack/`, `/progetti/`, `/contatti/`. Gli altri slug sono **bozze fino alla Fase 3A**.
+- **Title e description di tutte le app**, comprese le quattro della v1 (About, Skills, Progetti, Contatti), sono **provvisori fino alla Fase 3A**: definitivi sono solo quelli della home (sopra) e gli slug della v1. Il sito non è online prima di `v1.0.0`.
 
 ## 3. Testi della v1 (tag `v1.0.0-legacy`)
 
@@ -146,16 +147,25 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 >
 > - "Rifacimento del sito qbitsoft.it in WordPress". Permesso dell'azienda a mostrarlo nel portfolio: **confermato** (01/11/2026). Da confermare: ruolo svolto. Link e dettagli arrivano prima della F3A. Non è un repository GitHub: la scheda non avrà i metadati scaricati a build time e userà il link al sito.
 
+> **BOZZA – da rivedere.** Testi del desktop della F2A (in `src/i18n/it.ts`, `en.ts` e `ui.ts`, chiavi `desktop` e `ui`), scritti da Claude durante la fase. Sono testi d'interfaccia (menu, dialog, annunci per i lettori di schermo, scorciatoie, skip link): si approvano insieme prima di `v1.0.0`.
+>
+> - Congedo di Spegni (tavola D12): «Puoi chiudere questa scheda.» / «You can close this tab.»; saluto «Il desktop è spento. Grazie della visita: se cambi idea, riaccendilo e ricomincia da dove vuoi.» / «The desktop is off. Thanks for stopping by: if you change your mind, turn it back on and start wherever you like.»; pulsante «Riaccendi» / «Turn back on»; titolo della scheda «Spento · Gianpaolo Del Moro» / «Off · Gianpaolo Del Moro». **Il saluto è un testo personale: va approvato da Gianpaolo.**
+> - Esegui: «Scrivi il nome di un'app e si aprirà in una finestra.»; errore «Non trovo "{command}". Prova con progetti, cv o contatti.»; errore di caricamento «Non riesco ad aprire questa finestra: ricarica la pagina.»
+> - Spegni: «Cosa vuoi fare?» con Spegni, Riavvia, Passa alla Vista semplice.
+> - Menu della finestra, selettore («Finestre aperte»), menu contestuale (Disponi icone, Aggiorna, Proprietà), annunci («{app}: finestra aperta», «… spostata»…), skip link «Salta al contenuto», collegamento della lingua «EN, English version» / «IT, Versione italiana».
+> - Suggerimenti del content-reviewer da valutare in F3A: «Resize» al posto di «Size» nel menu della finestra in inglese, «Canceled» o «Cancelled» come grafia unica, «Allinea icone» al posto di «Allinea alla griglia», virgolette « » nell'errore di Esegui, separatore «·» nel title della 404, nomi delle app «Profilo» e «Competenze» al posto di About e Skills.
+
 ## 6. Mancante per l'inglese
 
 - [x] Payoff e bio (approvati il 28/10/2026, §2)
 - [ ] Descrizioni dei 6 progetti
 - [ ] Etichette e contesti delle skill
-- [ ] Metadati (title, description) di ogni route (home approvata il 28/10/2026)
+- [ ] Metadati (title, description) di ogni route (home approvata il 28/10/2026, aggiornata il 01/11/2026)
 - [ ] Testo della 404 (BSOD)
 - [ ] CV in inglese (confermato), generato dagli stessi dati del CV italiano
 - [ ] Informativa privacy
-- [ ] Alt, aria-label, titoli delle finestre, messaggi del form
+- [x] Etichette, annunci e titoli delle finestre del desktop (F2A), in bozza (§5)
+- [ ] Alt delle immagini e messaggi del form (F3)
 
 ## 7. Template: scheda progetto GitHub
 
