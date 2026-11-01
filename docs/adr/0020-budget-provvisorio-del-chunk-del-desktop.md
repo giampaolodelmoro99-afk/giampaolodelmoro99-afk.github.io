@@ -42,6 +42,11 @@ Il job «E2E prestazioni» è verde, con CPU rallentata 4×: task più lunga tra
 | ------------------------------------ | -------- | --------------------------- |
 | Chunk del desktop dopo l'idratazione | 73,14 kB | 77 kB (73,14 × 1,05 = 76,8) |
 | Componenti, totale CSS               | 5,69 kB  | 6 kB (5,69 × 1,05 = 5,97)   |
+| Chunk di Esegui all'apertura         | 4,67 kB  | 5 kB                        |
+| Chunk di Spegni all'apertura         | 7,09 kB  | 8 kB                        |
+| Chunk del congedo all'apertura       | 0,51 kB  | 1 kB                        |
+
+I tre chunk aperti su richiesta mancavano in `.size-limit.js` (li chiedeva il piano, §3.1; segnalato dalla code review di chiusura): ora sono misurati seguendo gli import dinamici del chunk del desktop, con la stessa regola. Dopo le correzioni della review il chunk del desktop misura 73,50 kB e il JS iniziale 120,59 kB, dentro i budget.
 
 ## Conseguenze
 

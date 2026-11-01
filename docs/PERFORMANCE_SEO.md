@@ -55,11 +55,14 @@ Dal 28/10/2026 la home prerenderizza un guscio statico del desktop in solo HTML 
 
 | Misura (gzip)                        | Valore                      | Budget           |
 | ------------------------------------ | --------------------------- | ---------------- |
-| JS iniziale della home               | 120,39 kB (117,8 alla 2A-1) | 124 kB           |
-| Chunk del desktop dopo l'idratazione | 73,14 kB (56,08 alla 2A-1)  | 77 kB (ADR-0020) |
+| JS iniziale della home               | 120,59 kB (117,8 alla 2A-1) | 124 kB           |
+| Chunk del desktop dopo l'idratazione | 73,50 kB (56,08 alla 2A-1)  | 77 kB (ADR-0020) |
 | Sprite delle icone                   | 12,64 kB                    | 14 kB            |
 | Componenti, totale JS                | 86,93 kB                    | 99 kB            |
 | Componenti, totale CSS               | 5,69 kB                     | 6 kB (ADR-0020)  |
+| Chunk di Esegui all'apertura         | 4,67 kB                     | 5 kB (ADR-0020)  |
+| Chunk di Spegni all'apertura         | 7,09 kB                     | 8 kB (ADR-0020)  |
+| Chunk del congedo all'apertura       | 0,51 kB                     | 1 kB (ADR-0020)  |
 
 Misure di chiusura della F2A (01/11/2026). Esegui, Spegni e il congedo sono in chunk caricati all'apertura e non entrano nel chunk del desktop.
 

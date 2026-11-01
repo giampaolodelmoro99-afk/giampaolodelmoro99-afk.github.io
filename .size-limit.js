@@ -51,6 +51,25 @@ if (!desktopChunk.some((file) => /\/DesktopApp-[^/]+\.js$/.test(file))) {
   throw new Error("chunk del desktop (DesktopApp) non trovato tra gli import dinamici della home");
 }
 
+// Chunk aperti dal desktop su richiesta (Esegui, Spegni, congedo): gli import
+// dinamici del chunk del desktop, con i loro import statici non ancora caricati.
+const onDemandChunk = (name) => {
+  const root = desktopChunk
+    .flatMap((file) => [...readFileSync(`${client}${file}`, "utf8").matchAll(dynamicImport)])
+    .map((match) => `/assets/${match[1]}`)
+    .find((file) => new RegExp(`/${name}-[^/]+\\.js$`).test(file));
+  if (!root) throw new Error(`chunk ${name} non trovato tra gli import dinamici del desktop`);
+  const files = new Set();
+  const collect = (file) => {
+    if (initialJs.has(file) || lazyJs.has(file) || files.has(file)) return;
+    files.add(file);
+    const source = readFileSync(`${client}${file}`, "utf8");
+    for (const match of source.matchAll(staticImport)) collect(`/assets/${match[1]}`);
+  };
+  collect(root);
+  return [...files].map((file) => `${client}${file}`);
+};
+
 const iconSprite = readdirSync(`${client}/assets`).filter((file) =>
   /^iconSprite-[\w-]+\.svg$/.test(file),
 );
@@ -84,6 +103,17 @@ export default [
     gzip: true,
     disablePlugins: ["@size-limit/esbuild"],
   },
+  ...[
+    ["Esegui", "RunDialog", "5 kB"],
+    ["Spegni", "ShutdownDialog", "8 kB"],
+    ["congedo", "FarewellScreen", "1 kB"],
+  ].map(([label, name, limit]) => ({
+    name: `Chunk di ${label} all'apertura, JS (gzip)`,
+    path: onDemandChunk(name),
+    limit,
+    gzip: true,
+    disablePlugins: ["@size-limit/esbuild"],
+  })),
   {
     name: "Sprite delle icone (gzip)",
     path: iconSprite.map((file) => `${client}/assets/${file}`),
