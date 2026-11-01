@@ -51,17 +51,19 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 
 ## 2A. Window manager desktop
 
-- [ ] Desktop con icone (selezione, apertura con mouse, tastiera e tap)
-- [ ] Finestre: drag, resize, focus, z-index, minimizza, massimizza, chiudi, animazioni
-- [ ] Taskbar con orologio, menu Start, menu contestuale (anche senza tasto destro), "Esegui…"
-- [ ] Scorciatoie da tastiera e annunci per screen reader
-- [x] Attributi `style` nell'HTML prerenderizzato (ADR-0012, tipo C): chiuso da ADR-0015 (guscio statico, Glyph con classi generate); e2e con la CSP reale sulla home per DesktopIcon, menu Start e finestre (2A-1). Tooltip, AlertDialog e Radio con la CSP reale quando entrano nella home (2A-2); Checkbox e Select quando entrano in una pagina (F3B o F4A)
+- [x] Desktop con icone (selezione, apertura con mouse, tastiera e tap)
+- [x] Finestre: drag a contorno, resize con otto maniglie, focus, z-index, minimizza, massimizza, chiudi, animazioni; Sposta e Ridimensiona da tastiera e al tocco; cascata dentro l'area visibile (ARCHITECTURE.md §4)
+- [x] Taskbar con orologio, pulsante Finestre e selettore, menu Start nell'ordine di D05, menu contestuale (tasto destro, Maiusc+F10, tasto Menu, pressione lunga), "Esegui…"
+- [x] Spegni con congedo, Riavvia e Vista semplice, senza ricaricare la pagina
+- [x] Scorciatoie da tastiera e annunci per screen reader (ADR-0016)
+- [x] Budget del chunk del desktop e del CSS dei componenti provvisori fino a fine 2A-2 (ADR-0020); da fissare alla chiusura
+- [x] Attributi `style` nell'HTML prerenderizzato (ADR-0012, tipo C): chiuso da ADR-0015 (guscio statico, Glyph con classi generate); e2e con la CSP reale sulla home per DesktopIcon, menu Start e finestre (2A-1). Radio (Spegni, `VisuallyHidden`) ed Esegui con la CSP reale sulla home (2A-2); Tooltip e AlertDialog quando entrano nella home; Checkbox e Select quando entrano in una pagina (F3B o F4A)
 - [x] `I18nProvider` di React Aria con `intlLocales` della lingua della route, nel chunk del desktop invece che nel root: il guscio statico e la 404 non dipendono dalla lingua di React Aria (test), ADR-0014
 - [x] **Caricamento separato del codice del desktop dopo il primo disegno** (ADR-0014): guscio statico prerenderizzato e desktop interattivo in un chunk dopo l'idratazione; icone da sprite SVG; indice dei componenti vietato nel sito (Oxlint). JS iniziale 117,8 kB, chunk del desktop 56,08 kB, componenti 85,12 kB (budget in PERFORMANCE_SEO.md)
 - [ ] Etichette del desktop con il carattere leggibile (alto contrasto, `data-font="readable"`): una parola più larga della cella va a capo con la sillabazione ("Compe-tenze"); verificare i testi definitivi delle icone a 320 px
 
 - [ ] Note dell'a11y-auditor (1B) da risolvere quando i componenti entrano nelle pagine:
-  - livello del titolo della Window (oggi `h2`, il contenuto parte da `h3`), insieme alla scelta `region`/`dialog`
+  - ~~livello del titolo della Window, insieme alla scelta `region`/`dialog`~~: risolto in 2A (ADR-0016: region, titolo non heading, contenuto da `h1` o `h2`)
   - corpo `document` della Window scorrevole da tastiera anche in Safari (riusare `ScrollArea`)
   - pulsante attivo della taskbar in alto contrasto distinto non solo dal grassetto; cerchio del Radio in `forced-colors`
   - testi troncati (StatusBar, titoli, taskbar, voci di menu larghe a 320 px) leggibili per intero; taskbar con molte finestre a 320 px (ADR-0007, F2B)

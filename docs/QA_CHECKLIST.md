@@ -19,6 +19,20 @@ npm run build:site && npm run preview   # http://localhost:4173 (npm run build s
 - [ ] Hover, pressione e focus dei controlli coerenti con lo stile 95.
 - [ ] Dalla F2: drag, resize, minimizza, massimizza, focus e ordine delle finestre.
 
+### 2.1 Desktop a finestre (dalla F2A, anche a 768 px)
+
+- [ ] Swap dal guscio statico al desktop interattivo: nessuno spostamento visibile, focus conservato.
+- [ ] Trascinamento a contorno dalla barra del titolo; Esc durante il gesto annulla. Ridimensionamento dalle otto maniglie fino alla misura minima; due gesti di seguito nello stesso punto.
+- [ ] Riduci, Ingrandisci, Ripristina, Chiudi dai pulsanti, dal doppio clic sulla barra e dalla taskbar (il pulsante della finestra attiva la riduce).
+- [ ] Menu della finestra dal pulsante icona e con Alt+Spazio e Alt+trattino (su Windows anche Chrome, Edge e Firefox: il sistema può intercettare Alt+Spazio); Sposta e Ridimensiona con le frecce, Invio ed Esc.
+- [ ] Selettore: pulsante Finestre e Alt+W, Maiusc+Alt+W, rilascio di Alt; pulsante Finestre non disponibile senza finestre.
+- [ ] Menu contestuale: tasto destro sullo sfondo e su un'icona, Maiusc+F10, tasto Menu; Disponi icone, Aggiorna, Proprietà.
+- [ ] Molte finestre aperte (almeno otto): restano tutte nell'area visibile.
+- [ ] Esegui: suggerimenti, frecce, nome sconosciuto con errore, Annulla torna su Start.
+- [ ] Spegni: Spegni porta al congedo (titolo della scheda «Spento · Gianpaolo Del Moro», focus su Riaccendi); Riavvia mostra lo schermo nero breve; Passa alla Vista semplice apre la finestra; nessuna ricarica della pagina.
+- [ ] Animazioni di apertura, chiusura e riduzione; nessuna con movimento ridotto.
+- [ ] Al tocco (Android reale, `preview -- --host`): trascinamento, maniglie da 44 px, pressione lunga di 500 ms per il menu contestuale, frecce di Sposta.
+
 ## 3. Mobile
 
 - [ ] 320×640 e 375×667 in verticale; 640×320 e 667×375 in orizzontale.
@@ -32,6 +46,7 @@ npm run build:site && npm run preview   # http://localhost:4173 (npm run build s
 - [ ] Tutto raggiungibile con Tab, Shift+Tab, frecce, Invio, Esc; focus sempre visibile.
 - [ ] Ordine del focus logico; nessuna trappola.
 - [ ] NVDA + Firefox (o VoiceOver + Safari): titoli, landmark, nomi dei controlli, annunci di finestre e form.
+- [ ] Dalla F2A: le finestre si leggono in modalità lettura (region con il nome del titolo); annunci di apertura, chiusura, riduzione e spostamento; il selettore legge la finestra scelta; Esegui legge suggerimenti ed errore.
 
 ## 5. Movimento e contrasto
 

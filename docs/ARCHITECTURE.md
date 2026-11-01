@@ -78,13 +78,17 @@ docs/                   documentazione, ADR, piani e retrospettive
 
 ## 4. Window manager (Fase 2A)
 
-Scritto da zero (ADR-0005):
+Scritto da zero (ADR-0005), in `src/features/desktop/` con lo store in `src/stores/desktop/` (ADR-0014 per il caricamento, ADR-0016 per l'accessibilità):
 
-- **Puntatore**: pointer events (`pointerdown/move/up` con `setPointerCapture`) per drag e resize, con lo stesso codice per mouse, penna e touch.
-- **Posizione**: variabili CSS inline (`--window-x`, `--window-y`, `--window-w`, `--window-h`), l'unico stile inline ammesso.
-- **Focus e z-index**: lo store tiene l'ordine delle finestre. La finestra attiva ha lo z-index più alto dentro `--z-window` e la titlebar attiva. Il focus da tastiera segue la finestra attiva.
-- **Comandi**: minimizza, massimizza e chiudi sono pulsanti React Aria. La tastiera offre scorciatoie stile 95, documentate in `ACCESSIBILITY.md`.
-- **Animazioni**: durate dai token, azzerate da reduced motion e dal Pannello di controllo.
+- **Guscio statico e desktop interattivo**: il prerender contiene `shell/` (solo HTML e CSS dei componenti); `app/DesktopApp` arriva in un chunk dopo l'idratazione e sostituisce il guscio con gli stessi CSS Modules, al pixel. Esegui, Spegni e il congedo stanno in chunk caricati all'apertura.
+- **Store** (Zustand, una factory per istanza): `windows` con `{ maximized, minimized, geometry, cascade }`, `stack` (ordine z), `recent` (ultimo uso, per il selettore e la taskbar), `activeId`, `viewport` (area utile, non serializzata). Funzioni pure in `state.ts` e `geometry.ts` (`clampGeometry`, `moveBy`, `resizeBy`), testate senza React. `geometry: null` vuol dire posizione predefinita dal CSS: niente numeri nel prerender.
+- **Area utile**: `useWorkspaceViewport` misura l'area di lavoro con un `ResizeObserver` e delle sonde CSS (larghezza minima, altezza minima, barra del titolo), così i limiti seguono la dimensione del testo. La barra del titolo resta sempre raggiungibile (`--window-keep-visible`).
+- **Puntatore**: `useWindowGestures` usa pointer events con `setPointerCapture`, soglia di 4 px e un aggiornamento per frame; durante il gesto si muove solo il `DragOutline`, e al rilascio c'è un solo `place` nello store. Esc o `pointercancel` annullano; `preventDefault` sul `pointerdown` evita selezione e trascinamento nativo. Trascinamento e maniglie esistono solo da 768 px; sotto, le finestre occupano l'area.
+- **Tastiera**: `useKeyboardGesture` per Sposta e Ridimensiona dal menu della finestra; `shortcuts.ts` per le scorciatoie globali (ACCESSIBILITY.md §2).
+- **Posizione**: variabili CSS inline (`--window-x`, `--window-y`, `--window-w`, `--window-h`, `--window-z`, `--window-cascade`), l'unico stile inline ammesso. Le finestre non posizionate stanno al centro dell'area con uno spostamento a cascata limitato allo spazio libero (l'area di lavoro è un container CSS).
+- **Focus e z-index**: la finestra attiva ha lo z-index più alto dentro `--z-window`; il corpo delle altre è `inert`. Il focus segue le regole di ADR-0016 §4.
+- **Animazioni**: apertura, chiusura e riduzione con `transform` e `opacity` e le durate dei token; chiusura e riduzione aspettano la fine dell'animazione di uscita (con un timer di riserva) e sono immediate con durata 0.
+- **Accensione**: `DesktopApp` tiene lo stato acceso, spento o in riavvio; Riaccendi e Riavvia montano un desktop nuovo con uno store vuoto, senza ricaricare la pagina.
 
 ## 5. Stato e sincronizzazione con l'URL (Fase 2B)
 
