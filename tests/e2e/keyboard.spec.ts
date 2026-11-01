@@ -29,12 +29,13 @@ test("il collegamento della lingua si raggiunge e si attiva da tastiera", async 
   await expect(page).toHaveURL("/en/");
 });
 
-for (const [path, name] of [
-  ["/", "Salta al contenuto"],
-  ["/pagina-inesistente", "Torna alla home"],
+for (const [path, name, hasDesktop] of [
+  ["/", "Salta al contenuto", true],
+  ["/pagina-inesistente", "Torna alla home", false],
 ] as const) {
   test(`il focus da tastiera su ${path} è un doppio anello`, async ({ page }) => {
-    await openPage(page, path);
+    if (hasDesktop) await openDesktop(page, path);
+    else await openPage(page, path);
     await page.keyboard.press("Tab");
     const link = page.getByRole("link", { name });
     await expect(link).toBeFocused();

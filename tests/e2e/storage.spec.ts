@@ -7,6 +7,7 @@ test("il sito scrive solo lo storage tecnico elencato in LEGAL.md", async ({ pag
   await openDesktop(page);
   await page.getByRole("button", { name: "Start" }).click();
   await page.getByRole("menuitem", { name: "CV" }).click();
+  await expect(page).toHaveURL(/\/cv\/$/);
   await page.getByRole("link", { name: "EN, English version" }).click();
   await expect(page).toHaveURL(/\/en\/cv\/$/);
   await page.goBack();

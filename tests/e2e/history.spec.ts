@@ -77,6 +77,7 @@ test.describe("URL e history delle finestre", () => {
     await markNoReload(page);
     await page.getByRole("button", { name: "Start" }).click();
     await page.getByRole("menuitem", { name: "CV" }).click();
+    await expect(page).toHaveURL(/\/cv\/$/);
     await page.getByRole("link", { name: "EN, English version" }).click();
     await expect(page).toHaveURL(/\/en\/cv\/$/);
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
