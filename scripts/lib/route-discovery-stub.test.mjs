@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   exportedNames,
+  routeDiscoveryStub,
   routeDiscoveryExports,
   routeDiscoveryModule,
   stubRouteDiscovery,
@@ -46,5 +47,17 @@ describe("stub della route discovery di React Router", () => {
 
   it("il sito non attiva la custom route discovery", () => {
     expect(config).not.toMatch(/unstable_customRouteDiscovery/);
+  });
+
+  it("la build si ferma se il modulo non passa mai dallo stub", () => {
+    const missing = routeDiscoveryStub();
+    expect(
+      missing.transform("export const x = 1;", "/x/react-router/dist/production/index.js"),
+    ).toBeNull();
+    expect(() => missing.buildEnd(undefined)).toThrow(/non è passato dallo stub/);
+    const ok = routeDiscoveryStub();
+    expect(ok.transform(original, production)).toBe(stubSource);
+    expect(() => ok.buildEnd(undefined)).not.toThrow();
+    expect(() => missing.buildEnd(new Error("altro"))).not.toThrow();
   });
 });

@@ -4,7 +4,8 @@
 // nel JS iniziale per una funzione che il sito non usa (routeDiscovery:
 // "initial", nessun flag). Nella build del client il modulo diventa uno stub
 // che fallisce in modo esplicito se il flag venisse attivato. Se una versione
-// futura cambia gli export del modulo, la build si ferma: lo stub va rivisto.
+// futura cambia gli export del modulo, o se il modulo non passa mai dallo
+// stub (spostato o accorpato), la build si ferma: lo stub va rivisto.
 
 export const routeDiscoveryModule =
   /[\\/]react-router[\\/]dist[\\/]production[\\/]lib[\\/]dom[\\/]ssr[\\/]route-discovery\.js$/;
@@ -56,6 +57,7 @@ export function stubRouteDiscovery(code, id) {
 }
 
 export function routeDiscoveryStub() {
+  let applied = false;
   return {
     name: "route-discovery-stub",
     apply: /** @type {const} */ ("build"),
@@ -66,7 +68,17 @@ export function routeDiscoveryStub() {
      * @param {string} id
      */
     transform(code, id) {
-      return stubRouteDiscovery(code, id);
+      const stub = stubRouteDiscovery(code, id);
+      if (stub !== null) applied = true;
+      return stub;
+    },
+    /** @param {Error | undefined} error */
+    buildEnd(error) {
+      if (!error && !applied) {
+        throw new Error(
+          "route-discovery.js di React Router non è passato dallo stub: il modulo è cambiato, rivedi scripts/lib/route-discovery-stub.mjs",
+        );
+      }
     },
   };
 }
