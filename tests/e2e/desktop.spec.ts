@@ -116,4 +116,43 @@ test.describe("desktop dopo l'idratazione", () => {
       "true",
     );
   });
+
+  test("dopo l'idratazione i link di About aprono le finestre senza cambiare URL", async ({
+    page,
+  }) => {
+    await openDesktop(page);
+    await page.getByRole("link", { name: "Vedere i progetti" }).click();
+    await expect(page.getByRole("region", { name: "Progetti" })).toHaveAttribute(
+      "data-active",
+      "true",
+    );
+    await expect(page.getByRole("region", { name: "About" })).toBeVisible();
+    expect(new URL(page.url()).pathname).toBe("/");
+  });
+
+  test("se il chunk di Esegui non si carica il desktop resta usabile e lo annuncia", async ({
+    page,
+    consoleErrors,
+  }) => {
+    await page.route(/\/assets\/RunDialog-[^/]+\.js$/, (route) => route.abort());
+    await openDesktop(page);
+    await page.getByRole("button", { name: "Start" }).click();
+    await page.getByRole("menuitem", { name: "Esegui…" }).click();
+    await expect(page.locator("main [aria-live=polite]")).toHaveText(
+      "Non riesco ad aprire questa finestra: ricarica la pagina.",
+    );
+    await expect(page.getByRole("button", { name: "Start" })).toBeFocused();
+    await expect(page.getByRole("region", { name: "About" })).toBeVisible();
+    // Gli errori del chunk bloccato sono quelli che il test provoca: si tolgono
+    // solo questi, ogni altro errore in console fa ancora fallire il test.
+    // Firefox mostra l'errore che React registra per l'error boundary come
+    // "JSHandle@object".
+    const expected = /RunDialog|net::ERR_FAILED|Importing a module script failed|JSHandle@object/;
+    expect(consoleErrors.some((error) => expected.test(error))).toBe(true);
+    consoleErrors.splice(
+      0,
+      consoleErrors.length,
+      ...consoleErrors.filter((error) => !expected.test(error)),
+    );
+  });
 });

@@ -62,6 +62,35 @@ describe("DesktopApp", () => {
     await user.click(screen.getByRole("region", { name: "About" }));
     expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
     expect(document.getElementById("window-about-body")).not.toHaveAttribute("inert");
+    await waitFor(() => expect(document.getElementById("window-about-body")).toHaveFocus());
+  });
+
+  it("i link di About aprono la finestra dell'app senza cambiare pagina", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    const link = screen.getByRole("link", { name: "Vedere i progetti" });
+    expect(link).toHaveAttribute("href", "/progetti/");
+    await user.click(link);
+    expect(screen.getByRole("region", { name: "Progetti" })).toHaveAttribute("data-active", "true");
+    expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
+    await waitFor(() => expect(document.getElementById("window-projects-body")).toHaveFocus());
+  });
+
+  it("i pulsanti della barra delle finestre inattive escono dall'ordine di Tab", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    const about = screen.getByRole("region", { name: "About" });
+    const cv = screen.getByRole("region", { name: "CV" });
+    for (const button of within(about).getAllByRole("button")) {
+      expect(button).toHaveAttribute("tabindex", "-1");
+    }
+    for (const button of within(cv).getAllByRole("button")) {
+      expect(button).not.toHaveAttribute("tabindex", "-1");
+    }
+    await user.click(within(about).getByRole("button", { name: "Chiudi" }));
+    expect(screen.queryByRole("region", { name: "About" })).toBeNull();
   });
 
   it("chiudendo una finestra attiva la successiva e, se non resta nulla, porta il focus alle icone", async () => {
@@ -91,7 +120,7 @@ describe("DesktopApp", () => {
     renderDesktop("/");
     await user.click(screen.getByRole("button", { name: "Riduci a icona" }));
     expect(screen.queryByRole("region", { name: "About" })).not.toBeInTheDocument();
-    const button = screen.getByRole("button", { name: "About, ridotta a icona" });
+    const button = screen.getByRole("button", { name: "About, finestra ridotta a icona" });
     expect(button).toHaveFocus();
     expect(button).toHaveAttribute("aria-pressed", "false");
     await user.click(button);
@@ -154,7 +183,7 @@ describe("DesktopApp", () => {
     await user.keyboard("{ArrowRight}{ArrowRight}{Shift>}{ArrowDown}{/Shift}{Enter}");
     expect(about.style.getPropertyValue("--window-x")).toBe("16px");
     expect(about.style.getPropertyValue("--window-y")).toBe("32px");
-    expect(screen.getByText("About: spostata")).toBeInTheDocument();
+    expect(screen.getByText("About: finestra spostata")).toBeInTheDocument();
     expect(screen.queryByRole("group", { name: "Spostamento e ridimensionamento" })).toBeNull();
     expect(document.getElementById("window-about-body")).toHaveFocus();
   });
@@ -181,7 +210,7 @@ describe("DesktopApp", () => {
     await user.click(screen.getByRole("button", { name: "OK" }));
     expect(about.style.getPropertyValue("--window-w")).toBe("8px");
     expect(about.style.getPropertyValue("--window-h")).toBe("8px");
-    expect(screen.getByText("About: ridimensionata")).toBeInTheDocument();
+    expect(screen.getByText("About: finestra ridimensionata")).toBeInTheDocument();
   });
 
   it("Alt+Spazio e Alt+trattino aprono il menu della finestra attiva, non nei campi di testo", async () => {
@@ -211,7 +240,10 @@ describe("DesktopApp", () => {
     const windows = screen.getByRole("button", { name: "Finestre aperte (Alt+W)" });
     await user.click(windows);
     const dialog = await screen.findByRole("dialog", { name: "Finestre aperte" });
-    expect(within(dialog).getByRole("status")).toHaveTextContent("About");
+    expect(within(dialog).getByRole("option", { name: "About" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
     expect(windows).toHaveAttribute("aria-expanded", "true");
     await user.click(within(dialog).getByRole("option", { name: "About" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
@@ -227,11 +259,20 @@ describe("DesktopApp", () => {
     await user.click(screen.getByRole("menuitem", { name: "Skills" }));
     await user.keyboard("{Alt>}w");
     const dialog = await screen.findByRole("dialog", { name: "Finestre aperte" });
-    expect(within(dialog).getByRole("status")).toHaveTextContent("CV");
+    expect(within(dialog).getByRole("option", { name: "CV" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
     await user.keyboard("w");
-    expect(within(dialog).getByRole("status")).toHaveTextContent("About");
+    expect(within(dialog).getByRole("option", { name: "About" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
     await user.keyboard("{Shift>}w{/Shift}");
-    expect(within(dialog).getByRole("status")).toHaveTextContent("CV");
+    expect(within(dialog).getByRole("option", { name: "CV" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
     await user.keyboard("{/Alt}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
@@ -266,6 +307,11 @@ describe("DesktopApp", () => {
     await user.type(field, "xyz{Enter}");
     expect(field).toHaveAccessibleDescription(
       'Non trovo "xyz". Prova con progetti, cv o contatti.',
+    );
+    await waitFor(() =>
+      expect(document.querySelector("main [aria-live=polite]")).toHaveTextContent(
+        'Non trovo "xyz". Prova con progetti, cv o contatti.',
+      ),
     );
     await user.clear(field);
     await user.type(field, "progetti{Enter}");

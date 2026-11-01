@@ -18,9 +18,11 @@ export function Desktop() {
 
   useEffect(() => {
     let live = true;
-    void desktopApp?.then((App) => {
-      if (live) startTransition(() => setSwap({ App, focus: null, isReady: false }));
-    });
+    void desktopApp
+      ?.then((App) => {
+        if (live) startTransition(() => setSwap({ App, focus: null, isReady: false }));
+      })
+      .catch(() => undefined);
     return () => {
       live = false;
     };

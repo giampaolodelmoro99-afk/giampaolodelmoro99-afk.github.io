@@ -26,5 +26,6 @@
 }
 
 .trigger[aria-expanded="true"] {
-  background: var(--color-selection);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-pressed);
 }

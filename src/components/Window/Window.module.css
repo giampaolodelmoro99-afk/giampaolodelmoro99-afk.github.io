@@ -78,6 +78,7 @@
   flex: 1;
   min-block-size: 0;
   padding: var(--space-3);
+  overflow: auto;
 }
 
 .document {

@@ -33,6 +33,8 @@ import {
 import { appDefinition, desktopApps, startMenuApps, startMenuSystemApps } from "../apps";
 import styles from "../Desktop.module.css";
 import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
+import { OpenAppContext } from "../content/openAppContext";
+import { ChunkBoundary } from "./ChunkBoundary";
 import { DesktopWindow, type WindowExit } from "./DesktopWindow";
 import { resolveCommand } from "../run";
 import { isApplePlatform, isTextEntry, matchShortcut } from "../shortcuts";
@@ -74,21 +76,35 @@ function focusStart() {
   requestAnimationFrame(() => document.querySelector<HTMLElement>(`.${styles.start}`)?.focus());
 }
 
-const RunDialog = lazy(() =>
-  import("../../../components/RunDialog").then((module) => ({ default: module.RunDialog })),
-);
+const loadRunDialog = () => import("../../../components/RunDialog");
+const loadShutdownDialog = () => import("../../../components/ShutdownDialog");
+const loadFarewellScreen = () => import("../../../components/FarewellScreen");
+
+const RunDialog = lazy(() => loadRunDialog().then((module) => ({ default: module.RunDialog })));
 
 const ShutdownDialog = lazy(() =>
-  import("../../../components/ShutdownDialog").then((module) => ({
-    default: module.ShutdownDialog,
-  })),
+  loadShutdownDialog().then((module) => ({ default: module.ShutdownDialog })),
 );
 
 const FarewellScreen = lazy(() =>
-  import("../../../components/FarewellScreen").then((module) => ({
-    default: module.FarewellScreen,
-  })),
+  loadFarewellScreen().then((module) => ({ default: module.FarewellScreen })),
 );
+
+function usePrefetchDialogs() {
+  useEffect(() => {
+    const prefetch = () => {
+      void Promise.all([loadRunDialog(), loadShutdownDialog(), loadFarewellScreen()]).catch(
+        () => undefined,
+      );
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      const handle = window.requestIdleCallback(prefetch);
+      return () => window.cancelIdleCallback(handle);
+    }
+    const timer = window.setTimeout(prefetch, 1);
+    return () => window.clearTimeout(timer);
+  }, []);
+}
 
 type Power = "on" | "off" | "restarting";
 
@@ -109,6 +125,7 @@ export function DesktopApp(props: DesktopAppProps) {
 
 function DesktopPower({ routeKey, onReady }: DesktopAppProps) {
   const t = useT();
+  usePrefetchDialogs();
   const [power, setPower] = useState<Power>("on");
   const [boot, setBoot] = useState(0);
   const turnOn = useCallback(() => {
@@ -128,15 +145,17 @@ function DesktopPower({ routeKey, onReady }: DesktopAppProps) {
   if (power === "restarting") return <PowerOff onDone={turnOn} />;
   if (power === "off") {
     return (
-      <Suspense fallback={<div className={styles.powerOff} />}>
-        <FarewellScreen
-          heading={t.desktop.farewell.heading}
-          message={t.desktop.farewell.message}
-          restartLabel={t.desktop.farewell.restart}
-          footer={new URL(siteUrl).host}
-          onRestart={turnOn}
-        />
-      </Suspense>
+      <ChunkBoundary onError={turnOn}>
+        <Suspense fallback={<div className={styles.powerOff} />}>
+          <FarewellScreen
+            heading={t.desktop.farewell.heading}
+            message={t.desktop.farewell.message}
+            restartLabel={t.desktop.farewell.restart}
+            footer={new URL(siteUrl).host}
+            onRestart={turnOn}
+          />
+        </Suspense>
+      </ChunkBoundary>
     );
   }
   return (
@@ -245,9 +264,23 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
 
   const openApp = (id: Key) => {
     if (!isAppId(id)) return;
+    if (exiting?.id === id) {
+      afterExit.current = null;
+      setExiting(null);
+    }
     if (!store.getState().windows[id]) announce(appName(id, t.desktop.announce.opened));
     open(id);
     setFocusRequest({ target: windowBodyId(id) });
+  };
+
+  const activate = (id: AppId) => {
+    if (id === store.getState().activeId) return;
+    focus(id);
+    requestAnimationFrame(() => {
+      if (document.activeElement === document.body) {
+        document.getElementById(windowBodyId(id))?.focus();
+      }
+    });
   };
 
   const minimizeApp = (id: AppId) => {
@@ -290,7 +323,7 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
   const recent = useStore(store, (state) => state.recent);
   const [switcher, setSwitcher] = useState<Switcher | null>(null);
   const [isApple] = useState(isApplePlatform);
-  const altShortcut = `${isApple ? "Option" : "Alt"}+W`;
+  const altShortcut = `${isApple ? t.desktop.optionKey : t.desktop.altKey}W`;
 
   const activateFromSwitcher = (id: string) => {
     setSwitcher(null);
@@ -308,9 +341,13 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
     });
   };
 
+  const [contextMenu, setContextMenu] = useDesktopContextMenu(workspace, isDesktopLayout);
+  const [isRunOpen, setRunOpen] = useState(false);
+  const [isShutdownOpen, setShutdownOpen] = useState(false);
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (isTextEntry(event.target)) return;
+      if (isTextEntry(event.target) || isRunOpen || isShutdownOpen || contextMenu) return;
       const action = matchShortcut(event);
       if (!action) return;
       if (action === "windowMenu") {
@@ -340,9 +377,11 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
     };
   });
 
-  const [contextMenu, setContextMenu] = useDesktopContextMenu(workspace, isDesktopLayout);
-  const [isRunOpen, setRunOpen] = useState(false);
-  const [isShutdownOpen, setShutdownOpen] = useState(false);
+  const dialogFailed = (setOpen: (isOpen: boolean) => void) => {
+    setOpen(false);
+    announce(t.desktop.loadFailed);
+    focusStart();
+  };
 
   const confirmShutdown = (choice: ShutdownChoice) => {
     setShutdownOpen(false);
@@ -362,7 +401,11 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
 
   const runCommand = (command: string) => {
     const id = resolveCommand(command);
-    if (!id) return t.desktop.runNotFound.replace("{command}", command.trim());
+    if (!id) {
+      const problem = t.desktop.runNotFound.replace("{command}", command.trim());
+      announce(problem);
+      return problem;
+    }
     ranCommand.current = true;
     openApp(id);
     return null;
@@ -379,8 +422,10 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
     if (key === "open" && iconId) openApp(iconId);
     else if (key === "byName") setIconOrder("name");
     else if (key === "byType" || key === "lineUp") setIconOrder("type");
-    else if (key === "refresh") setIconsVersion((version) => version + 1);
-    else if (key === "controlPanel" || key === "properties") openApp("controlPanel");
+    else if (key === "refresh") {
+      setIconsVersion((version) => version + 1);
+      setFocusRequest({ target: desktopIconsId });
+    } else if (key === "controlPanel" || key === "properties") openApp("controlPanel");
   };
 
   const outline = gestures.outline ?? keyboard.gesture?.current ?? null;
@@ -396,132 +441,138 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
       >
         {t.desktop.skipLink}
       </a>
-      <main
-        className={styles.workspace}
-        ref={(element) => {
-          workspaceRef(element);
-          setWorkspace(element);
-        }}
-      >
-        <div className={styles.metrics} ref={metricsRef} aria-hidden="true">
-          <span data-metric="window" />
-          <span data-metric="titlebar" />
-        </div>
-        <div className={styles.iconArea} ref={iconsReady}>
-          <DesktopIcons
-            key={iconsVersion}
-            id={desktopIconsId}
-            label={t.desktop.iconsLabel}
-            items={icons}
-            onAction={openApp}
-            className={styles.icons}
-          />
-        </div>
-        {Object.values(windows).map((window) =>
-          window.minimized ? null : (
-            <DesktopWindow
-              key={window.id}
-              window={window}
-              animateIn={!initialIds.has(window.id)}
-              exit={exiting?.id === window.id ? exiting.kind : null}
-              onExited={finishExit}
-              zIndex={stack.indexOf(window.id)}
-              isActive={window.id === activeId}
-              isResizing={gestures.resizing === window.id}
-              headingLevel={window.id === routeApp ? 1 : 2}
-              onActivate={focus}
-              onMinimize={minimizeApp}
-              onToggleMaximize={toggleMaximize}
-              onClose={closeApp}
-              isMenuOpen={menuOpenFor === window.id}
-              onMenuOpenChange={(id, isOpen) => setMenuOpenFor(isOpen ? id : null)}
-              onMenuAction={menuAction}
-              onGestureStart={(id, edge, event, frame) => {
-                focus(id);
-                gestures.start(id, edge, event, frame);
-              }}
-            />
-          ),
-        )}
-        {outline && <DragOutline rect={outline} />}
-        {keyboard.gesture && (
-          <div ref={controls} className={styles.moveControls}>
-            <MoveControls
-              onStep={(direction) => keyboard.step(direction)}
-              onConfirm={keyboard.confirm}
-              onCancel={keyboard.cancel}
+      <OpenAppContext value={openApp}>
+        <main
+          className={styles.workspace}
+          ref={(element) => {
+            workspaceRef(element);
+            setWorkspace(element);
+          }}
+        >
+          <div className={styles.metrics} ref={metricsRef} aria-hidden="true">
+            <span data-metric="window" />
+            <span data-metric="titlebar" />
+          </div>
+          <div className={styles.iconArea} ref={iconsReady}>
+            <DesktopIcons
+              key={iconsVersion}
+              id={desktopIconsId}
+              label={t.desktop.iconsLabel}
+              items={icons}
+              onAction={openApp}
+              className={styles.icons}
             />
           </div>
-        )}
-        {region}
-        {isRunOpen && (
-          <Suspense fallback={null}>
-            <RunDialog
+          {Object.values(windows).map((window) =>
+            window.minimized ? null : (
+              <DesktopWindow
+                key={window.id}
+                window={window}
+                animateIn={!initialIds.has(window.id)}
+                exit={exiting?.id === window.id ? exiting.kind : null}
+                onExited={finishExit}
+                zIndex={stack.indexOf(window.id)}
+                isActive={window.id === activeId}
+                isResizing={gestures.resizing === window.id}
+                headingLevel={window.id === routeApp ? 1 : 2}
+                onActivate={activate}
+                onMinimize={minimizeApp}
+                onToggleMaximize={toggleMaximize}
+                onClose={closeApp}
+                isMenuOpen={menuOpenFor === window.id}
+                onMenuOpenChange={(id, isOpen) => setMenuOpenFor(isOpen ? id : null)}
+                onMenuAction={menuAction}
+                onGestureStart={(id, edge, event, frame) => {
+                  activate(id);
+                  gestures.start(id, edge, event, frame);
+                }}
+              />
+            ),
+          )}
+          {outline && <DragOutline rect={outline} />}
+          {keyboard.gesture && (
+            <div ref={controls} className={styles.moveControls}>
+              <MoveControls
+                onStep={(direction) => keyboard.step(direction)}
+                onConfirm={keyboard.confirm}
+                onCancel={keyboard.cancel}
+              />
+            </div>
+          )}
+          {region}
+          {isRunOpen && (
+            <ChunkBoundary onError={() => dialogFailed(setRunOpen)}>
+              <Suspense fallback={null}>
+                <RunDialog
+                  isOpen
+                  onOpenChange={(isOpen) => {
+                    if (isOpen) return;
+                    setRunOpen(false);
+                    if (!ranCommand.current) focusStart();
+                  }}
+                  suggestions={startMenuApps
+                    .concat(startMenuSystemApps)
+                    .map((id) => ({ id, label: t.apps[id] }))}
+                  onRun={runCommand}
+                />
+              </Suspense>
+            </ChunkBoundary>
+          )}
+          {isShutdownOpen && (
+            <ChunkBoundary onError={() => dialogFailed(setShutdownOpen)}>
+              <Suspense fallback={null}>
+                <ShutdownDialog
+                  isOpen
+                  onOpenChange={(isOpen) => {
+                    if (isOpen) return;
+                    setShutdownOpen(false);
+                    focusStart();
+                  }}
+                  onConfirm={confirmShutdown}
+                />
+              </Suspense>
+            </ChunkBoundary>
+          )}
+          {contextMenu && (
+            <ContextMenu
               isOpen
               onOpenChange={(isOpen) => {
-                if (isOpen) return;
-                setRunOpen(false);
-                if (!ranCommand.current) focusStart();
+                if (!isOpen) setContextMenu(null);
               }}
-              suggestions={startMenuApps
-                .concat(startMenuSystemApps)
-                .map((id) => ({ id, label: t.apps[id] }))}
-              onRun={runCommand}
-            />
-          </Suspense>
-        )}
-        {isShutdownOpen && (
-          <Suspense fallback={null}>
-            <ShutdownDialog
-              isOpen
-              onOpenChange={(isOpen) => {
-                if (isOpen) return;
-                setShutdownOpen(false);
-                focusStart();
-              }}
-              onConfirm={confirmShutdown}
-            />
-          </Suspense>
-        )}
-        {contextMenu && (
-          <ContextMenu
-            isOpen
+              x={contextMenu.x}
+              y={contextMenu.y}
+              label={t.desktop.contextMenu.label}
+              onAction={contextAction}
+            >
+              {contextMenu.iconId && <MenuItem id="open">{t.desktop.contextMenu.open}</MenuItem>}
+              {contextMenu.iconId && <MenuSeparator />}
+              <Submenu label={t.desktop.contextMenu.arrange} onAction={contextAction}>
+                <MenuItem id="byName">{t.desktop.contextMenu.byName}</MenuItem>
+                <MenuItem id="byType">{t.desktop.contextMenu.byType}</MenuItem>
+                <MenuItem id="lineUp">{t.desktop.contextMenu.lineUp}</MenuItem>
+              </Submenu>
+              <MenuItem id="refresh">{t.desktop.contextMenu.refresh}</MenuItem>
+              <MenuSeparator />
+              <MenuItem id="controlPanel">{t.apps.controlPanel}</MenuItem>
+              <MenuSeparator />
+              <MenuItem id="properties">{t.desktop.contextMenu.properties}</MenuItem>
+            </ContextMenu>
+          )}
+          <WindowSwitcher
+            isOpen={switcher !== null}
             onOpenChange={(isOpen) => {
-              if (!isOpen) setContextMenu(null);
+              if (!isOpen) setSwitcher(null);
             }}
-            x={contextMenu.x}
-            y={contextMenu.y}
-            label={t.desktop.contextMenu.label}
-            onAction={contextAction}
-          >
-            {contextMenu.iconId && <MenuItem id="open">{t.desktop.contextMenu.open}</MenuItem>}
-            {contextMenu.iconId && <MenuSeparator />}
-            <Submenu label={t.desktop.contextMenu.arrange} onAction={contextAction}>
-              <MenuItem id="byName">{t.desktop.contextMenu.byName}</MenuItem>
-              <MenuItem id="byType">{t.desktop.contextMenu.byType}</MenuItem>
-              <MenuItem id="lineUp">{t.desktop.contextMenu.lineUp}</MenuItem>
-            </Submenu>
-            <MenuItem id="refresh">{t.desktop.contextMenu.refresh}</MenuItem>
-            <MenuSeparator />
-            <MenuItem id="controlPanel">{t.apps.controlPanel}</MenuItem>
-            <MenuSeparator />
-            <MenuItem id="properties">{t.desktop.contextMenu.properties}</MenuItem>
-          </ContextMenu>
-        )}
-        <WindowSwitcher
-          isOpen={switcher !== null}
-          onOpenChange={(isOpen) => {
-            if (!isOpen) setSwitcher(null);
-          }}
-          items={recent.map((id) => ({ id, label: t.apps[id], icon: appDefinition(id).icon }))}
-          selectedId={switcher?.selected ?? null}
-          onSelectionChange={(id) => {
-            if (isAppId(id)) setSwitcher((current) => current && { ...current, selected: id });
-          }}
-          onActivate={activateFromSwitcher}
-          hint={<ShortcutText text={t.desktop.switcherHint} isApple={isApple} />}
-        />
-      </main>
+            items={recent.map((id) => ({ id, label: t.apps[id], icon: appDefinition(id).icon }))}
+            selectedId={switcher?.selected ?? null}
+            onSelectionChange={(id) => {
+              if (isAppId(id)) setSwitcher((current) => current && { ...current, selected: id });
+            }}
+            onActivate={activateFromSwitcher}
+            hint={<ShortcutText text={t.desktop.switcherHint} isApple={isApple} />}
+          />
+        </main>
+      </OpenAppContext>
       <Taskbar
         label={t.desktop.taskbarLabel}
         className={styles.taskbar}
@@ -580,7 +631,7 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
             icon={appDefinition(id).icon}
             isSelected={id === activeId}
             onChange={() => pressTaskbarButton(id)}
-            {...(minimized ? { "aria-label": `${t.apps[id]}, ${t.desktop.minimizedSuffix}` } : {})}
+            {...(minimized ? { "aria-label": appName(id, t.desktop.minimizedLabel) } : {})}
           >
             {t.apps[id]}
           </TaskbarButton>

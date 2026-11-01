@@ -29,6 +29,12 @@ const viewport: Viewport = {
 const three = (): DesktopState => open(open(open(emptyState, "about"), "projects"), "terminal");
 
 describe("stato del desktop", () => {
+  it("focus sulla finestra già attiva e in cima non cambia lo stato", () => {
+    const state = three();
+    expect(focus(state, "terminal")).toBe(state);
+    expect(focus(state, "about")).not.toBe(state);
+  });
+
   it("parte dall'URL: About sulla home, l'app della route altrove", () => {
     expect(openAppFor("desktop")).toBe("about");
     expect(initialStateFor("desktop")).toMatchObject({

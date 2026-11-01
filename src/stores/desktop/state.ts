@@ -56,6 +56,7 @@ function update(state: DesktopState, id: AppId, change: Partial<WindowState>): D
 export function focus(state: DesktopState, id: AppId): DesktopState {
   const window = state.windows[id];
   if (!window) return state;
+  if (state.activeId === id && !window.minimized && state.stack.at(-1) === id) return state;
   const restored = window.minimized ? update(state, id, { minimized: false }) : state;
   return {
     ...restored,

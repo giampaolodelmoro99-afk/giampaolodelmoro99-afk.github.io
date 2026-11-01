@@ -1,4 +1,10 @@
-import { type CSSProperties, type ReactNode, type RefCallback, useId } from "react";
+import {
+  type ButtonHTMLAttributes,
+  type CSSProperties,
+  type ReactNode,
+  type RefCallback,
+  useId,
+} from "react";
 import { Button } from "react-aria-components/Button";
 import { cx } from "../cx";
 import { Glyph, Icon, type SmallIconName } from "../Icon";
@@ -35,6 +41,10 @@ export type WindowProps = {
 };
 
 const allControls: WindowControl[] = ["minimize", "maximize", "close"];
+
+function outOfTabOrder(props: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return <button {...props} tabIndex={-1} />;
+}
 
 export function Window({
   title,
@@ -104,6 +114,7 @@ export function Window({
                   aria-label={label}
                   className={cx(styles.control, control === "close" && styles.close)}
                   {...(onPress ? { onPress } : {})}
+                  {...(isActive ? {} : { render: outOfTabOrder })}
                 >
                   <Glyph name={glyph} />
                 </Button>

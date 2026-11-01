@@ -1,4 +1,4 @@
-import { type Key, useEffect, useState } from "react";
+import { type ButtonHTMLAttributes, type Key, useEffect, useState } from "react";
 import { Button } from "react-aria-components/Button";
 import { MenuTrigger } from "react-aria-components/Menu";
 import { cx } from "../cx";
@@ -15,6 +15,7 @@ export type WindowMenuProps = {
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   onAction: (action: WindowMenuAction) => void;
+  isInTabOrder?: boolean;
   className?: string | undefined;
 };
 
@@ -29,12 +30,17 @@ const actions: readonly WindowMenuAction[] = [
 
 const isAction = (key: Key): key is WindowMenuAction => actions.some((action) => action === key);
 
+function outOfTabOrder(props: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return <button {...props} tabIndex={-1} />;
+}
+
 export function WindowMenu({
   icon,
   isMaximized = false,
   isOpen,
   onOpenChange,
   onAction,
+  isInTabOrder = true,
   className,
 }: WindowMenuProps) {
   const strings = useUiStrings().windowMenu;
@@ -56,7 +62,11 @@ export function WindowMenu({
       {...(isOpen === undefined ? {} : { isOpen })}
       {...(onOpenChange ? { onOpenChange } : {})}
     >
-      <Button aria-label={strings.label} className={cx(styles.trigger, className)}>
+      <Button
+        aria-label={strings.label}
+        className={cx(styles.trigger, className)}
+        {...(isInTabOrder ? {} : { render: outOfTabOrder })}
+      >
         <Icon name={icon} size={16} />
       </Button>
       <MenuPopover placement="bottom start">

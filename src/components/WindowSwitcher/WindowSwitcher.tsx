@@ -79,9 +79,9 @@ export function WindowSwitcher({
               </ListBoxItem>
             )}
           </ListBox>
-          <output aria-live="polite" className={styles.name}>
+          <p aria-hidden="true" className={styles.name}>
             {selected?.label}
-          </output>
+          </p>
           {hint && <p className={styles.hint}>{hint}</p>}
         </Dialog>
       </Modal>

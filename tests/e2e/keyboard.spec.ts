@@ -91,7 +91,7 @@ test("Alt+W apre il selettore delle finestre e il rilascio di Alt attiva la scel
   await page.keyboard.press("w");
   const dialog = page.getByRole("dialog", { name: "Finestre aperte" });
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole("status")).toHaveText("About");
+  await expect(dialog.getByRole("option", { name: "About" })).toBeFocused();
   await page.keyboard.up("Alt");
   await expect(dialog).toBeHidden();
   await expect(page.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");

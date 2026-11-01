@@ -136,7 +136,7 @@ test.describe("finestre: trascinamento", () => {
     const after = await about.boundingBox();
     expect(after?.x).toBeCloseTo((before?.x ?? 0) + 8, 0);
     expect(after?.y).toBeCloseTo((before?.y ?? 0) + 32, 0);
-    await expect(page.getByText("About: spostata")).toBeAttached();
+    await expect(page.getByText("About: finestra spostata")).toBeAttached();
   });
 
   test("Ridimensiona con le frecce sullo schermo", async ({ page }) => {

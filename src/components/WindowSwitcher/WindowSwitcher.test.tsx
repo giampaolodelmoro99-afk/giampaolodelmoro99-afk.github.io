@@ -41,7 +41,8 @@ describe("WindowSwitcher", () => {
       "aria-selected",
       "true",
     );
-    expect(within(dialog).getByRole("status")).toHaveTextContent("Progetti");
+    expect(dialog.querySelector("p[aria-hidden=true]")).toHaveTextContent("Progetti");
+    expect(dialog.querySelector("[aria-live], output, [role=status]")).toBeNull();
     expect(within(dialog).getByText("Alt+W avanza")).toBeInTheDocument();
     await waitFor(() =>
       expect(within(list).getByRole("option", { name: "Progetti" })).toHaveFocus(),
@@ -54,9 +55,10 @@ describe("WindowSwitcher", () => {
     render(<Switcher onActivate={onActivate} />);
     await waitFor(() => expect(screen.getByRole("option", { name: "Progetti" })).toHaveFocus());
     await user.keyboard("{ArrowRight}");
-    expect(screen.getByRole("status")).toHaveTextContent("CV");
+    expect(screen.getByRole("option", { name: "CV" })).toHaveFocus();
+    expect(screen.getByRole("dialog").querySelector("p[aria-hidden=true]")).toHaveTextContent("CV");
     await user.keyboard("{Home}");
-    expect(screen.getByRole("status")).toHaveTextContent("About");
+    expect(screen.getByRole("option", { name: "About" })).toHaveFocus();
     await user.keyboard("{Enter}");
     expect(onActivate).toHaveBeenCalledWith("about");
   });

@@ -45,9 +45,11 @@ export function RunDialog({ isOpen, onOpenChange, suggestions, onRun, className 
     command.trim() !== "" && suggestions.some((item) => matches(item.label, command));
 
   const run = (text: string) => {
+    if (text.trim() === "") return;
     const problem = onRun(text);
     setError(problem);
-    if (!problem) {
+    if (problem) form?.querySelector("input")?.focus();
+    else {
       setCommand("");
       onOpenChange(false);
     }

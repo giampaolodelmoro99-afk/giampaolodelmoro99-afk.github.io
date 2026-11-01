@@ -59,6 +59,7 @@
 .name {
   min-inline-size: 100%;
   min-block-size: var(--control-height);
+  margin: var(--space-0);
   padding: var(--space-1) var(--space-2);
   box-shadow: var(--bevel-status);
   text-align: center;

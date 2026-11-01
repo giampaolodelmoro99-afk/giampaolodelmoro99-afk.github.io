@@ -54,7 +54,9 @@ describe("Desktop (guscio statico)", () => {
 
   it("collega la stessa app nell'altra lingua dalla taskbar", () => {
     renderAt("/contatti/", Desktop);
-    const link = screen.getByRole("link", { name: "English version" });
+    const link = screen.getByRole("link", { name: "EN, English version" });
+    expect(link).toHaveTextContent("EN");
+    expect(link.getAttribute("aria-label")?.startsWith(link.textContent ?? "-")).toBe(true);
     expect(link).toHaveAttribute("href", "/en/contact/");
     expect(link).toHaveAttribute("hreflang", "en");
     expect(link).toHaveAttribute("lang", "en");

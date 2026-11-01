@@ -89,7 +89,18 @@ describe("RunDialog", () => {
     await user.click(screen.getByRole("button", { name: "OK" }));
     expect(field).toHaveAttribute("aria-invalid", "true");
     expect(field).toHaveAccessibleDescription(/Non trovo "xyz"/);
+    expect(field).toHaveFocus();
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("Invio con il campo vuoto non esegue nulla e non mostra errori", async () => {
+    const onRun = vi.fn<(command: string) => string | null>(() => "errore");
+    const user = userEvent.setup();
+    render(<Run onRun={onRun} />);
+    const field = await screen.findByRole("textbox", { name: "Apri" });
+    await user.type(field, "   {Enter}");
+    expect(onRun).not.toHaveBeenCalled();
+    expect(field).not.toHaveAttribute("aria-invalid");
   });
 
   it("Annulla chiude", async () => {

@@ -126,6 +126,7 @@ export function DesktopWindow({
         <WindowMenu
           icon={icon}
           isMaximized={maximized}
+          isInTabOrder={isActive}
           isOpen={isMenuOpen}
           onOpenChange={(isOpen) => onMenuOpenChange(id, isOpen)}
           onAction={(action) => onMenuAction(id, action, frame.current)}
