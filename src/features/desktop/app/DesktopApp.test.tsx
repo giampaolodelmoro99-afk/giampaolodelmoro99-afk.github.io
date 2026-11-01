@@ -556,6 +556,70 @@ describe("DesktopApp e URL", () => {
     localStorage.setItem("windows.v1", JSON.stringify({ version: 2, windows: [] }));
     renderDesktop("/");
     expect(screen.getAllByRole("region")).toHaveLength(1);
-    expect(JSON.parse(localStorage.getItem("windows.v1") ?? "null")).toMatchObject({ version: 1 });
+    expect(localStorage.getItem("windows.v1")).toBeNull();
+  });
+
+  it("dopo una voce sostituita, Avanti e la chiusura lasciano l'URL allineato alla finestra attiva", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await go(router, -1);
+    await user.click(
+      within(screen.getByRole("region", { name: "About" })).getByRole("button", { name: "Chiudi" }),
+    );
+    await waitFor(() => expect(pathname()).toBe("/cv/"));
+    await go(router, 1);
+    expect(pathname()).toBe("/cv/");
+    await user.click(
+      within(screen.getByRole("region", { name: "CV" })).getByRole("button", { name: "Chiudi" }),
+    );
+    await waitFor(() => expect(screen.queryByRole("region")).toBeNull());
+    await waitFor(() => expect(pathname()).toBe("/"));
+  });
+
+  it("un link diretto non sovrascrive il layout salvato finché non cambia qualcosa", () => {
+    const saved = JSON.stringify({
+      version: 1,
+      windows: [
+        {
+          id: "projects",
+          maximized: false,
+          minimized: false,
+          geometry: { x: 40, y: 30, width: 420, height: 300 },
+          cascade: 0,
+        },
+      ],
+      stack: ["projects"],
+      recent: ["projects"],
+    });
+    localStorage.setItem("windows.v1", saved);
+    const view = renderDesktop("/progetti/");
+    view.unmount();
+    expect(localStorage.getItem("windows.v1")).toBe(saved);
+  });
+
+  it("con lo storage bloccato Riaccendi riporta comunque le finestre di prima", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("storage bloccato");
+    });
+    try {
+      renderDesktop("/");
+      await user.click(screen.getByRole("button", { name: /Start/ }));
+      await user.click(screen.getByRole("menuitem", { name: "CV" }));
+      await user.click(screen.getByRole("button", { name: /Start/ }));
+      await user.click(screen.getByRole("menuitem", { name: "Spegni…" }));
+      await screen.findByRole("dialog", { name: "Spegni" });
+      await user.click(screen.getByRole("button", { name: "OK" }));
+      await user.click(await screen.findByRole("button", { name: "Riaccendi" }));
+      expect(await screen.findByRole("region", { name: "CV" })).toHaveAttribute(
+        "data-active",
+        "true",
+      );
+      expect(localStorage.getItem("windows.v1")).toBeNull();
+    } finally {
+      vi.restoreAllMocks();
+    }
   });
 });

@@ -34,6 +34,7 @@ import {
   routeMap,
 } from "../../../routes/routeMap";
 import {
+  type DesktopState,
   type DesktopStore,
   createDesktopStore,
   emptyState,
@@ -127,24 +128,33 @@ type Power = "on" | "off" | "restarting";
 
 type Boot = "first" | "resume" | "restart";
 
-function initialState(boot: Boot, routeKey: RouteKey) {
+function initialState(boot: Boot, routeKey: RouteKey, memory: DesktopState | null) {
   if (boot === "restart") return emptyState;
-  if (boot === "resume") return readLayout() ?? emptyState;
+  if (boot === "resume") return readLayout() ?? memory ?? emptyState;
   return restore(readLayout(), routeKey);
 }
 
-function useDesktopStore(routeKey: RouteKey, boot: Boot): DesktopStore {
-  const [store] = useState(() => createDesktopStore(initialState(boot, routeKey)));
+function useDesktopStore(
+  routeKey: RouteKey,
+  boot: Boot,
+  memory: DesktopState | null,
+): DesktopStore {
+  const [store] = useState(() => createDesktopStore(initialState(boot, routeKey, memory)));
   return store;
 }
 
-function usePersistedLayout(store: DesktopStore) {
+function usePersistedLayout(
+  store: DesktopStore,
+  saveAtStart: boolean,
+  remember: (state: DesktopState) => void,
+) {
   useEffect(() => {
-    let saved: string | null = null;
+    let saved = saveAtStart ? null : serialize(store.getState());
     let pending = 0;
     const save = () => {
       pending = 0;
       const state = store.getState();
+      remember(state);
       if (serialize(state) !== saved) saved = writeLayout(state) ?? saved;
     };
     const schedule = () => {
@@ -161,7 +171,7 @@ function usePersistedLayout(store: DesktopStore) {
         save();
       }
     };
-  }, [store]);
+  }, [store, saveAtStart, remember]);
 }
 
 export function DesktopApp(props: DesktopAppProps) {
@@ -176,9 +186,18 @@ function DesktopPower({ onReady }: DesktopAppProps) {
   const t = useT();
   usePrefetchDialogs();
   const [power, setPower] = useState<Power>("on");
-  const [boot, setBoot] = useState<{ count: number; kind: Boot }>({ count: 0, kind: "first" });
+  const lastLayout = useRef<DesktopState | null>(null);
+  const rememberLayout = useCallback((state: DesktopState) => {
+    lastLayout.current = state;
+  }, []);
+  const [boot, setBoot] = useState<{ count: number; kind: Boot; memory: DesktopState | null }>({
+    count: 0,
+    kind: "first",
+    memory: null,
+  });
   const turnOn = useCallback((kind: Boot) => {
-    setBoot(({ count }) => ({ count: count + 1, kind }));
+    const memory = lastLayout.current;
+    setBoot(({ count }) => ({ count: count + 1, kind, memory }));
     setPower("on");
   }, []);
   const resume = useCallback(() => turnOn("resume"), [turnOn]);
@@ -213,6 +232,8 @@ function DesktopPower({ onReady }: DesktopAppProps) {
     <DesktopScreen
       key={boot.count}
       boot={boot.kind}
+      memory={boot.memory}
+      onLayout={rememberLayout}
       onPowerChange={setPower}
       {...(boot.kind === "first" && onReady ? { onReady } : {})}
     />
@@ -232,17 +253,19 @@ function PowerOff({ onDone }: { onDone: () => void }) {
 
 type DesktopScreenProps = DesktopAppProps & {
   boot: Boot;
+  memory: DesktopState | null;
+  onLayout: (state: DesktopState) => void;
   onPowerChange: (power: Power) => void;
 };
 
-function DesktopScreen({ onReady, boot, onPowerChange }: DesktopScreenProps) {
+function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: DesktopScreenProps) {
   const t = useT();
   const locale = useLocale();
   const other = locales.find((candidate) => candidate !== locale) ?? locale;
   const fromUrl = useRef<(key: RouteKey) => void>(() => undefined);
   const { routeKey, push, settle } = useUrlSync((key) => fromUrl.current(key));
-  const store = useDesktopStore(routeKey, boot);
-  usePersistedLayout(store);
+  const store = useDesktopStore(routeKey, boot, memory);
+  usePersistedLayout(store, boot === "restart", onLayout);
   const routeApp = openAppFor(routeKey);
   const windows = useStore(store, (state) => state.windows);
   const stack = useStore(store, (state) => state.stack);
@@ -333,6 +356,8 @@ function DesktopScreen({ onReady, boot, onPowerChange }: DesktopScreenProps) {
   const showFromUrl = (key: RouteKey) => {
     const before = store.getState();
     const app = openAppFor(key);
+    const wanted = key === "desktop" && !before.windows[app] ? null : app;
+    if (before.activeId === wanted && (!wanted || !before.windows[wanted]?.minimized)) return;
     if (key !== "desktop" || before.windows[app]) cancelExit(app);
     store.getState().followRoute(key);
     const active = store.getState().activeId;

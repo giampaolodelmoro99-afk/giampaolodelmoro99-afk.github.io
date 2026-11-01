@@ -14,30 +14,43 @@ export type UrlSync = {
   settle: (target: AppId | null) => void;
 };
 
+type Pending = { path: string; isBack: boolean };
+
 export function useUrlSync(onRoute: (routeKey: RouteKey) => void): UrlSync {
   const navigate = useNavigate();
   const location = useLocation();
   const routeKey = routeKeyFromPathname(location.pathname) ?? "desktop";
-  const expected = useRef<string | null>(null);
-  const previous = useRef(routeKey);
+  const lastEntry = useRef(location.key);
+  const pending = useRef<Pending | null>(null);
+  const queued = useRef<(() => void) | null>(null);
   const latest = useRef<{ location: Location; routeKey: RouteKey }>({ location, routeKey });
 
   useLayoutEffect(() => {
     latest.current = { location, routeKey };
   });
 
-  const follow = useEffectEvent((pathname: string, key: RouteKey) => {
-    const before = previous.current;
-    previous.current = key;
-    const wanted = expected.current;
-    expected.current = null;
-    if (wanted !== null && samePath(wanted, pathname)) return;
-    if (key !== before) onRoute(key);
+  const arrive = useEffectEvent((entry: string) => {
+    if (entry === lastEntry.current) return;
+    lastEntry.current = entry;
+    const current = location;
+    const key = routeKey;
+    const wanted = pending.current;
+    pending.current = null;
+    if (wanted?.isBack && !samePath(wanted.path, current.pathname)) {
+      pending.current = { path: wanted.path, isBack: false };
+      void navigate(wanted.path, { replace: true, state: current.state });
+      return;
+    }
+    if (wanted === null || !samePath(wanted.path, current.pathname)) onRoute(key);
+    const next = queued.current;
+    queued.current = null;
+    next?.();
   });
 
+  const entry = location.key;
   useEffect(() => {
-    follow(location.pathname, routeKey);
-  }, [location.pathname, routeKey]);
+    arrive(entry);
+  }, [entry]);
 
   const target = (app: AppId | null) => {
     const { location: current, routeKey: key } = latest.current;
@@ -46,25 +59,32 @@ export function useUrlSync(onRoute: (routeKey: RouteKey) => void): UrlSync {
     return { to, current };
   };
 
-  return {
-    routeKey,
-    push: (app) => {
+  const whenIdle = (action: () => void) => {
+    if (pending.current?.isBack) queued.current = action;
+    else action();
+  };
+
+  const push = (app: AppId | null) =>
+    whenIdle(() => {
       const next = target(app);
       if (!next) return;
-      expected.current = next.to;
+      pending.current = { path: next.to, isBack: false };
       void navigate(next.to, { state: { back: next.current.pathname } });
-    },
-    settle: (app) => {
+    });
+
+  const settle = (app: AppId | null) =>
+    whenIdle(() => {
       const next = target(app);
       if (!next) return;
       const back = backPathOf(next.current.state);
       if (back !== null && represents(back, app)) {
-        expected.current = back;
+        pending.current = { path: back, isBack: true };
         void navigate(-1);
         return;
       }
-      expected.current = next.to;
+      pending.current = { path: next.to, isBack: false };
       void navigate(next.to, { replace: true, state: back === null ? null : { back } });
-    },
-  };
+    });
+
+  return { routeKey, push, settle };
 }

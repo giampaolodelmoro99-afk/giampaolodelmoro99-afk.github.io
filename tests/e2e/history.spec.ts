@@ -87,4 +87,29 @@ test.describe("URL e history delle finestre", () => {
     ).toBeVisible();
     await expectNoReload(page);
   });
+
+  test("aprire, ricaricare e chiudere non ricarica la pagina", async ({ page }) => {
+    await openDesktop(page);
+    await page.getByRole("row", { name: "Progetti", exact: true }).dblclick();
+    await expect(page).toHaveURL(/\/progetti\/$/);
+    await page.reload();
+    await expect(page.locator("[role=grid]")).toBeVisible();
+    await markNoReload(page);
+    let loads = 0;
+    page.on("load", () => {
+      loads += 1;
+    });
+    await page
+      .getByRole("region", { name: "Progetti" })
+      .getByRole("button", { name: "Chiudi" })
+      .click();
+    await expect(page.getByRole("region", { name: "Progetti" })).toBeHidden();
+    await expect(page).toHaveURL(/:\d+\/$/);
+    await expect(page.getByRole("region", { name: "About" })).toHaveAttribute(
+      "data-active",
+      "true",
+    );
+    expect(loads).toBe(0);
+    await expectNoReload(page);
+  });
 });

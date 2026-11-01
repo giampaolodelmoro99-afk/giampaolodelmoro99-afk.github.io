@@ -86,10 +86,10 @@ describe("useUrlSync", () => {
     expect(onRoute).toHaveBeenLastCalledWith("contacts");
   });
 
-  it("il cambio di lingua sulla stessa finestra non richiama onRoute", async () => {
+  it("il cambio di lingua richiama onRoute con la stessa route, e la voce dopo resta nella lingua nuova", async () => {
     const { router, onRoute, api } = setup("/progetti/");
     await run(() => router.navigate("/en/projects/"));
-    expect(onRoute).not.toHaveBeenCalled();
+    expect(onRoute).toHaveBeenCalledExactlyOnceWith("projects");
     await run(() => api().push("cv"));
     expect(router.state.location.pathname).toBe("/en/cv/");
   });
@@ -101,5 +101,29 @@ describe("useUrlSync", () => {
     expect(pathname()).toBe("/");
     expect(router.state.historyAction).toBe("POP");
     expect(onRoute).not.toHaveBeenCalled();
+  });
+
+  it("se il ritorno indietro arriva su una voce diversa da quella attesa, la corregge con un replace", async () => {
+    const { api, pathname, router, onRoute } = setup("/");
+    await run(() => api().push("cv"));
+    await run(() => router.navigate(-1));
+    await run(() => api().settle("cv"));
+    expect(pathname()).toBe("/cv/");
+    await run(() => router.navigate(1));
+    onRoute.mockClear();
+    await run(() => api().settle(null));
+    expect(pathname()).toBe("/");
+    expect(onRoute).not.toHaveBeenCalled();
+  });
+
+  it("un'azione chiesta mentre si torna indietro aspetta l'arrivo della voce", async () => {
+    const { api, pathname, router } = setup("/");
+    await run(() => api().push("projects"));
+    await run(() => {
+      api().settle("about");
+      api().push("cv");
+    });
+    expect(pathname()).toBe("/cv/");
+    expect(router.state.location.state).toEqual({ back: "/" });
   });
 });
