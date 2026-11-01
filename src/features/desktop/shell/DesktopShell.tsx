@@ -61,8 +61,13 @@ export function DesktopShell({ routeKey }: DesktopShellProps) {
             <Icon name="gdm" size={16} />
             <span>{uiStrings[locale].startButton.label}</span>
           </span>
-          <span className={cx(buttonStyles.root, buttonStyles.iconOnly)} data-disabled="true">
-            <Icon name="windows" size={16} />
+          <span
+            className={cx(taskbarStyles.root, taskbarStyles.iconButton)}
+            data-unavailable={openApp ? undefined : "true"}
+          >
+            <span className={taskbarStyles.content}>
+              <Icon name="windows" size={16} className={cx(taskbarStyles.icon)} />
+            </span>
           </span>
           {openApp && (
             <span className={taskbarStyles.root} data-selected="true">

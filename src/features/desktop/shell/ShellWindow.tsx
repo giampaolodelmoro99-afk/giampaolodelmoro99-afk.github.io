@@ -1,6 +1,7 @@
 import { Glyph, Icon } from "../../../components/Icon";
 import { cx } from "../../../components/cx";
 import windowStyles from "../../../components/Window/Window.module.css";
+import windowMenuStyles from "../../../components/WindowMenu/WindowMenu.module.css";
 import { useT } from "../../../i18n";
 import type { AppId } from "../../../routes/routeMap";
 import { appDefinition } from "../apps";
@@ -19,7 +20,9 @@ export function ShellWindow({ app }: { app: AppId }) {
       data-variant={variant}
     >
       <header className={windowStyles.titlebar}>
-        <Icon name={icon} size={16} className={cx(windowStyles.titleIcon)} />
+        <span className={windowMenuStyles.trigger} aria-hidden="true">
+          <Icon name={icon} size={16} />
+        </span>
         <span id={windowTitleId(app)} className={windowStyles.title}>
           {t.apps[app]}
         </span>
