@@ -23,7 +23,7 @@ Le scelte del proprietario sono nel piano della fase (`docs/phases/phase-02b-pla
 
 ### 1. Route di layout
 
-Le 28 pagine sono figlie di `routes/desktop-layout.tsx`, che monta il desktop una volta sola. Le figlie (`routes/app.tsx`) danno solo i meta. Lo store sopravvive a ogni navigazione, cambio di lingua compreso. L'HTML prerenderizzato è rimasto identico: confrontate le 30 pagine, a parte i `modulepreload`.
+Le 28 pagine sono figlie di `routes/desktop-layout.tsx`, che monta il desktop una volta sola. Le figlie (`routes/app.tsx`) danno solo i meta. Lo store sopravvive a ogni navigazione, cambio di lingua compreso. L'HTML prerenderizzato è rimasto identico: confrontate le 30 pagine, a parte i `modulepreload`. Il confronto è stato fatto una volta, a mano, con uno script: il piano prevedeva un test, ma un confronto permanente con un HTML di riferimento cambierebbe a ogni modifica del contenuto. Restano i test in `tests/prerender/` sul contenuto di ogni pagina e un test unitario sulla struttura delle route.
 
 ### 2. URL della finestra attiva
 
@@ -37,6 +37,8 @@ Le 28 pagine sono figlie di `routes/desktop-layout.tsx`, che monta il desktop un
 - **Push**: aprire o portare in primo piano una finestra (icone, Start, Esegui, taskbar, selettore, clic su una finestra, link nei contenuti). La voce porta in `state.back` il percorso di partenza.
 - **Assestamento**: chiudere, ridurre, Riavvia, Riaccendi. Se la voce precedente, creata dal sito, rappresenta già la nuova finestra attiva (`/` rappresenta About), si torna indietro con `navigate(-1)`; altrimenti si sostituisce la voce corrente. Così non nascono voci doppie e Indietro non sembra mai «non fare nulla».
 - **Nessuna navigazione** per Sposta, Ridimensiona, Ingrandisci e il ripristino del layout.
+- **Correzioni**: se un ritorno indietro arriva su una voce diversa da quella attesa (per esempio una voce sostituita nel frattempo), la voce si corregge con un replace. Le azioni chieste mentre il ritorno è in corso aspettano il suo arrivo.
+- **Ricarica**: dopo una ricarica la voce precedente, creata prima, resta nello stesso documento per Chrome, Firefox e WebKit; `navigate(-1)` non ricarica la pagina (`history.spec.ts`, «aprire, ricaricare e chiudere»).
 - **Indietro e Avanti** (e i link): la finestra della voce va in primo piano, riaperta se era chiusa, senza chiudere le altre (D2).
   - Su `/` va in primo piano About se è aperta; altrimenti nessuna finestra è attiva e le finestre restano al loro posto.
   - Il focus va al corpo della finestra o alle icone; una finestra riaperta si annuncia.
@@ -52,7 +54,8 @@ Le 28 pagine sono figlie di `routes/desktop-layout.tsx`, che monta il desktop un
   - le altre tornano dietro senza animazione (D5);
   - sulla home About c'è sempre, anche se era stata chiusa (D4).
 - **Spegni e riavvio**: Riaccendi, dopo Spegni, ripristina il layout salvato; Riavvia salva un desktop vuoto.
-- **Scrittura**: raggruppata dopo 200 ms dall'ultimo cambio e al `pagehide`, solo se il contenuto serializzato cambia.
+- **Scrittura**: raggruppata dopo 200 ms dall'ultimo cambio e al `pagehide`, solo se il contenuto serializzato cambia rispetto a quello di partenza. Aprire un link diretto senza toccare nulla non sovrascrive il layout salvato. Più schede aperte si sovrascrivono: vince l'ultima che cambia qualcosa.
+- **Storage bloccato**: Riaccendi usa l'ultimo layout tenuto in memoria.
 
 ### 5. React Router 8.5.1 nel budget
 
@@ -85,7 +88,7 @@ Le 28 pagine sono figlie di `routes/desktop-layout.tsx`, che monta il desktop un
 - **Negative e rischi**:
   - cliccare su finestre diverse crea molte voci nella history;
   - lo stub dipende dalla struttura interna di React Router: la build si ferma se gli export del modulo cambiano, e lo stub va rivisto a ogni aggiornamento minore;
-  - lo store nel chunk del desktop lascia 1,25 kB di margine sul budget di 77 kB per la 2B-2.
+  - lo store nel chunk del desktop lascia circa 1,1 kB di margine sul budget di 77 kB per la 2B-2 (75,93 kB).
 - **Cosa va verificato**:
   - test unitari: `url.test.ts`, `useUrlSync.test.tsx`, `state.test.ts`, `persist.test.ts`, `DesktopApp.test.tsx`;
   - e2e: `history.spec.ts`, `persistence.spec.ts`, `storage.spec.ts`, `window-drag.spec.ts`;
