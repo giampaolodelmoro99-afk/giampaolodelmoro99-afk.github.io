@@ -6,7 +6,7 @@ Le soglie di prestazioni e di Lighthouse si scrivono **solo** qui e in TESTING.m
 
 | Metrica                | Budget                       | Ultima misura                       | Come si verifica |
 | ---------------------- | ---------------------------- | ----------------------------------- | ---------------- |
-| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014)          | 117,8 kB (F2A, guscio statico)      | `npm run size`   |
+| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014)          | 121,39 kB (F2B, React Router 8.5.1) | `npm run size`   |
 | Chunk del desktop      | ≤ 77 kB (ADR-0014, ADR-0020) | 73,14 kB (F2A, dopo l'idratazione)  | `npm run size`   |
 | Sprite delle icone     | ≤ 14 kB (ADR-0014)           | 12,64 kB (F2A, SVG)                 | `npm run size`   |
 | CSS iniziale (gzip)    | ≤ 12 kB                      | 1,3 kB                              | `npm run size`   |
@@ -48,6 +48,18 @@ Con il `Link` di React Aria nella 404, Rolldown divideva React DOM e React Route
 | `not-found` (solo sulla 404) | 11,6 kB  | React Aria: `Link`, `usePress`, `RouterProvider` |
 
 Gli import da React Aria vanno sempre per sottopercorso (`react-aria-components/Button`): Oxlint vieta l'import dalla radice, con un'unica eccezione per `RouterProvider` (ADR-0012).
+
+### React Router 8.5.1 (Fase 2B)
+
+React Router 8.5.1 aggiungeva 3,54 kB gzip al JS iniziale della home (120,77 → 124,31 kB, oltre il budget di 124). Dal confronto delle treemap di `npm run analyze`, la parte più grande è il modulo nuovo `lib/dom/ssr/route-discovery.js` (runtime di `future.unstable_customRouteDiscovery`), che `HydratedRouter` importa sempre perché decide a runtime se usarlo. Il resto è sparso tra router, componenti e idratazione. Due interventi, misurati uno alla volta:
+
+| Intervento                                                                                                                                                        | JS iniziale (gzip) |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| React Router 8.5.1 senza interventi                                                                                                                               | 124,31 kB          |
+| Tolto `<ScrollRestoration/>` dal root: il documento non scorre (scorrono finestre e app), e sparisce la chiave `react-router-scroll-positions`                    | 123,34 kB          |
+| Nella build del client `route-discovery.js` diventa uno stub (`scripts/lib/route-discovery-stub.mjs`), che fallisce in modo esplicito se il flag venisse attivato | **121,39 kB**      |
+
+Il plugin controlla gli export del modulo originale: se una versione futura li cambia, la build si ferma. Un test verifica anche che `react-router.config.ts` non attivi il flag. La minificazione con terser (leva prevista dal piano) non è servita.
 
 ### Guscio statico e chunk del desktop (Fase 2A)
 
