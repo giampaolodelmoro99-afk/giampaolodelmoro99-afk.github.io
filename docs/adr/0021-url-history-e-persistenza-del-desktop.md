@@ -1,6 +1,6 @@
 # ADR-0021: URL, history e persistenza del desktop
 
-- **Stato**: Proposta
+- **Stato**: Accettata
 - **Data**: 2026-11-01
 - **Fase**: 2B
 

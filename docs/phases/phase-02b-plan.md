@@ -334,6 +334,12 @@ Ogni componente segue la definizione di «fatto» di CLAUDE.md, cioè skill `win
 - **Budget**: se uno si supera, mi fermo e porto i numeri.
 - **Esecuzione**: dopo la tappa 2B-1 mi fermo.
 
+**Decisioni alla fermata della 2B-1** (01/11/2026):
+
+- **Budget del chunk del desktop in 2B-2**: il codice solo mobile (barra del titolo mobile, home a griglia, App aperte, Start a pannello) va in un chunk caricato solo in modalità mobile, così il desktop non lo scarica. Se dopo la divisione il budget di 77 kB si supera ancora: ADR con budget alla misura reale più il 5%, purché il job delle prestazioni resti verde.
+- **Confermati** l'`h1` nella finestra della route e la finestra dell'URL in primo piano che copre About dopo una ricarica.
+- **ADR-0021** accettata.
+
 ---
 
 ## Verifica
