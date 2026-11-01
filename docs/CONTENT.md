@@ -10,7 +10,35 @@ Raccolta dei contenuti del sito. Fonte per i dizionari i18n, i dati tipizzati (`
 - **Tono**: diretto, concreto, in prima persona; niente superlativi vuoti. In inglese: stesso contenuto, non traduzione letterale.
 - **Bozze**: ogni testo marcato `BOZZA – da rivedere` è scritto da Claude e **non va online** finché Gianpaolo non lo approva. Dopo l'approvazione si toglie il marcatore e si annota la data.
 
-## 2. Testi della v1 (tag `v1.0.0-legacy`)
+## 2. Testi approvati
+
+Approvati da Gianpaolo il 28/10/2026 (titolo) e aggiornati il 01/11/2026 (bio e meta description, con WordPress): non sono più bozze e possono andare online. Non indicano stage né azienda.
+
+| Testo                                             | IT                                                                                                                                                                                                                                                   | EN                                                                                                                                                                                                                                                   |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Titolo                                            | Full Stack Developer · Studente ITS Academy Prodigi                                                                                                                                                                                                  | Full Stack Developer · ITS Academy Prodigi student                                                                                                                                                                                                   |
+| Bio                                               | Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia con Laravel e React, e siti con WordPress. Continuo a studiare per crescere ogni giorno come sviluppatore. | I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and websites with WordPress. I keep studying to grow as a developer every day. |
+| Meta description della home (158 e 158 caratteri) | Portfolio in stile Windows 95 di Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Progetti con Laravel, React e WordPress.                                                                                       | Windows 95-style portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Projects with Laravel, React and WordPress.                                                                                       |
+
+Uso sul sito (Fase 2A):
+
+- `<title>` di `/` e `/en/`: "Gianpaolo Del Moro · Full Stack Developer" (41 caratteri). Con il titolo completo il nome supererebbe i 60 caratteri (PERFORMANCE_SEO.md §4).
+- Il titolo completo è in `og:title`, `twitter:title` e nel `jobTitle` del JSON-LD.
+- La bio è nella finestra About, aperta all'avvio nella home e su `/profilo/` (`/en/about/`).
+- **WordPress** (01/11/2026): compare nella bio e nella meta description, quindi va anche nell'app Skills in F3A (§5) e, con i suoi progetti, nell'app Progetti (§5, progetti candidati). Le description provvisorie di About e Skills lo includono già; quella di Progetti si riscrive in F3A con l'elenco definitivo dei progetti.
+- Slug delle app: dove l'app corrisponde a una pagina della v1 vale lo slug della v1, definitivo (SPECS.md §6): `/profilo/`, `/stack/`, `/progetti/`, `/contatti/`. Gli altri slug sono **bozze fino alla Fase 3A**.
+- **Title e description di tutte le app**, comprese le quattro della v1 (About, Skills, Progetti, Contatti), sono **provvisori fino alla Fase 3A**: definitivi sono solo quelli della home (sopra) e gli slug della v1. Il sito non è online prima di `v1.0.0`.
+
+**Congedo di Spegni** (tavola D12), approvato da Gianpaolo il 01/11/2026:
+
+| Testo               | IT                                                                                              | EN                                                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Titolo              | Puoi chiudere questa scheda.                                                                    | You can close this tab.                                                                                           |
+| Saluto              | Il desktop è spento. Grazie della visita: se cambi idea, riaccendilo e ricomincia da dove vuoi. | The desktop is off. Thanks for stopping by: if you change your mind, turn it back on and start wherever you like. |
+| Pulsante            | Riaccendi                                                                                       | Turn back on                                                                                                      |
+| Titolo della scheda | Spento · Gianpaolo Del Moro                                                                     | Off · Gianpaolo Del Moro                                                                                          |
+
+## 3. Testi della v1 (tag `v1.0.0-legacy`)
 
 Riportati come fonte, solo in italiano. Non tutti verranno riusati.
 
@@ -85,14 +113,16 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 - Hobby: pianoforte, praticato da 5 anni.
 - Competenze nel CV, non sul sito: Java (OOP), Spring Boot, Python.
 
-## 3. Domande aperte (da chiudere in Fase 3)
+## 4. Domande aperte (da chiudere in Fase 3)
 
 - [ ] **Java, Spring Boot, Python**: vanno sul sito (Skills, llms.txt) o restano solo nel CV? Con quale livello e contesto d'uso?
 - [ ] **Indirizzo del liceo**: "Scienze Applicate" (sito v1) o "indirizzo informatico" (CV v1)?
 - [x] **LinkedIn**: chiusa il 13/10/2026, non compare sul sito (vedi §1).
 - [ ] **Disponibilità**: "Full-time", stage, località (Pisa, remoto, trasferimento)?
+- [ ] **WordPress**: livello e contesto d'uso nell'app Skills (§5).
+- [ ] **qbitsoft.it**: ruolo svolto, link e dettagli del progetto (permesso confermato il 01/11/2026, §5).
 
-## 4. Bozze da approvare
+## 5. Bozze da approvare
 
 > **BOZZA – da rivedere.** Giurisprudenza come punto di forza (bio e Timeline)
 >
@@ -116,20 +146,37 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 > - "Node.js / Express — Intermedio — tre API REST con autenticazione JWT (task-manager, rubrica, gestione-spese)"
 > - "Laravel — Intermedio — tre backend con relazioni many-to-many e Sanctum (biblioteca, store, task-notes)"
 >
+> Gruppi: Frontend, Backend, Database, **CMS e siti web**, Strumenti, Sistemi. Nel gruppo CMS e siti web:
+>
+> - "WordPress — livello da confermare — contesto d'uso da confermare (per esempio il rifacimento di qbitsoft.it, vedi i progetti candidati)"
+>
 > Livelli e contesti vanno confermati uno per uno.
 
-## 5. Mancante per l'inglese
+> **BOZZA – da rivedere.** Progetti candidati per l'app Progetti (F3A), oltre ai sei repository della v1 (§3)
+>
+> - "Rifacimento del sito qbitsoft.it in WordPress". Permesso dell'azienda a mostrarlo nel portfolio: **confermato** (01/11/2026). Da confermare: ruolo svolto. Link e dettagli arrivano prima della F3A. Non è un repository GitHub: la scheda non avrà i metadati scaricati a build time e userà il link al sito.
 
-- [ ] Payoff e bio
+> **BOZZA – da rivedere.** Testi del desktop della F2A (in `src/i18n/it.ts`, `en.ts` e `ui.ts`, chiavi `desktop` e `ui`), scritti da Claude durante la fase. Sono testi d'interfaccia (menu, dialog, annunci per i lettori di schermo, scorciatoie, skip link): si approvano insieme prima di `v1.0.0`.
+>
+> - Congedo di Spegni: **approvato il 01/11/2026**, vedi §2.
+> - Esegui: «Scrivi il nome di un'app e si aprirà in una finestra.»; errore «Non trovo "{command}". Prova con progetti, cv o contatti.»; errore di caricamento «Non riesco ad aprire questa finestra: ricarica la pagina.»
+> - Spegni: «Cosa vuoi fare?» con Spegni, Riavvia, Passa alla Vista semplice.
+> - Menu della finestra, selettore («Finestre aperte»), menu contestuale (Disponi icone, Aggiorna, Proprietà), annunci («{app}: finestra aperta», «… spostata»…), skip link «Salta al contenuto», collegamento della lingua «EN, English version» / «IT, Versione italiana».
+> - Suggerimenti del content-reviewer da valutare in F3A: «Resize» al posto di «Size» nel menu della finestra in inglese, «Canceled» o «Cancelled» come grafia unica, «Allinea icone» al posto di «Allinea alla griglia», virgolette « » nell'errore di Esegui, separatore «·» nel title della 404, nomi delle app «Profilo» e «Competenze» al posto di About e Skills.
+
+## 6. Mancante per l'inglese
+
+- [x] Payoff e bio (approvati il 28/10/2026, §2)
 - [ ] Descrizioni dei 6 progetti
 - [ ] Etichette e contesti delle skill
-- [ ] Metadati (title, description) di ogni route
+- [ ] Metadati (title, description) di ogni route (home approvata il 28/10/2026, aggiornata il 01/11/2026)
 - [ ] Testo della 404 (BSOD)
 - [ ] CV in inglese (confermato), generato dagli stessi dati del CV italiano
 - [ ] Informativa privacy
-- [ ] Alt, aria-label, titoli delle finestre, messaggi del form
+- [x] Etichette, annunci e titoli delle finestre del desktop (F2A), in bozza (§5)
+- [ ] Alt delle immagini e messaggi del form (F3)
 
-## 6. Template: scheda progetto GitHub
+## 7. Template: scheda progetto GitHub
 
 ```yaml
 repo: giampaolodelmoro99-afk/<nome-repo> # verificare "giampaolo" con M
@@ -143,12 +190,12 @@ demo: null # URL o null
 images: # AVIF/WebP, con dimensioni; registrate in ASSETS.md
   - { file: "", width: 0, height: 0, alt: { it: "", en: "" } }
 featured: false # in evidenza sì/no
-caseStudy: false # se esiste un case study (§7)
+caseStudy: false # se esiste un case study (§8)
 ```
 
 I metadati (stelle, linguaggi, ultimo aggiornamento) li scarica lo script di build (ADR-0004), non si scrivono a mano.
 
-## 7. Template: case study
+## 8. Template: case study
 
 ```markdown
 ## <Nome progetto> (IT ed EN)
@@ -170,7 +217,7 @@ Il problema più duro incontrato e come l'ho affrontato.
 Che cosa funziona, numeri se esistono (test, prestazioni), che cosa farei diversamente.
 ```
 
-## 8. CV pubblico (IT ed EN)
+## 9. CV pubblico (IT ed EN)
 
 **Sezioni**: intestazione (nome, ruolo, città, link al sito e a GitHub; email solo nel PDF e nella versione stampabile, mai nel markup prerenderizzato), profilo, competenze (livello e contesto), esperienza, istruzione e formazione, lingue, patente, interessi.
 

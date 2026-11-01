@@ -65,13 +65,13 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
 
   it("ha Open Graph e Twitter card", async () => {
     const { document } = await load(fileFor(href));
-    expect(attr(document, 'meta[property="og:title"]', "content")).toBe(t.meta[key].title);
+    expect(attr(document, 'meta[property="og:title"]', "content")).toBe(t.meta[key].socialTitle);
     expect(attr(document, 'meta[property="og:url"]', "content")).toBe(`${siteUrl}${href}`);
     expect(attr(document, 'meta[property="og:locale"]', "content")).toBe(t.meta.ogLocale);
     expect(attr(document, 'meta[name="twitter:card"]', "content")).toBeTruthy();
   });
 
-  it("contiene un JSON-LD valido con Person, WebSite e ProfilePage", async () => {
+  it("contiene un JSON-LD valido con Person, WebSite e la pagina (ProfilePage per home e About)", async () => {
     const { document } = await load(fileFor(href));
     const scripts = [...document.querySelectorAll('script[type="application/ld+json"]')];
     expect(scripts).toHaveLength(1);
@@ -81,15 +81,34 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
       "@graph": [
         { "@type": "Person", sameAs: [githubUrl] },
         { "@type": "WebSite" },
-        { "@type": "ProfilePage", inLanguage: locale },
+        {
+          "@type": key === "desktop" || key === "about" ? "ProfilePage" : "WebPage",
+          inLanguage: locale,
+        },
       ],
     });
   });
 
   it("mostra il contenuto principale senza eseguire JavaScript", async () => {
     const { document } = await load(fileFor(href));
-    expect(document.querySelector("main h1")?.textContent).toBe(t.desktop.heading);
-    expect(document.querySelector("main")?.textContent).toContain(t.desktop.tagline);
+    const isAbout = key === "desktop" || key === "about";
+    const app = key === "desktop" ? "about" : key;
+    const window = document.querySelector("main section[aria-labelledby]");
+    expect(document.querySelectorAll("h1")).toHaveLength(1);
+    expect(window?.querySelector("h1")?.textContent).toBe(
+      isAbout ? t.desktop.heading : t.apps[app],
+    );
+    expect(window?.textContent).toContain(isAbout ? t.about.bio : t.desktop.placeholder);
+  });
+
+  it("ha le icone del desktop come link normali e lo skip link come primo elemento", async () => {
+    const { document } = await load(fileFor(href));
+    const icons = [...document.querySelectorAll("main nav a")];
+    expect(icons.map((icon) => icon.getAttribute("href"))).toContain(routeMap.projects[locale]);
+    expect(icons).toHaveLength(11);
+    const skip = document.querySelector("body a");
+    expect(skip?.textContent).toBe(t.desktop.skipLink);
+    expect(document.querySelector(skip?.getAttribute("href") ?? "#niente")).not.toBeNull();
   });
 
   it("ha la CSP come primo meta dopo il charset, con l'hash di ogni script inline", async () => {
@@ -105,9 +124,12 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
     expect(policy).not.toContain("unsafe-eval");
   });
 
-  it("rinvia l'idratazione: nessun modulepreload e payload di avvio consentito dalla CSP", async () => {
+  it("rinvia l'idratazione: modulepreload inerti e payload di avvio consentito dalla CSP", async () => {
     const { html, document } = await load(fileFor(href));
-    expect(html).not.toContain("modulepreload");
+    const preloads = [...document.querySelectorAll('link[rel="modulepreload"]')];
+    expect(preloads.length).toBeGreaterThan(0);
+    expect(preloads.every((link) => link.getAttribute("media") === "not all")).toBe(true);
+    expect(html).not.toMatch(/<link rel="modulepreload" href="[^"]+"\/>/);
     const payload = document.getElementById(bootId);
     expect(payload?.getAttribute("type")).toBe("text/plain");
     expect(attr(document, 'meta[http-equiv="Content-Security-Policy"]', "content")).toContain(
@@ -213,30 +235,8 @@ describe("dati personali nel build", () => {
   });
 });
 
+// I controlli sui file di Storybook stanno in storybook.test.ts: servono la build completa.
 describe("Storybook in /storybook/", () => {
-  const storybook = join(client, "storybook");
-
-  it.each(["index.html", "iframe.html"])(
-    "%s non è indicizzabile e ha una CSP dedicata come primo elemento di head",
-    async (name) => {
-      const { html, document } = await load(join(storybook, name));
-      expect(attr(document, 'meta[name="robots"]', "content")).toBe("noindex, nofollow");
-      expect(html).toMatch(/<head><meta http-equiv="Content-Security-Policy"/);
-      const policy = attr(document, 'meta[http-equiv="Content-Security-Policy"]', "content") ?? "";
-      for (const hash of inlineScriptHashes(html)) {
-        expect(policy).toContain(hash);
-      }
-      expect(policy).not.toMatch(/unsafe-eval|https?:/);
-      expect(policy).not.toMatch(/script-src[^;]*unsafe-inline/);
-      expect(html.indexOf("<meta charset")).toBeGreaterThan(0);
-      expect(html.indexOf("<meta charset")).toBeLessThan(1024);
-    },
-  );
-
-  it("non pubblica project.json con le dipendenze di sviluppo", () => {
-    expect(existsSync(join(storybook, "project.json"))).toBe(false);
-  });
-
   it("robots.txt esclude Storybook", async () => {
     const robots = await readFile(join(client, "robots.txt"), "utf8");
     expect(robots.split("\n")).toContain("Disallow: /storybook/");

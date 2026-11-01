@@ -1,0 +1,70 @@
+.overlay {
+  position: fixed;
+  inset: var(--space-0);
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding: var(--space-safe-top) var(--space-gutter) var(--space-safe-bottom);
+  overflow-y: auto;
+}
+
+.modal {
+  max-inline-size: 100%;
+  outline: none;
+}
+
+.dialog {
+  inline-size: min(var(--dialog-width), 100%);
+  outline: none;
+}
+
+.window {
+  inline-size: 100%;
+}
+
+.form {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+.intro {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.help {
+  margin: var(--space-0);
+  font-family: var(--font-family-prose);
+  line-height: var(--line-height-body);
+}
+
+.suggestions {
+  composes: scroll from "../ScrollArea/Scrollbar.module.css";
+  max-block-size: var(--listbox-max-height);
+  margin: var(--space-0);
+  padding: var(--space-1);
+  overflow-y: auto;
+  background: var(--color-field);
+  box-shadow: var(--bevel-field);
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  min-block-size: max(var(--target-min), var(--menu-item-height));
+  padding-inline: var(--space-2);
+  outline: none;
+}
+
+.suggestion[data-focused] {
+  background: var(--color-selection);
+  color: var(--color-selection-text);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}

@@ -186,3 +186,16 @@
     color: var(--color-selection-text);
   }
 }
+
+.item[data-default] {
+  font-weight: var(--font-weight-bold);
+}
+
+.anchor {
+  position: fixed;
+  inset: var(--space-0) auto auto var(--space-0);
+  inline-size: 1px;
+  block-size: 1px;
+  translate: var(--anchor-x) var(--anchor-y);
+  pointer-events: none;
+}

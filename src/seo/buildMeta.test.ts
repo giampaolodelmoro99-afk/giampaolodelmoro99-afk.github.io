@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { getDictionary } from "../i18n";
+import { locales, routeKeys } from "../routes/routeMap";
 import { absoluteUrl, buildMeta, jsonLd } from "./buildMeta";
 
 type Entry = Record<string, unknown>;
@@ -14,15 +16,34 @@ describe("buildMeta", () => {
 
   it("genera title, description e canonical della lingua richiesta", () => {
     const meta = buildMeta("en", "desktop");
-    expect(meta).toContainEqual({ title: "Gianpaolo Del Moro | Full Stack Developer" });
+    expect(meta).toContainEqual({ title: "Gianpaolo Del Moro · Full Stack Developer" });
     expect(find(meta, (entry) => entry["name"] === "description")[0]).toMatchObject({
-      content: expect.stringContaining("Portfolio of Gianpaolo Del Moro"),
+      content:
+        "Windows 95-style portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Projects with Laravel, React and WordPress.",
     });
     expect(meta).toContainEqual({
       tagName: "link",
       rel: "canonical",
       href: "https://gianpaolodelmoro.it/en/",
     });
+  });
+
+  it("usa il titolo approvato per Open Graph, Twitter e jobTitle", () => {
+    const meta = buildMeta("it", "desktop");
+    const approved = "Full Stack Developer · Studente ITS Academy Prodigi";
+    expect(meta).toContainEqual({ property: "og:title", content: approved });
+    expect(meta).toContainEqual({ name: "twitter:title", content: approved });
+    expect(jsonLd("it", "desktop")["@graph"]).toContainEqual(
+      expect.objectContaining({ "@type": "Person", jobTitle: approved }),
+    );
+  });
+
+  it.each(locales)("rispetta le lunghezze di title e description (%s)", (locale) => {
+    const t = getDictionary(locale);
+    for (const key of routeKeys) {
+      expect(t.meta[key].title.length).toBeLessThanOrEqual(60);
+      expect(t.meta[key].description.length).toBeLessThanOrEqual(160);
+    }
   });
 
   it("dichiara hreflang per ogni lingua e x-default sull'italiano", () => {

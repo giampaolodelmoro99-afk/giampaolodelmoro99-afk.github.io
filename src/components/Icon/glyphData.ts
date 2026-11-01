@@ -8,6 +8,7 @@ export const glyphNames = [
   "left",
   "maximize",
   "minimize",
+  "option",
   "restore",
   "right",
   "up",
@@ -40,6 +41,11 @@ export const glyphs: Readonly<Record<GlyphName, { width: number; height: number;
       path: "M0 0h9v1h-9zM0 1h9v1h-9zM0 2h1v1h-1zM8 2h1v1h-1zM0 3h1v1h-1zM8 3h1v1h-1zM0 4h1v1h-1zM8 4h1v1h-1zM0 5h1v1h-1zM8 5h1v1h-1zM0 6h1v1h-1zM8 6h1v1h-1zM0 7h9v1h-9z",
     },
     minimize: { width: 8, height: 7, path: "M0 5h6v1h-6zM0 6h6v1h-6z" },
+    option: {
+      width: 8,
+      height: 7,
+      path: "M0 0h3v1h-3zM5 0h3v1h-3zM2 1h1v1h-1zM2 2h1v1h-1zM3 3h1v1h-1zM3 4h1v1h-1zM4 5h1v1h-1zM4 6h4v1h-4z",
+    },
     restore: {
       width: 8,
       height: 8,

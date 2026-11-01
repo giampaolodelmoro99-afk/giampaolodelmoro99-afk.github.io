@@ -2,13 +2,16 @@ export const bootId = "rr-boot";
 
 export const bootScript = `addEventListener("load",function(){setTimeout(function(){var b=document.getElementById("${bootId}"),s=document.createElement("script");s.type="module";s.textContent=b.textContent;document.body.appendChild(s)},0)},{once:true})`;
 
-const modulePreload = /<link rel="modulepreload" href="[^"]+"\/>/g;
+const modulePreload = /<link rel="modulepreload" href="([^"]+)"\/>/g;
 const bootstrap = /<script type="module" async="">([\s\S]*?)<\/script>/g;
 
 /**
  * Rinvia il download e l'esecuzione del JavaScript di React Router a dopo
  * l'evento load: il contenuto prerenderizzato viene dipinto senza attendere
  * il bundle (vedi docs/adr/0006-spa-react-router-con-prerender.md).
+ * I modulepreload restano nell'HTML con media="not all": il browser non li
+ * scarica, e React, che all'idratazione li cerca per href, non li reinserisce
+ * nella head (WebKit avviserebbe di preload non usati; ADR-0013).
  * @param {string} html
  * @returns {{ html: string, payload: string }}
  */
@@ -19,7 +22,7 @@ export function deferHydration(html) {
   }
   const payload = matches[0]?.[1] ?? "";
   const deferred = html
-    .replace(modulePreload, "")
+    .replace(modulePreload, '<link rel="modulepreload" href="$1" media="not all"/>')
     .replace(
       bootstrap,
       `<script type="text/plain" id="${bootId}">${payload}</script><script>${bootScript}</script>`,

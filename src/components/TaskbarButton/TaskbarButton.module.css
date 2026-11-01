@@ -20,6 +20,8 @@
   align-items: center;
   gap: var(--space-1);
   min-inline-size: 0;
+  overflow: auto hidden;
+  scrollbar-width: none;
 }
 
 .root {
@@ -49,15 +51,34 @@
 
 .root[data-selected],
 .root[data-selected][data-hovered] {
-  --_bevel: var(--bevel-sunken);
+  --_bevel: var(--taskbar-active-bevel);
 
-  background: var(--dither);
+  background: var(--taskbar-active-background);
+  color: var(--taskbar-active-text);
   font-weight: var(--font-weight-bold);
+}
+
+.root[data-focus-visible] {
+  --_shadow: var(--_bevel), var(--focus-halo-inset);
+
+  outline-offset: var(--focus-offset-inset);
 }
 
 .root[data-selected] > .content,
 .root[data-pressed] > .content {
   translate: var(--offset-pressed) var(--offset-pressed);
+}
+
+.iconButton {
+  flex: none;
+  justify-content: center;
+  min-inline-size: var(--target-min);
+  padding-inline: var(--space-1);
+}
+
+.root[data-unavailable] .icon {
+  filter: grayscale(1);
+  opacity: var(--opacity-unavailable);
 }
 
 .root[data-disabled] .icon {

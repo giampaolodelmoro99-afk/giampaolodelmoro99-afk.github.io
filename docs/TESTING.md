@@ -8,7 +8,7 @@
 | Unit e componenti    | Vitest + React Testing Library + user-event + vitest-axe (jsdom) | Logica, rendering, interazione, accessibilità strutturale                                             |
 | HTML prerenderizzato | Vitest (node) + jsdom sul build                                  | Contenuto, metadati, JSON-LD, CSP leggibili senza JS                                                  |
 | End-to-end           | Playwright + @axe-core/playwright                                | Navigazione reale, viewport, touch, tastiera, console pulita, nessuna terza parte, regressione visiva |
-| Budget               | size-limit, Lighthouse CI                                        | Peso del JS e del CSS iniziali, punteggio 100 su mobile e desktop                                     |
+| Budget               | size-limit, Lighthouse CI                                        | Peso del JS e del CSS iniziali, Lighthouse e Web Vitals (ADR-0018)                                    |
 
 ## 2. Strumenti e versioni
 
@@ -18,37 +18,41 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la s
 
 ## 3. Soglie
 
-| Controllo       | Soglia                                                                                                                                                             | Dove                  |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
-| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                         | `vitest.config.ts`    |
-| Lighthouse      | Accessibility, Best Practices, SEO 100; Performance ≥ 95 a ogni commit e 100 (mediana di 5) a fine fase e release; LCP, FCP, TBT e CLS con budget fissi (ADR-0013) | `lighthouserc.*.json` |
-| JS iniziale     | ≤ 115 kB gzip (F1B: 110,81 kB con il chunk `framework`)                                                                                                            | `.size-limit.js`      |
-| Componenti      | JS ≤ 99 kB, CSS ≤ 5 kB, guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)                                                                               | `.size-limit.js`      |
-| CSS iniziale    | ≤ 12 kB gzip                                                                                                                                                       | `.size-limit.js`      |
-| Font in preload | ≤ 25 kB (woff2)                                                                                                                                                    | `.size-limit.js`      |
-| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms                                                                      | `performance.spec.ts` |
-| axe             | 0 violazioni WCAG 2.2 AA                                                                                                                                           | unit ed e2e           |
-| Console         | 0 errori e warning                                                                                                                                                 | fixture e2e           |
-| Terze parti     | 0 richieste verso altre origini                                                                                                                                    | fixture e2e           |
+Questa tabella e PERFORMANCE_SEO.md §1–2 sono le uniche fonti delle soglie: gli altri documenti rimandano qui.
+
+| Controllo       | Soglia                                                                                                                                                                                                     | Dove                  |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                                                                 | `vitest.config.ts`    |
+| Lighthouse      | Accessibility, Best Practices, SEO 100; Performance ≥ 90 a ogni push; a fine fase e release desktop 100 e mobile ≥ 90; LCP ≤ 2,5 s, TBT ≤ 200 ms, CLS ≤ 0,1; 3 esecuzioni, mediana (ADR-0018)              | `lighthouserc.*.json` |
+| JS iniziale     | ≤ 124 kB gzip (F2A: 117,8 kB con il guscio statico del desktop, ADR-0014); chunk del desktop ≤ 77 kB, chunk di Esegui ≤ 5 kB, di Spegni ≤ 8 kB e del congedo ≤ 1 kB (ADR-0020), sprite delle icone ≤ 14 kB | `.size-limit.js`      |
+| Componenti      | JS ≤ 99 kB, CSS ≤ 6 kB (ADR-0020), guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)                                                                                                            | `.size-limit.js`      |
+| CSS iniziale    | ≤ 12 kB gzip                                                                                                                                                                                               | `.size-limit.js`      |
+| Font in preload | ≤ 25 kB (woff2)                                                                                                                                                                                            | `.size-limit.js`      |
+| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms                                                                                                              | `performance.spec.ts` |
+| axe             | 0 violazioni WCAG 2.2 AA                                                                                                                                                                                   | unit ed e2e           |
+| Console         | 0 errori e warning                                                                                                                                                                                         | fixture e2e           |
+| Terze parti     | 0 richieste verso altre origini                                                                                                                                                                            | fixture e2e           |
 
 **Le soglie non si abbassano.** Un'eccezione richiede un ADR.
 
 ## 4. Viewport e progetti Playwright
 
-| Progetto          | Viewport / dispositivo             | Esclude                           |
-| ----------------- | ---------------------------------- | --------------------------------- |
-| `chromium-320`    | 320×640                            | `touch.spec.ts`                   |
-| `chromium-375`    | 375×667                            | `touch.spec.ts`                   |
-| `chromium-768`    | 768×1024                           | `touch.spec.ts`                   |
-| `chromium-1024`   | 1024×768                           | `touch.spec.ts`                   |
-| `chromium-1440`   | 1440×900                           | `touch.spec.ts`                   |
-| `touch-pixel-7`   | Pixel 7 (Chromium, touch)          | `visual`, `keyboard`              |
-| `touch-iphone-14` | iPhone 14 (WebKit, touch)          | `visual`, `keyboard`              |
-| `firefox-1440`    | Firefox 1440×900                   | `visual`, `touch`                 |
-| `performance`     | Pixel 7 (Chromium, CPU 4× via CDP) | esegue solo `performance.spec.ts` |
-| `storybook`       | Chromium 1024×768                  | esegue solo `tests/storybook/`    |
+| Progetto          | Viewport / dispositivo             | Esclude                                                                                                                                                                                                      |
+| ----------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `chromium-320`    | 320×640                            | `touch.spec.ts`                                                                                                                                                                                              |
+| `chromium-375`    | 375×667                            | `touch.spec.ts`                                                                                                                                                                                              |
+| `chromium-768`    | 768×1024                           | `touch.spec.ts`                                                                                                                                                                                              |
+| `chromium-1024`   | 1024×768                           | `touch.spec.ts`                                                                                                                                                                                              |
+| `chromium-1440`   | 1440×900                           | `touch.spec.ts`                                                                                                                                                                                              |
+| `touch-pixel-7`   | Pixel 7 (Chromium, touch)          | `visual`, `keyboard`                                                                                                                                                                                         |
+| `touch-iphone-14` | iPhone 14 (WebKit, touch)          | `visual`, `keyboard`                                                                                                                                                                                         |
+| `firefox-1440`    | Firefox 1440×900                   | `visual`, `touch`                                                                                                                                                                                            |
+| `performance`     | Pixel 7 (Chromium, CPU 4× via CDP) | esegue solo `performance.spec.ts` (tag `@performance`), **da solo con un worker**: job dedicato in CI, dopo il resto in `npm run test:e2e`; con altri test in parallelo la CPU contesa falsa long task e INP |
+| `storybook`       | Chromium 1024×768                  | esegue solo `tests/storybook/`                                                                                                                                                                               |
 
-Il progetto `storybook` avvia Chromium senza `--hide-scrollbars` (l'opzione predefinita di Playwright in headless nasconde le barre), così screenshot e test vedono la barra di scorrimento GDM 95. Apre le story da `build/client/storybook/` (`iframe.html?id=…&globals=…`): screenshot delle story con tag `visual` e axe con contrasto su tutte le story, in tema classico e alto contrasto, con input mouse e touch; in touch ogni controllo deve misurare almeno 44×44 px. Prima di misurare si aspetta la fine delle animazioni non infinite (per esempio l'apertura dei menu). Se l'elemento o un suo antenato è nascosto con lo schema di `VisuallyHidden` (`clip: rect(0 0 0 0)` o `clip-path: inset(50%)`; una `clip-path` decorativa non conta) (gli input di React Aria stanno in uno `<span>` `VisuallyHidden`), si misura l'etichetta che lo contiene, cioè l'area da toccare; se è nascosta anche l'etichetta (il `HiddenSelect` di React Aria per i form), l'elemento non è un bersaglio e non si misura. Gli elementi con `display: contents` (le celle di GridList) non hanno un riquadro proprio: il bersaglio è la riga che li contiene (`role=row`), misurata a sua volta. L'addon a11y di Storybook è in modalità manuale nei test, per non eseguire axe due volte.
+Il progetto `storybook` avvia Chromium senza `--hide-scrollbars` (l'opzione predefinita di Playwright in headless nasconde le barre), così screenshot e test vedono la barra di scorrimento GDM 95. Apre le story da `build/client/storybook/` (`iframe.html?id=…&globals=…`): screenshot delle story con tag `visual` in due combinazioni, classico con il mouse e alto contrasto con il touch (ADR-0019); axe con contrasto su tutte le story in tutte e quattro le combinazioni (tema × input); in touch ogni controllo deve misurare almeno 44×44 px. Prima di misurare si aspetta la fine delle animazioni non infinite (per esempio l'apertura dei menu). Se l'elemento o un suo antenato è nascosto con lo schema di `VisuallyHidden` (`clip: rect(0 0 0 0)` o `clip-path: inset(50%)`; una `clip-path` decorativa non conta) (gli input di React Aria stanno in uno `<span>` `VisuallyHidden`), si misura l'etichetta che lo contiene, cioè l'area da toccare; se è nascosta anche l'etichetta (il `HiddenSelect` di React Aria per i form), l'elemento non è un bersaglio e non si misura. Gli elementi con `display: contents` (le celle di GridList) non hanno un riquadro proprio: il bersaglio è la riga che li contiene (`role=row`), misurata a sua volta. L'addon a11y di Storybook è in modalità manuale nei test, per non eseguire axe due volte.
+
+**In locale, durante il lavoro**, gli e2e girano solo su Chromium: `npm run test:e2e:chromium` (1440, 375 e Pixel 7, nel container). La matrice completa gira in CI a ogni push e nella verifica di fine fase (`npm run test:e2e`, ADR-0019).
 
 I test specifici di un tipo di input stanno in file dedicati (`keyboard.spec.ts`, `touch.spec.ts`), assegnati ai progetti dalla configurazione. Mai `test.skip` condizionali.
 
@@ -72,6 +76,8 @@ Le query si fanno per ruolo e nome (`getByRole`), non per classe o test id, salv
 
 ## 6. Regressione visiva
 
+- **Solo gli stati principali e due combinazioni** (ADR-0019): il tag `visual` va sugli stati che portano una decisione di design (stati, default, aperto, focus quando è una deroga), non su ogni hover o pressione; le story si fotografano in classico con il mouse e in alto contrasto con il touch. Le altre story restano per la documentazione e per axe.
+
 - `tests/e2e/visual.spec.ts` (pagine) e `tests/storybook/components.visual.spec.ts` (story), tag `@visual`, solo sui progetti Chromium.
 - Baseline in `tests/e2e/__screenshots__/<progetto>/` e `tests/storybook/__screenshots__/storybook/`.
 - **Si generano solo nel container** (`npm run test:e2e:update-snapshots`): il rendering dei font dell'host differisce da quello della CI.
@@ -82,7 +88,7 @@ Le query si fanno per ruolo e nome (`getByRole`), non per classe o test id, salv
 
 `src/components/prerenderStyles.test.tsx` rende ogni story dei componenti con `renderToString` e confronta gli attributi `style` con l'elenco dei casi noti del tipo C (ADR-0012). Le story si cercano sul disco a ogni esecuzione: con `import.meta.glob` la cache dei moduli di Vitest 5 (`node_modules/.vitest-cache`) non vedeva i file nuovi.
 
-`tests/prerender/html.test.ts` legge `build/client` (serve prima `npm run build`). Per ogni route e lingua verifica:
+`tests/prerender/html.test.ts` legge `build/client` (basta `npm run build:site`, poi `npm run test:prerender:site`); `tests/prerender/storybook.test.ts` controlla i file di Storybook e serve la build completa (`npm run build`, poi `npm run test:prerender`). Per ogni route e lingua verifica:
 
 - `lang`, title, description
 - canonical e hreflang (incluso x-default)
@@ -90,7 +96,7 @@ Le query si fanno per ruolo e nome (`getByRole`), non per classe o test id, salv
 - JSON-LD valido
 - contenuto principale senza JS
 - CSP come primo meta, con l'hash di ogni script inline e del payload di avvio
-- assenza di `modulepreload`
+- `modulepreload` solo inerti (`media="not all"`)
 
 Verifica anche `404.html` (noindex) e che **nessun file statico contenga l'email in chiaro**.
 
@@ -111,10 +117,13 @@ Per ogni caso si verificano messaggio, canale alternativo, dati conservati e axe
 ```bash
 npm run test               # unit (anche nel pre-push)
 npm run test:coverage      # unit con soglie
-npm run build && npm run test:prerender
-npm run test:e2e           # suite completa nel container (come la CI)
+npm run build:site && npm run test:prerender:site   # durante il lavoro
+npm run build && npm run test:prerender             # quando cambiano le story, a fine fase, in CI
+npm run test:e2e:chromium  # durante il lavoro: solo Chromium, nel container
+npm run test:e2e           # suite completa nel container (come la CI), a fine fase
 npm run test:e2e:host      # e2e sull'host senza @visual, per iterare
-npm run size
+npm run size              # totali e chunk (anche in CI)
+npm run size:components   # in più le voci per componente: a fine fase o con un componente nuovo
 npm run lhci:mobile && npm run lhci:desktop                 # livello commit
 npm run lhci:mobile:strict && npm run lhci:desktop:strict   # chiusura di fase e release
 ```

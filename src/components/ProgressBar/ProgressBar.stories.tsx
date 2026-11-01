@@ -35,6 +35,5 @@ export const Stati: Story = {
 };
 
 export const Indeterminata: Story = {
-  tags: ["visual"],
   args: { label: "Invio del messaggio", isIndeterminate: true },
 };

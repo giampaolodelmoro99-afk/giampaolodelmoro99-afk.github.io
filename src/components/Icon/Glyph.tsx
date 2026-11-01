@@ -1,5 +1,6 @@
 import { cx } from "../cx";
 import { type GlyphName, glyphs } from "./glyphData";
+import sizes from "./glyphSizes.module.css";
 import styles from "./Icon.module.css";
 
 export type GlyphProps = {
@@ -12,8 +13,7 @@ export function Glyph({ name, className }: GlyphProps) {
 
   return (
     <svg
-      className={cx(styles.glyph, className)}
-      style={{ "--glyph-width": width, "--glyph-height": height }}
+      className={cx(styles.glyph, sizes[name], className)}
       viewBox={`0 0 ${width} ${height}`}
       shapeRendering="crispEdges"
       aria-hidden="true"

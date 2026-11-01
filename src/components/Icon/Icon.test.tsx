@@ -39,14 +39,15 @@ describe("Icon", () => {
     ]);
   });
 
-  it("disegna a pixel netti con il contorno per primo e i colori dai token", () => {
+  it("disegna a pixel netti dal simbolo dello sprite, con il contorno dal token", () => {
     const { container } = render(<Icon name="terminal" size={16} className="extra" />);
     const svg = container.querySelector("svg");
     expect(svg).toHaveAttribute("shape-rendering", "crispEdges");
     expect(svg).toHaveClass("root", "extra");
-    const roles = [...container.querySelectorAll("path")].map((path) => path.getAttribute("class"));
-    expect(roles[0]).toBe("pixelOutline");
-    expect(roles).toContain("pixelBlack");
+    expect(container.querySelector("path")).toBeNull();
+    expect(container.querySelector("use")?.getAttribute("href")).toMatch(
+      /iconSprite[^#]*\.svg#terminal-16$/,
+    );
   });
 
   it("esiste a 32 px per ogni nome e a 16 px per tutte tranne le icone dei dialoghi", () => {
@@ -68,14 +69,13 @@ describe("Icon", () => {
 });
 
 describe("Glyph", () => {
-  it("è decorativo e riceve le dimensioni in pixel come variabili CSS", () => {
+  it("è decorativo e riceve le dimensioni in pixel da una classe, senza attributo style", () => {
     const { container } = render(<Glyph name="close" className="extra" />);
     const svg = container.querySelector("svg");
     expect(svg).toHaveAttribute("aria-hidden", "true");
     expect(svg).toHaveAttribute("viewBox", "0 0 8 7");
-    expect(svg).toHaveClass("glyph", "extra");
-    expect(svg?.style.getPropertyValue("--glyph-width")).toBe("8");
-    expect(svg?.style.getPropertyValue("--glyph-height")).toBe("7");
+    expect(svg).toHaveClass("glyph", "close", "extra");
+    expect(svg).not.toHaveAttribute("style");
   });
 
   it.each(glyphNames)("disegna il glifo %s", (name) => {

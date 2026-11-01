@@ -45,7 +45,6 @@ export const Default: Story = {
 };
 
 export const Focus: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     const region = canvas.getByRole("region", { name: "Come funziona il portfolio" });
     await afterLayout();

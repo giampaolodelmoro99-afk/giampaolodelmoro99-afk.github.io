@@ -51,17 +51,19 @@ export function parseIcon(svg) {
 
   let outlineFound = false;
   /** @type {[string, string][]} */
-  const paths = [...svg.matchAll(/<path fill="(#[0-9a-f]{6})" d="([^"]+)"\/>/g)].map((match) => {
-    const fill = match[1] ?? "";
-    const d = match[2] ?? "";
-    const role = roles.get(fill);
-    if (!role) throw new Error(`colore fuori tavolozza: ${fill}`);
-    if (fill === "#000000" && !outlineFound) {
-      outlineFound = true;
-      return ["pixelOutline", d];
-    }
-    return [role, d];
-  });
+  const paths = [...svg.matchAll(/<path fill="(#[0-9a-f]{6})" d="([^"]+)"(?:\/>|><\/path>)/g)].map(
+    (match) => {
+      const fill = match[1] ?? "";
+      const d = match[2] ?? "";
+      const role = roles.get(fill);
+      if (!role) throw new Error(`colore fuori tavolozza: ${fill}`);
+      if (fill === "#000000" && !outlineFound) {
+        outlineFound = true;
+        return ["pixelOutline", d];
+      }
+      return [role, d];
+    },
+  );
   if (paths.length !== elements.length - 1) throw new Error("path in formato non previsto");
   return { size: Number(viewBox[1]), paths };
 }
@@ -94,26 +96,28 @@ export function rowsToPath(rows, pixel) {
 
 /**
  * @param {Record<string, IconData>} icons
- * @returns {string}
+ * @returns {Record<string, number[]>}
  */
-export function renderIconModule(icons) {
-  /** @type {Record<string, Record<number, IconData>>} */
-  const table = {};
+function sizesByName(icons) {
+  /** @type {Record<string, number[]>} */
+  const sizes = {};
   for (const key of Object.keys(icons).toSorted()) {
     const icon = icons[key];
     if (!icon) continue;
     const name = key.replace(/-\d+$/, "");
-    table[name] = { ...table[name], [icon.size]: icon };
+    sizes[name] = [...(sizes[name] ?? []), icon.size];
   }
-  const sizes = Object.fromEntries(
-    Object.entries(table).map(([name, bySize]) => [name, Object.keys(bySize).map(Number)]),
-  );
-  const entries = Object.entries(table).map(([name, bySize]) => {
-    const variants = Object.values(bySize).map(
-      (icon) => `    ${icon.size}: { size: ${icon.size}, paths: ${JSON.stringify(icon.paths)} },`,
-    );
-    return [`  ${name}: {`, ...variants, "  },"].join("\n");
-  });
+  return sizes;
+}
+
+/**
+ * Nomi e misure delle icone: i disegni stanno nello sprite (renderIconSprite),
+ * fuori dal JavaScript.
+ * @param {Record<string, IconData>} icons
+ * @returns {string}
+ */
+export function renderIconModule(icons) {
+  const sizes = sizesByName(icons);
   return [
     "// File generato da scripts/icons.mjs a partire da src/assets/icons: non modificarlo a mano.",
     "",
@@ -123,21 +127,65 @@ export function renderIconModule(icons) {
     "",
     "export type IconSize<Name extends IconName> = (typeof iconSizes)[Name][number];",
     "",
-    `export const iconNames: readonly IconName[] = ${JSON.stringify(Object.keys(table))};`,
+    `export const iconNames: readonly IconName[] = ${JSON.stringify(Object.keys(sizes))};`,
     "",
-    "export type PixelRole =",
-    ...["pixelOutline", ...Object.values(colorRoles)].map((role) => `  | ${JSON.stringify(role)}`),
-    "  ;",
+  ].join("\n");
+}
+
+/** @type {Map<string, string>} */
+const roleColors = new Map(Object.entries(colorRoles).map(([hex, role]) => [role, hex]));
+
+/**
+ * Sprite SVG con un <symbol> per icona e misura (id "nome-misura"). Il contorno
+ * usa currentColor, che Icon lega a --color-pixel-outline (bianco in alto
+ * contrasto, CanvasText in forced-colors); gli altri colori sono quelli della
+ * tavolozza, uguali nei due temi. Nessun elemento <style> né attributo style,
+ * così la CSP del sito non entra in gioco (ADR-0014).
+ * @param {Record<string, IconData>} icons
+ * @returns {string}
+ */
+export function renderIconSprite(icons) {
+  const symbols = Object.keys(icons)
+    .toSorted()
+    .map((key) => {
+      const icon = icons[key];
+      if (!icon) return "";
+      const paths = icon.paths
+        .map(([role, d]) => {
+          const fill = role === "pixelOutline" ? "currentColor" : roleColors.get(role);
+          if (!fill) throw new Error(`ruolo senza colore: ${role}`);
+          return `<path fill="${fill}" d="${d}"/>`;
+        })
+        .join("");
+      return `<symbol id="${key}" viewBox="0 0 ${icon.size} ${icon.size}">${paths}</symbol>`;
+    });
+  return [
+    '<svg xmlns="http://www.w3.org/2000/svg">',
+    "<!-- File generato da scripts/icons.mjs a partire da src/assets/icons: non modificarlo a mano. -->",
+    ...symbols,
+    "</svg>",
     "",
-    "export type IconData = { size: number; paths: ReadonlyArray<readonly [PixelRole, string]> };",
+  ].join("\n");
+}
+
+/**
+ * Dimensioni dei glifi come classi di un CSS Module, una per glifo: Glyph usa
+ * la classe al posto di un attributo style, che la CSP bloccherebbe nell'HTML
+ * prerenderizzato (ADR-0012, tipo C).
+ * @param {Record<string, string[]>} glyphs
+ * @returns {string}
+ */
+export function renderGlyphSizes(glyphs) {
+  const rules = Object.keys(glyphs)
+    .toSorted()
+    .map((name) => {
+      const rows = glyphs[name] ?? [];
+      return `.${name} {\n  --_glyph-width: ${rows[0]?.length ?? 0};\n  --_glyph-height: ${rows.length};\n}`;
+    });
+  return [
+    "/* File generato da scripts/icons.mjs a partire da src/components/Icon/glyphs.json: non modificarlo a mano. */",
     "",
-    "export type IconTable = {",
-    "  readonly [Name in IconName]: Readonly<Record<IconSize<Name>, IconData>>;",
-    "};",
-    "",
-    "export const icons: IconTable = {",
-    ...entries,
-    "};",
+    rules.join("\n\n"),
     "",
   ].join("\n");
 }

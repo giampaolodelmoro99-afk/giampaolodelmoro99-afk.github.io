@@ -3,20 +3,169 @@ export const it = {
     siteName: "Gianpaolo Del Moro",
     ogLocale: "it_IT",
     desktop: {
-      title: "Gianpaolo Del Moro | Full Stack Developer",
+      title: "Gianpaolo Del Moro · Full Stack Developer",
+      socialTitle: "Full Stack Developer · Studente ITS Academy Prodigi",
       description:
-        "Portfolio di Gianpaolo Del Moro, Full Stack Developer in formazione a Pisa, in un'interfaccia in stile Windows 95. Sito in costruzione.",
+        "Portfolio in stile Windows 95 di Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Progetti con Laravel, React e WordPress.",
+    },
+    about: {
+      title: "About · Gianpaolo Del Moro",
+      socialTitle: "About · Gianpaolo Del Moro",
+      description:
+        "Chi sono: Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa, con Laravel, React e WordPress.",
+    },
+    projects: {
+      title: "Progetti · Gianpaolo Del Moro",
+      socialTitle: "Progetti · Gianpaolo Del Moro",
+      description:
+        "Progetti di Gianpaolo Del Moro con Laravel, Node.js e React: API REST, autenticazione e database, con il codice su GitHub.",
+    },
+    cv: {
+      title: "CV · Gianpaolo Del Moro",
+      socialTitle: "CV · Gianpaolo Del Moro",
+      description:
+        "Curriculum di Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa, in versione stampabile.",
+    },
+    contacts: {
+      title: "Contatti · Gianpaolo Del Moro",
+      socialTitle: "Contatti · Gianpaolo Del Moro",
+      description:
+        "Come contattare Gianpaolo Del Moro, Full Stack Developer a Pisa: modulo di contatto, email e GitHub.",
+    },
+    simpleView: {
+      title: "Vista semplice · Gianpaolo Del Moro",
+      socialTitle: "Vista semplice · Gianpaolo Del Moro",
+      description:
+        "Il portfolio di Gianpaolo Del Moro senza finestre: tutti i contenuti in una pagina semplice da leggere.",
+    },
+    skills: {
+      title: "Skills · Gianpaolo Del Moro",
+      socialTitle: "Skills · Gianpaolo Del Moro",
+      description:
+        "Le tecnologie di Gianpaolo Del Moro, con il livello e il contesto in cui le usa: Laravel, PHP, React, JavaScript, SQL e WordPress.",
+    },
+    timeline: {
+      title: "Timeline · Gianpaolo Del Moro",
+      socialTitle: "Timeline · Gianpaolo Del Moro",
+      description:
+        "Il percorso di Gianpaolo Del Moro: studi, ITS Academy Prodigi ed esperienze, in ordine di tempo.",
+    },
+    makingOf: {
+      title: "Making of · Gianpaolo Del Moro",
+      socialTitle: "Making of · Gianpaolo Del Moro",
+      description:
+        "Come è fatto questo portfolio in stile Windows 95: scelte tecniche, accessibilità, prestazioni e lavoro con l'AI.",
+    },
+    terminal: {
+      title: "Terminale · Gianpaolo Del Moro",
+      socialTitle: "Terminale · Gianpaolo Del Moro",
+      description:
+        "Un terminale nel portfolio di Gianpaolo Del Moro: comandi per aprire progetti, CV e contatti dalla tastiera.",
+    },
+    minefield: {
+      title: "Campo minato · Gianpaolo Del Moro",
+      socialTitle: "Campo minato · Gianpaolo Del Moro",
+      description:
+        "Campo minato nel portfolio di Gianpaolo Del Moro, giocabile con mouse, touch e tastiera.",
+    },
+    controlPanel: {
+      title: "Pannello di controllo · Gianpaolo Del Moro",
+      socialTitle: "Pannello di controllo · Gianpaolo Del Moro",
+      description:
+        "Impostazioni del portfolio: tema, alto contrasto, dimensione del testo, animazioni, suoni e lingua.",
+    },
+    privacy: {
+      title: "Privacy · Gianpaolo Del Moro",
+      socialTitle: "Privacy · Gianpaolo Del Moro",
+      description:
+        "Informativa privacy del portfolio di Gianpaolo Del Moro: dati trattati, fornitori, storage e diritti.",
+    },
+    trash: {
+      title: "Cestino · Gianpaolo Del Moro",
+      socialTitle: "Cestino · Gianpaolo Del Moro",
+      description:
+        "Il Cestino del portfolio: dentro c'è la prima versione del sito di Gianpaolo Del Moro.",
     },
   },
+  apps: {
+    about: "About",
+    projects: "Progetti",
+    cv: "CV",
+    contacts: "Contatti",
+    simpleView: "Vista semplice",
+    skills: "Skills",
+    timeline: "Timeline",
+    makingOf: "Making of",
+    terminal: "Terminale",
+    minefield: "Campo minato",
+    controlPanel: "Pannello di controllo",
+    privacy: "Privacy",
+    trash: "Cestino",
+  },
   person: {
-    jobTitle: "Full Stack Developer (in formazione)",
+    jobTitle: "Full Stack Developer · Studente ITS Academy Prodigi",
   },
   desktop: {
     heading: "Gianpaolo Del Moro",
-    tagline:
-      "Full Stack Developer in formazione. Il nuovo portfolio in stile Windows 95 è in costruzione.",
+    tagline: "Full Stack Developer · Studente ITS Academy Prodigi",
     languageNavLabel: "Lingua",
-    languageName: "Versione italiana",
+    languageName: "IT, Versione italiana",
+    languageShort: "IT",
+    skipLink: "Salta al contenuto",
+    iconsLabel: "Icone del desktop",
+    taskbarLabel: "Barra delle applicazioni",
+    placeholder: "Il contenuto di questa finestra è in arrivo.",
+    windowsButton: "Finestre aperte ({shortcut})",
+    windowsButtonEmpty: "Finestre aperte: nessuna",
+    altKey: "Alt+",
+    optionKey: "Option+",
+    switcherHint: "{alt}W avanza · Maiusc+{alt}W torna indietro · Invio attiva · Esc annulla",
+    loadFailed: "Non riesco ad aprire questa finestra: ricarica la pagina.",
+    run: "Esegui…",
+    runNotFound: 'Non trovo "{command}". Prova con progetti, cv o contatti.',
+    shutdown: "Spegni…",
+    farewell: {
+      tabTitle: "Spento · {name}",
+      heading: "Puoi chiudere questa scheda.",
+      message:
+        "Il desktop è spento. Grazie della visita: se cambi idea, riaccendilo e ricomincia da dove vuoi.",
+      restart: "Riaccendi",
+    },
+    contextMenu: {
+      label: "Desktop",
+      open: "Apri",
+      arrange: "Disponi icone",
+      byName: "Per nome",
+      byType: "Per tipo",
+      lineUp: "Allinea alla griglia",
+      refresh: "Aggiorna",
+      properties: "Proprietà",
+    },
+    clockLabel: "Ora",
+    minimizedLabel: "{app}, finestra ridotta a icona",
+    announce: {
+      opened: "{app}: finestra aperta",
+      closed: "{app}: finestra chiusa",
+      minimized: "{app}: finestra ridotta a icona",
+      moveStart:
+        "Spostamento di {app}: usa le frecce, Maiusc per passi più lunghi, Invio per confermare, Esc per annullare.",
+      resizeStart:
+        "Ridimensionamento di {app}: usa le frecce, Maiusc per passi più lunghi, Invio per confermare, Esc per annullare.",
+      moved: "{app}: finestra spostata",
+      resized: "{app}: finestra ridimensionata",
+      cancelled: "Annullato",
+    },
+  },
+  about: {
+    bio: "Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia con Laravel e React, e siti con WordPress. Continuo a studiare per crescere ogni giorno come sviluppatore.",
+    nextHeading: "Da qui puoi",
+    nextLabel: "Altre finestre",
+    links: {
+      projects: "Vedere i progetti",
+      cv: "Leggere il CV",
+      contacts: "Scrivermi",
+      github: "GitHub",
+    },
   },
   notFound: {
     title: "Pagina non trovata | Gianpaolo Del Moro",

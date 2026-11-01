@@ -3,7 +3,7 @@ import { AriaRouterProvider } from "../../components/AriaRouterProvider";
 import { cx } from "../../components/cx";
 import { getDictionary } from "../../i18n";
 import { routeMap } from "../../routes/routeMap";
-import styles from "../desktop/Desktop.module.css";
+import styles from "./NotFound.module.css";
 
 export function NotFound() {
   const it = getDictionary("it");

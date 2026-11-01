@@ -2,7 +2,13 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { generatedModules } from "./icon-sources.mjs";
-import { parseIcon, renderGlyphModule, rowsToPath } from "./icons.mjs";
+import {
+  colorRoles,
+  parseIcon,
+  renderGlyphModule,
+  renderIconSprite,
+  rowsToPath,
+} from "./icons.mjs";
 
 /** @param {string} body @param {string} [attributes] */
 const svg = (body, attributes = 'viewBox="0 0 16 16" shape-rendering="crispEdges"') =>
@@ -23,6 +29,16 @@ describe("parseIcon", () => {
         ["pixelBlack", "M2 2h1v1h-1z"],
       ],
     });
+  });
+
+  it("accetta i path chiusi con il tag di chiusura (icone del pacchetto F2A)", () => {
+    const icon = parseIcon(
+      svg('<path fill="#000000" d="M0 0h1v1h-1z"></path><path fill="#ffffff" d="M1 1h1v1h-1z"/>'),
+    );
+    expect(icon.paths).toEqual([
+      ["pixelOutline", "M0 0h1v1h-1z"],
+      ["pixelWhite", "M1 1h1v1h-1z"],
+    ]);
   });
 
   it.each([
@@ -51,6 +67,44 @@ describe("rowsToPath", () => {
   });
 });
 
+describe("renderIconSprite", () => {
+  it("crea un simbolo per icona con il contorno in currentColor e i riempimenti della tavolozza", () => {
+    const sprite = renderIconSprite({
+      "cv-16": {
+        size: 16,
+        paths: [
+          ["pixelOutline", "M0 0h1v1h-1z"],
+          ["pixelNavy", "M1 1h1v1h-1z"],
+        ],
+      },
+    });
+    expect(sprite).toContain(
+      '<symbol id="cv-16" viewBox="0 0 16 16"><path fill="currentColor" d="M0 0h1v1h-1z"/><path fill="#000080" d="M1 1h1v1h-1z"/></symbol>',
+    );
+    expect(sprite).not.toMatch(/<style|style=/);
+  });
+
+  it("rifiuta un ruolo senza colore", () => {
+    expect(() =>
+      renderIconSprite({ "cv-16": { size: 16, paths: [["pixelNone", "M0 0z"]] } }),
+    ).toThrow("ruolo senza colore");
+  });
+
+  it("usa per i riempimenti gli stessi colori dei token --color-pixel-*, uguali nei due temi", async () => {
+    const tokens = await readFile(
+      resolve(import.meta.dirname, "../../src/styles/tokens.css"),
+      "utf8",
+    );
+    for (const [hex, role] of Object.entries(colorRoles)) {
+      const name = `--color-pixel-${role.slice(5).toLowerCase()}`;
+      const values = [...tokens.matchAll(new RegExp(`${name}:\\s*([^;]+);`, "g"))].map((match) =>
+        match[1]?.trim(),
+      );
+      expect(values.filter((value) => value?.startsWith("#"))).toEqual([hex]);
+    }
+  });
+});
+
 describe("renderGlyphModule", () => {
   it("elenca i glifi in ordine e scompone il cerchio del radio per tinta", () => {
     const source = renderGlyphModule({ up: ["X"], check: ["XX"] }, ["sk", "wD"]);
@@ -62,7 +116,7 @@ describe("renderGlyphModule", () => {
 });
 
 describe("moduli generati", () => {
-  it("iconData.ts e glyphData.ts sono allineati alle sorgenti (npm run icons)", async () => {
+  it("iconData.ts, glyphData.ts, lo sprite e le classi dei glifi sono allineati alle sorgenti (npm run icons)", async () => {
     const root = resolve(import.meta.dirname, "../..");
     const expected = await generatedModules(root);
     const actual = Object.fromEntries(

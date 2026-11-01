@@ -13,13 +13,16 @@ npm run format:check
 npm run lint
 npm run typecheck
 npm run test:coverage
-npm run build
+npm run build             # completo: sito + Storybook (durante la fase basta build:site)
 npm run test:prerender
 npm run size
-npm run test:e2e          # container, suite completa con screenshot
-npm run lhci:mobile:strict   # Performance 100, mediana di 5 (ADR-0013)
+npm run size:components   # voci per componente, per la tabella di PERFORMANCE_SEO.md
+npm run test:e2e          # container, matrice completa con screenshot (durante la fase basta test:e2e:chromium)
+npm run lhci:mobile:strict   # una sola misura locale a fine fase (soglie: PERFORMANCE_SEO.md §2)
 npm run lhci:desktop:strict
 ```
+
+Lighthouse in locale si lancia **solo qui**, una volta: durante la fase basta la CI. Non si indagano differenze che restano dentro le soglie (ADR-0018).
 
 Se un controllo fallisce: correggi la causa. **Mai** skip, only, test rimossi, soglie abbassate o screenshot aggiornati per far passare (CONTRIBUTING.md). Un'eccezione inevitabile richiede un ADR (skill `new-adr`) e l'approvazione di Gianpaolo.
 
@@ -33,7 +36,13 @@ Nessun test rimosso o indebolito, nessuna soglia abbassata. I test delle fasi pr
 
 ## 3. Review con gli agenti
 
-Lancia `code-reviewer`, `security-auditor`, `a11y-auditor` e `content-reviewer` sul diff della fase. Correggi tutti i **bloccanti**, poi ripeti i controlli di §1 interessati.
+Sul diff della fase (ADR-0019):
+
+- `code-reviewer` e `a11y-auditor` **sempre**;
+- `security-auditor` solo se cambiano dipendenze (`package.json`, lock), CSP (`scripts/lib/csp.mjs`, post-build, Storybook), form o asset (`src/assets`, `public`, ASSETS.md);
+- `content-reviewer` solo se cambiano testi (`src/i18n/`, CONTENT.md, testi in `src/content/`).
+
+Annota nel riepilogo quali agenti hai lanciato e perché gli altri no. Correggi tutti i **bloccanti**, poi ripeti i controlli di §1 interessati.
 
 ## 4. QA nel browser
 
@@ -42,9 +51,10 @@ Con `npm run preview` e Claude in Chrome, esegui `docs/QA_CHECKLIST.md`: desktop
 ## 5. Documentazione
 
 - `docs/phases/phase-NN-retro.md` dal modello, con metriche reali (numero di test, coverage, Lighthouse per route, size).
+- PERFORMANCE_SEO.md: tabella del peso dei componenti con le misure di chiusura (durante la fase size-limit gira solo in CI, ADR-0019).
 - `CHANGELOG.md`: sezione `[phase-NN]`.
 - `docs/PLAN.md`: checkbox della fase.
-- `docs/AI_WORKFLOW.md` §5: lezioni della fase.
+- Lezioni sul lavoro con l'AI solo nella retrospettiva (§8): AI_WORKFLOW.md §5 rimanda lì, non si aggiorna.
 - Altri docs toccati dalla fase.
 
 Commit: `docs: chiude la fase NN con retrospettiva e changelog`.

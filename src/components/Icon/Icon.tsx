@@ -1,6 +1,7 @@
 import type { SVGProps } from "react";
 import { cx } from "../cx";
-import { type IconData, type IconName, type IconSize, iconSizes, icons } from "./iconData";
+import { type IconName, type IconSize, iconSizes } from "./iconData";
+import spriteHref from "./iconSprite.svg?url";
 import styles from "./Icon.module.css";
 
 export type IconScale = 1 | 2 | 3;
@@ -24,10 +25,10 @@ export function Icon<Name extends IconName>({
   label,
   className,
 }: IconProps<Name>) {
-  const variants: Partial<Record<number, IconData>> = icons[name];
-  const data = variants[size ?? Math.max(...iconSizes[name])];
-  if (!data) return null;
-  const pixels = data.size * scale;
+  const sizes: readonly number[] = iconSizes[name];
+  const drawn = size ?? Math.max(...sizes);
+  if (!sizes.includes(drawn)) return null;
+  const pixels = drawn * scale;
   const accessibility: SVGProps<SVGSVGElement> = label
     ? { role: "img", "aria-label": label }
     : { "aria-hidden": true, focusable: false };
@@ -35,15 +36,13 @@ export function Icon<Name extends IconName>({
   return (
     <svg
       className={cx(styles.root, className)}
-      viewBox={`0 0 ${data.size} ${data.size}`}
+      viewBox={`0 0 ${drawn} ${drawn}`}
       width={pixels}
       height={pixels}
       shapeRendering="crispEdges"
       {...accessibility}
     >
-      {data.paths.map(([role, path]) => (
-        <path key={`${role}-${path.slice(0, 16)}`} className={styles[role]} d={path} />
-      ))}
+      <use href={`${spriteHref}#${name}-${drawn}`} />
     </svg>
   );
 }

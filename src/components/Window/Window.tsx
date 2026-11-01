@@ -1,4 +1,10 @@
-import { type ReactNode, useId } from "react";
+import {
+  type ButtonHTMLAttributes,
+  type CSSProperties,
+  type ReactNode,
+  type RefCallback,
+  useId,
+} from "react";
 import { Button } from "react-aria-components/Button";
 import { cx } from "../cx";
 import { Glyph, Icon, type SmallIconName } from "../Icon";
@@ -22,10 +28,23 @@ export type WindowProps = {
   children: ReactNode;
   titleId?: string;
   isLandmark?: boolean;
+  bodyId?: string;
+  bodyClassName?: string | undefined;
+  isBodyInert?: boolean;
+  onActivate?: () => void;
+  titleBarRef?: RefCallback<HTMLElement>;
+  frameRef?: RefCallback<HTMLElement>;
+  overlay?: ReactNode;
+  windowMenu?: ReactNode;
   className?: string | undefined;
+  style?: CSSProperties | undefined;
 };
 
 const allControls: WindowControl[] = ["minimize", "maximize", "close"];
+
+function outOfTabOrder(props: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return <button {...props} tabIndex={-1} />;
+}
 
 export function Window({
   title,
@@ -42,7 +61,16 @@ export function Window({
   children,
   titleId: titleIdProp,
   isLandmark = true,
+  bodyId,
+  bodyClassName,
+  isBodyInert = false,
+  onActivate,
+  titleBarRef,
+  frameRef,
+  overlay,
+  windowMenu,
   className,
+  style,
 }: WindowProps) {
   const generatedId = useId();
   const titleId = titleIdProp ?? generatedId;
@@ -61,17 +89,20 @@ export function Window({
 
   return (
     <Frame
+      ref={frameRef}
       aria-labelledby={isLandmark ? titleId : undefined}
       className={cx(styles.root, className)}
+      style={style}
+      onPointerDownCapture={onActivate}
       data-active={isActive}
       data-maximized={isMaximized || undefined}
       data-variant={variant}
     >
-      <TitleBar className={styles.titlebar}>
-        {icon && <Icon name={icon} size={16} className={cx(styles.titleIcon)} />}
-        <h2 id={titleId} className={styles.title}>
+      <TitleBar ref={titleBarRef} className={styles.titlebar}>
+        {windowMenu ?? (icon && <Icon name={icon} size={16} className={cx(styles.titleIcon)} />)}
+        <span id={titleId} className={styles.title}>
           {title}
-        </h2>
+        </span>
         <span className={styles.controls}>
           {allControls
             .filter((control) => controls.includes(control))
@@ -83,6 +114,7 @@ export function Window({
                   aria-label={label}
                   className={cx(styles.control, control === "close" && styles.close)}
                   {...(onPress ? { onPress } : {})}
+                  {...(isActive ? {} : { render: outOfTabOrder })}
                 >
                   <Glyph name={glyph} />
                 </Button>
@@ -91,10 +123,16 @@ export function Window({
         </span>
       </TitleBar>
       {menu}
-      <div className={variant === "document" ? cx(styles.body, styles.document) : styles.body}>
+      <div
+        id={bodyId}
+        tabIndex={bodyId ? -1 : undefined}
+        inert={isBodyInert || undefined}
+        className={cx(styles.body, variant === "document" && styles.document, bodyClassName)}
+      >
         {children}
       </div>
       {statusBar}
+      {overlay}
     </Frame>
   );
 }

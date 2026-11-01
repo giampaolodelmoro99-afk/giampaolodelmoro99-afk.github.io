@@ -19,13 +19,13 @@ description: Aggiunge una nuova app/finestra al desktop Win95 con route IT/EN e 
    - e2e: deep link IT ed EN (status 200, titolo, contenuto), apertura dal desktop e dal menu Start senza reload, cambio lingua sulla stessa finestra, viewport 320/1440 e touch, screenshot `@visual`
    - prerender: aggiungi la route a `tests/prerender/html.test.ts` se non è coperta automaticamente da `routeMap`
    - Lighthouse: aggiungi gli URL IT ed EN a `lighthouserc.*.json`
-9. **Verifica** con `npm run build && npm run preview` e QA_CHECKLIST.md (anche mobile).
+9. **Verifica** con `npm run build:site && npm run preview` e QA_CHECKLIST.md (anche mobile).
 
 ## Checklist di uscita
 
 - [ ] Deep link IT ed EN funzionanti e prerenderizzati con contenuto completo
 - [ ] Chunk lazy: `npm run size` entro budget
-- [ ] Lighthouse 100 mobile e desktop sui nuovi URL
+- [ ] Lighthouse nelle soglie di ADR-0018 sui nuovi URL (in CI)
 - [ ] axe pulito, tastiera e touch verificati
 - [ ] SPECS.md, ARCHITECTURE.md e PLAN.md aggiornati se serve
 

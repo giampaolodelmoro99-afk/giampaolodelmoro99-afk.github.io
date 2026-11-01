@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { intlLocales } from "./src/routes/routeMap.ts";
 
@@ -32,6 +32,50 @@ if (initialJs.size === 0) {
   throw new Error("bootstrap di React Router non trovato in build/client/index.html");
 }
 
+// Chunk caricati dopo l'idratazione (ADR-0014): gli import dinamici del JS
+// iniziale, con i loro import statici che non sono già nel JS iniziale.
+const dynamicImport = /import\(["`]\.\/([^"`]+\.js)["`]\)/g;
+const lazyJs = new Set();
+const visitLazy = (file) => {
+  if (initialJs.has(file) || lazyJs.has(file)) return;
+  lazyJs.add(file);
+  const source = readFileSync(`${client}${file}`, "utf8");
+  for (const match of source.matchAll(staticImport)) visitLazy(`/assets/${match[1]}`);
+};
+for (const file of initialJs) {
+  const source = readFileSync(`${client}${file}`, "utf8");
+  for (const match of source.matchAll(dynamicImport)) visitLazy(`/assets/${match[1]}`);
+}
+const desktopChunk = [...lazyJs];
+if (!desktopChunk.some((file) => /\/DesktopApp-[^/]+\.js$/.test(file))) {
+  throw new Error("chunk del desktop (DesktopApp) non trovato tra gli import dinamici della home");
+}
+
+// Chunk aperti dal desktop su richiesta (Esegui, Spegni, congedo): gli import
+// dinamici del chunk del desktop, con i loro import statici non ancora caricati.
+const onDemandChunk = (name) => {
+  const root = desktopChunk
+    .flatMap((file) => [...readFileSync(`${client}${file}`, "utf8").matchAll(dynamicImport)])
+    .map((match) => `/assets/${match[1]}`)
+    .find((file) => new RegExp(`/${name}-[^/]+\\.js$`).test(file));
+  if (!root) throw new Error(`chunk ${name} non trovato tra gli import dinamici del desktop`);
+  const files = new Set();
+  const collect = (file) => {
+    if (initialJs.has(file) || lazyJs.has(file) || files.has(file)) return;
+    files.add(file);
+    const source = readFileSync(`${client}${file}`, "utf8");
+    for (const match of source.matchAll(staticImport)) collect(`/assets/${match[1]}`);
+  };
+  collect(root);
+  return [...files].map((file) => `${client}${file}`);
+};
+
+const iconSprite = readdirSync(`${client}/assets`).filter((file) =>
+  /^iconSprite-[\w-]+\.svg$/.test(file),
+);
+if (iconSprite.length !== 1)
+  throw new Error("sprite delle icone non trovato in build/client/assets");
+
 const stylesheets = [...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(
   (match) => `${client}${match[1]}`,
 );
@@ -48,7 +92,32 @@ export default [
   {
     name: "JS iniziale della home (gzip)",
     path: [...initialJs].map((file) => `${client}${file}`),
-    limit: "115 kB",
+    limit: "124 kB",
+    gzip: true,
+    disablePlugins: ["@size-limit/esbuild"],
+  },
+  {
+    name: "Chunk del desktop dopo l'idratazione, JS (gzip)",
+    path: desktopChunk.map((file) => `${client}${file}`),
+    limit: "77 kB",
+    gzip: true,
+    disablePlugins: ["@size-limit/esbuild"],
+  },
+  ...[
+    ["Esegui", "RunDialog", "5 kB"],
+    ["Spegni", "ShutdownDialog", "8 kB"],
+    ["congedo", "FarewellScreen", "1 kB"],
+  ].map(([label, name, limit]) => ({
+    name: `Chunk di ${label} all'apertura, JS (gzip)`,
+    path: onDemandChunk(name),
+    limit,
+    gzip: true,
+    disablePlugins: ["@size-limit/esbuild"],
+  })),
+  {
+    name: "Sprite delle icone (gzip)",
+    path: iconSprite.map((file) => `${client}/assets/${file}`),
+    limit: "14 kB",
     gzip: true,
     disablePlugins: ["@size-limit/esbuild"],
   },
@@ -75,7 +144,10 @@ export default [
 // Aria, optimize-locales su it-IT ed en-US, NODE_ENV di produzione; React,
 // React DOM e React Router stanno nel chunk "framework" e restano fuori.
 // Budget fissati alla chiusura della 1B (misura arrotondata per eccesso al kB):
-// si alzano solo con un ADR. Le altre voci servono all'analisi e non hanno limite.
+// si alzano solo con un ADR. Le altre voci servono all'analisi e non hanno limite:
+// da ADR-0019 si misurano solo con `npm run size:components` (SIZE_COMPONENTS=1),
+// a fine fase o quando si aggiunge un componente; `npm run size` (anche in CI)
+// controlla i totali e i chunk.
 function componentChecks() {
   const folders = {
     Icon: "Icon",
@@ -106,7 +178,21 @@ function componentChecks() {
     AlertDialog: "AlertDialog",
     AlertDialogFrame: "AlertDialog",
   };
-  const components = Object.keys(folders);
+  // Componenti della F2A: dal 01/11/2026 entrano nei totali con budget
+  // (decisione del proprietario, ADR-0020).
+  const phase2aFolders = {
+    TaskbarIconButton: "TaskbarButton",
+    WindowMenu: "WindowMenu",
+    MoveControls: "MoveControls",
+    DragOutline: "DragOutline",
+    ResizeHandles: "ResizeHandles",
+    WindowSwitcher: "WindowSwitcher",
+    ContextMenu: "MenuBar",
+    RunDialog: "RunDialog",
+    ShutdownDialog: "ShutdownDialog",
+    FarewellScreen: "FarewellScreen",
+  };
+  const components = [...Object.keys(folders), ...Object.keys(phase2aFolders)];
   const desktopShell = ["Window", "Taskbar", "TaskbarButton", "StartButton", "DesktopIcons"];
   const framework = ["react", "react-dom", "react/jsx-runtime", "react-router", "scheduler"];
 
@@ -119,13 +205,18 @@ function componentChecks() {
   });
   const index = "src/components/index.ts";
 
-  return [
+  const totals = [
     { ...check("Componenti: totale JS (gzip)", index, components, "js"), limit: "99 kB" },
-    { ...check("Componenti: totale CSS (gzip)", index, components, "css"), limit: "5 kB" },
+    { ...check("Componenti: totale CSS (gzip)", index, components, "css"), limit: "6 kB" },
     {
       ...check("Componenti: guscio del desktop F2A, JS (gzip)", index, desktopShell, "js"),
       limit: "75 kB",
     },
+  ];
+  if (process.env["SIZE_COMPONENTS"] !== "1") return totals;
+
+  return [
+    ...totals,
     check(
       "Base React Aria: Button di React Aria da solo, JS (gzip)",
       "node_modules/react-aria-components/dist/exports/Button.mjs",
@@ -133,7 +224,7 @@ function componentChecks() {
       "js",
     ),
     check("Icon importato dall'indice dei componenti, JS (gzip)", index, ["Icon"], "js"),
-    ...Object.entries(folders).map(([component, folder]) =>
+    ...Object.entries({ ...folders, ...phase2aFolders }).map(([component, folder]) =>
       check(
         `Componente ${component}: JS (gzip)`,
         `src/components/${folder}/index.ts`,
@@ -157,6 +248,7 @@ function esbuildConfig(only) {
       ...(config.plugins ?? []),
       optimizeLocales.esbuild({ locales: Object.values(intlLocales) }),
       removedLocalesLoader,
+      urlImports,
       ...(only === "css" ? [dropOutputs(/\.js$/)] : []),
     ],
   });
@@ -172,6 +264,20 @@ const removedLocalesLoader = {
   setup(build) {
     build.onLoad({ filter: /.*/, namespace: "locales-plugin" }, (args) => ({
       contents: readFileSync(args.path, "utf8"),
+      loader: "js",
+    }));
+  },
+};
+
+// Gli import "?url" (lo sprite delle icone) in Vite diventano l'URL del file
+// copiato tra gli asset: qui diventano una stringa, così il peso misurato è
+// quello del JavaScript, senza il file.
+const urlImports = {
+  name: "url-imports",
+  setup(build) {
+    build.onResolve({ filter: /\?url$/ }, (args) => ({ path: args.path, namespace: "url-import" }));
+    build.onLoad({ filter: /.*/, namespace: "url-import" }, (args) => ({
+      contents: `export default ${JSON.stringify(`/assets/${args.path.replace(/\?url$/, "")}`)};`,
       loader: "js",
     }));
   },

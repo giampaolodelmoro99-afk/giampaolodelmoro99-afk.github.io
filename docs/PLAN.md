@@ -6,7 +6,7 @@ Ogni fase:
 - parte in plan mode, con il piano salvato in `docs/phases/phase-NN-plan.md`
 - si chiude con la skill `close-phase` e con la retrospettiva `phase-NN-retro.md`
 
-Il proprietario esegue merge `--no-ff` e tag `phase-NN`. Criterio di uscita comune a tutte le fasi: **tutti i test verdi in locale e nella CI del branch**, Lighthouse 100 mobile e desktop, nessuna violazione axe.
+Il proprietario esegue merge `--no-ff` e tag `phase-NN`. Criterio di uscita comune a tutte le fasi: **tutti i test verdi in locale e nella CI del branch**, Lighthouse nelle soglie di ADR-0018, nessuna violazione axe.
 
 Le fasi 1, 2, 3 e 4 sono divise in due sotto-fasi (A e B) perché troppo grandi per una sola review.
 
@@ -51,25 +51,27 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 
 ## 2A. Window manager desktop
 
-- [ ] Desktop con icone (selezione, apertura con mouse, tastiera e tap)
-- [ ] Finestre: drag, resize, focus, z-index, minimizza, massimizza, chiudi, animazioni
-- [ ] Taskbar con orologio, menu Start, menu contestuale (anche senza tasto destro), "Esegui…"
-- [ ] Scorciatoie da tastiera e annunci per screen reader
-- [ ] Attributi `style` dei componenti nell'HTML prerenderizzato (ADR-0012, tipo C), comprese le variabili inline di `Glyph` (`--glyph-width`, `--glyph-height`): soluzione con ADR ed e2e con la CSP reale sulla home per Checkbox, Select, Tooltip, AlertDialog e DesktopIcon
-- [ ] `I18nProvider` di React Aria nel root, con `intlLocales` della lingua della route: i testi interni dei componenti (`useUiStrings`) e le traduzioni di React Aria seguono quella lingua; senza, React Aria usa la lingua del browser
-- [ ] **Caricamento separato del codice del desktop dopo il primo disegno: requisito della F2A** (decisione del 14/10/2026). Stima: home 110,8 kB + base React Aria 13,0 + base delle collezioni 17,5 + base degli overlay ≈ 16 = **circa 157 kB contro un budget di 115** (PERFORMANCE_SEO.md, "Peso dei componenti"). Misura di fine 1B: il guscio del desktop (Window, Taskbar, TaskbarButton, StartButton, DesktopIcons) pesa **75,0 kB** gzip, quindi la home con il guscio nel JS iniziale arriverebbe a circa 186 kB. Il piano della F2A deve dire come il codice del desktop (finestre, taskbar, menu Start, icone) arriva in un chunk separato dopo il primo disegno, senza togliere contenuto dall'HTML prerenderizzato, prima di scrivere codice. Da decidere anche l'indice `src/components/index.ts`: oggi aggiunge circa 0,6 kB a chi importa anche solo Icon (`sideEffects` o import dalle cartelle)
+- [x] Desktop con icone (selezione, apertura con mouse, tastiera e tap)
+- [x] Finestre: drag a contorno, resize con otto maniglie, focus, z-index, minimizza, massimizza, chiudi, animazioni; Sposta e Ridimensiona da tastiera e al tocco; cascata dentro l'area visibile (ARCHITECTURE.md §4)
+- [x] Taskbar con orologio, pulsante Finestre e selettore, menu Start nell'ordine di D05, menu contestuale (tasto destro, Maiusc+F10, tasto Menu, pressione lunga), "Esegui…"
+- [x] Spegni con congedo, Riavvia e Vista semplice, senza ricaricare la pagina
+- [x] Scorciatoie da tastiera e annunci per screen reader (ADR-0016)
+- [x] Budget del chunk del desktop e del CSS dei componenti provvisori fino a fine 2A-2 (ADR-0020); da fissare alla chiusura
+- [x] Attributi `style` nell'HTML prerenderizzato (ADR-0012, tipo C): chiuso da ADR-0015 (guscio statico, Glyph con classi generate); e2e con la CSP reale sulla home per DesktopIcon, menu Start e finestre (2A-1). Radio (Spegni, `VisuallyHidden`) ed Esegui con la CSP reale sulla home (2A-2); Tooltip e AlertDialog quando entrano nella home; Checkbox e Select quando entrano in una pagina (F3B o F4A)
+- [x] `I18nProvider` di React Aria con `intlLocales` della lingua della route, nel chunk del desktop invece che nel root: il guscio statico e la 404 non dipendono dalla lingua di React Aria (test), ADR-0014
+- [x] **Caricamento separato del codice del desktop dopo il primo disegno** (ADR-0014): guscio statico prerenderizzato e desktop interattivo in un chunk dopo l'idratazione; icone da sprite SVG; indice dei componenti vietato nel sito (Oxlint). JS iniziale 117,8 kB, chunk del desktop 56,08 kB, componenti 85,12 kB (budget in PERFORMANCE_SEO.md)
 - [ ] Etichette del desktop con il carattere leggibile (alto contrasto, `data-font="readable"`): una parola più larga della cella va a capo con la sillabazione ("Compe-tenze"); verificare i testi definitivi delle icone a 320 px
 
 - [ ] Note dell'a11y-auditor (1B) da risolvere quando i componenti entrano nelle pagine:
-  - livello del titolo della Window (oggi `h2`, il contenuto parte da `h3`), insieme alla scelta `region`/`dialog`
-  - corpo `document` della Window scorrevole da tastiera anche in Safari (riusare `ScrollArea`)
-  - pulsante attivo della taskbar in alto contrasto distinto non solo dal grassetto; cerchio del Radio in `forced-colors`
-  - testi troncati (StatusBar, titoli, taskbar, voci di menu larghe a 320 px) leggibili per intero; taskbar con molte finestre a 320 px (ADR-0007, F2B)
-  - focus iniziale sul pulsante meno distruttivo nei dialog di conferma; pulsanti della barra del titolo senza callback non mostrati
+  - ~~livello del titolo della Window, insieme alla scelta `region`/`dialog`~~: risolto in 2A (ADR-0016: region, titolo non heading, contenuto da `h1` o `h2`)
+  - corpo `document` della Window scorrevole da tastiera anche in Safari (riusare `ScrollArea`): **parziale** in 2A (focus programmatico e skip link; da verificare su Safari)
+  - ~~pulsante attivo della taskbar in alto contrasto distinto non solo dal grassetto~~: risolto in 2A (giallo e bordo di 3 px); cerchio del Radio in `forced-colors`: aperto, ora che il Radio è nella home (Spegni), rinviato alla 2B (ADR-0016)
+  - testi troncati (StatusBar, titoli, taskbar, voci di menu larghe a 320 px) leggibili per intero; taskbar con molte finestre a 320 px (ADR-0007, F2B): in 2A i pulsanti scorrono senza coprire lingua e orologio
+  - focus iniziale sul pulsante meno distruttivo nei dialog di conferma (in Spegni resta su «Spegni», rinvio motivato in ADR-0016); pulsanti della barra del titolo senza callback non mostrati
   - tooltip uguale all'`aria-label` letto due volte; `ScrollArea` focalizzabile solo quando scorre; segnaposto distinguibile dal testo
   - progetto Storybook a 320 px con controllo dell'overflow; verifiche manuali con NVDA, VoiceOver, zoom 200/400% e `forced-colors`
 
-- [ ] Rimisurare con la preview compressa le correzioni fatte per l'oscillazione di Lighthouse (ADR-0013): togliere l'idratazione rinviata se Performance resta ≥ 95 con LCP e FCP nei budget; rivedere il preload di Pixel Operator bold; rivedere i budget di LCP e FCP
+- [x] Rimisure delle correzioni di ADR-0013 (esiti in ADR-0018): idratazione rinviata confermata, con i `modulepreload` inerti; preload di Pixel Operator bold confermato; soglie di Lighthouse sulle metriche "buone" di Google
 
 ## 2B. Routing, persistenza e mobile
 
@@ -90,7 +92,11 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 
 ## 3B. Contatti, legale e accesso rapido
 
-- [ ] Verifica di privacy policy e DPA di Web3Forms; ADR-0002 accettata o piano B
+- [ ] Verifica di privacy policy e DPA di Web3Forms; ADR-0002 accettata o resto del piano B (la parte sul captcha è già decisa in ADR-0017)
+- [ ] **hCaptcha su consenso esplicito (ADR-0017)**: pulsante «Attiva la verifica» con riga informativa e link alla privacy, caricamento solo dopo il clic, hCaptcha attivo nel pannello di Web3Forms (DEPLOYMENT.md §6), opzione accessibile di hCaptcha, email offuscata e GitHub sempre visibili
+- [ ] CSP per i domini di hCaptcha (script, frame, connect, style) senza `'unsafe-inline'`, tenendo conto che in una SPA vale la CSP della prima pagina caricata: ADR dedicato
+- [ ] Informativa: hCaptcha con fornitore, dati, cookie, trasferimento extra UE e base giuridica del consenso
+- [ ] e2e hCaptcha: nessuna richiesta a `*.hcaptcha.com` prima del clic, form inviabile solo con la verifica (simulata), alternativa email sempre presente
 - [ ] Form contatti: `replyto`, nessuna email automatica, access key da variabile di build, validazione, honeypot, tempo minimo, pausa tra invii, stati accessibili
 - [ ] Gestione degli errori di invio con canale alternativo sempre funzionante (email offuscata e GitHub; LinkedIn non compare sul sito)
 - [ ] Email mai in chiaro in HTML prerenderizzato, JSON-LD, llms e sitemap (test sul build)
@@ -120,7 +126,7 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 
 - [ ] Audit di accessibilità completo (a11y-auditor + manuale con screen reader)
 - [ ] SEO e crawler AI: sitemap con hreflang, robots.txt, llms.txt e llms-full.txt IT/EN, Open Graph generate in build
-- [ ] Lighthouse 100 mobile e desktop su tutte le route IT/EN
+- [ ] Lighthouse nelle soglie di ADR-0018 su tutte le route IT/EN
 - [ ] size-limit con budget per chunk di ogni app
 - [ ] i18n completo e rivisto (content-reviewer)
 - [ ] Rivalutazione di TypeScript 7

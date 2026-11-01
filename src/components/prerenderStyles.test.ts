@@ -60,11 +60,13 @@ const styleAttributes = (html: string) =>
 // ADR-0012, tipo C: nell'HTML prerenderizzato del sito gli attributi style sono
 // bloccati dalla CSP. Questo inventario elenca quelli che ogni story produce con
 // il rendering lato server, così un componente non li introduce di nascosto.
-// Ammessi oggi, da risolvere in F2A: le variabili CSS di Glyph e della
-// ProgressBar e alcuni stili interni di React Aria: VisuallyHidden (input di
-// Checkbox e Radio; HiddenSelect, nella variante con position:fixed) e
-// display:contents (celle di GridList nel DesktopIcon).
-const glyphVariables = /^--glyph-width:\d+;--glyph-height:\d+$/;
+// Ammessi solo fuori dall'HTML prerenderizzato del sito (ADR-0015): la
+// variabile della ProgressBar e alcuni stili interni di React Aria:
+// VisuallyHidden (input di Checkbox e Radio; HiddenSelect, nella variante con
+// position:fixed) e display:contents (celle di GridList nel DesktopIcon); posizione
+// e misura del DragOutline, che compare solo durante un trascinamento; punto di
+// apertura del ContextMenu, che si apre solo su richiesta.
+// Glyph non ne produce più: le dimensioni arrivano da glyphSizes.module.css.
 const hiddenRule =
   "border:0;clip:rect\\(0 0 0 0\\);clip-path:inset\\(50%\\);height:1px;margin:-1px;overflow:hidden;padding:0;position:";
 const visuallyHidden = new RegExp(`^${hiddenRule}absolute;width:1px;white-space:nowrap$`);
@@ -73,12 +75,15 @@ const visuallyHiddenFixed = new RegExp(
 );
 const displayContents = /^display:contents$/;
 const progressValue = /^--progress-value:\d+(\.\d+)?%$/;
+const anchorPoint = /^--anchor-x:-?\d+px;--anchor-y:-?\d+px$/;
+const outlineRect = /^--outline-x:-?\d+px;--outline-y:-?\d+px;--outline-w:\d+px;--outline-h:\d+px$/;
 const known = [
-  { pattern: glyphVariables, example: "Componenti/Icon/Glifi" },
   { pattern: visuallyHidden, example: "Componenti/Checkbox/Stati" },
   { pattern: progressValue, example: "Componenti/ProgressBar/Stati" },
   { pattern: visuallyHiddenFixed, example: "Componenti/Select/Stati" },
   { pattern: displayContents, example: "Componenti/DesktopIcon/Default" },
+  { pattern: outlineRect, example: "Componenti/DragOutline/Default" },
+  { pattern: anchorPoint, example: "Componenti/MenuBar/MenuContestuale" },
 ];
 
 describe("attributi style nel prerender (ADR-0012)", () => {

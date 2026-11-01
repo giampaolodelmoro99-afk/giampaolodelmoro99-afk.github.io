@@ -27,6 +27,7 @@ Un cookie banner peggiora l'esperienza (soprattutto su mobile), può diventare l
 - Storybook (`/storybook/`, dalla Fase 1A) usa localStorage e sessionStorage per lo stato della propria interfaccia: storage tecnico di uno strumento di documentazione, creato solo visitando `/storybook/` (LEGAL.md §2).
 - La pagina /privacy elenca chiavi e scopi nella sezione "Cookie e storage", compreso lo storage di Storybook.
 - **Qualsiasi aggiunta** va inserita qui e in LEGAL.md prima del merge. Qualsiasi strumento non tecnico (analytics, embed, captcha) **viola questa decisione** e va segnalato: richiederebbe consenso e quindi un banner, cioè un nuovo ADR.
+- **hCaptcha nel form Contatti** (ADR-0017, dalla Fase 3B): cookie e storage di hCaptcha non sono tecnici, ma arrivano solo dopo un consenso esplicito dato nel form (clic su «Attiva la verifica», con la riga informativa e il link alla privacy). Il consenso è contestuale e non serve per usare il sito, quindi il banner resta inutile e questa decisione non cambia.
 - Lo storage è sempre letto con try/catch: in navigazione privata o con storage bloccato il sito funziona con i valori predefiniti.
 
 ## Alternative considerate

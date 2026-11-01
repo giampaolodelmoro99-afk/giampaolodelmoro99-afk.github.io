@@ -1,0 +1,4 @@
+.modalStage {
+  min-block-size: 100dvh;
+  background: var(--color-desktop);
+}

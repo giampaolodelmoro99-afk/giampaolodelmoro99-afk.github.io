@@ -22,7 +22,7 @@ Requisiti:
 3. **Post-build** (`scripts/postbuild.mjs`, funzioni pure in `scripts/lib/`):
    - verifica che ogni route abbia il suo HTML (altrimenti la build fallisce)
    - crea `404.html`
-   - **rinvia l'idratazione**: toglie i `<link rel="modulepreload">` e trasforma il bootstrap `<script type="module">` di React Router in uno `<script type="text/plain" id="rr-boot">`, eseguito da un piccolo script inline dopo l'evento `load`. Se il markup atteso non c'è, la build fallisce.
+   - **rinvia l'idratazione**: rende inerti i `<link rel="modulepreload">` (dalla F2A con `media="not all"` invece di toglierli, ADR-0013) e trasforma il bootstrap `<script type="module">` di React Router in uno `<script type="text/plain" id="rr-boot">`, eseguito da un piccolo script inline dopo l'evento `load`. Se il markup atteso non c'è, la build fallisce.
    - **CSP** nel meta tag, subito dopo `charset`, con `script-src 'self'` più lo sha256 di ogni script inline e del payload di avvio. Niente `unsafe-inline`.
 4. **Marcatore** `html[data-hydrated="true"]`, impostato da un effetto nel root: lo usano i test e2e (e in futuro il CSS per i controlli che richiedono JS).
 

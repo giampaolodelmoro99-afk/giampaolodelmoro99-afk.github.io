@@ -39,21 +39,18 @@ export const Stati: Story = {
 };
 
 export const Hover: Story = {
-  tags: ["visual"],
   play: async ({ canvasElement }) => {
     await hover(canvasElement.querySelector("label") ?? canvasElement);
   },
 };
 
 export const Premuta: Story = {
-  tags: ["visual"],
   play: async ({ canvasElement }) => {
     await press(canvasElement.querySelector("label") ?? canvasElement);
   },
 };
 
 export const FocusAccantoADisabilitata: Story = {
-  tags: ["visual"],
   render: () => (
     <>
       <Checkbox isDisabled>Disabilitata</Checkbox>

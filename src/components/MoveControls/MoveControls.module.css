@@ -1,0 +1,51 @@
+.root {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  padding: var(--space-2);
+  background: var(--color-surface);
+  box-shadow: var(--bevel-window);
+  color: var(--color-text);
+}
+
+.arrows {
+  display: grid;
+  grid-template-areas:
+    ". up ."
+    "left . right"
+    ". down .";
+  grid-auto-columns: var(--touch-target-min);
+  grid-auto-rows: var(--touch-target-min);
+  gap: var(--space-1);
+}
+
+.arrow {
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  padding: var(--space-0);
+}
+
+.arrow[data-direction="up"] {
+  grid-area: up;
+}
+
+.arrow[data-direction="down"] {
+  grid-area: down;
+}
+
+.arrow[data-direction="left"] {
+  grid-area: left;
+}
+
+.arrow[data-direction="right"] {
+  grid-area: right;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.action {
+  min-block-size: var(--touch-target-min);
+}

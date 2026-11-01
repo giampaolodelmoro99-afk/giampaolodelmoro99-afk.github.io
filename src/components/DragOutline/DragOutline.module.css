@@ -1,0 +1,11 @@
+.root {
+  position: absolute;
+  inset: var(--space-0) auto auto var(--space-0);
+  z-index: var(--z-drag-outline);
+  inline-size: var(--outline-w);
+  block-size: var(--outline-h);
+  border: var(--drag-outline-width) dashed var(--color-focus);
+  box-shadow: var(--drag-outline-halo);
+  translate: var(--outline-x) var(--outline-y);
+  pointer-events: none;
+}

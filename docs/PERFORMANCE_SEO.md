@@ -2,18 +2,20 @@
 
 ## 1. Budget
 
-| Metrica                | Budget              | Ultima misura                           | Come si verifica |
-| ---------------------- | ------------------- | --------------------------------------- | ---------------- |
-| JS iniziale (gzip)     | ≤ 115 kB            | 112 kB                                  | `npm run size`   |
-| CSS iniziale (gzip)    | ≤ 12 kB             | 1,3 kB                                  | `npm run size`   |
-| Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                           | `npm run size`   |
-| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 98,1 kB (F1B, fuori dalla home)         | `npm run size`   |
-| Guscio del desktop F2A | ≤ 75 kB (dalla F1B) | 74,9 kB (F1B)                           | `npm run size`   |
-| LCP (mobile simulato)  | ≤ 1,35 s (ADR-0013) | 1,20 s mediana (F1B, preview compressa) | Lighthouse CI    |
-| FCP (mobile simulato)  | ≤ 1,05 s (ADR-0013) | 0,91 s mediana (F1B)                    | Lighthouse CI    |
-| LCP / FCP desktop      | ≤ 0,5 s / ≤ 0,425 s | 0,32 / 0,27 s mediana (F1B)             | Lighthouse CI    |
-| TBT (mobile simulato)  | ≤ 50 ms             | 0 ms                                    | Lighthouse CI    |
-| CLS                    | ≤ 0,01              | 0                                       | Lighthouse CI    |
+Le soglie di prestazioni e di Lighthouse si scrivono **solo** qui e in TESTING.md §3: gli altri documenti (README, SPECS, CLAUDE.md, PLAN, skill) rimandano a queste due fonti, così un cambio di regola si fa in un posto solo. Gli ADR restano come registro delle decisioni, con i valori del momento.
+
+| Metrica                | Budget                       | Ultima misura                       | Come si verifica |
+| ---------------------- | ---------------------------- | ----------------------------------- | ---------------- |
+| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014)          | 117,8 kB (F2A, guscio statico)      | `npm run size`   |
+| Chunk del desktop      | ≤ 77 kB (ADR-0014, ADR-0020) | 73,14 kB (F2A, dopo l'idratazione)  | `npm run size`   |
+| Sprite delle icone     | ≤ 14 kB (ADR-0014)           | 12,64 kB (F2A, SVG)                 | `npm run size`   |
+| CSS iniziale (gzip)    | ≤ 12 kB                      | 1,3 kB                              | `npm run size`   |
+| Font in preload        | ≤ 25 kB (dalla F1)           | 24,1 kB (F1A)                       | `npm run size`   |
+| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B)          | 98,1 kB (F1B, fuori dalla home)     | `npm run size`   |
+| Guscio del desktop F2A | ≤ 75 kB (dalla F1B)          | 74,9 kB (F1B)                       | `npm run size`   |
+| LCP                    | ≤ 2,5 s (ADR-0018)           | mobile 1,20 s, desktop 0,32 s (F2A) | Lighthouse CI    |
+| TBT                    | ≤ 200 ms (ADR-0018)          | mobile 30–35 ms, desktop 0 (F2A)    | Lighthouse CI    |
+| CLS                    | ≤ 0,1 (ADR-0018)             | 0,0001 (F2A)                        | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
 
@@ -32,8 +34,8 @@
 
 - React DOM e il nucleo di React Router sono il prezzo della modalità framework con prerender e idratazione (ADR-0006). Le alternative (Preact, un router scritto in casa) rompono React Aria Components o l'idratazione del prerender.
 - Dividere i dizionari per lingua farebbe risparmiare circa 0,4 kB gzip al costo di un caricamento asincrono dei testi: non vale la complessità.
-- Il JS parte dopo l'evento `load`, quindi non pesa su LCP né su TBT (Lighthouse mobile 100).
-- Il budget resta 115 kB. Dalla Fase 1B React Aria entra solo nei chunk delle app, con `@react-aria/optimize-locales-plugin` limitato a italiano e inglese; size-limit ha voci dedicate ai componenti (vedi «Peso dei componenti»).
+- Il JS parte dopo l'evento `load`, quindi non pesa su LCP né su TBT.
+- Il budget resta 115 kB fino alla F2A (poi 124 kB, ADR-0014). Dalla Fase 1B React Aria entra solo nei chunk delle app, con `@react-aria/optimize-locales-plugin` limitato a italiano e inglese; size-limit ha voci dedicate ai componenti (vedi «Peso dei componenti»).
 
 ### Chunk `framework` (Fase 1B)
 
@@ -47,6 +49,25 @@ Con il `Link` di React Aria nella 404, Rolldown divideva React DOM e React Route
 
 Gli import da React Aria vanno sempre per sottopercorso (`react-aria-components/Button`): Oxlint vieta l'import dalla radice, con un'unica eccezione per `RouterProvider` (ADR-0012).
 
+### Guscio statico e chunk del desktop (Fase 2A)
+
+Dal 28/10/2026 la home prerenderizza un guscio statico del desktop in solo HTML e CSS, e il desktop interattivo arriva in un chunk separato dopo l'idratazione (ADR-0014). Le icone si disegnano da uno sprite SVG generato da `npm run icons`, non più da dati nel JavaScript.
+
+| Misura (gzip)                        | Valore                      | Budget           |
+| ------------------------------------ | --------------------------- | ---------------- |
+| JS iniziale della home               | 120,59 kB (117,8 alla 2A-1) | 124 kB           |
+| Chunk del desktop dopo l'idratazione | 73,50 kB (56,08 alla 2A-1)  | 77 kB (ADR-0020) |
+| Sprite delle icone                   | 12,64 kB                    | 14 kB            |
+| Componenti, totale JS (con la F2A)   | 91,47 kB                    | 99 kB            |
+| Componenti, totale CSS (con la F2A)  | 5,71 kB                     | 6 kB (ADR-0020)  |
+| Chunk di Esegui all'apertura         | 4,67 kB                     | 5 kB (ADR-0020)  |
+| Chunk di Spegni all'apertura         | 7,09 kB                     | 8 kB (ADR-0020)  |
+| Chunk del congedo all'apertura       | 0,51 kB                     | 1 kB (ADR-0020)  |
+
+Misure di chiusura della F2A (01/11/2026). Esegui, Spegni e il congedo sono in chunk caricati all'apertura e non entrano nel chunk del desktop.
+
+La ripartizione del JS iniziale e il motivo dei kB oltre i vecchi 115 sono in ADR-0014.
+
 ### Peso dei componenti (Fase 1B)
 
 `npm run size` misura anche i componenti di `src/components/` con `@size-limit/esbuild`, nelle condizioni della build del sito: import per sottopercorso da React Aria, `optimize-locales` su it-IT ed en-US, `NODE_ENV` di produzione, React, React DOM e React Router esclusi (stanno nel chunk `framework`). Voci: totale JS, totale CSS, guscio del desktop della F2A (`Window`, `Taskbar`, `TaskbarButton`, `StartButton`, `DesktopIcons`), base di React Aria, Icon importato dall'indice e ogni componente dalla sua cartella. I componenti non entrano nella home fino alla F2A.
@@ -59,9 +80,11 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 
 **Base degli overlay di React Aria.** Il Select aggiunge **+16,90 kB** gzip. Misurato il 14/10/2026 aggiungendo i pezzi uno alla volta sopra il totale: base degli overlay (Popover, FocusScope, chiusura con clic esterno, `ariaHideOutside`, blocco dello scroll) ≈ 8,9 kB; navigazione delle liste condivisa con Menu (`ListKeyboardDelegate`, `useMenuTrigger`, `useSelectableList`) ≈ 5,4 kB; **parte specifica del Select** (Select, `useSelect`, `HiddenSelect`, ListBox, stato) **5,78 kB**, sotto la soglia. Accettata come terza base una tantum: MenuBar, StartButton e AlertDialog riusano overlay e navigazione.
 
-**Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. Budget fissati alla chiusura della 1B (18/10/2026), misura arrotondata per eccesso al kB: **totale JS ≤ 99 kB**, **totale CSS ≤ 5 kB**, **guscio del desktop F2A ≤ 75 kB**; si alzano solo con un ADR.
+**Dalla F2A (ADR-0019)** `npm run size` (anche in CI a ogni push) controlla solo totali e chunk; le voci per componente si misurano con `npm run size:components`, a fine fase o quando si aggiunge un componente, e questa tabella si aggiorna solo a fine fase.
 
-**Indice dei componenti.** Importare anche solo Icon da `src/components/index.ts` costa circa 0,6 kB in più che dalla sua cartella: l'indice trascina codice di React Aria eseguito al caricamento del modulo. La voce "Icon importato dall'indice" lo tiene d'occhio fino alla decisione della F2A (`sideEffects` o import dalle cartelle).
+**Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. Budget fissati alla chiusura della 1B (18/10/2026), misura arrotondata per eccesso al kB: **totale JS ≤ 99 kB**, **totale CSS ≤ 5 kB**, **guscio del desktop F2A ≤ 75 kB**; si alzano solo con un ADR. Alla chiusura della F2A il totale CSS è passato a 6 kB (ADR-0020).
+
+**Indice dei componenti.** Importare anche solo Icon da `src/components/index.ts` costa circa 0,6 kB in più che dalla sua cartella: l'indice trascina codice di React Aria eseguito al caricamento del modulo. **Decisione della F2A (28/10/2026): import dalle cartelle.** Il sito (`src/app`, `src/features`, `src/stores`) importa ogni componente dalla sua cartella (`../../components/Window`); una regola Oxlint (`no-restricted-imports`) vieta l'indice in quei percorsi. L'indice resta per Storybook, i test e size-limit; la voce "Icon importato dall'indice" continua a misurarne il costo. `sideEffects` in `package.json` è scartato: vale per tutto il progetto e richiede di elencare a mano i file con effetti (fogli di stile importati, codice eseguito al caricamento), con il rischio di perdere uno stile senza accorgersene.
 
 | Componente aggiunto                                             | Da solo (JS)                        | Incremento sul totale                                       | Totale JS | Totale CSS | Icon dall'indice | Guscio F2A                                                                             | Home   |
 | --------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------- | --------- | ---------- | ---------------- | -------------------------------------------------------------------------------------- | ------ |
@@ -85,23 +108,39 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 | DesktopIcons                                                    | 53,36                               | +5,95                                                       | 96,49     | 4,52       | 17,03            | **75,03** (guscio completo: Window, Taskbar, TaskbarButton, StartButton, DesktopIcons) | 110,81 |
 | AlertDialog e AlertDialogFrame                                  | 41,18 / 31,06                       | +1,64                                                       | 98,13     | 4,63       | 17,16            | 74,92                                                                                  | 110,81 |
 
+**Componenti della F2A** (misure di chiusura, 01/11/2026, con `npm run size:components`). Dal 01/11/2026 entrano nei totali con budget (decisione del proprietario): totale JS 91,47 kB su 99 (86,93 senza la F2A), totale CSS 5,71 kB su 6.
+
+| Componente        | Da solo (JS) | Note                         |
+| ----------------- | ------------ | ---------------------------- |
+| TaskbarIconButton | 14,84        | `Button` con `render`        |
+| WindowMenu        | 51,85        | menu con popover             |
+| MoveControls      | 16,98        |                              |
+| DragOutline       | 0,36         | solo HTML                    |
+| ResizeHandles     | 0,80         | solo HTML e pointer events   |
+| WindowSwitcher    | 44,59        | dialog modale e ListBox      |
+| ContextMenu       | 39,02        | menu con ancora a un punto   |
+| RunDialog         | 53,96        | in un chunk a parte nel sito |
+| ShutdownDialog    | 34,32        | in un chunk a parte nel sito |
+| FarewellScreen    | 14,79        | in un chunk a parte nel sito |
+
 Valori in kB gzip. Il guscio F2A scende da 75,03 a 74,92 kB con l'AlertDialog, che non ne fa parte, perché i testi dei componenti sono passati da `it.ts`/`en.ts` a `src/i18n/ui.ts` (commit c97ce15).
 
 ## 2. Lighthouse CI
 
 - Configurazioni: `lighthouserc.mobile.json` (preset mobile, default di Lighthouse) e `lighthouserc.desktop.json` (`preset: desktop`).
 - Server: `scripts/preview.mjs`, lo stesso comportamento di GitHub Pages, compressione gzip compresa (ADR-0013).
-- URL: `/` e `/en/`, poi tutte le route principali IT ed EN man mano che nascono. Storybook è escluso.
-- **Due livelli (ADR-0013)**:
-  - a ogni commit (`lhci:mobile`, `lhci:desktop`): 3 esecuzioni per URL, mediana; Accessibility, Best Practices e SEO a 100, Performance ≥ 95;
-  - a chiusura di fase e alla release (`lhci:mobile:strict`, `lhci:desktop:strict`; nel deploy `ci.yml` riceve `strict-lighthouse: true`): 5 esecuzioni, mediana, **Performance 100**.
-- In entrambi i livelli LCP, FCP, TBT e CLS hanno budget fissi (§1), verificati da `scripts/lib/lighthouse.test.mjs` insieme alla regola.
+- URL: `/`, `/en/`, `/profilo/` ed `/en/projects/` (home e una route di app per lingua). Storybook è escluso.
+- **Due livelli (ADR-0013), soglie di ADR-0018**, 3 esecuzioni per URL e mediana in entrambi:
+  - a ogni push (`lhci:mobile`, `lhci:desktop`): Accessibility, Best Practices e SEO a 100, Performance ≥ 90;
+  - a chiusura di fase e alla release (`lhci:mobile:strict`, `lhci:desktop:strict`; nel deploy `ci.yml` riceve `strict-lighthouse: true`): **Performance desktop 100**, mobile ≥ 90.
+- In entrambi i livelli LCP ≤ 2500 ms, TBT ≤ 200 ms e CLS ≤ 0,1, le soglie "buone" di Google; nessun limite su FCP. Verificati da `scripts/lib/lighthouse.test.mjs` insieme alla regola.
+- **In locale Lighthouse non si lancia durante il lavoro**: basta la CI. Una sola misura a fine fase, senza indagare differenze che restano dentro le soglie (ADR-0018).
 - Report in `.lighthouseci/<preset>/` e `.lighthouseci/<preset>-strict/` (artifact in CI).
 
 ## 3. Prerender e contenuto senza JavaScript
 
 - Ogni route è prerenderizzata da React Router (`ssr: false` + `prerender`, ADR-0006). L'HTML contiene il contenuto completo della finestra in HTML semantico (`main`, `h1`, liste, link).
-- **Idratazione rinviata**: il post-build toglie i `modulepreload` e avvia il bootstrap dopo `load`. Il contenuto prerenderizzato viene dipinto senza attendere il bundle. È la scelta che porta Performance a 100 su mobile: senza, la simulazione mobile di Lighthouse conta i 112 kB di JS nel percorso critico dell'LCP (Performance 93).
+- **Idratazione rinviata**: il post-build rende inerti i `modulepreload` (`media="not all"`, ADR-0013) e avvia il bootstrap dopo `load`. Il contenuto prerenderizzato viene dipinto senza attendere il bundle. È la scelta che porta Performance a 100 su mobile: senza, la simulazione mobile di Lighthouse conta i 112 kB di JS nel percorso critico dell'LCP (Performance 93).
 - **Vincolo**: nessuna modifica può togliere contenuto dall'HTML prerenderizzato. Lo verifica `npm run test:prerender`.
 
 ## 4. Metadati per route
@@ -151,7 +190,7 @@ Immagini 1200×630 per route e lingua, generate in build con i font liberi del p
 ## 10. Boot, animazioni e suoni
 
 - **Nessun cloaking**: nessun rilevamento dei crawler tramite user agent, nessun contenuto diverso tra bot e persone.
-- Il boot (F4A) è un overlay che non diventa l'elemento LCP, non sposta il layout, compare solo alla prima visita (chiave di storage "boot già visto"), si salta da tastiera e touch e viene saltato con reduced motion. Lighthouse lo misura come un visitatore nuovo, e deve comunque dare 100.
+- Il boot (F4A) è un overlay che non diventa l'elemento LCP, non sposta il layout, compare solo alla prima visita (chiave di storage "boot già visto"), si salta da tastiera e touch e viene saltato con reduced motion. Lighthouse lo misura come un visitatore nuovo, e deve comunque restare nelle soglie di ADR-0018.
 - Animazioni solo con `transform` e `opacity`, durate dai token.
 
 ### JavaScript dopo l'evento load
@@ -159,12 +198,14 @@ Immagini 1200×630 per route e lingua, generate in build con i font liberi del p
 L'idratazione parte dopo `load` (§3), quindi non pesa su LCP. Resta da controllare che non ritardi in modo percepibile la prima interazione.
 
 - **Misura attuale** (`tests/e2e/performance.spec.ts`, progetto Playwright `performance`: Pixel 7, CPU rallentata 4× via CDP): tempo da `load` a `html[data-hydrated]` e long task. Fase 1A: idratazione circa 260 ms dopo `load`, una long task di circa 60 ms. Soglie del test, **bloccanti come gli altri budget**: idratazione entro 1 s e nessuna long task oltre 200 ms. Sono circa 4 volte la misura di riferimento, per assorbire la variabilità dei runner; la misura di ogni esecuzione è nell'annotazione `misura` del report Playwright. Se una fase le supera va ottimizzato il codice: alzarle richiede un ADR.
-- **In Fase 2A**, con il window manager:
-  1. la stessa misura, con la home che contiene desktop, icone e taskbar
-  2. INP del primo clic su un'icona subito dopo l'idratazione (Event Timing API, `interactionId`), con soglia ≤ 200 ms su CPU 4×
-  3. TBT di Lighthouse ≤ 50 ms (budget di §1) e un flusso Lighthouse "timespan" apri-finestra
-  4. un clic prima dell'idratazione resta una navigazione completa verso il deep link (comportamento voluto, ADR-0006)
+- **Fase 2A** (31/10/2026, stesso progetto `performance`), con il guscio statico e lo swap del desktop (ADR-0014):
+  1. idratazione +485 ms (`/`) e +506 ms (`/en/`) dopo `load`; desktop interattivo pronto entro 885 e 965 ms; long task più lunga 113–122 ms (soglia 200);
+  2. INP del primo clic su un'icona dopo lo swap (Event Timing API, `interactionId`): 144 ms su `/`, 128 ms su `/en/` (soglia ≤ 200 ms su CPU 4×);
+  3. CLS dal caricamento allo swap sotto 0,001 (resta solo il cambio di font delle etichette);
+  4. TBT di Lighthouse ≤ 200 ms (ADR-0018);
+  5. un clic prima dell'idratazione resta una navigazione completa verso la route dell'app (`no-javascript.spec.ts`, ADR-0006).
 - I suoni si caricano solo dopo un'interazione e mai nel chunk iniziale.
+- **hCaptcha** (form contatti, F3B, ADR-0017) si carica solo dopo il clic su «Attiva la verifica»: nessuno script di terzi al caricamento, nessun effetto su Lighthouse, sul JS iniziale né sulla CSP finché il visitatore non lo attiva.
 
 ## 11. Trailing slash e canonical su GitHub Pages
 
@@ -178,13 +219,13 @@ GitHub Pages risponde a `/en` con un 301 verso `/en/` (cartella con `index.html`
 
 Pubblicato in `/storybook/` dalla F1A, escluso dall'indicizzazione: `meta robots noindex, nofollow` nel manager e nell'anteprima, `Disallow: /storybook/` in robots.txt, fuori da sitemap, llms.txt e Lighthouse CI (gli URL di `lighthouserc` sono espliciti).
 
-- **Build**: `npm run build` costruisce il sito e poi Storybook in `build/client/storybook/`; `build:site` costruisce solo il sito.
+- **Build**: `npm run build` costruisce il sito e poi Storybook in `build/client/storybook/` (in CI, a fine fase e quando cambiano le story); `build:site` costruisce solo il sito ed è quella da usare durante il lavoro.
 - **CSP**: `scripts/postbuild.mjs` ignora la cartella `storybook`, quindi la CSP del sito non cambia. `scripts/postbuild-storybook.mjs` inserisce in `index.html` e `iframe.html` una **CSP dedicata** come primo elemento di `<head>`: script solo dal sito e con hash, `style-src 'self' 'unsafe-inline'` (Storybook inserisce stili a runtime), `font-src 'self' data:` (font incorporati delle pagine Docs), `frame-src 'self'`, niente `unsafe-eval`. La build fallisce se mancano i meta noindex o se compaiono risorse esterne.
 - `project.json`, che Storybook genera per la telemetria, viene tolto: elencherebbe le dipendenze di sviluppo. La telemetria è disattivata.
 - Test: prerender (noindex, CSP dedicata, `project.json` assente, robots.txt, nessun riferimento a Storybook nelle pagine del sito) ed e2e (manager senza errori né richieste esterne).
 
 ## 13. React Aria e CSP
 
-React Aria inserisce a runtime uno `<style id="react-aria-pressable-style">` che la CSP del sito bloccherebbe. L'id sta sul link di `global.css`, che contiene la stessa regola: React Aria trova l'elemento e non inserisce nulla, e la CSP resta `style-src 'self'` (ADR-0012). Gli attributi `style` nell'HTML prerenderizzato restano vietati da un test: la soluzione per i componenti che li producono si decide in F2A.
+React Aria inserisce a runtime uno `<style id="react-aria-pressable-style">` che la CSP del sito bloccherebbe. L'id sta sul link di `global.css`, che contiene la stessa regola: React Aria trova l'elemento e non inserisce nulla, e la CSP resta `style-src 'self'` (ADR-0012). Gli attributi `style` nell'HTML prerenderizzato restano vietati da un test: dalla F2A il prerender contiene solo il guscio statico in HTML e CSS, e i componenti React Aria si rendono dopo l'idratazione (ADR-0015).
 
 - Test: deriva sul sorgente di `usePress` (unit), sentinella, CSP e assenza di attributi `style` (prerender), nessuna violazione sulla 404 più un controllo in negativo (`tests/e2e/csp.spec.ts`), 404 senza JavaScript (`tests/e2e/no-javascript.spec.ts`).

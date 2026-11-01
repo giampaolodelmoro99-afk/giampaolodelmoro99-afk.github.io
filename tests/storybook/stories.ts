@@ -48,6 +48,13 @@ export const variants = [
 
 export type Variant = (typeof variants)[number];
 
+// Screenshot dei componenti: due combinazioni sole, i due estremi (decisione del
+// 31/10/2026, ADR-0019). axe e target touch restano su tutte e quattro.
+export const visualVariants: readonly Variant[] = [
+  { theme: "classic", input: "mouse" },
+  { theme: "high-contrast", input: "touch" },
+];
+
 export async function openStory(
   page: Page,
   id: string,

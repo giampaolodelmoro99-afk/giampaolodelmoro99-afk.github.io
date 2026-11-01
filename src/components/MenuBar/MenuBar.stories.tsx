@@ -3,6 +3,7 @@ import { userEvent } from "storybook/test";
 import { overlaysInStoryRoot } from "../../../.storybook/decorators";
 import { afterLayout, hover } from "../../../.storybook/interactions";
 import { MenuItem, MenuSeparator, Submenu } from "./Menu";
+import { ContextMenu } from "./ContextMenu";
 import { MenuBar, MenuButton } from "./MenuBar";
 import styles from "./MenuBar.stories.module.css";
 
@@ -64,7 +65,6 @@ export const Default: Story = {
 };
 
 export const HoverSuUnMenu: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await hover(await canvas.findByRole("button", { name: "Visualizza" }));
   },
@@ -76,7 +76,6 @@ export const Aperto: Story = {
 };
 
 export const ConSottomenu: Story = {
-  tags: ["visual"],
   render: () => <Bar openFile />,
   play: async ({ canvas }) => {
     const exportItem = await canvas.findByRole("menuitem", { name: "Esporta" });
@@ -84,4 +83,18 @@ export const ConSottomenu: Story = {
     await userEvent.click(exportItem);
     await canvas.findByRole("menuitem", { name: "PDF" });
   },
+};
+
+export const MenuContestuale: Story = {
+  render: () => (
+    <ContextMenu isOpen onOpenChange={() => {}} x={40} y={40} label="Desktop">
+      <Submenu label="Disponi icone">
+        <MenuItem id="name">Per nome</MenuItem>
+        <MenuItem id="type">Per tipo</MenuItem>
+      </Submenu>
+      <MenuItem id="refresh">Aggiorna</MenuItem>
+      <MenuSeparator />
+      <MenuItem id="properties">Proprietà</MenuItem>
+    </ContextMenu>
+  ),
 };

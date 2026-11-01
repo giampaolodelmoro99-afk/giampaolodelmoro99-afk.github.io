@@ -44,7 +44,6 @@ export const Stati: Story = {
 };
 
 export const Focus: Story = {
-  tags: ["visual"],
   args: { defaultValue: "Ada" },
   play: async ({ canvas }) => {
     const input = canvas.getByRole("textbox", { name: "Nome" });
@@ -55,7 +54,6 @@ export const Focus: Story = {
 };
 
 export const EsempioForm: Story = {
-  tags: ["visual"],
   render: () => (
     <form
       className={styles.form}

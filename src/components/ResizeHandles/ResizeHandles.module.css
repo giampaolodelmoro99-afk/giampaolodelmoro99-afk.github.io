@@ -1,0 +1,87 @@
+.root {
+  position: absolute;
+  inset: var(--space-0);
+  pointer-events: none;
+}
+
+.handle {
+  position: absolute;
+  inline-size: var(--resize-grab);
+  block-size: var(--resize-grab);
+  touch-action: none;
+  pointer-events: auto;
+}
+
+.handle::after {
+  position: absolute;
+  inset: var(--space-0);
+  inline-size: var(--resize-handle-size);
+  block-size: var(--resize-handle-size);
+  margin: auto;
+  background: var(--color-focus);
+  box-shadow: var(--focus-halo-label);
+  content: "";
+  opacity: var(--opacity-hidden);
+  transition-property: opacity;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--easing-standard);
+}
+
+.handle:hover::after,
+.root[data-resizing] > .handle::after {
+  opacity: var(--opacity-full);
+}
+
+.handle[data-edge="n"],
+.handle[data-edge="s"] {
+  inset-inline: var(--resize-grab);
+  inline-size: auto;
+  cursor: ns-resize;
+}
+
+.handle[data-edge="e"],
+.handle[data-edge="w"] {
+  inset-block: var(--resize-grab);
+  block-size: auto;
+  cursor: ew-resize;
+}
+
+.handle[data-edge="n"] {
+  inset-block-start: var(--resize-grab-offset);
+}
+
+.handle[data-edge="s"] {
+  inset-block-end: var(--resize-grab-offset);
+}
+
+.handle[data-edge="e"] {
+  inset-inline-end: var(--resize-grab-offset);
+}
+
+.handle[data-edge="w"] {
+  inset-inline-start: var(--resize-grab-offset);
+}
+
+.handle[data-edge="ne"] {
+  inset-block-start: var(--resize-grab-offset);
+  inset-inline-end: var(--resize-grab-offset);
+  cursor: nesw-resize;
+}
+
+.handle[data-edge="sw"] {
+  inset-block-end: var(--resize-grab-offset);
+  inset-inline-start: var(--resize-grab-offset);
+  cursor: nesw-resize;
+}
+
+.handle[data-edge="nw"] {
+  inset-block-start: var(--resize-grab-offset);
+  inset-inline-start: var(--resize-grab-offset);
+  cursor: nwse-resize;
+}
+
+.handle[data-edge="se"] {
+  inset-block-end: var(--resize-grab-offset);
+  inset-inline-end: var(--resize-grab-offset);
+  cursor: nwse-resize;
+}

@@ -6,6 +6,21 @@ import { expectNoAxeViolations } from "../../../tests/setup/axe";
 import { Window } from "./Window";
 
 describe("Window", () => {
+  it("dà al corpo un id raggiungibile dallo skip link, lo rende inerte se richiesto e segnala il clic", async () => {
+    const onActivate = vi.fn<() => void>();
+    const user = userEvent.setup();
+    render(
+      <Window title="CV" bodyId="window-cv-body" isBodyInert onActivate={onActivate}>
+        <p>Contenuto</p>
+      </Window>,
+    );
+    const body = document.getElementById("window-cv-body");
+    expect(body).toHaveAttribute("tabindex", "-1");
+    expect(body).toHaveAttribute("inert");
+    await user.click(screen.getByRole("region", { name: "CV" }));
+    expect(onActivate).toHaveBeenCalled();
+  });
+
   it("è una sezione con il nome dalla barra del titolo", () => {
     render(
       <Window title="Progetti" icon="projects">
@@ -13,7 +28,7 @@ describe("Window", () => {
       </Window>,
     );
     const region = screen.getByRole("region", { name: "Progetti" });
-    expect(screen.getByRole("heading", { level: 2, name: "Progetti" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
     expect(region).toHaveAttribute("data-active", "true");
     expect(region).toHaveTextContent("Contenuto");
   });

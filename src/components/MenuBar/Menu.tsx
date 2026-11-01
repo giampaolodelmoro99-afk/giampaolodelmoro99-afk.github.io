@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { Keyboard } from "react-aria-components/Keyboard";
 import {
   Menu as AriaMenu,
@@ -10,10 +10,11 @@ import {
 import { Popover, type PopoverProps } from "react-aria-components/Popover";
 import { Separator } from "react-aria-components/Separator";
 import { cx } from "../cx";
-import { Glyph, Icon, type SmallIconName } from "../Icon";
+import { Glyph, type GlyphName, Icon, type SmallIconName } from "../Icon";
 import styles from "./Menu.module.css";
 
 export type MenuProps = Omit<AriaMenuProps<object>, "className" | "style" | "children"> & {
+  ref?: Ref<HTMLDivElement> | undefined;
   children: ReactNode;
   size?: "default" | "start";
   className?: string | undefined;
@@ -34,10 +35,11 @@ export function MenuPopover({
   );
 }
 
-export function Menu({ children, size = "default", className, ...props }: MenuProps) {
+export function Menu({ ref, children, size = "default", className, ...props }: MenuProps) {
   return (
     <AriaMenu
       {...props}
+      ref={ref}
       className={cx(styles.menu, className)}
       data-size={size === "start" ? size : undefined}
     >
@@ -46,20 +48,57 @@ export function Menu({ children, size = "default", className, ...props }: MenuPr
   );
 }
 
-export type MenuItemProps = Omit<AriaMenuItemProps, "className" | "style" | "children"> & {
+export type MenuItemProps = Omit<
+  AriaMenuItemProps,
+  "className" | "style" | "children" | "render"
+> & {
   children: ReactNode;
+  opensDialog?: boolean;
   icon?: SmallIconName;
+  glyph?: GlyphName;
   shortcut?: string;
+  isDefault?: boolean;
   className?: string | undefined;
 };
 
-export function MenuItem({ children, icon, shortcut, className, ...props }: MenuItemProps) {
+export function MenuItem({
+  children,
+  icon,
+  glyph,
+  shortcut,
+  isDefault = false,
+  opensDialog = false,
+  className,
+  ...props
+}: MenuItemProps) {
   return (
-    <AriaMenuItem {...props} className={cx(styles.item, className)}>
+    <AriaMenuItem
+      {...props}
+      {...(opensDialog
+        ? {
+            render: (domProps) =>
+              "href" in domProps ? (
+                <a {...domProps} aria-haspopup="dialog">
+                  {domProps.children}
+                </a>
+              ) : (
+                <div {...domProps} aria-haspopup="dialog" />
+              ),
+          }
+        : {})}
+      className={cx(styles.item, className)}
+      data-default={isDefault || undefined}
+    >
       {({ isSelected, hasSubmenu }) => (
         <>
           <span className={styles.check} aria-hidden="true">
-            {isSelected ? <Glyph name="check" /> : icon && <Icon name={icon} size={16} />}
+            {isSelected ? (
+              <Glyph name="check" />
+            ) : glyph ? (
+              <Glyph name={glyph} />
+            ) : (
+              icon && <Icon name={icon} size={16} />
+            )}
           </span>
           <span className={styles.label}>{children}</span>
           {shortcut && <Keyboard className={cx(styles.shortcut)}>{shortcut}</Keyboard>}
@@ -77,15 +116,16 @@ export function MenuSeparator() {
 export type SubmenuProps = {
   label: string;
   icon?: SmallIconName;
+  onAction?: MenuProps["onAction"];
   children: ReactNode;
 };
 
-export function Submenu({ label, icon, children }: SubmenuProps) {
+export function Submenu({ label, icon, onAction, children }: SubmenuProps) {
   return (
     <SubmenuTrigger>
       <MenuItem {...(icon ? { icon } : {})}>{label}</MenuItem>
       <MenuPopover>
-        <Menu>{children}</Menu>
+        <Menu {...(onAction ? { onAction } : {})}>{children}</Menu>
       </MenuPopover>
     </SubmenuTrigger>
   );

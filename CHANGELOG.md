@@ -6,6 +6,30 @@ Ogni fase si chiude con un tag `phase-NN` (che non fa partire il deploy). Le rel
 
 ## [Unreleased]
 
+## [phase-02a] - Fase 2A: window manager desktop
+
+### Aggiunto
+
+- Desktop GDM 95 nella home e in 26 route delle app (slug della v1 per About, Skills, Progetti e Contatti; gli altri provvisori fino alla F3A): guscio statico prerenderizzato in solo HTML e CSS, desktop interattivo in un chunk caricato dopo l'idratazione, senza spostamenti allo swap (ADR-0014, ADR-0015).
+- Window manager con Zustand: apertura, attivazione, riduzione, ingrandimento, trascinamento a contorno, otto maniglie di ridimensionamento, cascata dentro l'area visibile, Sposta e Ridimensiona da tastiera e con le frecce al tocco, animazioni con movimento ridotto.
+- Taskbar con pulsante Finestre e selettore (Alt+W), menu Start nell'ordine della tavola D05, orologio, collegamento alla lingua; menu della finestra (Alt+Spazio, Alt+trattino); menu contestuale del desktop (tasto destro, Maiusc+F10, tasto Menu, pressione lunga).
+- Esegui (suggerimenti, errore annunciato), Spegni con congedo, Riavvia e Vista semplice, senza ricaricare la pagina; i loro chunk si caricano all'apertura e si precaricano nel tempo libero.
+- Componenti: TaskbarIconButton, WindowMenu, MoveControls, DragOutline, ResizeHandles, WindowSwitcher, ContextMenu, RunDialog, ShutdownDialog, FarewellScreen; icone `windows` e `power`, glifo `option`.
+- ADR-0014, 0015, 0016, 0017, 0018, 0019, 0020; QA_CHECKLIST con la sezione del desktop a finestre.
+- Test: e2e di trascinamento, ridimensionamento, tocco, menu contestuale, animazioni, chunk non caricati, CSP reale con Esegui e Spegni, prestazioni con CPU 4× (task lunghe e INP); budget di size-limit per il chunk del desktop e per i chunk di Esegui, Spegni e congedo.
+
+### Modificato
+
+- Title della home «Gianpaolo Del Moro · Full Stack Developer»; bio e meta description approvate, con WordPress (01/11/2026).
+- Soglie Lighthouse sulle metriche buone di Google, con una sola misura locale a fine fase (ADR-0018); verifiche proporzionate durante la fase (ADR-0019).
+- JS iniziale della home a 120,59 kB (budget 124, ADR-0014); CSS dei componenti con budget di 6 kB (ADR-0020).
+- Window: il titolo della barra non è più un heading; i pulsanti delle finestre inattive escono dall'ordine di Tab.
+- Glyph senza attributi `style`; componenti importati dalle cartelle (Oxlint).
+
+### Corretto
+
+- Dalla review di chiusura: focus all'attivazione con il puntatore, link di About che cambiavano pagina, errore di Esegui non annunciato, nome del collegamento della lingua (WCAG 2.5.3), taskbar a 320 px, seconda regione live nel selettore.
+
 ## [phase-01b] - Fase 1B: componenti del design system GDM 95
 
 ### Aggiunto

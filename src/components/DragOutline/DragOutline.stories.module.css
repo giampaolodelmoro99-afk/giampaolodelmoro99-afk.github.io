@@ -1,0 +1,6 @@
+.stage {
+  position: relative;
+  inline-size: 20rem;
+  block-size: 13rem;
+  background: var(--color-desktop);
+}

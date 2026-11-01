@@ -25,16 +25,16 @@ description: Indica e scrive i test necessari per un file o una modifica (compon
 - Test per un solo tipo di input in `keyboard.spec.ts` o `touch.spec.ts`. Mai `if` sul progetto, mai `test.skip` o `test.fail` condizionali.
 - Niente `waitForTimeout`: usa asserzioni con attesa.
 - Servizi esterni sempre simulati con `page.route` (TESTING.md §8).
-- Coverage ≥ 80% con test che verificano comportamento, non righe. Niente test senza `expect` (Oxlint `expect-expect`).
+- Coverage nella soglia di TESTING.md §3, con test che verificano comportamento, non righe. Niente test senza `expect` (Oxlint `expect-expect`).
 - **Vietato**: `skip`, `only`, `todo`, test commentati, soglie abbassate, asserzioni indebolite per far passare un test. Un test che fallisce indica un bug da correggere, oppure un requisito cambiato da discutere.
 
 ## Comandi
 
 ```bash
 npm run test:coverage
-npm run build && npm run test:prerender
-npm run test:e2e:host -- --project=chromium-320   # iterazione rapida
-npm run test:e2e                                  # suite completa nel container
+npm run build:site && npm run test:prerender:site   # durante il lavoro (build completo se cambiano le story)
+npm run test:e2e:chromium                          # durante il lavoro: solo Chromium, nel container
+npm run test:e2e                                   # matrice completa: in CI e a fine fase (ADR-0019)
 ```
 
 ## Riferimenti

@@ -41,7 +41,6 @@ export const Selezionata: Story = {
 };
 
 export const Hover: Story = {
-  tags: ["visual"],
   play: async ({ canvas }) => {
     await hover(await canvas.findByRole("row", { name: "Progetti" }));
   },

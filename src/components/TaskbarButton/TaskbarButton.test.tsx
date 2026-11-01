@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { expectNoAxeViolations } from "../../../tests/setup/axe";
 import { Taskbar } from "./Taskbar";
 import { TaskbarButton } from "./TaskbarButton";
+import { TaskbarIconButton } from "./TaskbarIconButton";
 
 function Bar(props: { onChange?: (isSelected: boolean) => void }) {
   return (
@@ -46,5 +47,50 @@ describe("Taskbar e TaskbarButton", () => {
   it("non ha violazioni axe", async () => {
     const { container } = render(<Bar />);
     await expectNoAxeViolations(container);
+  });
+});
+
+describe("TaskbarIconButton", () => {
+  it("resta raggiungibile da non disponibile, con aria-disabled e nessuna azione", async () => {
+    const onPress = vi.fn<() => void>();
+    const user = userEvent.setup();
+    render(
+      <TaskbarIconButton
+        icon="windows"
+        aria-label="Finestre aperte: nessuna"
+        isUnavailable
+        onPress={onPress}
+      />,
+    );
+    const button = screen.getByRole("button", { name: "Finestre aperte: nessuna" });
+    expect(button).toHaveAttribute("aria-disabled", "true");
+    expect(button).not.toBeDisabled();
+    await user.tab();
+    expect(button).toHaveFocus();
+    await user.keyboard("{Enter}");
+    await user.click(button);
+    expect(onPress).not.toHaveBeenCalled();
+  });
+
+  it("apre il selettore e ne segnala lo stato", async () => {
+    const onPress = vi.fn<() => void>();
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <TaskbarIconButton icon="windows" aria-label="Finestre aperte (Alt+W)" onPress={onPress} />,
+    );
+    const button = screen.getByRole("button", { name: "Finestre aperte (Alt+W)" });
+    expect(button).toHaveAttribute("aria-haspopup", "dialog");
+    expect(button).toHaveAttribute("aria-expanded", "false");
+    await user.click(button);
+    expect(onPress).toHaveBeenCalledTimes(1);
+    rerender(
+      <TaskbarIconButton
+        icon="windows"
+        aria-label="Finestre aperte (Alt+W)"
+        isPressed
+        onPress={onPress}
+      />,
+    );
+    expect(button).toHaveAttribute("aria-expanded", "true");
   });
 });

@@ -6,6 +6,8 @@ const visual = /visual\.spec\.ts$/;
 const keyboard = /keyboard\.spec\.ts$/;
 const touch = /touch\.spec\.ts$/;
 const performance = /performance\.spec\.ts$/;
+const wide = /(window-drag|context-menu)\.spec\.ts$/;
+const touchDrag = /touch-drag\.spec\.ts$/;
 
 const viewports = [
   { name: "chromium-320", width: 320, height: 640 },
@@ -33,17 +35,17 @@ export default defineConfig({
     ...viewports.map(({ name, width, height }) => ({
       name,
       use: { ...devices["Desktop Chrome"], viewport: { width, height } },
-      testIgnore: [touch, performance],
+      testIgnore: [touch, touchDrag, performance, ...(width < 768 ? [wide] : [])],
     })),
     {
       name: "touch-pixel-7",
       use: { ...devices["Pixel 7"] },
-      testIgnore: [visual, keyboard, performance],
+      testIgnore: [visual, keyboard, performance, wide],
     },
     {
       name: "touch-iphone-14",
       use: { ...devices["iPhone 14"] },
-      testIgnore: [visual, keyboard, performance],
+      testIgnore: [visual, keyboard, performance, wide, touchDrag],
     },
     {
       name: "performance",
@@ -62,7 +64,7 @@ export default defineConfig({
     {
       name: "firefox-1440",
       use: { ...devices["Desktop Firefox"], viewport: { width: 1440, height: 900 } },
-      testIgnore: [visual, touch, performance],
+      testIgnore: [visual, touch, touchDrag, performance],
     },
   ],
   webServer: {
