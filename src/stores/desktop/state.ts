@@ -1,4 +1,5 @@
 import { type AppId, type RouteKey, appIds } from "../../routes/routeMap";
+import { homeApp, openAppFor } from "./home";
 import { type Geometry, type Viewport, clampGeometry, isGeometry, isNumber } from "./geometry";
 
 export type WindowState = {
@@ -21,11 +22,7 @@ export type DesktopState = {
   viewport: Viewport | null;
 };
 
-export const homeApp: AppId = "about";
-
-export function openAppFor(routeKey: RouteKey): AppId {
-  return routeKey === "desktop" ? homeApp : routeKey;
-}
+export { homeApp, openAppFor } from "./home";
 
 export const emptyState: DesktopState = {
   version: 1,
@@ -95,6 +92,22 @@ export function minimize(state: DesktopState, id: AppId): DesktopState {
   if (!state.windows[id]) return state;
   const minimized = update(state, id, { minimized: true });
   return { ...minimized, activeId: topVisible(minimized) };
+}
+
+export function restore(saved: DesktopState | null, routeKey: RouteKey): DesktopState {
+  const base = initialStateFor(routeKey);
+  if (!saved) return base;
+  const app = openAppFor(routeKey);
+  const urlWindow = base.windows[app];
+  if (!urlWindow) return base;
+  const others = (ids: AppId[]) => ids.filter((id) => id !== app && saved.windows[id]);
+  return {
+    ...base,
+    windows: { ...saved.windows, [app]: urlWindow },
+    stack: [...others(saved.stack), app],
+    recent: [app, ...others(saved.recent)],
+    activeId: app,
+  };
 }
 
 export function deactivate(state: DesktopState): DesktopState {

@@ -15,14 +15,14 @@ Questo documento è **vincolante**: ogni modifica che lo viola va segnalata e no
 
 Il sito non usa cookie. Usa solo localStorage tecnico, necessario alle funzioni richieste dal visitatore (art. 122 del Codice privacy; linee guida del Garante sui cookie e altri strumenti di tracciamento, 10 giugno 2021). Quindi **nessun cookie banner** (ADR-0003).
 
-| Chiave                 | Contenuto                                                            | Fase |
-| ---------------------- | -------------------------------------------------------------------- | ---- |
-| `locale`               | lingua preferita                                                     | 4A   |
-| `audio`                | suoni attivi o disattivati                                           | 4A   |
-| `theme`                | tema, alto contrasto, dimensione testo, riduzione animazioni, sfondo | 4A   |
-| `windows`              | posizione e dimensione delle finestre                                | 2B   |
-| `boot.seen`            | boot già visto                                                       | 4A   |
-| `contact.lastSubmitAt` | data e ora dell'ultimo invio del form (anti-abuso)                   | 3B   |
+| Chiave                 | Contenuto                                                                                           | Fase |
+| ---------------------- | --------------------------------------------------------------------------------------------------- | ---- |
+| `locale`               | lingua preferita                                                                                    | 4A   |
+| `audio`                | suoni attivi o disattivati                                                                          | 4A   |
+| `theme`                | tema, alto contrasto, dimensione testo, riduzione animazioni, sfondo                                | 4A   |
+| `windows.v1`           | finestre aperte, posizione, dimensione, ingrandite o ridotte e ordine (formato versionato, Fase 2B) | 2B   |
+| `boot.seen`            | boot già visto                                                                                      | 4A   |
+| `contact.lastSubmitAt` | data e ora dell'ultimo invio del form (anti-abuso)                                                  | 3B   |
 
 Nessuna chiave in `sessionStorage`: dalla Fase 2B il sito non usa `ScrollRestoration` di React Router (il documento non scorre, scorrono finestre e app), quindi `react-router-scroll-positions` non viene scritta.
 

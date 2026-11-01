@@ -37,8 +37,11 @@ import {
   type DesktopStore,
   createDesktopStore,
   emptyState,
-  initialStateFor,
   openAppFor,
+  readLayout,
+  restore,
+  serialize,
+  writeLayout,
 } from "../../../stores/desktop";
 import { appDefinition, desktopApps, startMenuApps, startMenuSystemApps } from "../apps";
 import styles from "../Desktop.module.css";
@@ -81,6 +84,11 @@ const isDesktopLayout = () => window.matchMedia("(width >= 768px)").matches;
 
 type Switcher = { selected: AppId; viaShortcut: boolean };
 
+function bootFocus(store: DesktopStore): string {
+  const active = store.getState().activeId;
+  return active ? windowBodyId(active) : desktopIconsId;
+}
+
 function focusStart() {
   requestAnimationFrame(() => document.querySelector<HTMLElement>(`.${styles.start}`)?.focus());
 }
@@ -117,11 +125,43 @@ function usePrefetchDialogs() {
 
 type Power = "on" | "off" | "restarting";
 
-function useDesktopStore(routeKey: RouteKey, isClean: boolean): DesktopStore {
-  const [store] = useState(() =>
-    createDesktopStore(isClean ? emptyState : initialStateFor(routeKey)),
-  );
+type Boot = "first" | "resume" | "restart";
+
+function initialState(boot: Boot, routeKey: RouteKey) {
+  if (boot === "restart") return emptyState;
+  if (boot === "resume") return readLayout() ?? emptyState;
+  return restore(readLayout(), routeKey);
+}
+
+function useDesktopStore(routeKey: RouteKey, boot: Boot): DesktopStore {
+  const [store] = useState(() => createDesktopStore(initialState(boot, routeKey)));
   return store;
+}
+
+function usePersistedLayout(store: DesktopStore) {
+  useEffect(() => {
+    let saved: string | null = null;
+    let pending = 0;
+    const save = () => {
+      pending = 0;
+      const state = store.getState();
+      if (serialize(state) !== saved) saved = writeLayout(state) ?? saved;
+    };
+    const schedule = () => {
+      if (pending === 0) pending = window.setTimeout(save, 200);
+    };
+    save();
+    const unsubscribe = store.subscribe(schedule);
+    window.addEventListener("pagehide", save);
+    return () => {
+      unsubscribe();
+      window.removeEventListener("pagehide", save);
+      if (pending !== 0) {
+        window.clearTimeout(pending);
+        save();
+      }
+    };
+  }, [store]);
 }
 
 export function DesktopApp(props: DesktopAppProps) {
@@ -136,11 +176,13 @@ function DesktopPower({ onReady }: DesktopAppProps) {
   const t = useT();
   usePrefetchDialogs();
   const [power, setPower] = useState<Power>("on");
-  const [boot, setBoot] = useState(0);
-  const turnOn = useCallback(() => {
-    setBoot((count) => count + 1);
+  const [boot, setBoot] = useState<{ count: number; kind: Boot }>({ count: 0, kind: "first" });
+  const turnOn = useCallback((kind: Boot) => {
+    setBoot(({ count }) => ({ count: count + 1, kind }));
     setPower("on");
   }, []);
+  const resume = useCallback(() => turnOn("resume"), [turnOn]);
+  const restart = useCallback(() => turnOn("restart"), [turnOn]);
 
   useEffect(() => {
     if (power !== "off") return undefined;
@@ -151,17 +193,17 @@ function DesktopPower({ onReady }: DesktopAppProps) {
     };
   }, [power, t]);
 
-  if (power === "restarting") return <PowerOff onDone={turnOn} />;
+  if (power === "restarting") return <PowerOff onDone={restart} />;
   if (power === "off") {
     return (
-      <ChunkBoundary onError={turnOn}>
+      <ChunkBoundary onError={resume}>
         <Suspense fallback={<div className={styles.powerOff} />}>
           <FarewellScreen
             heading={t.desktop.farewell.heading}
             message={t.desktop.farewell.message}
             restartLabel={t.desktop.farewell.restart}
             footer={new URL(siteUrl).host}
-            onRestart={turnOn}
+            onRestart={resume}
           />
         </Suspense>
       </ChunkBoundary>
@@ -169,10 +211,10 @@ function DesktopPower({ onReady }: DesktopAppProps) {
   }
   return (
     <DesktopScreen
-      key={boot}
-      isClean={boot > 0}
+      key={boot.count}
+      boot={boot.kind}
       onPowerChange={setPower}
-      {...(boot === 0 && onReady ? { onReady } : {})}
+      {...(boot.kind === "first" && onReady ? { onReady } : {})}
     />
   );
 }
@@ -189,17 +231,18 @@ function PowerOff({ onDone }: { onDone: () => void }) {
 }
 
 type DesktopScreenProps = DesktopAppProps & {
-  isClean: boolean;
+  boot: Boot;
   onPowerChange: (power: Power) => void;
 };
 
-function DesktopScreen({ onReady, isClean, onPowerChange }: DesktopScreenProps) {
+function DesktopScreen({ onReady, boot, onPowerChange }: DesktopScreenProps) {
   const t = useT();
   const locale = useLocale();
   const other = locales.find((candidate) => candidate !== locale) ?? locale;
   const fromUrl = useRef<(key: RouteKey) => void>(() => undefined);
   const { routeKey, push, settle } = useUrlSync((key) => fromUrl.current(key));
-  const store = useDesktopStore(routeKey, isClean);
+  const store = useDesktopStore(routeKey, boot);
+  usePersistedLayout(store);
   const routeApp = openAppFor(routeKey);
   const windows = useStore(store, (state) => state.windows);
   const stack = useStore(store, (state) => state.stack);
@@ -235,7 +278,7 @@ function DesktopScreen({ onReady, isClean, onPowerChange }: DesktopScreenProps) 
   const [focusRequest, setFocusRequest] = useState<{ target: string } | null>(null);
 
   const [whenIconsReady] = useState(() =>
-    isClean ? () => setFocusRequest({ target: desktopIconsId }) : onReady,
+    boot === "first" ? onReady : () => setFocusRequest({ target: bootFocus(store) }),
   );
   const iconsReady = useIconsReady(whenIconsReady);
 
@@ -301,12 +344,12 @@ function DesktopScreen({ onReady, isClean, onPowerChange }: DesktopScreenProps) 
     fromUrl.current = showFromUrl;
   });
 
-  const settleCleanBoot = useEffectEvent(() => {
-    if (isClean) settle(null);
+  const settleAfterBoot = useEffectEvent(() => {
+    if (boot !== "first") settle(store.getState().activeId);
   });
 
   useEffect(() => {
-    settleCleanBoot();
+    settleAfterBoot();
   }, []);
 
   const activate = (id: AppId) => {

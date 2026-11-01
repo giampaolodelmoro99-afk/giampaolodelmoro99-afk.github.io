@@ -333,10 +333,12 @@ describe("DesktopApp", () => {
     await waitFor(() => expect(start).toHaveFocus());
   });
 
-  it("Spegni porta al congedo con il titolo della scheda; Riaccendi riporta un desktop vuoto", async () => {
+  it("Spegni porta al congedo con il titolo della scheda; Riaccendi riporta le finestre di prima", async () => {
     const user = userEvent.setup();
     const title = document.title;
-    renderDesktop("/");
+    const { pathname } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
     await user.click(screen.getByRole("button", { name: /Start/ }));
     await user.click(screen.getByRole("menuitem", { name: "Spegni…" }));
     await screen.findByRole("dialog", { name: "Spegni" });
@@ -351,8 +353,10 @@ describe("DesktopApp", () => {
     await user.click(restart);
     expect(document.title).toBe(title);
     expect(await screen.findByRole("grid", { name: "Icone del desktop" })).toBeInTheDocument();
-    expect(screen.queryByRole("region")).toBeNull();
-    await waitFor(() => expect(screen.getByRole("row", { name: "About" })).toHaveFocus());
+    expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+    await waitFor(() => expect(document.getElementById("window-cv-body")).toHaveFocus());
+    expect(pathname()).toBe("/cv/");
   });
 
   it("Riavvia riporta un desktop vuoto senza passare dal congedo", async () => {
@@ -365,6 +369,11 @@ describe("DesktopApp", () => {
     expect(await screen.findByRole("grid", { name: "Icone del desktop" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Riaccendi" })).toBeNull();
     expect(screen.queryByRole("region")).toBeNull();
+    await waitFor(() => expect(screen.getByRole("row", { name: "About" })).toHaveFocus());
+    expect(JSON.parse(localStorage.getItem("windows.v1") ?? "null")).toMatchObject({
+      windows: [],
+      stack: [],
+    });
   });
 
   it("Annulla in Spegni… lascia il desktop com'era e riporta il focus su Start", async () => {
@@ -501,5 +510,52 @@ describe("DesktopApp e URL", () => {
     await screen.findByRole("grid", { name: "Icone del desktop" });
     await waitFor(() => expect(pathname()).toBe("/"));
     expect(screen.queryByRole("region")).toBeNull();
+  });
+
+  it("salva il layout e lo ripristina dietro la finestra dell'URL, che resta nella sua posizione", async () => {
+    const user = userEvent.setup();
+    const first = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "CV" })).getByRole("button", {
+        name: "Ingrandisci",
+      }),
+    );
+    first.unmount();
+    const saved = JSON.parse(localStorage.getItem("windows.v1") ?? "null");
+    expect(saved).toMatchObject({ version: 1, stack: ["about", "cv"], recent: ["cv", "about"] });
+    renderDesktop("/progetti/");
+    const projects = screen.getByRole("region", { name: "Progetti" });
+    expect(projects).toHaveAttribute("data-active", "true");
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "false");
+    expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("region", { name: "CV" })).getByRole("button", {
+        name: "Ripristina",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /^(About|CV|Progetti)$/ })).toHaveLength(3);
+  });
+
+  it("sulla home About c'è sempre, anche se era stata chiusa", async () => {
+    const user = userEvent.setup();
+    const first = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "About" })).getByRole("button", { name: "Chiudi" }),
+    );
+    first.unmount();
+    renderDesktop("/");
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+    expect(screen.getByRole("region", { name: "CV" })).toBeInTheDocument();
+  });
+
+  it("ignora e cancella un layout salvato con un'altra versione", () => {
+    localStorage.setItem("windows.v1", JSON.stringify({ version: 2, windows: [] }));
+    renderDesktop("/");
+    expect(screen.getAllByRole("region")).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem("windows.v1") ?? "null")).toMatchObject({ version: 1 });
   });
 });

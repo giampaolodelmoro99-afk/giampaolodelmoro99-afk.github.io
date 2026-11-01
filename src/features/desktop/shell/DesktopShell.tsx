@@ -8,7 +8,7 @@ import { cx } from "../../../components/cx";
 import { getDictionary, useLocale, useT } from "../../../i18n";
 import { type RouteKey, locales, routeMap } from "../../../routes/routeMap";
 import { uiStrings } from "../../../i18n/ui";
-import { openAppFor } from "../../../stores/desktop";
+import { openAppFor } from "../../../stores/desktop/home";
 import { appDefinition, desktopApps } from "../apps";
 import styles from "../Desktop.module.css";
 import { desktopIconsId, windowBodyId } from "../ids";

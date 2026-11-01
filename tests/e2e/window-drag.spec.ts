@@ -185,3 +185,24 @@ test("le finestre aperte a cascata restano tutte nell'area visibile", async ({ p
     expect(rect.bottom).toBeLessThanOrEqual((area?.y ?? 0) + (area?.height ?? 0) + 0.5);
   }
 });
+
+test("la posizione trascinata si ritrova ricaricando, dietro la finestra dell'URL", async ({
+  page,
+}) => {
+  await openDesktop(page);
+  const about = page.getByRole("region", { name: "About" });
+  const start = await about.locator("header").boundingBox();
+  if (!start) throw new Error("finestra non visibile");
+  await page.mouse.move(start.x + 60, start.y + start.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(start.x + 140, start.y + start.height / 2 + 60, { steps: 5 });
+  await page.mouse.up();
+  const moved = await about.boundingBox();
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem("windows.v1")))
+    .toContain('"geometry":{');
+  await openDesktop(page, "/cv/");
+  await expect(page.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+  await expect(about).toHaveAttribute("data-active", "false");
+  expect(await about.boundingBox()).toEqual(moved);
+});

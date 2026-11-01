@@ -16,4 +16,5 @@ if (!("ResizeObserver" in globalThis)) {
 
 afterEach(() => {
   cleanup();
+  localStorage.clear();
 });

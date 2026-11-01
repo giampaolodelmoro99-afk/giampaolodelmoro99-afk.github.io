@@ -133,7 +133,7 @@ test.describe("CSP del sito sulla home con il desktop interattivo (ADR-0015)", (
     await expect(page).toHaveTitle("Spento · Gianpaolo Del Moro");
     await expect(page.getByRole("button", { name: "Riaccendi" })).toBeFocused();
     await page.getByRole("button", { name: "Riaccendi" }).click();
-    await expect(page.getByRole("row", { name: "About" })).toBeFocused();
+    await expect(page.locator("#window-about-body")).toBeFocused();
     expect(violations).toEqual([]);
   });
 });

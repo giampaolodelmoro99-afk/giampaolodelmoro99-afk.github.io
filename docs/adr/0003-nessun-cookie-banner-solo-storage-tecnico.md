@@ -14,14 +14,14 @@ Un cookie banner peggiora l'esperienza (soprattutto su mobile), può diventare l
 - Solo localStorage o sessionStorage **tecnico**, per preferenze e funzioni richieste dal visitatore. Nessun identificativo, profilazione, analytics o dato inviato a terzi.
 - Chiavi ammesse (fonte di verità: LEGAL.md §2):
 
-| Chiave                 | Scopo                                                                |
-| ---------------------- | -------------------------------------------------------------------- |
-| `locale`               | lingua preferita                                                     |
-| `audio`                | suoni sì/no                                                          |
-| `theme`                | tema, alto contrasto, dimensione testo, riduzione animazioni, sfondo |
-| `windows`              | posizione e dimensione delle finestre                                |
-| `boot.seen`            | boot già visto                                                       |
-| `contact.lastSubmitAt` | pausa minima tra due invii del form (anti-abuso)                     |
+| Chiave                 | Scopo                                                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------- |
+| `locale`               | lingua preferita                                                                                    |
+| `audio`                | suoni sì/no                                                                                         |
+| `theme`                | tema, alto contrasto, dimensione testo, riduzione animazioni, sfondo                                |
+| `windows.v1`           | finestre aperte, posizione, dimensione, ingrandite o ridotte e ordine (formato versionato, Fase 2B) |
+| `boot.seen`            | boot già visto                                                                                      |
+| `contact.lastSubmitAt` | pausa minima tra due invii del form (anti-abuso)                                                    |
 
 - Storybook (`/storybook/`, dalla Fase 1A) usa localStorage e sessionStorage per lo stato della propria interfaccia: storage tecnico di uno strumento di documentazione, creato solo visitando `/storybook/` (LEGAL.md §2).
 - La pagina /privacy elenca chiavi e scopi nella sezione "Cookie e storage", compreso lo storage di Storybook.

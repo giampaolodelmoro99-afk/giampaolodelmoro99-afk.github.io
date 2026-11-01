@@ -13,6 +13,7 @@ import {
   open,
   openAppFor,
   place,
+  restore,
   serialize,
   setViewport,
   toggleMaximize,
@@ -242,5 +243,29 @@ describe("serializzazione (persistenza della 2B)", () => {
     expect(home.activeId).toBeNull();
     expect(Object.keys(home.windows).toSorted()).toEqual(["projects", "terminal"]);
     expect(home.windows.about).toBeUndefined();
+  });
+
+  it("restore senza layout salvato è lo stato dell'URL", () => {
+    expect(restore(null, "projects")).toEqual(initialStateFor("projects"));
+  });
+
+  it("restore mette le finestre salvate dietro quella dell'URL, che resta nella posizione predefinita", () => {
+    const saved = toggleMaximize(
+      place(three(), "projects", { x: 5, y: 6, width: 400, height: 300 }),
+      "terminal",
+    );
+    const state = restore(saved, "projects");
+    expect(state.activeId).toBe("projects");
+    expect(state.stack).toEqual(["about", "terminal", "projects"]);
+    expect(state.recent).toEqual(["projects", "terminal", "about"]);
+    expect(state.windows.projects).toMatchObject({ geometry: null, maximized: false, cascade: 0 });
+    expect(state.windows.terminal?.maximized).toBe(true);
+  });
+
+  it("restore sulla home apre sempre About, anche se era stata chiusa", () => {
+    const state = restore(close(three(), "about"), "desktop");
+    expect(state.activeId).toBe("about");
+    expect(state.stack.at(-1)).toBe("about");
+    expect(Object.keys(state.windows).toSorted()).toEqual(["about", "projects", "terminal"]);
   });
 });
