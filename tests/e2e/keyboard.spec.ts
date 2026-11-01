@@ -56,7 +56,7 @@ test("in forced-colors il focus da tastiera resta visibile con il colore di sist
   page,
 }) => {
   await page.emulateMedia({ forcedColors: "active" });
-  await openPage(page, "/");
+  await openDesktop(page, "/");
   await page.keyboard.press("Tab");
   const link = page.getByRole("link", { name: "Salta al contenuto" });
   await expect(link).toBeFocused();
