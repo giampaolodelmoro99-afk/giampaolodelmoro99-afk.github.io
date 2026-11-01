@@ -49,15 +49,21 @@ describe("stub della route discovery di React Router", () => {
     expect(config).not.toMatch(/unstable_customRouteDiscovery/);
   });
 
-  it("la build si ferma se il modulo non passa mai dallo stub", () => {
+  it("la build che usa HydratedRouter si ferma se il modulo non passa mai dallo stub", () => {
+    const hydrated = "/x/react-router/dist/production/lib/dom-export/hydrated-router.js";
     const missing = routeDiscoveryStub();
-    expect(
-      missing.transform("export const x = 1;", "/x/react-router/dist/production/index.js"),
-    ).toBeNull();
+    expect(missing.transform("export const x = 1;", hydrated)).toBeNull();
     expect(() => missing.buildEnd(undefined)).toThrow(/non è passato dallo stub/);
+    expect(() => missing.buildEnd(new Error("altro"))).not.toThrow();
     const ok = routeDiscoveryStub();
+    ok.transform("export const x = 1;", hydrated);
     expect(ok.transform(original, production)).toBe(stubSource);
     expect(() => ok.buildEnd(undefined)).not.toThrow();
-    expect(() => missing.buildEnd(new Error("altro"))).not.toThrow();
+  });
+
+  it("una build senza HydratedRouter (Storybook) non richiede lo stub", () => {
+    const storybook = routeDiscoveryStub();
+    storybook.transform("export const x = 1;", "/x/react-router/dist/production/index.js");
+    expect(() => storybook.buildEnd(undefined)).not.toThrow();
   });
 });

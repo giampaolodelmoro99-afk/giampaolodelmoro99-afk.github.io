@@ -5,10 +5,15 @@
 // "initial", nessun flag). Nella build del client il modulo diventa uno stub
 // che fallisce in modo esplicito se il flag venisse attivato. Se una versione
 // futura cambia gli export del modulo, o se il modulo non passa mai dallo
-// stub (spostato o accorpato), la build si ferma: lo stub va rivisto.
+// stub in una build che usa HydratedRouter (spostato o accorpato), la build
+// si ferma: lo stub va rivisto. Storybook usa la stessa configurazione di Vite
+// ma non HydratedRouter, quindi lì il controllo non scatta.
 
 export const routeDiscoveryModule =
   /[\\/]react-router[\\/]dist[\\/]production[\\/]lib[\\/]dom[\\/]ssr[\\/]route-discovery\.js$/;
+
+export const hydratedRouterModule =
+  /[\\/]react-router[\\/]dist[\\/]production[\\/]lib[\\/]dom-export[\\/]hydrated-router\.js$/;
 
 export const routeDiscoveryExports = [
   "RouteDiscoveryRuntime",
@@ -58,6 +63,7 @@ export function stubRouteDiscovery(code, id) {
 
 export function routeDiscoveryStub() {
   let applied = false;
+  let hydrates = false;
   return {
     name: "route-discovery-stub",
     apply: /** @type {const} */ ("build"),
@@ -68,13 +74,14 @@ export function routeDiscoveryStub() {
      * @param {string} id
      */
     transform(code, id) {
+      if (hydratedRouterModule.test(id)) hydrates = true;
       const stub = stubRouteDiscovery(code, id);
       if (stub !== null) applied = true;
       return stub;
     },
     /** @param {Error | undefined} error */
     buildEnd(error) {
-      if (!error && !applied) {
+      if (!error && hydrates && !applied) {
         throw new Error(
           "route-discovery.js di React Router non è passato dallo stub: il modulo è cambiato, rivedi scripts/lib/route-discovery-stub.mjs",
         );
