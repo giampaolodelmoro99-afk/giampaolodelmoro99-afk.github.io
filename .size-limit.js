@@ -178,8 +178,8 @@ function componentChecks() {
     AlertDialog: "AlertDialog",
     AlertDialogFrame: "AlertDialog",
   };
-  // Componenti della F2A: misurati uno per uno e in un totale informativo, senza
-  // budget. Se entrano nei totali con budget lo decide il proprietario.
+  // Componenti della F2A: dal 01/11/2026 entrano nei totali con budget
+  // (decisione del proprietario, ADR-0020).
   const phase2aFolders = {
     TaskbarIconButton: "TaskbarButton",
     WindowMenu: "WindowMenu",
@@ -192,8 +192,7 @@ function componentChecks() {
     ShutdownDialog: "ShutdownDialog",
     FarewellScreen: "FarewellScreen",
   };
-  const components = Object.keys(folders);
-  const allComponents = [...components, ...Object.keys(phase2aFolders)];
+  const components = [...Object.keys(folders), ...Object.keys(phase2aFolders)];
   const desktopShell = ["Window", "Taskbar", "TaskbarButton", "StartButton", "DesktopIcons"];
   const framework = ["react", "react-dom", "react/jsx-runtime", "react-router", "scheduler"];
 
@@ -225,8 +224,6 @@ function componentChecks() {
       "js",
     ),
     check("Icon importato dall'indice dei componenti, JS (gzip)", index, ["Icon"], "js"),
-    check("Componenti con la F2A: totale JS (gzip), senza budget", index, allComponents, "js"),
-    check("Componenti con la F2A: totale CSS (gzip), senza budget", index, allComponents, "css"),
     ...Object.entries({ ...folders, ...phase2aFolders }).map(([component, folder]) =>
       check(
         `Componente ${component}: JS (gzip)`,

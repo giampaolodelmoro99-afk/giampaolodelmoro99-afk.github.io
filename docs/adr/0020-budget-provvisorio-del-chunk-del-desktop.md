@@ -48,6 +48,8 @@ Il job «E2E prestazioni» è verde, con CPU rallentata 4×: task più lunga tra
 
 I tre chunk aperti su richiesta mancavano in `.size-limit.js` (li chiedeva il piano, §3.1; segnalato dalla code review di chiusura): ora sono misurati seguendo gli import dinamici del chunk del desktop, con la stessa regola. Dopo le correzioni della review il chunk del desktop misura 73,50 kB e il JS iniziale 120,59 kB, dentro i budget.
 
+**Componenti della F2A nei totali** (decisione del proprietario, 01/11/2026): i dieci componenti nuovi entrano in `Componenti: totale JS` e `totale CSS`. Il totale JS passa a 91,47 kB (budget 99, invariato), il CSS a 5,71 kB (budget 6, invariato).
+
 ## Conseguenze
 
 - Positive: la CI della 2A-2 resta verde senza perdere il controllo; il budget finale si basa sul peso reale e su metriche di reattività, non su una stima.

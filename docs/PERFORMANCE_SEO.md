@@ -58,8 +58,8 @@ Dal 28/10/2026 la home prerenderizza un guscio statico del desktop in solo HTML 
 | JS iniziale della home               | 120,59 kB (117,8 alla 2A-1) | 124 kB           |
 | Chunk del desktop dopo l'idratazione | 73,50 kB (56,08 alla 2A-1)  | 77 kB (ADR-0020) |
 | Sprite delle icone                   | 12,64 kB                    | 14 kB            |
-| Componenti, totale JS                | 86,93 kB                    | 99 kB            |
-| Componenti, totale CSS               | 5,69 kB                     | 6 kB (ADR-0020)  |
+| Componenti, totale JS (con la F2A)   | 91,47 kB                    | 99 kB            |
+| Componenti, totale CSS (con la F2A)  | 5,71 kB                     | 6 kB (ADR-0020)  |
 | Chunk di Esegui all'apertura         | 4,67 kB                     | 5 kB (ADR-0020)  |
 | Chunk di Spegni all'apertura         | 7,09 kB                     | 8 kB (ADR-0020)  |
 | Chunk del congedo all'apertura       | 0,51 kB                     | 1 kB (ADR-0020)  |
@@ -108,7 +108,7 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 | DesktopIcons                                                    | 53,36                               | +5,95                                                       | 96,49     | 4,52       | 17,03            | **75,03** (guscio completo: Window, Taskbar, TaskbarButton, StartButton, DesktopIcons) | 110,81 |
 | AlertDialog e AlertDialogFrame                                  | 41,18 / 31,06                       | +1,64                                                       | 98,13     | 4,63       | 17,16            | 74,92                                                                                  | 110,81 |
 
-**Componenti della F2A** (misure di chiusura, 01/11/2026, con `npm run size:components`). Sono misurati uno per uno e in un totale informativo, ma non entrano nei totali con budget: il totale JS con la F2A è 91,39 kB (86,93 senza), il CSS resta 5,69 kB perché la misura del CSS importa l'indice e comprende già tutti i fogli.
+**Componenti della F2A** (misure di chiusura, 01/11/2026, con `npm run size:components`). Dal 01/11/2026 entrano nei totali con budget (decisione del proprietario): totale JS 91,47 kB su 99 (86,93 senza la F2A), totale CSS 5,71 kB su 6.
 
 | Componente        | Da solo (JS) | Note                         |
 | ----------------- | ------------ | ---------------------------- |
