@@ -64,10 +64,10 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 
 - [ ] Note dell'a11y-auditor (1B) da risolvere quando i componenti entrano nelle pagine:
   - ~~livello del titolo della Window, insieme alla scelta `region`/`dialog`~~: risolto in 2A (ADR-0016: region, titolo non heading, contenuto da `h1` o `h2`)
-  - corpo `document` della Window scorrevole da tastiera anche in Safari (riusare `ScrollArea`)
-  - pulsante attivo della taskbar in alto contrasto distinto non solo dal grassetto; cerchio del Radio in `forced-colors`
-  - testi troncati (StatusBar, titoli, taskbar, voci di menu larghe a 320 px) leggibili per intero; taskbar con molte finestre a 320 px (ADR-0007, F2B)
-  - focus iniziale sul pulsante meno distruttivo nei dialog di conferma; pulsanti della barra del titolo senza callback non mostrati
+  - corpo `document` della Window scorrevole da tastiera anche in Safari (riusare `ScrollArea`): **parziale** in 2A (focus programmatico e skip link; da verificare su Safari)
+  - ~~pulsante attivo della taskbar in alto contrasto distinto non solo dal grassetto~~: risolto in 2A (giallo e bordo di 3 px); cerchio del Radio in `forced-colors`: aperto, ora che il Radio è nella home (Spegni), rinviato alla 2B (ADR-0016)
+  - testi troncati (StatusBar, titoli, taskbar, voci di menu larghe a 320 px) leggibili per intero; taskbar con molte finestre a 320 px (ADR-0007, F2B): in 2A i pulsanti scorrono senza coprire lingua e orologio
+  - focus iniziale sul pulsante meno distruttivo nei dialog di conferma (in Spegni resta su «Spegni», rinvio motivato in ADR-0016); pulsanti della barra del titolo senza callback non mostrati
   - tooltip uguale all'`aria-label` letto due volte; `ScrollArea` focalizzabile solo quando scorre; segnaposto distinguibile dal testo
   - progetto Storybook a 320 px con controllo dell'overflow; verifiche manuali con NVDA, VoiceOver, zoom 200/400% e `forced-colors`
 
