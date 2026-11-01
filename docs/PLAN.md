@@ -105,7 +105,7 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 - [ ] Pagina /privacy IT/EN (incluso l'eventuale antispam di terzi), link nel footer e vicino al pulsante del form
 - [ ] Disclaimer di non affiliazione a Microsoft
 - [ ] Vista semplice; Making of (da AI_WORKFLOW.md)
-- [ ] LEGAL.md §2 e ADR-0003: citare le chiavi `sessionStorage` tecniche di React Router (`react-router-scroll-positions`, `remix-router-transitions`, `react-router-manifest-version`) nell'informativa (security-auditor, 1B)
+- [ ] LEGAL.md §2 e ADR-0003: citare le chiavi `sessionStorage` tecniche di React Router nell'informativa (security-auditor, 1B). Dalla 2B il sito non ne scrive nessuna (`ScrollRestoration` tolta, e2e `storage.spec.ts`): l'informativa dirà solo `windows.v1` e le chiavi delle fasi successive
 
 ## 4A. Esperienza di sistema
 

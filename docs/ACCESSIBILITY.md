@@ -17,6 +17,7 @@
   - `Esc` chiude menu e dialog, mai le finestre; frecce nei menu e nelle icone; `Invio` apre l'elemento selezionato;
   - niente scorciatoie con AltGr, nei campi di testo o dentro `[data-shortcuts="off"]`; su Mac le etichette usano ⌥.
 - Focus dopo le azioni sulle finestre: apertura e riattivazione sul corpo della finestra, chiusura sulla finestra successiva o sulle icone, riduzione sul pulsante della taskbar (ADR-0016 §4).
+- Indietro e Avanti del browser (F2B, ADR-0021): il focus va al corpo della finestra della voce, o alle icone se nessuna è attiva; una finestra riaperta si annuncia. Il cambio di lingua lascia il focus sul suo link. Nessuna voce nasce senza un gesto, e chiudere una finestra non lascia voci doppie.
 - Nessuna trappola del focus, salvo dialog modali (React Aria gestisce cattura e ripristino).
 
 ## 3. Screen reader

@@ -93,9 +93,10 @@ Scritto da zero (ADR-0005), in `src/features/desktop/` con lo store in `src/stor
 ## 5. Stato e sincronizzazione con l'URL (Fase 2B)
 
 - **Zustand** per lo stato del desktop: finestre aperte, ordine, geometria, minimizzate e massimizzate.
-- **L'URL è la fonte di verità della finestra attiva.** Aprire una finestra naviga verso la sua route; la route attiva porta in primo piano la finestra. Il back del browser chiude o torna alla finestra precedente.
+- **Route di layout**: tutte le pagine sono figlie di `routes/desktop-layout.tsx`, che monta il desktop una volta sola; le figlie danno solo i meta.
+- **L'URL è la fonte di verità della finestra attiva** (ADR-0021). Aprire o portare in primo piano una finestra aggiunge una voce; chiudere o ridurre assesta la voce (indietro se la precedente rappresenta già la nuova finestra attiva, altrimenti sostituzione). Indietro e Avanti portano in primo piano la finestra della voce, senza chiudere le altre. Title, canonical e meta seguono la route.
 - **Determinismo**: il primo render dipende solo dall'URL, uguale al prerender, per evitare mismatch di idratazione.
-- **Persistenza**: geometria e preferenze si leggono da localStorage dopo l'idratazione, senza spostamenti visibili (CLS 0). Le chiavi ammesse sono in `LEGAL.md`.
+- **Persistenza**: chiave `windows.v1` letta prima dello swap del desktop interattivo, che compare già ripristinato (CLS 0). La finestra dell'URL resta in primo piano nella posizione del prerender, le altre tornano dietro; sulla home About c'è sempre. Le chiavi ammesse sono in `LEGAL.md`.
 
 ## 6. Modalità mobile (Fase 2B)
 
