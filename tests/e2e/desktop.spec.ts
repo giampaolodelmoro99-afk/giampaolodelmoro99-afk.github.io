@@ -117,17 +117,19 @@ test.describe("desktop dopo l'idratazione", () => {
     );
   });
 
-  test("dopo l'idratazione i link di About aprono le finestre senza cambiare URL", async ({
+  test("dopo l'idratazione i link di About aprono le finestre e cambiano l'URL senza ricaricare", async ({
     page,
   }) => {
     await openDesktop(page);
+    await page.evaluate(() => Object.assign(window, { __noReload: true }));
     await page.getByRole("link", { name: "Vedere i progetti" }).click();
     await expect(page.getByRole("region", { name: "Progetti" })).toHaveAttribute(
       "data-active",
       "true",
     );
     await expect(page.getByRole("region", { name: "About" })).toBeVisible();
-    expect(new URL(page.url()).pathname).toBe("/");
+    await expect(page).toHaveURL(/\/progetti\/$/);
+    expect(await page.evaluate(() => "__noReload" in window)).toBe(true);
   });
 
   test("se il chunk di Esegui non si carica il desktop resta usabile e lo annuncia", async ({

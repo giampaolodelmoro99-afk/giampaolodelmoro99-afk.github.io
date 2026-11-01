@@ -3,9 +3,11 @@ import type { Viewport } from "./geometry";
 import {
   type DesktopState,
   close,
+  deactivate,
   deserialize,
   emptyState,
   focus,
+  followRoute,
   initialStateFor,
   minimize,
   open,
@@ -211,5 +213,34 @@ describe("serializzazione (persistenza della 2B)", () => {
     ["valore non oggetto", "null"],
   ])("rifiuta %s", (_case, text) => {
     expect(deserialize(text)).toBeNull();
+  });
+
+  it("deactivate lascia le finestre dove sono, senza finestra attiva", () => {
+    const state = three();
+    const none = deactivate(state);
+    expect(none).toMatchObject({ activeId: null, stack: state.stack, recent: state.recent });
+    expect(none.windows).toBe(state.windows);
+    expect(deactivate(none)).toBe(none);
+  });
+
+  it("followRoute porta in primo piano la finestra dell'URL, riaprendola o ripristinandola", () => {
+    const state = three();
+    expect(followRoute(state, "terminal")).toBe(state);
+    expect(followRoute(state, "projects").activeId).toBe("projects");
+    const reopened = followRoute(close(state, "projects"), "projects");
+    expect(reopened.activeId).toBe("projects");
+    expect(reopened.windows.projects).toMatchObject({ minimized: false, geometry: null });
+    const restored = followRoute(minimize(state, "terminal"), "terminal");
+    expect(restored.windows.terminal?.minimized).toBe(false);
+    expect(restored.activeId).toBe("terminal");
+  });
+
+  it("followRoute sulla home attiva About se è aperta, altrimenti nessuna finestra", () => {
+    expect(followRoute(three(), "desktop").activeId).toBe("about");
+    const withoutAbout = close(three(), "about");
+    const home = followRoute(withoutAbout, "desktop");
+    expect(home.activeId).toBeNull();
+    expect(Object.keys(home.windows).toSorted()).toEqual(["projects", "terminal"]);
+    expect(home.windows.about).toBeUndefined();
   });
 });

@@ -44,7 +44,7 @@ export function Desktop() {
       {!swap?.isReady && <DesktopShell routeKey={routeKey} />}
       {swap && (
         <div className={styles.swap} hidden={!swap.isReady}>
-          <swap.App key={routeKey} routeKey={routeKey} onReady={onReady} />
+          <swap.App onReady={onReady} />
         </div>
       )}
     </>

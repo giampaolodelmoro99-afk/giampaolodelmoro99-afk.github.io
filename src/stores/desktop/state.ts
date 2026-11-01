@@ -97,6 +97,18 @@ export function minimize(state: DesktopState, id: AppId): DesktopState {
   return { ...minimized, activeId: topVisible(minimized) };
 }
 
+export function deactivate(state: DesktopState): DesktopState {
+  return state.activeId === null ? state : { ...state, activeId: null };
+}
+
+export function followRoute(state: DesktopState, routeKey: RouteKey): DesktopState {
+  if (routeKey === "desktop") {
+    if (state.windows[homeApp]) return focus(state, homeApp);
+    return deactivate(state);
+  }
+  return open(state, routeKey);
+}
+
 export function toggleMaximize(state: DesktopState, id: AppId): DesktopState {
   const window = state.windows[id];
   if (!window) return state;

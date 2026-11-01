@@ -1,14 +1,12 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { expectNoAxeViolations } from "../../../../tests/setup/axe";
-import { renderAt } from "../../../../tests/setup/render";
-import { routeKeyFromPathname } from "../../../routes/routeMap";
+import { renderWithHistory } from "../../../../tests/setup/render";
 import { DesktopApp } from "./DesktopApp";
 
 function renderDesktop(path: string, onReady?: () => void) {
-  const key = routeKeyFromPathname(path) ?? "desktop";
-  return renderAt(path, () => <DesktopApp routeKey={key} {...(onReady ? { onReady } : {})} />);
+  return renderWithHistory(path, () => <DesktopApp {...(onReady ? { onReady } : {})} />);
 }
 
 describe("DesktopApp", () => {
@@ -39,7 +37,11 @@ describe("DesktopApp", () => {
     expect(projects).toHaveAttribute("data-active", "true");
     expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "false");
     expect(document.getElementById("window-projects-body")).toHaveFocus();
-    expect(within(projects).getByRole("heading", { level: 2 })).toHaveTextContent("Progetti");
+    expect(within(projects).getByRole("heading", { level: 1 })).toHaveTextContent("Progetti");
+    expect(
+      within(screen.getByRole("region", { name: "About" })).getByRole("heading", { level: 2 }),
+    ).toHaveTextContent("Gianpaolo Del Moro");
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   });
 
   it("apre un'app dal menu Start", async () => {
@@ -65,15 +67,17 @@ describe("DesktopApp", () => {
     await waitFor(() => expect(document.getElementById("window-about-body")).toHaveFocus());
   });
 
-  it("i link di About aprono la finestra dell'app senza cambiare pagina", async () => {
+  it("i link di About portano all'URL dell'app e la aprono in una finestra, accanto ad About", async () => {
     const user = userEvent.setup();
-    renderDesktop("/");
+    const { pathname } = renderDesktop("/");
     const link = screen.getByRole("link", { name: "Vedere i progetti" });
     expect(link).toHaveAttribute("href", "/progetti/");
     await user.click(link);
+    expect(pathname()).toBe("/progetti/");
     expect(screen.getByRole("region", { name: "Progetti" })).toHaveAttribute("data-active", "true");
     expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
     await waitFor(() => expect(document.getElementById("window-projects-body")).toHaveFocus());
+    expect(screen.getByText("Progetti: finestra aperta")).toBeInTheDocument();
   });
 
   it("i pulsanti della barra delle finestre inattive escono dall'ordine di Tab", async () => {
@@ -390,5 +394,112 @@ describe("DesktopApp", () => {
   it("non ha violazioni axe", async () => {
     const { container } = renderDesktop("/");
     await expectNoAxeViolations(container);
+  });
+});
+
+async function go(router: ReturnType<typeof renderDesktop>["router"], delta: number) {
+  await act(async () => {
+    await router.navigate(delta);
+  });
+}
+
+describe("DesktopApp e URL", () => {
+  it("aprire una finestra cambia l'URL; chiuderla torna alla voce della home", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.dblClick(screen.getByRole("row", { name: "Progetti" }));
+    expect(pathname()).toBe("/progetti/");
+    const projects = screen.getByRole("region", { name: "Progetti" });
+    await user.click(within(projects).getByRole("button", { name: "Chiudi" }));
+    await waitFor(() => expect(pathname()).toBe("/"));
+    expect(router.state.historyAction).toBe("POP");
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+  });
+
+  it("Indietro torna alla finestra precedente senza chiudere, Avanti la riporta in primo piano", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    expect(pathname()).toBe("/cv/");
+    await go(router, -1);
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "false");
+    await waitFor(() => expect(document.getElementById("window-about-body")).toHaveFocus());
+    await go(router, 1);
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+    await waitFor(() => expect(document.getElementById("window-cv-body")).toHaveFocus());
+  });
+
+  it("Avanti verso una finestra chiusa la riapre e lo annuncia", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "CV" })).getByRole("button", { name: "Chiudi" }),
+    );
+    await waitFor(() => expect(pathname()).toBe("/"));
+    await go(router, 1);
+    expect(pathname()).toBe("/cv/");
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+    expect(screen.getByText("CV: finestra aperta")).toBeInTheDocument();
+  });
+
+  it("la home senza About lascia le finestre al loro posto, nessuna attiva, con il focus sulle icone", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "Chiudi" }));
+    expect(pathname()).toBe("/");
+    await user.dblClick(screen.getByRole("row", { name: "CV" }));
+    expect(pathname()).toBe("/cv/");
+    await go(router, -1);
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "false");
+    await waitFor(() => expect(screen.getByRole("row", { name: "About" })).toHaveFocus());
+    expect(screen.queryByRole("button", { pressed: true })).toBeNull();
+  });
+
+  it("ridurre l'unica finestra porta l'URL sulla home, sostituendo la voce", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/cv/");
+    await user.click(screen.getByRole("button", { name: "Riduci a icona" }));
+    expect(pathname()).toBe("/");
+    expect(router.state.historyAction).toBe("REPLACE");
+  });
+
+  it("attivare una finestra con il clic aggiunge la sua voce", async () => {
+    const user = userEvent.setup();
+    const { pathname } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("region", { name: "About" }));
+    expect(pathname()).toBe("/profilo/");
+  });
+
+  it("cambiare lingua tiene aperte le finestre", async () => {
+    const user = userEvent.setup();
+    const { pathname } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("link", { name: "EN, English version" }));
+    expect(pathname()).toBe("/en/cv/");
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+    expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "IT, Versione italiana" })).toHaveAttribute(
+      "href",
+      "/cv/",
+    );
+  });
+
+  it("Riavvia riporta l'URL sulla home", async () => {
+    const user = userEvent.setup();
+    const { pathname } = renderDesktop("/progetti/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "Spegni…" }));
+    await user.click(await screen.findByRole("radio", { name: "Riavvia" }));
+    await user.click(screen.getByRole("button", { name: "OK" }));
+    await screen.findByRole("grid", { name: "Icone del desktop" });
+    await waitFor(() => expect(pathname()).toBe("/"));
+    expect(screen.queryByRole("region")).toBeNull();
   });
 });
