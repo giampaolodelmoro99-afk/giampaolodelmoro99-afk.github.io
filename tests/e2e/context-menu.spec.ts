@@ -1,16 +1,29 @@
+import type { Page } from "@playwright/test";
 import { expect, openDesktop, test } from "./fixtures";
 
 // Il menu contestuale esiste solo con il desktop largo (da 768 px).
+
+async function emptyPoint(page: Page) {
+  const area = await page.getByRole("main").boundingBox();
+  if (!area) throw new Error("area di lavoro non visibile");
+  return { x: area.x + area.width / 2, y: area.y + area.height - 40 };
+}
+
+const distanceFromEdges = (start: number, size: number, point: number) =>
+  Math.min(Math.abs(start - point), Math.abs(start + size - point));
 
 test("il tasto destro sul desktop apre il menu nel punto del clic e ordina le icone", async ({
   page,
 }) => {
   await openDesktop(page);
-  await page.mouse.click(1200, 120, { button: "right" });
+  const point = await emptyPoint(page);
+  await page.mouse.click(point.x, point.y, { button: "right" });
   const menu = page.getByRole("menu", { name: "Desktop" });
   await expect(menu).toBeVisible();
   const box = await menu.boundingBox();
-  expect(box?.x).toBeGreaterThan(1000);
+  if (!box) throw new Error("menu non visibile");
+  expect(distanceFromEdges(box.x, box.width, point.x)).toBeLessThan(8);
+  expect(distanceFromEdges(box.y, box.height, point.y)).toBeLessThan(8);
   await expect(page.getByRole("menuitem", { name: "Disponi icone" })).toBeFocused();
   await page.getByRole("menuitem", { name: "Disponi icone" }).hover();
   await page.getByRole("menuitem", { name: "Per nome" }).click();
@@ -34,10 +47,11 @@ test("Proprietà apre il Pannello di controllo; Esc chiude il menu senza azioni"
   page,
 }) => {
   await openDesktop(page);
-  await page.mouse.click(1200, 400, { button: "right" });
+  const point = await emptyPoint(page);
+  await page.mouse.click(point.x, point.y, { button: "right" });
   await page.keyboard.press("Escape");
   await expect(page.getByRole("menu")).toBeHidden();
-  await page.mouse.click(1200, 400, { button: "right" });
+  await page.mouse.click(point.x, point.y, { button: "right" });
   await page.getByRole("menuitem", { name: "Proprietà" }).click();
   await expect(page.getByRole("region", { name: "Pannello di controllo" })).toBeVisible();
 });

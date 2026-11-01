@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { overlaysInStoryRoot } from "../../../.storybook/decorators";
+import { modalStage, overlaysInStoryRoot } from "../../../.storybook/decorators";
 import { ShutdownDialog } from "./ShutdownDialog";
 
 const meta: Meta<typeof ShutdownDialog> = {
   title: "Componenti/ShutdownDialog",
   component: ShutdownDialog,
-  decorators: [overlaysInStoryRoot],
+  decorators: [modalStage, overlaysInStoryRoot],
   args: { isOpen: true, onOpenChange: () => {}, onConfirm: () => {} },
 };
 

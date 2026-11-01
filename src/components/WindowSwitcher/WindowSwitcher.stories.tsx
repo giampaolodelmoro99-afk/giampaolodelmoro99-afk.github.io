@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { overlaysInStoryRoot } from "../../../.storybook/decorators";
+import { modalStage, overlaysInStoryRoot } from "../../../.storybook/decorators";
 import { type SwitcherItem, WindowSwitcher } from "./WindowSwitcher";
 
 const items: SwitcherItem[] = [
@@ -27,7 +27,7 @@ function Switcher() {
 const meta: Meta<typeof WindowSwitcher> = {
   title: "Componenti/WindowSwitcher",
   component: WindowSwitcher,
-  decorators: [overlaysInStoryRoot],
+  decorators: [modalStage, overlaysInStoryRoot],
 };
 
 export default meta;

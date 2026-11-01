@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent } from "storybook/test";
-import { overlaysInStoryRoot } from "../../../.storybook/decorators";
+import { modalStage, overlaysInStoryRoot } from "../../../.storybook/decorators";
 import { RunDialog } from "./RunDialog";
 
 const meta: Meta<typeof RunDialog> = {
   title: "Componenti/RunDialog",
   component: RunDialog,
-  decorators: [overlaysInStoryRoot],
+  decorators: [modalStage, overlaysInStoryRoot],
   args: {
     isOpen: true,
     onOpenChange: () => {},
