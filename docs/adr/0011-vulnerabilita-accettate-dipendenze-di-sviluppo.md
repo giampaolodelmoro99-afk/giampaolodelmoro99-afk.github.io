@@ -19,7 +19,7 @@ Le dipendenze aggiunte in Fase 1A (Storybook 10.6.2, subset-font, fontkit, rollu
 
 - Si accetta il rischio della catena `@lhci/cli`. Lighthouse CI gira solo in locale e in CI, su URL locali (`http://localhost:4173`) serviti da `scripts/preview.mjs`, senza input esterni: `tmp` ed `extract-zip` non ricevono archivi o percorsi controllati da terzi, e i moduli proxy e FTP non vengono usati.
 - Il cancello resta `npm audit --omit=dev --audit-level=high` in CI: qualsiasi vulnerabilità alta in una dipendenza di produzione blocca la fase.
-- Dependabot aggiorna `@lhci/cli` nel gruppo `quality`; a ogni chiusura di fase il security-auditor ricontrolla `npm audit` e aggiorna questo ADR se le catene cambiano.
+- Dependabot aggiorna `@lhci/cli` nella PR mensile del gruppo `npm`; a ogni chiusura di fase il security-auditor ricontrolla `npm audit` e aggiorna questo ADR se le catene cambiano.
 
 ## Alternative considerate
 
