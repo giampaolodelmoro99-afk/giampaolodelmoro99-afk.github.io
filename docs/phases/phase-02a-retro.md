@@ -65,7 +65,7 @@
 | Chunk del desktop gzip                                      | 73,50 kB (budget 77, ADR-0020)                                          | –                            |
 | Chunk di Esegui / Spegni / congedo gzip                     | 4,67 / 7,09 / 0,51 kB (budget 5 / 8 / 1)                                | –                            |
 | CSS iniziale della home gzip                                | 3,84 kB (budget 12)                                                     | 3,96 kB                      |
-| Componenti JS / CSS gzip                                    | 86,99 / 5,69 kB (budget 99 / 6); con i componenti F2A 91,39 kB          | 98,13 / 4,63 kB              |
+| Componenti JS / CSS gzip                                    | 91,47 / 5,71 kB con i componenti F2A (budget 99 / 6)                    | 98,13 / 4,63 kB              |
 | Prestazioni con CPU 4×                                      | task più lunga 102–106 ms, INP del primo clic 120 ms, swap entro 764 ms | –                            |
 | Violazioni axe                                              | 0 (story nelle quattro combinazioni, pagine)                            | 0                            |
 | `npm audit --omit=dev`                                      | 0 vulnerabilità (26 di sviluppo, ADR-0011)                              | 0                            |
@@ -96,8 +96,8 @@ La coverage scende rispetto alla 1B perché il desktop ha molto codice di intera
 
 - **Rinvii alla 2B** (ADR-0016): menu della finestra sotto i 768 px, focus su `MoveControls` durante Sposta, voce scelta del selettore e Radio in `forced-colors`, focus iniziale di Spegni, Maiusc+Alt su Windows, taskbar stretta (ADR-0007).
 - **Memoria del focus per finestra** (riattivando si va al corpo): da rivalutare con i contenuti reali.
-- **Testi del desktop in bozza** (CONTENT.md §5): il saluto del congedo va approvato da Gianpaolo; i suggerimenti del content-reviewer sono per la F3A.
-- **Componenti F2A fuori dai totali con budget** di size-limit (JS 91,39 kB se inclusi): da decidere se includerli.
+- **Testi del desktop in bozza** (CONTENT.md §5), tranne il congedo, approvato il 01/11/2026; i suggerimenti del content-reviewer sono per la F3A.
+- **Componenti F2A nei totali con budget** di size-limit dal 01/11/2026 (JS 91,47 kB su 99): restano 7,5 kB di margine per la 2B.
 - **Suggerimenti della code review non applicati**: listener ricreati a ogni render (handler inline), pulizia dei listener se una finestra si smonta durante un trascinamento, breakpoint di 768 px scritto anche in JS, rami morti nel guscio, id duplicati per un frame durante lo swap, pressione lunga su un'icona non coperta da e2e.
 - **Lint**: restano 5 warning `no-await-in-loop` negli e2e, dove la sequenza è voluta.
 - **LEGAL.md §2**: le chiavi sessionStorage che React Router potrebbe usare (`remix-router-transitions`, `react-router-manifest-version`) non sono scritte con la configurazione attuale; da annotare o coprire con un e2e sullo storage in 2B, quando arriva la persistenza.
@@ -116,6 +116,5 @@ La coverage scende rispetto alla 1B perché il desktop ha molto codice di intera
 
 - Push del branch e CI verde, poi merge e tag `phase-02a` (li fa Gianpaolo).
 - QA su Android reale e con NVDA e VoiceOver (QA_CHECKLIST §2.1, §4, §7).
-- Approvare o riscrivere i testi del desktop in bozza, a partire dal saluto del congedo.
+- Approvare o riscrivere i testi del desktop ancora in bozza (il congedo è approvato).
 - In 2B: i rinvii di ADR-0016, la taskbar stretta, la memoria del focus, la persistenza con un e2e sullo storage, e un test che confronti guscio statico e desktop interattivo.
-- Decidere se i componenti F2A entrano nei totali con budget di size-limit.

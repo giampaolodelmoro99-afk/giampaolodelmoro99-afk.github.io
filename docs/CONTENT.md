@@ -29,6 +29,15 @@ Uso sul sito (Fase 2A):
 - Slug delle app: dove l'app corrisponde a una pagina della v1 vale lo slug della v1, definitivo (SPECS.md §6): `/profilo/`, `/stack/`, `/progetti/`, `/contatti/`. Gli altri slug sono **bozze fino alla Fase 3A**.
 - **Title e description di tutte le app**, comprese le quattro della v1 (About, Skills, Progetti, Contatti), sono **provvisori fino alla Fase 3A**: definitivi sono solo quelli della home (sopra) e gli slug della v1. Il sito non è online prima di `v1.0.0`.
 
+**Congedo di Spegni** (tavola D12), approvato da Gianpaolo il 01/11/2026:
+
+| Testo               | IT                                                                                              | EN                                                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Titolo              | Puoi chiudere questa scheda.                                                                    | You can close this tab.                                                                                           |
+| Saluto              | Il desktop è spento. Grazie della visita: se cambi idea, riaccendilo e ricomincia da dove vuoi. | The desktop is off. Thanks for stopping by: if you change your mind, turn it back on and start wherever you like. |
+| Pulsante            | Riaccendi                                                                                       | Turn back on                                                                                                      |
+| Titolo della scheda | Spento · Gianpaolo Del Moro                                                                     | Off · Gianpaolo Del Moro                                                                                          |
+
 ## 3. Testi della v1 (tag `v1.0.0-legacy`)
 
 Riportati come fonte, solo in italiano. Non tutti verranno riusati.
@@ -149,7 +158,7 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 
 > **BOZZA – da rivedere.** Testi del desktop della F2A (in `src/i18n/it.ts`, `en.ts` e `ui.ts`, chiavi `desktop` e `ui`), scritti da Claude durante la fase. Sono testi d'interfaccia (menu, dialog, annunci per i lettori di schermo, scorciatoie, skip link): si approvano insieme prima di `v1.0.0`.
 >
-> - Congedo di Spegni (tavola D12): «Puoi chiudere questa scheda.» / «You can close this tab.»; saluto «Il desktop è spento. Grazie della visita: se cambi idea, riaccendilo e ricomincia da dove vuoi.» / «The desktop is off. Thanks for stopping by: if you change your mind, turn it back on and start wherever you like.»; pulsante «Riaccendi» / «Turn back on»; titolo della scheda «Spento · Gianpaolo Del Moro» / «Off · Gianpaolo Del Moro». **Il saluto è un testo personale: va approvato da Gianpaolo.**
+> - Congedo di Spegni: **approvato il 01/11/2026**, vedi §2.
 > - Esegui: «Scrivi il nome di un'app e si aprirà in una finestra.»; errore «Non trovo "{command}". Prova con progetti, cv o contatti.»; errore di caricamento «Non riesco ad aprire questa finestra: ricarica la pagina.»
 > - Spegni: «Cosa vuoi fare?» con Spegni, Riavvia, Passa alla Vista semplice.
 > - Menu della finestra, selettore («Finestre aperte»), menu contestuale (Disponi icone, Aggiorna, Proprietà), annunci («{app}: finestra aperta», «… spostata»…), skip link «Salta al contenuto», collegamento della lingua «EN, English version» / «IT, Versione italiana».
