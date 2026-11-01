@@ -86,17 +86,17 @@ test.describe("finestre: trascinamento", () => {
     const y = handle.y + handle.height / 2;
     await page.mouse.move(x, y);
     await page.mouse.down();
-    await page.mouse.move(x + 80, y + 60, { steps: 5 });
+    await page.mouse.move(x - 80, y - 60, { steps: 5 });
     await expect(about.locator("[data-resizing]")).toHaveCount(1);
     await page.mouse.up();
     const after = await about.boundingBox();
-    expect(after?.width).toBeCloseTo(before.width + 80, 0);
-    expect(after?.height).toBeCloseTo(before.height + 60, 0);
+    expect(after?.width).toBeCloseTo(before.width - 80, 0);
+    expect(after?.height).toBeCloseTo(before.height - 60, 0);
     expect(after?.x).toBeCloseTo(before.x, 0);
 
-    const grown = await corner.boundingBox();
-    if (!grown) throw new Error("maniglia non visibile");
-    await page.mouse.move(grown.x + grown.width / 2, grown.y + grown.height / 2);
+    const shrunk = await corner.boundingBox();
+    if (!shrunk) throw new Error("maniglia non visibile");
+    await page.mouse.move(shrunk.x + shrunk.width / 2, shrunk.y + shrunk.height / 2);
     await page.mouse.down();
     await page.mouse.move(0, 0, { steps: 5 });
     await page.mouse.up();
@@ -151,4 +151,37 @@ test.describe("finestre: trascinamento", () => {
     await controls.getByRole("button", { name: "OK" }).click();
     expect((await about.boundingBox())?.width).toBeCloseTo((before?.width ?? 0) + 16, 0);
   });
+});
+
+test("le finestre aperte a cascata restano tutte nell'area visibile", async ({ page }) => {
+  await openDesktop(page);
+  for (const app of [
+    "Progetti",
+    "CV",
+    "Contatti",
+    "Skills",
+    "Timeline",
+    "Making of",
+    "Terminale",
+  ]) {
+    await page.getByRole("button", { name: "Start" }).click();
+    await page.getByRole("menuitem", { name: app, exact: true }).click();
+  }
+  await expect(page.getByRole("region", { name: "Terminale" })).toHaveAttribute(
+    "data-active",
+    "true",
+  );
+  const area = await page.getByRole("main").boundingBox();
+  const windows = await page.locator("main section").evaluateAll((sections) =>
+    sections.map((section) => {
+      const { left, right, bottom } = section.getBoundingClientRect();
+      return { left, right, bottom };
+    }),
+  );
+  expect(windows).toHaveLength(8);
+  for (const rect of windows) {
+    expect(rect.left).toBeGreaterThanOrEqual(area?.x ?? 0);
+    expect(rect.right).toBeLessThanOrEqual((area?.x ?? 0) + (area?.width ?? 0) + 0.5);
+    expect(rect.bottom).toBeLessThanOrEqual((area?.y ?? 0) + (area?.height ?? 0) + 0.5);
+  }
 });

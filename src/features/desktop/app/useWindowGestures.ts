@@ -74,6 +74,7 @@ export function useWindowGestures({
       if (event.button !== 0 || !workspace || !isEnabled() || gesture.current) return;
       if (!(event.currentTarget instanceof HTMLElement)) return;
       const target = event.currentTarget;
+      event.preventDefault();
       const origin = windowRect(windowElement, workspace);
       gesture.current = {
         id,

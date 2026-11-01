@@ -214,6 +214,7 @@
   .workspace {
     display: block;
     overflow: hidden;
+    container-type: size;
   }
 
   .iconArea,
@@ -231,14 +232,23 @@
 
   .window {
     --_icons-end: calc(var(--desktop-icon-cell) + var(--space-gutter) + var(--space-4));
+    --_area-width: calc(100cqi + var(--space-gutter) * 2);
+    --_area-height: calc(100cqb + var(--space-safe-top) + var(--space-2));
+    --_width: min(
+      var(--window-default-width),
+      var(--_area-width) - var(--_icons-end) - var(--space-gutter)
+    );
+    --_height: min(var(--window-default-height), var(--_area-height) - var(--space-4) * 2);
+    --_shift-x: min(var(--_cascade), (var(--_area-width) - var(--_icons-end) - var(--_width)) / 2);
+    --_shift-y: min(var(--_cascade), (var(--_area-height) - var(--_height)) / 2);
 
     position: absolute;
     inset: var(--space-0) var(--space-0) var(--space-0) var(--_icons-end);
     min-block-size: auto;
-    inline-size: min(var(--window-default-width), 100% - var(--_icons-end) - var(--space-gutter));
-    block-size: min(var(--window-default-height), 100% - var(--space-4) * 2);
+    inline-size: var(--_width);
+    block-size: var(--_height);
     margin: auto;
-    translate: var(--_cascade) var(--_cascade);
+    translate: var(--_shift-x) var(--_shift-y);
   }
 
   .window.placed {
