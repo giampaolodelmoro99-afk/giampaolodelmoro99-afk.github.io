@@ -1,5 +1,4 @@
 import type { MetaArgs, MetaDescriptor } from "react-router";
-import { Desktop } from "../../features/desktop/Desktop";
 import { localeFromPathname, routeKeyFromPathname } from "../../routes/routeMap";
 import { buildMeta } from "../../seo/buildMeta";
 
@@ -10,6 +9,6 @@ export function meta({ location }: Pick<MetaArgs, "location">): MetaDescriptor[]
   );
 }
 
-export default function DesktopRoute() {
-  return <Desktop />;
+export default function AppRoute() {
+  return null;
 }

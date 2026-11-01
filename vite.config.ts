@@ -38,6 +38,10 @@ export default defineConfig({
               name: "framework",
               test: /[\\/]node_modules[\\/](react|react-dom|react-router|scheduler|cookie|set-cookie-parser)[\\/]/,
             },
+            {
+              name: "site",
+              test: /[\\/]src[\\/](config|i18n|seo|app[\\/]routes[\\/]app\.tsx|components[\\/]cx\.ts)/,
+            },
           ],
         },
       },
