@@ -80,7 +80,7 @@ export default [
   {
     name: "Chunk del desktop dopo l'idratazione, JS (gzip)",
     path: desktopChunk.map((file) => `${client}${file}`),
-    limit: "80 kB",
+    limit: "77 kB",
     gzip: true,
     disablePlugins: ["@size-limit/esbuild"],
   },
@@ -148,7 +148,22 @@ function componentChecks() {
     AlertDialog: "AlertDialog",
     AlertDialogFrame: "AlertDialog",
   };
+  // Componenti della F2A: misurati uno per uno e in un totale informativo, senza
+  // budget. Se entrano nei totali con budget lo decide il proprietario.
+  const phase2aFolders = {
+    TaskbarIconButton: "TaskbarButton",
+    WindowMenu: "WindowMenu",
+    MoveControls: "MoveControls",
+    DragOutline: "DragOutline",
+    ResizeHandles: "ResizeHandles",
+    WindowSwitcher: "WindowSwitcher",
+    ContextMenu: "MenuBar",
+    RunDialog: "RunDialog",
+    ShutdownDialog: "ShutdownDialog",
+    FarewellScreen: "FarewellScreen",
+  };
   const components = Object.keys(folders);
+  const allComponents = [...components, ...Object.keys(phase2aFolders)];
   const desktopShell = ["Window", "Taskbar", "TaskbarButton", "StartButton", "DesktopIcons"];
   const framework = ["react", "react-dom", "react/jsx-runtime", "react-router", "scheduler"];
 
@@ -163,7 +178,7 @@ function componentChecks() {
 
   const totals = [
     { ...check("Componenti: totale JS (gzip)", index, components, "js"), limit: "99 kB" },
-    { ...check("Componenti: totale CSS (gzip)", index, components, "css"), limit: "7 kB" },
+    { ...check("Componenti: totale CSS (gzip)", index, components, "css"), limit: "6 kB" },
     {
       ...check("Componenti: guscio del desktop F2A, JS (gzip)", index, desktopShell, "js"),
       limit: "75 kB",
@@ -180,7 +195,9 @@ function componentChecks() {
       "js",
     ),
     check("Icon importato dall'indice dei componenti, JS (gzip)", index, ["Icon"], "js"),
-    ...Object.entries(folders).map(([component, folder]) =>
+    check("Componenti con la F2A: totale JS (gzip), senza budget", index, allComponents, "js"),
+    check("Componenti con la F2A: totale CSS (gzip), senza budget", index, allComponents, "css"),
+    ...Object.entries({ ...folders, ...phase2aFolders }).map(([component, folder]) =>
       check(
         `Componente ${component}: JS (gzip)`,
         `src/components/${folder}/index.ts`,

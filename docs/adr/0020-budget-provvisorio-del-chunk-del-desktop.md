@@ -1,4 +1,4 @@
-# ADR-0020: Budget provvisori del chunk del desktop e del CSS dei componenti nella 2A-2
+# ADR-0020: Budget del chunk del desktop e del CSS dei componenti nella 2A-2
 
 - **Stato**: Accettata
 - **Data**: 2026-10-31
@@ -33,6 +33,15 @@ Decisioni del proprietario del 31/10/2026.
 | Lasciare 59 kB e dividere subito il chunk             | Budget invariato        | Lavoro di struttura prima di sapere se serve; selettore e menu contestuale arriverebbero con un ritardo al primo uso | Si divide solo se le prestazioni lo richiedono       |
 | Alzare subito il budget alla misura attuale più il 5% | Budget stretto          | Ogni commit della tappa lo supererebbe di nuovo; animazioni e test devono ancora arrivare                            | Il valore finale si fissa sulla misura di fine tappa |
 | Togliere la voce dal size-limit                       | Nessun fallimento in CI | Perde il controllo sulla crescita                                                                                    | Contro le regole sulle soglie                        |
+
+## Esito alla chiusura della F2A (01/11/2026)
+
+Il job «E2E prestazioni» è verde, con CPU rallentata 4×: task più lunga tra idratazione e swap 102 ms su `/` e 106 ms su `/en/`; INP del primo clic su un'icona 120 ms su `/` e su `/en/`. La condizione del punto 2 è soddisfatta, quindi il chunk non si divide e i budget passano alla misura reale più il 5%, arrotondata per eccesso al kB:
+
+| Voce (gzip)                          | Misura   | Budget                      |
+| ------------------------------------ | -------- | --------------------------- |
+| Chunk del desktop dopo l'idratazione | 73,14 kB | 77 kB (73,14 × 1,05 = 76,8) |
+| Componenti, totale CSS               | 5,69 kB  | 6 kB (5,69 × 1,05 = 5,97)   |
 
 ## Conseguenze
 

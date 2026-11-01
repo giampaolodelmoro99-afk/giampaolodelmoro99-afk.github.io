@@ -4,18 +4,18 @@
 
 Le soglie di prestazioni e di Lighthouse si scrivono **solo** qui e in TESTING.md §3: gli altri documenti (README, SPECS, CLAUDE.md, PLAN, skill) rimandano a queste due fonti, così un cambio di regola si fa in un posto solo. Gli ADR restano come registro delle decisioni, con i valori del momento.
 
-| Metrica                | Budget                                   | Ultima misura                       | Come si verifica |
-| ---------------------- | ---------------------------------------- | ----------------------------------- | ---------------- |
-| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014)                      | 117,8 kB (F2A, guscio statico)      | `npm run size`   |
-| Chunk del desktop      | ≤ 80 kB provvisorio (ADR-0014, ADR-0020) | 56,08 kB (F2A, dopo l'idratazione)  | `npm run size`   |
-| Sprite delle icone     | ≤ 14 kB (ADR-0014)                       | 12,64 kB (F2A, SVG)                 | `npm run size`   |
-| CSS iniziale (gzip)    | ≤ 12 kB                                  | 1,3 kB                              | `npm run size`   |
-| Font in preload        | ≤ 25 kB (dalla F1)                       | 24,1 kB (F1A)                       | `npm run size`   |
-| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B)                      | 98,1 kB (F1B, fuori dalla home)     | `npm run size`   |
-| Guscio del desktop F2A | ≤ 75 kB (dalla F1B)                      | 74,9 kB (F1B)                       | `npm run size`   |
-| LCP                    | ≤ 2,5 s (ADR-0018)                       | mobile 1,20 s, desktop 0,32 s (F2A) | Lighthouse CI    |
-| TBT                    | ≤ 200 ms (ADR-0018)                      | mobile 30–35 ms, desktop 0 (F2A)    | Lighthouse CI    |
-| CLS                    | ≤ 0,1 (ADR-0018)                         | 0,0001 (F2A)                        | Lighthouse CI    |
+| Metrica                | Budget                       | Ultima misura                       | Come si verifica |
+| ---------------------- | ---------------------------- | ----------------------------------- | ---------------- |
+| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014)          | 117,8 kB (F2A, guscio statico)      | `npm run size`   |
+| Chunk del desktop      | ≤ 77 kB (ADR-0014, ADR-0020) | 73,14 kB (F2A, dopo l'idratazione)  | `npm run size`   |
+| Sprite delle icone     | ≤ 14 kB (ADR-0014)           | 12,64 kB (F2A, SVG)                 | `npm run size`   |
+| CSS iniziale (gzip)    | ≤ 12 kB                      | 1,3 kB                              | `npm run size`   |
+| Font in preload        | ≤ 25 kB (dalla F1)           | 24,1 kB (F1A)                       | `npm run size`   |
+| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B)          | 98,1 kB (F1B, fuori dalla home)     | `npm run size`   |
+| Guscio del desktop F2A | ≤ 75 kB (dalla F1B)          | 74,9 kB (F1B)                       | `npm run size`   |
+| LCP                    | ≤ 2,5 s (ADR-0018)           | mobile 1,20 s, desktop 0,32 s (F2A) | Lighthouse CI    |
+| TBT                    | ≤ 200 ms (ADR-0018)          | mobile 30–35 ms, desktop 0 (F2A)    | Lighthouse CI    |
+| CLS                    | ≤ 0,1 (ADR-0018)             | 0,0001 (F2A)                        | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
 
@@ -53,12 +53,15 @@ Gli import da React Aria vanno sempre per sottopercorso (`react-aria-components/
 
 Dal 28/10/2026 la home prerenderizza un guscio statico del desktop in solo HTML e CSS, e il desktop interattivo arriva in un chunk separato dopo l'idratazione (ADR-0014). Le icone si disegnano da uno sprite SVG generato da `npm run icons`, non più da dati nel JavaScript.
 
-| Misura (gzip)                        | Valore                                     | Budget                                               |
-| ------------------------------------ | ------------------------------------------ | ---------------------------------------------------- |
-| JS iniziale della home               | 117,8 kB                                   | 124 kB                                               |
-| Chunk del desktop dopo l'idratazione | 56,08 kB (2A-1); 72,72 kB (2A-2, in corso) | 59 kB; 80 kB provvisorio fino a fine 2A-2 (ADR-0020) |
-| Sprite delle icone                   | 12,64 kB                                   | 14 kB                                                |
-| Componenti, totale JS                | 85,12 kB                                   | 99 kB                                                |
+| Misura (gzip)                        | Valore                      | Budget           |
+| ------------------------------------ | --------------------------- | ---------------- |
+| JS iniziale della home               | 120,39 kB (117,8 alla 2A-1) | 124 kB           |
+| Chunk del desktop dopo l'idratazione | 73,14 kB (56,08 alla 2A-1)  | 77 kB (ADR-0020) |
+| Sprite delle icone                   | 12,64 kB                    | 14 kB            |
+| Componenti, totale JS                | 86,93 kB                    | 99 kB            |
+| Componenti, totale CSS               | 5,69 kB                     | 6 kB (ADR-0020)  |
+
+Misure di chiusura della F2A (01/11/2026). Esegui, Spegni e il congedo sono in chunk caricati all'apertura e non entrano nel chunk del desktop.
 
 La ripartizione del JS iniziale e il motivo dei kB oltre i vecchi 115 sono in ADR-0014.
 
@@ -76,7 +79,7 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 
 **Dalla F2A (ADR-0019)** `npm run size` (anche in CI a ogni push) controlla solo totali e chunk; le voci per componente si misurano con `npm run size:components`, a fine fase o quando si aggiunge un componente, e questa tabella si aggiorna solo a fine fase.
 
-**Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. Budget fissati alla chiusura della 1B (18/10/2026), misura arrotondata per eccesso al kB: **totale JS ≤ 99 kB**, **totale CSS ≤ 5 kB**, **guscio del desktop F2A ≤ 75 kB**; si alzano solo con un ADR. Nella 2A-2 il totale CSS ha un tetto provvisorio di 7 kB (ADR-0020).
+**Regola della 1B.** Ogni componente si misura come incremento sul totale. Se un componente aggiunge più di 10 kB gzip, il lavoro si ferma e si analizza il metafile prima di proseguire. Budget fissati alla chiusura della 1B (18/10/2026), misura arrotondata per eccesso al kB: **totale JS ≤ 99 kB**, **totale CSS ≤ 5 kB**, **guscio del desktop F2A ≤ 75 kB**; si alzano solo con un ADR. Alla chiusura della F2A il totale CSS è passato a 6 kB (ADR-0020).
 
 **Indice dei componenti.** Importare anche solo Icon da `src/components/index.ts` costa circa 0,6 kB in più che dalla sua cartella: l'indice trascina codice di React Aria eseguito al caricamento del modulo. **Decisione della F2A (28/10/2026): import dalle cartelle.** Il sito (`src/app`, `src/features`, `src/stores`) importa ogni componente dalla sua cartella (`../../components/Window`); una regola Oxlint (`no-restricted-imports`) vieta l'indice in quei percorsi. L'indice resta per Storybook, i test e size-limit; la voce "Icon importato dall'indice" continua a misurarne il costo. `sideEffects` in `package.json` è scartato: vale per tutto il progetto e richiede di elencare a mano i file con effetti (fogli di stile importati, codice eseguito al caricamento), con il rischio di perdere uno stile senza accorgersene.
 
@@ -101,6 +104,21 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 | StartButton                                                     | 59,99                               | +0,49                                                       | 90,54     | 4,26       | 16,77            | 66,43 (+ StartButton: entra la base di overlay e menu)                                 | 110,81 |
 | DesktopIcons                                                    | 53,36                               | +5,95                                                       | 96,49     | 4,52       | 17,03            | **75,03** (guscio completo: Window, Taskbar, TaskbarButton, StartButton, DesktopIcons) | 110,81 |
 | AlertDialog e AlertDialogFrame                                  | 41,18 / 31,06                       | +1,64                                                       | 98,13     | 4,63       | 17,16            | 74,92                                                                                  | 110,81 |
+
+**Componenti della F2A** (misure di chiusura, 01/11/2026, con `npm run size:components`). Sono misurati uno per uno e in un totale informativo, ma non entrano nei totali con budget: il totale JS con la F2A è 91,39 kB (86,93 senza), il CSS resta 5,69 kB perché la misura del CSS importa l'indice e comprende già tutti i fogli.
+
+| Componente        | Da solo (JS) | Note                         |
+| ----------------- | ------------ | ---------------------------- |
+| TaskbarIconButton | 14,84        | `Button` con `render`        |
+| WindowMenu        | 51,85        | menu con popover             |
+| MoveControls      | 16,98        |                              |
+| DragOutline       | 0,36         | solo HTML                    |
+| ResizeHandles     | 0,80         | solo HTML e pointer events   |
+| WindowSwitcher    | 44,59        | dialog modale e ListBox      |
+| ContextMenu       | 39,02        | menu con ancora a un punto   |
+| RunDialog         | 53,96        | in un chunk a parte nel sito |
+| ShutdownDialog    | 34,32        | in un chunk a parte nel sito |
+| FarewellScreen    | 14,79        | in un chunk a parte nel sito |
 
 Valori in kB gzip. Il guscio F2A scende da 75,03 a 74,92 kB con l'AlertDialog, che non ne fa parte, perché i testi dei componenti sono passati da `it.ts`/`en.ts` a `src/i18n/ui.ts` (commit c97ce15).
 
