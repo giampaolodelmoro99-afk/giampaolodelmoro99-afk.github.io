@@ -1,57 +1,31 @@
+# Aggiornamenti di versione una volta al mese, una PR per ecosistema.
+# Gli aggiornamenti di sicurezza non seguono il calendario e restano separati:
+# i gruppi valgono solo per "version-updates".
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
     open-pull-requests-limit: 10
     commit-message:
       prefix: chore
       include: scope
     groups:
-      react:
-        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
-      react-router:
-        patterns: ["react-router", "@react-router/*", "isbot"]
-      build:
-        patterns: ["vite", "typescript", "@types/node"]
-      test:
-        patterns:
-          [
-            "vitest",
-            "@vitest/*",
-            "@testing-library/*",
-            "jsdom",
-            "@types/jsdom",
-            "vitest-axe",
-            "axe-core",
-            "@axe-core/*",
-          ]
-      storybook:
-        patterns: ["storybook", "@storybook/*"]
-      fonts:
-        patterns: ["subset-font", "fontkit", "@types/fontkit", "@types/subset-font"]
-      playwright:
-        patterns: ["@playwright/test"]
-      quality:
-        patterns:
-          [
-            "oxlint",
-            "oxlint-tsgolint",
-            "stylelint*",
-            "prettier",
-            "husky",
-            "lint-staged",
-            "@commitlint/*",
-            "size-limit",
-            "@size-limit/*",
-            "@lhci/cli",
-          ]
+      npm:
+        applies-to: version-updates
+        patterns: ["*"]
+    ignore:
+      # I tipi di Node seguono la major di .nvmrc.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
     commit-message:
       prefix: ci
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns: ["*"]

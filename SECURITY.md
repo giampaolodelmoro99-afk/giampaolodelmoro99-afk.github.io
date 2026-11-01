@@ -28,7 +28,7 @@ Scrivi a **giampaolo.delmoro99@gmail.com** con oggetto `[security] gianpaolodelm
 
 - Content Security Policy via meta tag con hash degli script inline, senza `unsafe-inline` (vedi `docs/PERFORMANCE_SEO.md` e ADR-0006).
 - Nessuna risorsa da CDN o terze parti al caricamento della pagina, verificato dai test e2e.
-- Dependabot settimanale e `npm audit --omit=dev` in CI.
+- Dependabot mensile (una PR per ecosistema, aggiornamenti di sicurezza immediati) e `npm audit --omit=dev` in CI.
 - Permessi minimi nei workflow GitHub Actions.
 
 Debolezze note e accettate sono elencate nelle retrospettive di fase (`docs/phases/`).
