@@ -2,6 +2,7 @@ import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { reactRouter } from "@react-router/dev/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
+import { routeDiscoveryStub } from "./scripts/lib/route-discovery-stub.mjs";
 import { intlLocales } from "./src/routes/routeMap.ts";
 
 const bundleReport = () =>
@@ -19,6 +20,7 @@ export default defineConfig({
   plugins: [
     optimizeLocales.vite({ locales: Object.values(intlLocales) }),
     reactRouter(),
+    routeDiscoveryStub(),
     process.env["ANALYZE"] === "1" && bundleReport(),
   ],
   build: {
