@@ -12,19 +12,20 @@ Raccolta dei contenuti del sito. Fonte per i dizionari i18n, i dati tipizzati (`
 
 ## 2. Testi approvati
 
-Approvati da Gianpaolo il 28/10/2026: non sono più bozze e possono andare online. Non indicano stage né azienda.
+Approvati da Gianpaolo il 28/10/2026 (titolo) e aggiornati il 01/11/2026 (bio e meta description, con WordPress): non sono più bozze e possono andare online. Non indicano stage né azienda.
 
-| Testo                                       | IT                                                                                                                                                                                                                                | EN                                                                                                                                                                                                                          |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Titolo                                      | Full Stack Developer · Studente ITS Academy Prodigi                                                                                                                                                                               | Full Stack Developer · ITS Academy Prodigi student                                                                                                                                                                          |
-| Bio                                         | Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia, con Laravel e React, e continuo a studiare per crescere ogni giorno come sviluppatore. | I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and I keep studying to grow as a developer every day. |
-| Meta description della home (147 caratteri) | Portfolio di Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Progetti con Laravel e React in stile Windows 95.                                                                               | Portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Laravel and React projects in a Windows 95 style.                                                                         |
+| Testo                                             | IT                                                                                                                                                                                                                                                   | EN                                                                                                                                                                                                                                                   |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Titolo                                            | Full Stack Developer · Studente ITS Academy Prodigi                                                                                                                                                                                                  | Full Stack Developer · ITS Academy Prodigi student                                                                                                                                                                                                   |
+| Bio                                               | Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia con Laravel e React, e siti con WordPress. Continuo a studiare per crescere ogni giorno come sviluppatore. | I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and websites with WordPress. I keep studying to grow as a developer every day. |
+| Meta description della home (158 e 158 caratteri) | Portfolio in stile Windows 95 di Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Progetti con Laravel, React e WordPress.                                                                                       | Windows 95-style portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Projects with Laravel, React and WordPress.                                                                                       |
 
 Uso sul sito (Fase 2A):
 
 - `<title>` di `/` e `/en/`: "Gianpaolo Del Moro · Full Stack Developer" (41 caratteri). Con il titolo completo il nome supererebbe i 60 caratteri (PERFORMANCE_SEO.md §4).
 - Il titolo completo è in `og:title`, `twitter:title` e nel `jobTitle` del JSON-LD.
 - La bio è nella finestra About, aperta all'avvio nella home e su `/profilo/` (`/en/about/`).
+- **WordPress** (01/11/2026): compare nella bio e nella meta description, quindi va anche nell'app Skills in F3A (§5) e, con i suoi progetti, nell'app Progetti (§5, progetti candidati). Le description provvisorie di About e Skills lo includono già; quella di Progetti si riscrive in F3A con l'elenco definitivo dei progetti.
 - Slug delle app: dove l'app corrisponde a una pagina della v1 vale lo slug della v1, definitivo (SPECS.md §6): `/profilo/`, `/stack/`, `/progetti/`, `/contatti/`. Gli altri slug, con i title e le description delle app, sono **bozze fino alla Fase 3A**: il sito non è online prima di `v1.0.0`.
 
 ## 3. Testi della v1 (tag `v1.0.0-legacy`)
@@ -108,6 +109,8 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 - [ ] **Indirizzo del liceo**: "Scienze Applicate" (sito v1) o "indirizzo informatico" (CV v1)?
 - [x] **LinkedIn**: chiusa il 13/10/2026, non compare sul sito (vedi §1).
 - [ ] **Disponibilità**: "Full-time", stage, località (Pisa, remoto, trasferimento)?
+- [ ] **WordPress**: livello e contesto d'uso nell'app Skills (§5).
+- [ ] **qbitsoft.it**: ruolo svolto, link e dettagli del progetto (permesso confermato il 01/11/2026, §5).
 
 ## 5. Bozze da approvare
 
@@ -133,7 +136,15 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 > - "Node.js / Express — Intermedio — tre API REST con autenticazione JWT (task-manager, rubrica, gestione-spese)"
 > - "Laravel — Intermedio — tre backend con relazioni many-to-many e Sanctum (biblioteca, store, task-notes)"
 >
+> Gruppi: Frontend, Backend, Database, **CMS e siti web**, Strumenti, Sistemi. Nel gruppo CMS e siti web:
+>
+> - "WordPress — livello da confermare — contesto d'uso da confermare (per esempio il rifacimento di qbitsoft.it, vedi i progetti candidati)"
+>
 > Livelli e contesti vanno confermati uno per uno.
+
+> **BOZZA – da rivedere.** Progetti candidati per l'app Progetti (F3A), oltre ai sei repository della v1 (§3)
+>
+> - "Rifacimento del sito qbitsoft.it in WordPress". Permesso dell'azienda a mostrarlo nel portfolio: **confermato** (01/11/2026). Da confermare: ruolo svolto. Link e dettagli arrivano prima della F3A. Non è un repository GitHub: la scheda non avrà i metadati scaricati a build time e userà il link al sito.
 
 ## 6. Mancante per l'inglese
 
