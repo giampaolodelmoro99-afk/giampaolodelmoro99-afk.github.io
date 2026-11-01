@@ -14,7 +14,7 @@
 
 Vitest 5, @vitest/coverage-v8, jsdom 30, Testing Library (react 16, user-event 14, jest-dom 7), vitest-axe 0.1 (axe-core 4.14), Playwright 1.64, @axe-core/playwright 4.13, @lhci/cli 0.15, size-limit 14. Versioni esatte in `package-lock.json`.
 
-L'immagine Docker `mcr.microsoft.com/playwright:v1.64.0-noble` deve avere **la stessa versione** di `@playwright/test`. Quando Dependabot aggiorna Playwright, si aggiorna il tag dell'immagine in `ci.yml` e negli script `test:e2e*` di `package.json`, poi si rigenerano gli screenshot.
+L'immagine Docker `mcr.microsoft.com/playwright:v1.64.1-noble` deve avere **la stessa versione** di `@playwright/test`. Quando Dependabot aggiorna Playwright, si aggiorna il tag dell'immagine in `ci.yml` e negli script `test:e2e*` di `package.json`, poi si rigenerano gli screenshot.
 
 ## 3. Soglie
 
