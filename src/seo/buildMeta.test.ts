@@ -19,7 +19,7 @@ describe("buildMeta", () => {
     expect(meta).toContainEqual({ title: "Gianpaolo Del Moro · Full Stack Developer" });
     expect(find(meta, (entry) => entry["name"] === "description")[0]).toMatchObject({
       content:
-        "Portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Laravel and React projects in a Windows 95 style.",
+        "Windows 95-style portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Projects with Laravel, React and WordPress.",
     });
     expect(meta).toContainEqual({
       tagName: "link",

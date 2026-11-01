@@ -8,13 +8,13 @@ export const en: Dictionary = {
       title: "Gianpaolo Del Moro · Full Stack Developer",
       socialTitle: "Full Stack Developer · ITS Academy Prodigi student",
       description:
-        "Portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Laravel and React projects in a Windows 95 style.",
+        "Windows 95-style portfolio of Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa. Projects with Laravel, React and WordPress.",
     },
     about: {
       title: "About · Gianpaolo Del Moro",
       socialTitle: "About · Gianpaolo Del Moro",
       description:
-        "About me: Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa, working with Laravel and React.",
+        "About me: Gianpaolo Del Moro, Full Stack Developer and student at ITS Academy Prodigi in Pisa, working with Laravel, React and WordPress.",
     },
     projects: {
       title: "Projects · Gianpaolo Del Moro",
@@ -44,7 +44,7 @@ export const en: Dictionary = {
       title: "Skills · Gianpaolo Del Moro",
       socialTitle: "Skills · Gianpaolo Del Moro",
       description:
-        "Gianpaolo Del Moro's technologies, with the level and context of use: Laravel, PHP, React, JavaScript and SQL.",
+        "Gianpaolo Del Moro's technologies, with the level and context of use: Laravel, PHP, React, JavaScript, SQL and WordPress.",
     },
     timeline: {
       title: "Timeline · Gianpaolo Del Moro",
@@ -156,7 +156,7 @@ export const en: Dictionary = {
     },
   },
   about: {
-    bio: "I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and I keep studying to grow as a developer every day.",
+    bio: "I'm Gianpaolo, a Full Stack Developer and student at ITS Academy Prodigi in Pisa. I build web applications from the database to the interface with Laravel and React, and websites with WordPress. I keep studying to grow as a developer every day.",
     nextHeading: "From here you can",
     nextLabel: "Other windows",
     links: {

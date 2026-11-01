@@ -6,13 +6,13 @@ export const it = {
       title: "Gianpaolo Del Moro · Full Stack Developer",
       socialTitle: "Full Stack Developer · Studente ITS Academy Prodigi",
       description:
-        "Portfolio di Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Progetti con Laravel e React in stile Windows 95.",
+        "Portfolio in stile Windows 95 di Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Progetti con Laravel, React e WordPress.",
     },
     about: {
       title: "About · Gianpaolo Del Moro",
       socialTitle: "About · Gianpaolo Del Moro",
       description:
-        "Chi sono: Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa, con Laravel e React.",
+        "Chi sono: Gianpaolo Del Moro, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa, con Laravel, React e WordPress.",
     },
     projects: {
       title: "Progetti · Gianpaolo Del Moro",
@@ -42,7 +42,7 @@ export const it = {
       title: "Skills · Gianpaolo Del Moro",
       socialTitle: "Skills · Gianpaolo Del Moro",
       description:
-        "Le tecnologie di Gianpaolo Del Moro, con il livello e il contesto in cui le usa: Laravel, PHP, React, JavaScript e SQL.",
+        "Le tecnologie di Gianpaolo Del Moro, con il livello e il contesto in cui le usa: Laravel, PHP, React, JavaScript, SQL e WordPress.",
     },
     timeline: {
       title: "Timeline · Gianpaolo Del Moro",
@@ -154,7 +154,7 @@ export const it = {
     },
   },
   about: {
-    bio: "Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia, con Laravel e React, e continuo a studiare per crescere ogni giorno come sviluppatore.",
+    bio: "Sono Gianpaolo, Full Stack Developer e studente all'ITS Academy Prodigi di Pisa. Costruisco applicazioni web dal database all'interfaccia con Laravel e React, e siti con WordPress. Continuo a studiare per crescere ogni giorno come sviluppatore.",
     nextHeading: "Da qui puoi",
     nextLabel: "Altre finestre",
     links: {
