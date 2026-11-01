@@ -1,13 +1,5 @@
 import { type ReactNode, useEffect } from "react";
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLocation,
-  useMatches,
-} from "react-router";
+import { Links, Meta, Outlet, Scripts, useLocation, useMatches } from "react-router";
 import { defaultLocale, localeFromPathname } from "../routes/routeMap";
 import proseHref from "../assets/fonts/IBMPlexSans-Regular-Latin1.woff2?url";
 import pixelOperatorBoldHref from "../assets/fonts/pixel-operator-700.woff2?url";
@@ -43,7 +35,6 @@ export function Layout({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
-        <ScrollRestoration />
         <Scripts />
       </body>
     </html>

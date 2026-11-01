@@ -24,7 +24,7 @@ Il sito non usa cookie. Usa solo localStorage tecnico, necessario alle funzioni 
 | `boot.seen`            | boot già visto                                                       | 4A   |
 | `contact.lastSubmitAt` | data e ora dell'ultimo invio del form (anti-abuso)                   | 3B   |
 
-Più `sessionStorage` `react-router-scroll-positions`, gestito da React Router per ripristinare lo scroll.
+Nessuna chiave in `sessionStorage`: dalla Fase 2B il sito non usa `ScrollRestoration` di React Router (il documento non scorre, scorrono finestre e app), quindi `react-router-scroll-positions` non viene scritta.
 
 **Storybook** (`/storybook/`, dalla Fase 1A): è lo strumento di documentazione del design system, non una pagina del sito, e non è indicizzato. Il suo manager salva in localStorage e sessionStorage dello stesso dominio lo stato dell'interfaccia (pannelli aperti, story selezionata, impostazioni della toolbar). È storage tecnico, senza identificativi né tracciamento, e si crea solo visitando `/storybook/`.
 
