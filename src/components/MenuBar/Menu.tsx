@@ -48,8 +48,12 @@ export function Menu({ ref, children, size = "default", className, ...props }: M
   );
 }
 
-export type MenuItemProps = Omit<AriaMenuItemProps, "className" | "style" | "children"> & {
+export type MenuItemProps = Omit<
+  AriaMenuItemProps,
+  "className" | "style" | "children" | "render"
+> & {
   children: ReactNode;
+  opensDialog?: boolean;
   icon?: SmallIconName;
   glyph?: GlyphName;
   shortcut?: string;
@@ -63,12 +67,25 @@ export function MenuItem({
   glyph,
   shortcut,
   isDefault = false,
+  opensDialog = false,
   className,
   ...props
 }: MenuItemProps) {
   return (
     <AriaMenuItem
       {...props}
+      {...(opensDialog
+        ? {
+            render: (domProps) =>
+              "href" in domProps ? (
+                <a {...domProps} aria-haspopup="dialog">
+                  {domProps.children}
+                </a>
+              ) : (
+                <div {...domProps} aria-haspopup="dialog" />
+              ),
+          }
+        : {})}
       className={cx(styles.item, className)}
       data-default={isDefault || undefined}
     >

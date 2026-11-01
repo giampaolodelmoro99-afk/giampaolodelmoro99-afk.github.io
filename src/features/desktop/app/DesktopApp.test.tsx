@@ -247,6 +247,16 @@ describe("DesktopApp", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
+  it("nel menu Start Esegui… e Spegni… dichiarano di aprire un dialog", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    for (const name of ["Esegui…", "Spegni…"]) {
+      expect(screen.getByRole("menuitem", { name })).toHaveAttribute("aria-haspopup", "dialog");
+    }
+    expect(screen.getByRole("menuitem", { name: "Progetti" })).not.toHaveAttribute("aria-haspopup");
+  });
+
   it("Start › Esegui… apre un'app per nome; un nome sconosciuto mostra l'errore", async () => {
     const user = userEvent.setup();
     renderDesktop("/");

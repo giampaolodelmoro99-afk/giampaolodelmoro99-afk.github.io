@@ -551,14 +551,14 @@ function DesktopScreen({ routeKey, onReady, isClean, onPowerChange }: DesktopScr
           <MenuItem id="controlPanel" icon="controlpanel">
             {t.apps.controlPanel}
           </MenuItem>
-          <MenuItem id="run" icon="run">
+          <MenuItem id="run" icon="run" opensDialog>
             {t.desktop.run}
           </MenuItem>
           <MenuItem id="simpleView" icon="simpleview">
             {t.apps.simpleView}
           </MenuItem>
           <MenuSeparator />
-          <MenuItem id="shutdown" icon="power">
+          <MenuItem id="shutdown" icon="power" opensDialog>
             {t.desktop.shutdown}
           </MenuItem>
         </StartButton>

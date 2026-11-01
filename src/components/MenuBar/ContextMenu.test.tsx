@@ -59,4 +59,21 @@ describe("ContextMenu", () => {
     await screen.findByRole("menu");
     await expectNoAxeViolations(document.body);
   });
+
+  it("una voce con opensDialog dichiara aria-haspopup=dialog, le altre no", async () => {
+    render(
+      <ContextMenu isOpen onOpenChange={() => {}} x={0} y={0} label="Start">
+        <MenuItem id="run" opensDialog>
+          Esegui…
+        </MenuItem>
+        <MenuItem id="about">About</MenuItem>
+      </ContextMenu>,
+    );
+    expect(await screen.findByRole("menuitem", { name: "Esegui…" })).toHaveAttribute(
+      "aria-haspopup",
+      "dialog",
+    );
+    expect(screen.getByRole("menuitem", { name: "About" })).not.toHaveAttribute("aria-haspopup");
+    await expectNoAxeViolations(document.body);
+  });
 });
