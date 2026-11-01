@@ -66,10 +66,12 @@ export function DesktopWindow({
       done = true;
       onExited();
     };
+    const style = getComputedStyle(element);
+    const exitAnimation = style.animationName;
     const onEnd = (event: AnimationEvent) => {
-      if (event.target === element) finish();
+      if (event.target === element && event.animationName === exitAnimation) finish();
     };
-    const seconds = Number.parseFloat(getComputedStyle(element).animationDuration);
+    const seconds = Number.parseFloat(style.animationDuration);
     const timer = setTimeout(finish, (Number.isFinite(seconds) ? seconds * 1000 : 0) + 100);
     element.addEventListener("animationend", onEnd);
     return () => {
