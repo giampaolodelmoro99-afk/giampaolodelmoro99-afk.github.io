@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { modalStage, overlaysInStoryRoot } from "../../../../.storybook/decorators";
 import { AppSwitcher, type AppSwitcherItem } from "./AppSwitcher";
 
 const items: AppSwitcherItem[] = [
@@ -12,7 +13,7 @@ const items: AppSwitcherItem[] = [
 const meta: Meta<typeof AppSwitcher> = {
   title: "Funzioni/AppSwitcher",
   component: AppSwitcher,
-  parameters: { layout: "fullscreen" },
+  decorators: [modalStage, overlaysInStoryRoot],
   args: {
     isOpen: true,
     onOpenChange: () => undefined,
