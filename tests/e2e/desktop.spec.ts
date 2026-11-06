@@ -1,12 +1,15 @@
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 import { expect, openDesktop, test } from "./fixtures";
 
-function boxes(target: Page) {
+const openApps = (target: Page) => [target.getByText("App aperte (1)")];
+
+function boxes(target: Page, extra: Locator[] = []) {
   return Promise.all(
     [
       target.getByRole("region", { name: "About" }),
       target.getByText("Cestino", { exact: true }),
       target.getByText("Start", { exact: true }),
+      ...extra,
     ].map((locator) => locator.boundingBox()),
   );
 }
@@ -27,6 +30,23 @@ test.describe("desktop dopo l'idratazione", () => {
     await page.evaluate(() => document.fonts.ready);
     expect(await boxes(page)).toEqual(before);
   });
+
+  test(
+    "in mobile guscio e desktop interattivo hanno anche «App aperte» nella stessa posizione",
+    { tag: "@mobile" },
+    async ({ page, browser }) => {
+      const shell = await browser.newPage({
+        viewport: page.viewportSize(),
+        javaScriptEnabled: false,
+      });
+      await shell.goto("/", { waitUntil: "load" });
+      const before = await boxes(shell, openApps(shell));
+      await shell.close();
+      await openDesktop(page);
+      await page.evaluate(() => document.fonts.ready);
+      expect(await boxes(page, openApps(page))).toEqual(before);
+    },
+  );
 
   test(
     "un'icona apre la finestra senza ricaricare la pagina",
