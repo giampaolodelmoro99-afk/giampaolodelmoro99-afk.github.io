@@ -40,6 +40,18 @@ describe("DesktopIcons", () => {
     expect(onAction).toHaveBeenCalledWith("projects");
   });
 
+  it("con opensOnPress un solo clic apre, senza selezione", async () => {
+    const onAction = vi.fn<(id: Key) => void>();
+    const user = userEvent.setup();
+    render(<DesktopIcons label="Home" items={items} onAction={onAction} opensOnPress />);
+    await user.click(screen.getByRole("row", { name: "Progetti" }));
+    expect(onAction).toHaveBeenCalledWith("projects");
+    expect(screen.getByRole("row", { name: "Progetti" })).not.toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+  });
+
   it("le frecce si muovono tra le icone e Invio apre", async () => {
     const onAction = vi.fn<(id: Key) => void>();
     const user = userEvent.setup();

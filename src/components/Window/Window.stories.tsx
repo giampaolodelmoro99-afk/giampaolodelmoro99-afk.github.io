@@ -103,3 +103,25 @@ export const ConMenuEStatusBar: Story = {
     </Window>
   ),
 };
+
+export const Mobile: Story = {
+  tags: ["visual"],
+  render: () => (
+    <div className={styles.mobile}>
+      <Window title="Progetti" controls={["close"]} closeLabel="Chiudi Progetti" variant="document">
+        <h1>Progetti</h1>
+        <p>Finestra a schermo intero della modalità mobile, senza Riduci e Ingrandisci.</p>
+      </Window>
+      <Window
+        title="Progetto di esempio"
+        controls={["close"]}
+        closeLabel="Chiudi Progetti"
+        onBack={() => undefined}
+        variant="document"
+      >
+        <h1>Progetto di esempio</h1>
+        <p>Con «Indietro», previsto per le sottopagine dei progetti (F3A).</p>
+      </Window>
+    </div>
+  ),
+};

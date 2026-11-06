@@ -11,6 +11,8 @@ export type TaskbarIconButtonProps = Omit<
   "aria-label": string;
   isUnavailable?: boolean;
   isPressed?: boolean;
+  label?: string | undefined;
+  count?: number | undefined;
   className?: string | undefined;
 };
 
@@ -18,6 +20,8 @@ export function TaskbarIconButton({
   icon,
   isUnavailable = false,
   isPressed = false,
+  label,
+  count,
   onPress,
   className,
   ...props
@@ -26,7 +30,7 @@ export function TaskbarIconButton({
     <Button
       {...props}
       {...(isUnavailable || !onPress ? {} : { onPress })}
-      className={cx(styles.root, styles.iconButton, className)}
+      className={cx(styles.root, styles.iconButton, label && styles.labelled, className)}
       data-unavailable={isUnavailable || undefined}
       data-selected={isPressed || undefined}
       render={(domProps) => (
@@ -40,6 +44,12 @@ export function TaskbarIconButton({
     >
       <span className={styles.content}>
         <Icon name={icon} size={16} className={cx(styles.icon)} />
+        {label && <span className={styles.label}>{label}</span>}
+        {label && count !== undefined && (
+          <span className={styles.count} aria-hidden="true">
+            {count}
+          </span>
+        )}
       </span>
     </Button>
   );

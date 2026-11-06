@@ -33,6 +33,11 @@
   block-size: var(--desktop-icon-size);
 }
 
+.icon {
+  inline-size: var(--desktop-icon-size);
+  block-size: var(--desktop-icon-size);
+}
+
 .label {
   display: -webkit-box;
   max-inline-size: 100%;

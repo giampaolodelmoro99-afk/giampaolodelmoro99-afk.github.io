@@ -193,6 +193,7 @@
   --taskbar-height-touch: 3.5rem;
   --taskbar-button-max-width: 10rem;
   --desktop-icon-cell: 5.5rem;
+  --mobile-home-cell-height: 6rem;
   --icon-size-sm: 16px;
   --icon-size-lg: 32px;
   --icon-size-xl: 64px;
@@ -245,6 +246,8 @@
   --easing-standard: steps(4, end);
 
   --space-safe-top: max(var(--space-5), env(safe-area-inset-top));
+  --space-safe-top-edge: env(safe-area-inset-top, 0);
+  --popover-edge: 12px;
   --space-safe-bottom: max(var(--space-5), env(safe-area-inset-bottom));
   --space-gutter: max(var(--space-4), env(safe-area-inset-left), env(safe-area-inset-right));
 

@@ -23,6 +23,8 @@ export type WindowProps = {
   onMinimize?: () => void;
   onToggleMaximize?: () => void;
   onClose?: () => void;
+  closeLabel?: string;
+  onBack?: () => void;
   menu?: ReactNode;
   statusBar?: ReactNode;
   children: ReactNode;
@@ -56,6 +58,8 @@ export function Window({
   onMinimize,
   onToggleMaximize,
   onClose,
+  closeLabel,
+  onBack,
   menu,
   statusBar,
   children,
@@ -84,7 +88,7 @@ export function Window({
       glyph: isMaximized ? "restore" : "maximize",
       onPress: onToggleMaximize,
     },
-    close: { label: strings.close, glyph: "close", onPress: onClose },
+    close: { label: closeLabel ?? strings.close, glyph: "close", onPress: onClose },
   } as const;
 
   return (
@@ -99,7 +103,18 @@ export function Window({
       data-variant={variant}
     >
       <TitleBar ref={titleBarRef} className={styles.titlebar}>
-        {windowMenu ?? (icon && <Icon name={icon} size={16} className={cx(styles.titleIcon)} />)}
+        {onBack ? (
+          <Button
+            className={cx(styles.control, styles.back)}
+            onPress={onBack}
+            {...(isActive ? {} : { render: outOfTabOrder })}
+          >
+            <Glyph name="left" />
+            <span>{strings.back}</span>
+          </Button>
+        ) : (
+          (windowMenu ?? (icon && <Icon name={icon} size={16} className={cx(styles.titleIcon)} />))
+        )}
         <span id={titleId} className={styles.title}>
           {title}
         </span>

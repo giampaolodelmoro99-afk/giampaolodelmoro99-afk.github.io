@@ -12,9 +12,16 @@ export type StartButtonProps = Omit<MenuProps, "className" | "size"> & {
   children: ReactNode;
   defaultOpen?: boolean;
   className?: string | undefined;
+  popoverClassName?: string | undefined;
 };
 
-export function StartButton({ children, defaultOpen, className, ...menuProps }: StartButtonProps) {
+export function StartButton({
+  children,
+  defaultOpen,
+  className,
+  popoverClassName,
+  ...menuProps
+}: StartButtonProps) {
   const strings = useUiStrings().startButton;
   return (
     <MenuTrigger {...(defaultOpen === undefined ? {} : { defaultOpen })}>
@@ -22,7 +29,7 @@ export function StartButton({ children, defaultOpen, className, ...menuProps }: 
         <Icon name="gdm" size={16} />
         <span>{strings.label}</span>
       </Button>
-      <MenuPopover placement="top start" className={styles.popover}>
+      <MenuPopover placement="top start" className={cx(styles.popover, popoverClassName)}>
         <div className={styles.startMenu}>
           <span className={styles.side} aria-hidden="true">
             <span className={styles.sideText}>{siteHandle()}</span>
