@@ -100,15 +100,13 @@ Scritto da zero (ADR-0005), in `src/features/desktop/` con lo store in `src/stor
 
 ## 6. Modalità mobile (Fase 2B)
 
-Su schermi piccoli o con puntatore grossolano (soglia e criteri definiti in F2, ADR-0007):
+Regola e presentazione sono in ADR-0007 («Decisione della 2B»). In breve:
 
-- finestre a schermo intero
-- navigazione adatta al touch
-- target ≥ 44×44 px
-- nessuna funzione solo con hover o tasto destro
-- rispetto di safe-area e zoom
-
-Le route e l'HTML prerenderizzato sono gli stessi della modalità desktop: cambia solo la presentazione.
+- la modalità si calcola in `features/desktop/layoutMode.ts` (larghezza < 768 px, oppure altezza < 540 px con puntatore grossolano) e si legge con `useSyncExternalStore` da `matchMedia` e `resize`; le stesse media query sono nel CSS, per il primo disegno senza CLS;
+- in mobile `DesktopWindow` mostra solo il pulsante Chiudi, la finestra attiva occupa tutta l'area, la home è una griglia di 13 voci e «App aperte» sostituisce la taskbar delle finestre;
+- il codice dedicato (`mobile/AppSwitcher`, `mobile/OpenApps`) è un chunk su richiesta, precaricato nel tempo libero solo in mobile; il resto è condiviso con il desktop (ADR-0022);
+- le route e l'HTML prerenderizzato sono gli stessi: cambia solo la presentazione, nessun contenuto diverso;
+- target ≥ 44×44 px, nessuna funzione solo con hover o tasto destro, safe-area e zoom rispettati.
 
 ## 7. i18n
 

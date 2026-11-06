@@ -56,6 +56,13 @@
   box-shadow: var(--focus-halo-inset);
 }
 
+@media (forced-colors: active) {
+  .item[data-selected]:not([data-focus-visible]) {
+    outline: var(--forced-border-width) solid var(--color-selection);
+    outline-offset: var(--focus-offset-inset);
+  }
+}
+
 .name {
   min-inline-size: 100%;
   min-block-size: var(--control-height);

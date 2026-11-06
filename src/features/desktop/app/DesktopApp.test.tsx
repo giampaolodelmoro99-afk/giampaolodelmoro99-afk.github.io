@@ -1,6 +1,6 @@
 import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { expectNoAxeViolations } from "../../../../tests/setup/axe";
 import { renderWithHistory } from "../../../../tests/setup/render";
 import { DesktopApp } from "./DesktopApp";
@@ -184,6 +184,7 @@ describe("DesktopApp", () => {
     expect(
       screen.getByRole("group", { name: "Spostamento e ridimensionamento" }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("application", { name: "Sposta o ridimensiona About" })).toHaveFocus();
     await user.keyboard("{ArrowRight}{ArrowRight}{Shift>}{ArrowDown}{/Shift}{Enter}");
     expect(about.style.getPropertyValue("--window-x")).toBe("16px");
     expect(about.style.getPropertyValue("--window-y")).toBe("32px");
@@ -621,5 +622,155 @@ describe("DesktopApp e URL", () => {
     } finally {
       vi.restoreAllMocks();
     }
+  });
+
+  it("con il focus sui pulsanti a schermo le frecce spostano e Invio preme il pulsante, non conferma", async () => {
+    const user = userEvent.setup();
+    const { container } = renderDesktop("/");
+    const about = screen.getByRole("region", { name: "About" });
+    await user.click(within(about).getByRole("button", { name: "Menu della finestra" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Sposta" }));
+    const group = screen.getByRole("group", { name: "Spostamento e ridimensionamento" });
+    await user.click(within(group).getByRole("button", { name: "Destra" }));
+    expect(
+      screen.getByRole("application", { name: "Sposta o ridimensiona About" }),
+    ).toBeInTheDocument();
+    within(group).getByRole("button", { name: "Destra" }).focus();
+    await user.keyboard("{ArrowDown}{Enter}");
+    expect(
+      screen.getByRole("application", { name: "Sposta o ridimensiona About" }),
+    ).toBeInTheDocument();
+    await expectNoAxeViolations(container);
+    await user.click(within(group).getByRole("button", { name: "OK" }));
+    expect(screen.queryByRole("group", { name: "Spostamento e ridimensionamento" })).toBeNull();
+    expect(about.style.getPropertyValue("--window-x")).toBe("16px");
+    expect(about.style.getPropertyValue("--window-y")).toBe("8px");
+  });
+
+  it("riattivando una finestra il focus torna all'ultimo elemento che lo aveva, se esiste ancora", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    const link = screen.getByRole("link", { name: "Leggere il CV" });
+    act(() => link.focus());
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "Contatti" }));
+    await waitFor(() => expect(document.getElementById("window-contacts-body")).toHaveFocus());
+    await user.click(screen.getByRole("button", { name: "About" }));
+    await waitFor(() => expect(screen.getByRole("link", { name: "Leggere il CV" })).toHaveFocus());
+    await user.click(screen.getByRole("button", { name: "Contatti" }));
+    await waitFor(() => expect(document.getElementById("window-contacts-body")).toHaveFocus());
+  });
+});
+
+function stubMobile() {
+  const listeners = new Set<() => void>();
+  const state = { matches: false };
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn<() => unknown>(() => ({
+      get matches() {
+        return state.matches;
+      },
+      addEventListener: (_type: string, listener: () => void) => listeners.add(listener),
+      removeEventListener: (_type: string, listener: () => void) => listeners.delete(listener),
+    })),
+  );
+  return {
+    setDesktop: (isDesktop: boolean) => {
+      state.matches = isDesktop;
+      act(() => {
+        for (const listener of listeners) listener();
+      });
+    },
+  };
+}
+
+describe("DesktopApp in modalità mobile", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("mostra solo Chiudi nella barra del titolo, con il nome esteso, e la griglia di 13 voci", async () => {
+    stubMobile();
+    renderDesktop("/");
+    const about = screen.getByRole("region", { name: "About" });
+    expect(
+      within(about)
+        .getAllByRole("button")
+        .map((button) => button.getAttribute("aria-label")),
+    ).toEqual(["Chiudi About"]);
+    expect(screen.getByRole("button", { name: "App aperte: 1" })).toHaveTextContent(
+      "App aperte (1)",
+    );
+    expect(screen.queryByRole("button", { name: "Menu della finestra" })).toBeNull();
+    await userEvent.setup().click(within(about).getByRole("button", { name: "Chiudi About" }));
+    expect(screen.getAllByRole("row")).toHaveLength(13);
+    expect(screen.getByRole("button", { name: "App aperte: nessuna" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await waitFor(() => expect(screen.getByRole("row", { name: "About" })).toHaveFocus());
+  });
+
+  it("un solo tocco su una voce apre l'app e il focus va all'h1", async () => {
+    stubMobile();
+    const user = userEvent.setup();
+    const { pathname } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "Chiudi About" }));
+    await user.click(screen.getByRole("row", { name: "CV" }));
+    expect(pathname()).toBe("/cv/");
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { level: 1, name: "CV" })).toHaveFocus(),
+    );
+  });
+
+  it("App aperte elenca le app, apre una riga, chiude con il pulsante e riporta il focus", async () => {
+    stubMobile();
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("button", { name: "App aperte: 2" }));
+    const panel = await screen.findByRole("dialog", { name: "App aperte (2)" });
+    expect(
+      within(panel)
+        .getAllByRole("row")
+        .map((row) => row.textContent),
+    ).toEqual(["CV", "About"]);
+    await user.click(within(panel).getByRole("row", { name: "About" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+    await user.click(screen.getByRole("button", { name: "App aperte: 2" }));
+    await user.click(await screen.findByRole("button", { name: "Chiudi tutte" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.queryByRole("region")).toBeNull();
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "App aperte: nessuna" })).toHaveFocus(),
+    );
+  });
+
+  it("Alt+W apre App aperte e Alt+Spazio non apre il menu della finestra", async () => {
+    stubMobile();
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.keyboard("{Alt>} {/Alt}");
+    expect(screen.queryByRole("menu")).toBeNull();
+    await user.keyboard("{Alt>}w{/Alt}");
+    expect(await screen.findByRole("dialog", { name: "App aperte (1)" })).toBeInTheDocument();
+  });
+
+  it("passando al desktop tornano finestre, taskbar e menu; il pannello si chiude", async () => {
+    const media = stubMobile();
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "App aperte: 1" }));
+    await screen.findByRole("dialog", { name: "App aperte (1)" });
+    media.setDesktop(true);
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: /App aperte/ })).toBeNull());
+    expect(screen.getByRole("button", { name: "Menu della finestra" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "About", pressed: true })).toBeInTheDocument();
+    expect(screen.getAllByRole("row")).toHaveLength(11);
+    media.setDesktop(false);
+    expect(await screen.findByRole("button", { name: "App aperte: 1" })).toBeInTheDocument();
   });
 });

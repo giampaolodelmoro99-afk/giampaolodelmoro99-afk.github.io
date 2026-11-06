@@ -148,6 +148,7 @@ export const en: Dictionary = {
       refresh: "Refresh",
       properties: "Properties",
     },
+    gestureRegion: "Move or resize {app}",
     clockLabel: "Time",
     minimizedLabel: "{app}, window minimized",
     announce: {
@@ -155,9 +156,9 @@ export const en: Dictionary = {
       closed: "{app}: window closed",
       minimized: "{app}: window minimized",
       moveStart:
-        "Moving {app}: use the arrow keys, Shift for longer steps, Enter to confirm, Esc to cancel.",
+        "Moving {app}: use the arrow keys, Shift for longer steps, Enter to confirm, Esc to cancel. On-screen buttons are also available.",
       resizeStart:
-        "Resizing {app}: use the arrow keys, Shift for longer steps, Enter to confirm, Esc to cancel.",
+        "Resizing {app}: use the arrow keys, Shift for longer steps, Enter to confirm, Esc to cancel. On-screen buttons are also available.",
       moved: "{app}: window moved",
       resized: "{app}: window resized",
       cancelled: "Cancelled",

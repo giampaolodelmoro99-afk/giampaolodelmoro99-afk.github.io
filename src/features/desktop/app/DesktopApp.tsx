@@ -66,6 +66,7 @@ import { useDesktopContextMenu } from "./useDesktopContextMenu";
 import { useKeyboardGesture } from "./useKeyboardGesture";
 import { useWindowGestures, windowRect } from "./useWindowGestures";
 import { currentLayoutMode, isDesktopLayout, subscribeLayoutMode } from "../layoutMode";
+import { useFocusMemory } from "./useFocusMemory";
 import { useUrlSync } from "./useUrlSync";
 import { useWorkspaceViewport } from "./useWorkspaceViewport";
 import { Clock } from "./Clock";
@@ -323,7 +324,6 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
   const appName = (id: AppId, text: string) => text.replace("{app}", t.apps[id]);
   const keyboard = useKeyboardGesture({
     viewport: () => store.getState().viewport,
-    isOutside: (target) => !controls.current?.contains(target),
     onConfirm: ({ id, kind, current }) => {
       store.getState().place(id, current);
       announce(
@@ -349,14 +349,17 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
   );
   const iconsReady = useIconsReady(whenIconsReady);
 
+  const recallFocus = useFocusMemory();
+
   const moveFocus = useEffectEvent((onlyIfLost: boolean) => {
     if (!focusRequest) return;
     if (onlyIfLost && document.activeElement !== document.body) return;
     const element = document.getElementById(focusRequest.target);
     const heading = isDesktopLayout() ? null : element?.querySelector<HTMLElement>("h1, h2");
+    const remembered = isDesktopLayout() ? recallFocus(focusRequest.target) : null;
     const focusable = element?.matches("[role=grid]")
       ? element.querySelector<HTMLElement>("[role=row]")
-      : (heading ?? element);
+      : (remembered ?? heading ?? element);
     focusable?.focus();
   });
 
@@ -614,6 +617,13 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
     } else if (key === "controlPanel" || key === "properties") openApp("controlPanel");
   };
 
+  const isGesturing = keyboard.gesture !== null;
+  useEffect(() => {
+    if (isGesturing) {
+      controls.current?.focus();
+    }
+  }, [isGesturing]);
+
   const outline = gestures.outline ?? keyboard.gesture?.current ?? null;
 
   const skipTarget = activeId ? windowBodyId(activeId) : desktopIconsId;
@@ -678,7 +688,13 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
         )}
         {outline && <DragOutline rect={outline} />}
         {keyboard.gesture && (
-          <div ref={controls} className={styles.moveControls}>
+          <div
+            ref={controls}
+            role="application"
+            tabIndex={-1}
+            aria-label={appName(keyboard.gesture.id, t.desktop.gestureRegion)}
+            className={styles.moveControls}
+          >
             <MoveControls
               onStep={(direction) => keyboard.step(direction)}
               onConfirm={keyboard.confirm}

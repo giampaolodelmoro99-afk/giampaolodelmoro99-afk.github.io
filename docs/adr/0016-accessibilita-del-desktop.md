@@ -57,14 +57,15 @@ Nella F2A la home diventa un desktop GDM 95: icone, finestre sovrapposte, taskba
 
 - Positive: il desktop si usa per intero da tastiera, mouse e touch; i lettori restano in modalità lettura nei contenuti; ogni gesto ha un'alternativa a puntatore singolo e da tastiera.
 - Negative e rischi: il modello «region + `inert`» non dice al lettore quante finestre ci sono dietro; lo compensano il pulsante Finestre e il selettore. Le scorciatoie con Alt possono essere intercettate dal sistema (Alt+Spazio su Windows e GNOME): c'è Alt+trattino come riserva.
-- Rinvii alla 2B (dalla review di chiusura della 2A, non bloccanti):
-  - sotto i 768 px Sposta, Ridimensiona e Ingrandisci del menu della finestra non hanno effetto visibile: si disattivano o cambiano con la modalità mobile;
-  - durante Sposta da tastiera il focus resta sul pulsante del menu: in modalità lettura NVDA può prendersi le frecce; da valutare il focus su `MoveControls` e un annuncio che citi i pulsanti;
-  - in `forced-colors` la voce scelta nel selettore aperto con il mouse si distingue solo dal nome sotto le icone, e il cerchio del Radio va verificato: serve un bordo `Highlight`;
-  - in Spegni il focus iniziale è su «Spegni», quindi Invio spegne subito; l'azione si annulla con Riaccendi, senza perdite;
-  - su Windows Maiusc+Alt cambia la lingua di input: Maiusc+Alt+W può cambiare layout prima di arrivare alla pagina; resta il pulsante Finestre;
-  - `touch-action: none` sulla barra del titolo blocca anche il pinch-zoom iniziato lì; lo zoom resta possibile dal resto della pagina;
-  - con molte finestre a 320 px i pulsanti della taskbar scorrono in orizzontale dentro il loro spazio (senza coprire lingua e orologio); il disegno della taskbar stretta è della modalità mobile (ADR-0007).
+- Rinvii alla 2B (dalla review di chiusura della 2A), **chiusi in 2B-2**:
+  - sotto i 768 px non c'è più il menu della finestra né Sposta, Ridimensiona e Ingrandisci: la modalità mobile ha finestre a schermo intero (ADR-0007), e Alt+Spazio e Alt+trattino non fanno nulla;
+  - durante Sposta da tastiera il focus va sul contenitore dei controlli a schermo (`role="application"`, nome «Sposta o ridimensiona {app}»); `Invio` conferma e, con il focus su un pulsante, preme il pulsante. Resta da verificare a mano con NVDA;
+  - in `forced-colors` la voce scelta del selettore ha un contorno `--color-selection` e il cerchio del Radio un bordo (`--color-text`, `--color-selection` se scelto): e2e `forced-colors.spec.ts`;
+  - in Spegni il focus iniziale resta su «Spegni», come nella tavola: con la persistenza (ADR-0021) Riaccendi ripristina il layout salvato, quindi l'azione non fa perdere nulla;
+  - su Windows Maiusc+Alt cambia la lingua di input: nessun codice, resta il pulsante Finestre e a selettore aperto ← e → fanno lo stesso (ACCESSIBILITY.md §2);
+  - `touch-action: none` sulla barra del titolo vale solo da 768 px; in mobile la barra non ha gesti e il pinch-zoom funziona (ACCESSIBILITY.md §6);
+  - la taskbar stretta è sostituita in mobile da «App aperte (n)», che a 320 px non scorre né copre lingua e orologio;
+  - la memoria del focus per finestra c'è nel desktop (`useFocusMemory`); in mobile ogni app si apre sull'`h1`.
 - Cosa va verificato: test unitari e e2e (`keyboard.spec.ts`, `context-menu.spec.ts`, `window-drag.spec.ts`, `touch-drag.spec.ts`, `csp.spec.ts`), axe su story e pagine; a fine fase la QA manuale con NVDA + Firefox e VoiceOver + Safari iOS (QA_CHECKLIST.md, sezione Desktop). Si rivaluta in 2B con la modalità mobile (MobileHome, App aperte) e la memoria del focus per finestra.
 
 ## Riferimenti

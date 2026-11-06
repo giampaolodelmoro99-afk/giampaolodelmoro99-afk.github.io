@@ -165,6 +165,7 @@
   --space-6: 2rem;
 
   --radius-none: 0;
+  --radius-round: 50%;
 
   --touch-target-min: 44px;
   --target-min-desktop: 24px;
