@@ -8,9 +8,10 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import { I18nProvider } from "react-aria-components/I18nProvider";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { useStore } from "zustand";
 import buttonStyles from "../../../components/Button/Button.module.css";
 import { DesktopIcons } from "../../../components/DesktopIcon";
@@ -36,17 +37,25 @@ import {
 import {
   type DesktopState,
   type DesktopStore,
+  type Viewport,
   createDesktopStore,
   emptyState,
+  close as closeWindow,
   openAppFor,
   readLayout,
   restore,
   serialize,
   writeLayout,
 } from "../../../stores/desktop";
-import { appDefinition, desktopApps, startMenuApps, startMenuSystemApps } from "../apps";
+import {
+  appDefinition,
+  desktopApps,
+  mobileHomeApps,
+  startMenuApps,
+  startMenuSystemApps,
+} from "../apps";
 import styles from "../Desktop.module.css";
-import { desktopIconsId, taskbarButtonId, windowBodyId } from "../ids";
+import { desktopIconsId, openAppsButtonId, taskbarButtonId, windowBodyId } from "../ids";
 import { ChunkBoundary } from "./ChunkBoundary";
 import { DesktopWindow, type WindowExit } from "./DesktopWindow";
 import { resolveCommand } from "../run";
@@ -56,6 +65,7 @@ import { useAnnouncer } from "./Announcer";
 import { useDesktopContextMenu } from "./useDesktopContextMenu";
 import { useKeyboardGesture } from "./useKeyboardGesture";
 import { useWindowGestures, windowRect } from "./useWindowGestures";
+import { currentLayoutMode, isDesktopLayout, subscribeLayoutMode } from "../layoutMode";
 import { useUrlSync } from "./useUrlSync";
 import { useWorkspaceViewport } from "./useWorkspaceViewport";
 import { Clock } from "./Clock";
@@ -81,14 +91,14 @@ function useIconsReady(onReady: (() => void) | undefined) {
   return setArea;
 }
 
-const isDesktopLayout = () => window.matchMedia("(width >= 768px)").matches;
-
 type Switcher = { selected: AppId; viaShortcut: boolean };
 
 function bootFocus(store: DesktopStore): string {
   const active = store.getState().activeId;
   return active ? windowBodyId(active) : desktopIconsId;
 }
+
+const desktopMode = () => "desktop" as const;
 
 function focusStart() {
   requestAnimationFrame(() => document.querySelector<HTMLElement>(`.${styles.start}`)?.focus());
@@ -107,6 +117,31 @@ const ShutdownDialog = lazy(() =>
 const FarewellScreen = lazy(() =>
   loadFarewellScreen().then((module) => ({ default: module.FarewellScreen })),
 );
+
+const loadOpenApps = () => import("../mobile/OpenApps");
+
+const OpenApps = lazy(() => loadOpenApps().then((module) => ({ default: module.OpenApps })));
+
+function usePrefetchMobile(isMobile: boolean) {
+  useEffect(() => {
+    if (!isMobile) return undefined;
+    const prefetch = () => {
+      void loadOpenApps().catch(() => undefined);
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      const handle = window.requestIdleCallback(prefetch);
+      return () => window.cancelIdleCallback(handle);
+    }
+    const timer = window.setTimeout(prefetch, 1);
+    return () => window.clearTimeout(timer);
+  }, [isMobile]);
+}
+
+function focusOpenAppsButton() {
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => document.getElementById(openAppsButtonId)?.focus()),
+  );
+}
 
 function usePrefetchDialogs() {
   useEffect(() => {
@@ -128,18 +163,20 @@ type Power = "on" | "off" | "restarting";
 
 type Boot = "first" | "resume" | "restart";
 
-function initialState(boot: Boot, routeKey: RouteKey, memory: DesktopState | null) {
+function initialState(boot: Boot, routeKey: RouteKey, memory: DesktopState | null, hash: string) {
   if (boot === "restart") return emptyState;
   if (boot === "resume") return readLayout() ?? memory ?? emptyState;
-  return restore(readLayout(), routeKey);
+  const restored = restore(readLayout(), routeKey);
+  return hash === `#${desktopIconsId}` ? closeWindow(restored, openAppFor(routeKey)) : restored;
 }
 
 function useDesktopStore(
   routeKey: RouteKey,
   boot: Boot,
   memory: DesktopState | null,
+  hash: string,
 ): DesktopStore {
-  const [store] = useState(() => createDesktopStore(initialState(boot, routeKey, memory)));
+  const [store] = useState(() => createDesktopStore(initialState(boot, routeKey, memory, hash)));
   return store;
 }
 
@@ -264,15 +301,22 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
   const other = locales.find((candidate) => candidate !== locale) ?? locale;
   const fromUrl = useRef<(key: RouteKey) => void>(() => undefined);
   const { routeKey, push, settle } = useUrlSync((key) => fromUrl.current(key));
-  const store = useDesktopStore(routeKey, boot, memory);
+  const { hash } = useLocation();
+  const store = useDesktopStore(routeKey, boot, memory, hash);
   usePersistedLayout(store, boot === "restart", onLayout);
   const routeApp = openAppFor(routeKey);
   const windows = useStore(store, (state) => state.windows);
   const stack = useStore(store, (state) => state.stack);
   const activeId = useStore(store, (state) => state.activeId);
-  const { open, close, focus, minimize, toggleMaximize, setViewport } = store.getState();
+  const { open, close, focus, minimize, toggleMaximize } = store.getState();
   const [workspace, setWorkspace] = useState<HTMLElement | null>(null);
-  const { workspaceRef, metricsRef } = useWorkspaceViewport(setViewport);
+  const layoutMode = useSyncExternalStore(subscribeLayoutMode, currentLayoutMode, desktopMode);
+  const isMobile = layoutMode === "mobile";
+  usePrefetchMobile(isMobile);
+  const [setDesktopViewport] = useState(() => (viewport: Viewport) => {
+    if (isDesktopLayout()) store.getState().setViewport(viewport);
+  });
+  const { workspaceRef, metricsRef } = useWorkspaceViewport(setDesktopViewport);
   const { announce, region } = useAnnouncer();
   const [menuOpenFor, setMenuOpenFor] = useState<AppId | null>(null);
   const controls = useRef<HTMLDivElement | null>(null);
@@ -305,14 +349,24 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
   );
   const iconsReady = useIconsReady(whenIconsReady);
 
-  useEffect(() => {
+  const moveFocus = useEffectEvent((onlyIfLost: boolean) => {
     if (!focusRequest) return;
+    if (onlyIfLost && document.activeElement !== document.body) return;
     const element = document.getElementById(focusRequest.target);
+    const heading = isDesktopLayout() ? null : element?.querySelector<HTMLElement>("h1, h2");
     const focusable = element?.matches("[role=grid]")
       ? element.querySelector<HTMLElement>("[role=row]")
-      : element;
+      : (heading ?? element);
     focusable?.focus();
+  });
+
+  useEffect(() => {
+    if (focusRequest) moveFocus(false);
   }, [focusRequest]);
+
+  useEffect(() => {
+    if (routeKey) moveFocus(true);
+  }, [routeKey]);
 
   const [initialIds] = useState(() => new Set(Object.keys(store.getState().windows)));
   const [exiting, setExiting] = useState<{ id: AppId; kind: WindowExit } | null>(null);
@@ -451,6 +505,29 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
   const [contextMenu, setContextMenu] = useDesktopContextMenu(workspace, isDesktopLayout);
   const [isRunOpen, setRunOpen] = useState(false);
   const [isShutdownOpen, setShutdownOpen] = useState(false);
+  const [isAppSwitcherOpen, setAppSwitcherOpen] = useState(false);
+
+  const followLayout = useEffectEvent((mode: typeof layoutMode) => {
+    if (keyboard.gesture) keyboard.cancel();
+    setSwitcher(null);
+    setMenuOpenFor(null);
+    if (mode === "desktop") setAppSwitcherOpen(false);
+    const focused = document.activeElement;
+    const isHidden =
+      !(focused instanceof HTMLElement) ||
+      focused === document.body ||
+      (typeof focused.checkVisibility === "function" && !focused.checkVisibility());
+    if (!isHidden) return;
+    const active = store.getState().activeId;
+    setFocusRequest({ target: active ? windowBodyId(active) : desktopIconsId });
+  });
+
+  const previousLayout = useRef(layoutMode);
+  useEffect(() => {
+    if (previousLayout.current === layoutMode) return;
+    previousLayout.current = layoutMode;
+    followLayout(layoutMode);
+  }, [layoutMode]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -459,8 +536,10 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
       if (!action) return;
       if (action === "windowMenu") {
         const active = store.getState().activeId;
-        if (!active) return;
+        if (!active || !isDesktopLayout()) return;
         setMenuOpenFor(active);
+      } else if (!isDesktopLayout()) {
+        if (store.getState().recent.length > 0) setAppSwitcherOpen(true);
       } else {
         openSwitcher(true, action === "switcherNext" ? 1 : -1);
       }
@@ -519,7 +598,7 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
   };
   const [iconOrder, setIconOrder] = useState<"type" | "name">("type");
   const [iconsVersion, setIconsVersion] = useState(0);
-  const icons = desktopApps
+  const icons = (isMobile ? mobileHomeApps : desktopApps)
     .map((app) => ({ id: app.id, label: t.apps[app.id], icon: app.icon }))
     .toSorted((a, b) => (iconOrder === "name" ? a.label.localeCompare(b.label, locale) : 0));
 
@@ -566,6 +645,7 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
             label={t.desktop.iconsLabel}
             items={icons}
             onAction={openApp}
+            opensOnPress={isMobile}
             className={styles.icons}
           />
         </div>
@@ -574,6 +654,7 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
             <DesktopWindow
               key={window.id}
               window={window}
+              layoutMode={layoutMode}
               animateIn={!initialIds.has(window.id)}
               exit={exiting?.id === window.id ? exiting.kind : null}
               onExited={finishExit}
@@ -664,6 +745,28 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
             <MenuItem id="properties">{t.desktop.contextMenu.properties}</MenuItem>
           </ContextMenu>
         )}
+        {isMobile && isAppSwitcherOpen && (
+          <ChunkBoundary onError={() => dialogFailed(setAppSwitcherOpen)}>
+            <Suspense fallback={null}>
+              <OpenApps
+                store={store}
+                onOpen={(id) => {
+                  setAppSwitcherOpen(false);
+                  openApp(id);
+                }}
+                onDismiss={() => {
+                  setAppSwitcherOpen(false);
+                  focusOpenAppsButton();
+                }}
+                onClosed={(id) => {
+                  announce(appName(id, t.desktop.announce.closed));
+                  settle(store.getState().activeId);
+                }}
+                onAllClosed={() => settle(null)}
+              />
+            </Suspense>
+          </ChunkBoundary>
+        )}
         <WindowSwitcher
           isOpen={switcher !== null}
           onOpenChange={(isOpen) => {
@@ -697,7 +800,11 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
           </>
         }
       >
-        <StartButton onAction={startAction} className={styles.start}>
+        <StartButton
+          onAction={startAction}
+          className={styles.start}
+          popoverClassName={styles.startPopover}
+        >
           {startMenuApps.map((id) => (
             <MenuItem key={id} id={id} icon={appDefinition(id).icon}>
               {t.apps[id]}
@@ -718,29 +825,47 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
             {t.desktop.shutdown}
           </MenuItem>
         </StartButton>
-        <TaskbarIconButton
-          icon="windows"
-          aria-label={
-            recent.length === 0
-              ? t.desktop.windowsButtonEmpty
-              : t.desktop.windowsButton.replace("{shortcut}", altShortcut)
-          }
-          isUnavailable={recent.length === 0}
-          isPressed={switcher !== null && !switcher.viaShortcut}
-          onPress={() => openSwitcher(false, 1)}
-        />
-        {Object.values(windows).map(({ id, minimized }) => (
-          <TaskbarButton
-            key={id}
-            id={taskbarButtonId(id)}
-            icon={appDefinition(id).icon}
-            isSelected={id === activeId}
-            onChange={() => pressTaskbarButton(id)}
-            {...(minimized ? { "aria-label": appName(id, t.desktop.minimizedLabel) } : {})}
-          >
-            {t.apps[id]}
-          </TaskbarButton>
-        ))}
+        {isMobile ? (
+          <TaskbarIconButton
+            id={openAppsButtonId}
+            icon="windows"
+            aria-label={
+              recent.length === 0
+                ? t.desktop.openAppsEmpty
+                : t.desktop.openAppsName.replace("{count}", String(recent.length))
+            }
+            label={t.desktop.openApps.replace("{count}", String(recent.length))}
+            count={recent.length}
+            isUnavailable={recent.length === 0}
+            isPressed={isAppSwitcherOpen}
+            onPress={() => setAppSwitcherOpen(true)}
+          />
+        ) : (
+          <TaskbarIconButton
+            icon="windows"
+            aria-label={
+              recent.length === 0
+                ? t.desktop.windowsButtonEmpty
+                : t.desktop.windowsButton.replace("{shortcut}", altShortcut)
+            }
+            isUnavailable={recent.length === 0}
+            isPressed={switcher !== null && !switcher.viaShortcut}
+            onPress={() => openSwitcher(false, 1)}
+          />
+        )}
+        {!isMobile &&
+          Object.values(windows).map(({ id, minimized }) => (
+            <TaskbarButton
+              key={id}
+              id={taskbarButtonId(id)}
+              icon={appDefinition(id).icon}
+              isSelected={id === activeId}
+              onChange={() => pressTaskbarButton(id)}
+              {...(minimized ? { "aria-label": appName(id, t.desktop.minimizedLabel) } : {})}
+            >
+              {t.apps[id]}
+            </TaskbarButton>
+          ))}
       </Taskbar>
     </div>
   );

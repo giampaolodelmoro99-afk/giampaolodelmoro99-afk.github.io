@@ -35,6 +35,8 @@ test("senza JavaScript le icone del desktop sono link che aprono la finestra del
 }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Gianpaolo Del Moro");
+  await page.getByRole("link", { name: "Chiudi About" }).click();
+  await expect(page.getByRole("region", { name: "About" })).toBeHidden();
   const icon = page.getByRole("link", { name: "Progetti", exact: true });
   await expect(icon).toHaveAttribute("href", "/progetti/");
   await Promise.all([page.waitForURL("/progetti/", { waitUntil: "load" }), icon.click()]);

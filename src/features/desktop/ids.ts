@@ -38,3 +38,4 @@ export function focusTarget(key: FocusKey): HTMLElement | null {
   }
   return document.querySelector<HTMLElement>(`[data-focus-key="${key}"]`);
 }
+export const openAppsButtonId = "taskbar-open-apps";

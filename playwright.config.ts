@@ -9,6 +9,12 @@ const performance = /performance\.spec\.ts$/;
 const wide = /(window-drag|context-menu)\.spec\.ts$/;
 const touchDrag = /touch-drag\.spec\.ts$/;
 
+// Modalità di layout (ADR-0007): i test @desktop presuppongono le finestre
+// sovrapposte e girano solo con il desktop largo; i test @mobile girano solo
+// nella modalità mobile (da 320 a 767 px e con i telefoni emulati).
+const desktopOnly = /@desktop/;
+const mobileOnly = /@mobile/;
+
 const viewports = [
   { name: "chromium-320", width: 320, height: 640 },
   { name: "chromium-375", width: 375, height: 667 },
@@ -36,16 +42,19 @@ export default defineConfig({
       name,
       use: { ...devices["Desktop Chrome"], viewport: { width, height } },
       testIgnore: [touch, touchDrag, performance, ...(width < 768 ? [wide] : [])],
+      grepInvert: width < 768 ? desktopOnly : mobileOnly,
     })),
     {
       name: "touch-pixel-7",
       use: { ...devices["Pixel 7"] },
       testIgnore: [visual, keyboard, performance, wide],
+      grepInvert: desktopOnly,
     },
     {
       name: "touch-iphone-14",
       use: { ...devices["iPhone 14"] },
       testIgnore: [visual, keyboard, performance, wide, touchDrag],
+      grepInvert: desktopOnly,
     },
     {
       name: "performance",
@@ -65,6 +74,7 @@ export default defineConfig({
       name: "firefox-1440",
       use: { ...devices["Desktop Firefox"], viewport: { width: 1440, height: 900 } },
       testIgnore: [visual, touch, touchDrag, performance],
+      grepInvert: mobileOnly,
     },
   ],
   webServer: {

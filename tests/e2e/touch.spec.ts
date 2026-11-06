@@ -11,8 +11,9 @@ test("il collegamento della lingua funziona al tocco", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
 });
 
-test("un tocco su un'icona del desktop apre la sua finestra", async ({ page }) => {
+test("un tocco su un'icona della home apre la sua app", async ({ page }) => {
   await openDesktop(page, "/");
+  await page.getByRole("button", { name: "Chiudi About" }).tap();
   const icon = page.getByRole("row", { name: "Progetti", exact: true });
   const box = await icon.boundingBox();
   expect(box?.width).toBeGreaterThanOrEqual(44);

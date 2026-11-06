@@ -9,7 +9,7 @@ import { getDictionary, useLocale, useT } from "../../../i18n";
 import { type RouteKey, locales, routeMap } from "../../../routes/routeMap";
 import { uiStrings } from "../../../i18n/ui";
 import { openAppFor } from "../../../stores/desktop/home";
-import { appDefinition, desktopApps } from "../apps";
+import { appDefinition, mobileHomeApps } from "../apps";
 import styles from "../Desktop.module.css";
 import { desktopIconsId, windowBodyId } from "../ids";
 import { ShellWindow } from "./ShellWindow";
@@ -26,7 +26,7 @@ export function DesktopShell({ routeKey }: DesktopShellProps) {
   const skipTarget = openApp ? windowBodyId(openApp) : desktopIconsId;
 
   return (
-    <div className={styles.screen}>
+    <div className={styles.screen} data-shell="">
       <a
         href={`#${skipTarget}`}
         className={cx(buttonStyles.root, styles.skipLink)}
@@ -37,8 +37,8 @@ export function DesktopShell({ routeKey }: DesktopShellProps) {
       <main className={styles.workspace}>
         <nav aria-label={t.desktop.iconsLabel} className={styles.iconArea}>
           <ul id={desktopIconsId} tabIndex={-1} className={cx(iconStyles.grid, styles.icons)}>
-            {desktopApps.map((app) => (
-              <li key={app.id} className={styles.iconCell}>
+            {mobileHomeApps.map((app) => (
+              <li key={app.id} className={cx(styles.iconCell, !app.onDesktop && styles.mobileOnly)}>
                 <Link
                   to={routeMap[app.id][locale]}
                   className={iconStyles.item}
@@ -62,15 +62,21 @@ export function DesktopShell({ routeKey }: DesktopShellProps) {
             <span>{uiStrings[locale].startButton.label}</span>
           </span>
           <span
-            className={cx(taskbarStyles.root, taskbarStyles.iconButton)}
+            className={cx(taskbarStyles.root, taskbarStyles.iconButton, taskbarStyles.labelled)}
             data-unavailable={openApp ? undefined : "true"}
           >
             <span className={taskbarStyles.content}>
               <Icon name="windows" size={16} className={cx(taskbarStyles.icon)} />
+              <span className={taskbarStyles.label} data-mobile-only="">
+                {t.desktop.openApps.replace("{count}", openApp ? "1" : "0")}
+              </span>
+              <span className={taskbarStyles.count} data-mobile-only="">
+                {openApp ? 1 : 0}
+              </span>
             </span>
           </span>
           {openApp && (
-            <span className={taskbarStyles.root} data-selected="true">
+            <span className={taskbarStyles.root} data-selected="true" data-window-button="">
               <span className={taskbarStyles.content}>
                 <Icon
                   name={appDefinition(openApp).icon}

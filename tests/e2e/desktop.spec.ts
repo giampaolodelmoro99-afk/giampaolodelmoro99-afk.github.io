@@ -28,33 +28,39 @@ test.describe("desktop dopo l'idratazione", () => {
     expect(await boxes(page)).toEqual(before);
   });
 
-  test("un'icona apre la finestra senza ricaricare la pagina", async ({ page }) => {
-    await openDesktop(page);
-    await page.evaluate(() => Object.assign(window, { __noReload: true }));
-    const icon = page.getByRole("row", { name: "Progetti", exact: true });
-    await icon.dblclick();
-    const projects = page.getByRole("region", { name: "Progetti" });
-    await expect(projects).toHaveAttribute("data-active", "true");
-    await expect(page.locator("#window-projects-body")).toBeFocused();
-    await expect(page.getByRole("region", { name: "About" })).toHaveAttribute(
-      "data-active",
-      "false",
-    );
-    expect(await page.evaluate(() => "__noReload" in window)).toBe(true);
-  });
+  test(
+    "un'icona apre la finestra senza ricaricare la pagina",
+    { tag: "@desktop" },
+    async ({ page }) => {
+      await openDesktop(page);
+      await page.evaluate(() => Object.assign(window, { __noReload: true }));
+      const icon = page.getByRole("row", { name: "Progetti", exact: true });
+      await icon.dblclick();
+      const projects = page.getByRole("region", { name: "Progetti" });
+      await expect(projects).toHaveAttribute("data-active", "true");
+      await expect(page.locator("#window-projects-body")).toBeFocused();
+      await expect(page.getByRole("region", { name: "About" })).toHaveAttribute(
+        "data-active",
+        "false",
+      );
+      expect(await page.evaluate(() => "__noReload" in window)).toBe(true);
+    },
+  );
 
-  test("il menu Start apre un'app e chiudere una finestra attiva la successiva", async ({
-    page,
-  }) => {
-    await openDesktop(page);
-    await page.getByRole("button", { name: "Start" }).click();
-    await page.getByRole("menuitem", { name: "Pannello di controllo" }).click();
-    const panel = page.getByRole("region", { name: "Pannello di controllo" });
-    await expect(panel).toHaveAttribute("data-active", "true");
-    await panel.getByRole("button", { name: "Chiudi" }).click();
-    await expect(panel).toBeHidden();
-    await expect(page.locator("#window-about-body")).toBeFocused();
-  });
+  test(
+    "il menu Start apre un'app e chiudere una finestra attiva la successiva",
+    { tag: "@desktop" },
+    async ({ page }) => {
+      await openDesktop(page);
+      await page.getByRole("button", { name: "Start" }).click();
+      await page.getByRole("menuitem", { name: "Pannello di controllo" }).click();
+      const panel = page.getByRole("region", { name: "Pannello di controllo" });
+      await expect(panel).toHaveAttribute("data-active", "true");
+      await panel.getByRole("button", { name: "Chiudi" }).click();
+      await expect(panel).toBeHidden();
+      await expect(page.locator("#window-about-body")).toBeFocused();
+    },
+  );
 
   test("il primo Tab resta «Salta al contenuto» anche dopo lo swap", async ({ page }) => {
     await openDesktop(page);
@@ -69,29 +75,31 @@ test.describe("desktop dopo l'idratazione", () => {
     ).toBeVisible();
   });
 
-  test("in alto contrasto il pulsante attivo e Start aperto sono gialli, con il focus interno", async ({
-    page,
-  }) => {
-    await openDesktop(page);
-    await page.locator("html").evaluate((html) => {
-      html.dataset["theme"] = "high-contrast";
-    });
-    const yellow = "rgb(255, 255, 0)";
-    await expect(page.getByRole("button", { name: "About", pressed: true })).toHaveCSS(
-      "background-color",
-      yellow,
-    );
-    const start = page.getByRole("button", { name: "Start" });
-    await start.focus();
-    await page.keyboard.press("Shift+Tab");
-    await page.keyboard.press("Tab");
-    await expect(start).toBeFocused();
-    await expect(start).toHaveCSS("outline-offset", "-4px");
-    await page.keyboard.press("Enter");
-    await expect(start).toHaveAttribute("aria-expanded", "true");
-    await expect(start).toHaveCSS("background-color", yellow);
-    await expect(start).toHaveCSS("color", "rgb(0, 0, 0)");
-  });
+  test(
+    "in alto contrasto il pulsante attivo e Start aperto sono gialli, con il focus interno",
+    { tag: "@desktop" },
+    async ({ page }) => {
+      await openDesktop(page);
+      await page.locator("html").evaluate((html) => {
+        html.dataset["theme"] = "high-contrast";
+      });
+      const yellow = "rgb(255, 255, 0)";
+      await expect(page.getByRole("button", { name: "About", pressed: true })).toHaveCSS(
+        "background-color",
+        yellow,
+      );
+      const start = page.getByRole("button", { name: "Start" });
+      await start.focus();
+      await page.keyboard.press("Shift+Tab");
+      await page.keyboard.press("Tab");
+      await expect(start).toBeFocused();
+      await expect(start).toHaveCSS("outline-offset", "-4px");
+      await page.keyboard.press("Enter");
+      await expect(start).toHaveAttribute("aria-expanded", "true");
+      await expect(start).toHaveCSS("background-color", yellow);
+      await expect(start).toHaveCSS("color", "rgb(0, 0, 0)");
+    },
+  );
 
   test("Esegui… apre un'app scritta per nome, con i suggerimenti dentro il dialog", async ({
     page,
@@ -117,20 +125,22 @@ test.describe("desktop dopo l'idratazione", () => {
     );
   });
 
-  test("dopo l'idratazione i link di About aprono le finestre e cambiano l'URL senza ricaricare", async ({
-    page,
-  }) => {
-    await openDesktop(page);
-    await page.evaluate(() => Object.assign(window, { __noReload: true }));
-    await page.getByRole("link", { name: "Vedere i progetti" }).click();
-    await expect(page.getByRole("region", { name: "Progetti" })).toHaveAttribute(
-      "data-active",
-      "true",
-    );
-    await expect(page.getByRole("region", { name: "About" })).toBeVisible();
-    await expect(page).toHaveURL(/\/progetti\/$/);
-    expect(await page.evaluate(() => "__noReload" in window)).toBe(true);
-  });
+  test(
+    "dopo l'idratazione i link di About aprono le finestre e cambiano l'URL senza ricaricare",
+    { tag: "@desktop" },
+    async ({ page }) => {
+      await openDesktop(page);
+      await page.evaluate(() => Object.assign(window, { __noReload: true }));
+      await page.getByRole("link", { name: "Vedere i progetti" }).click();
+      await expect(page.getByRole("region", { name: "Progetti" })).toHaveAttribute(
+        "data-active",
+        "true",
+      );
+      await expect(page.getByRole("region", { name: "About" })).toBeVisible();
+      await expect(page).toHaveURL(/\/progetti\/$/);
+      expect(await page.evaluate(() => "__noReload" in window)).toBe(true);
+    },
+  );
 
   test("se il chunk di Esegui non si carica il desktop resta usabile e lo annuncia", async ({
     page,

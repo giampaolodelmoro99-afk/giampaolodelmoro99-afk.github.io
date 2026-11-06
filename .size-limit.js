@@ -99,7 +99,7 @@ export default [
   {
     name: "Chunk del desktop dopo l'idratazione, JS (gzip)",
     path: desktopChunk.map((file) => `${client}${file}`),
-    limit: "77 kB",
+    limit: "82 kB",
     gzip: true,
     disablePlugins: ["@size-limit/esbuild"],
   },

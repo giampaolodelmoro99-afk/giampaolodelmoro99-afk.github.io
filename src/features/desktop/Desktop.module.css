@@ -37,31 +37,14 @@
 .workspace {
   position: relative;
   -webkit-touch-callout: none;
-  display: flex;
-  flex-direction: column;
   min-block-size: 0;
-  overflow-y: auto;
   padding-block: var(--space-safe-top) var(--space-2);
   padding-inline: var(--space-gutter);
 }
 
 .workspace .icons {
-  display: flex;
-  flex-flow: row wrap;
-  align-content: flex-start;
   margin: var(--space-0);
   list-style: none;
-}
-
-.iconArea {
-  flex: none;
-}
-
-.workspace .icons > * {
-  block-size: calc(
-    var(--desktop-icon-size) + var(--space-1) * 3 + var(--font-size-md) * var(--line-height-tight) *
-      var(--desktop-icon-label-lines)
-  );
 }
 
 .iconCell {
@@ -80,11 +63,11 @@
   --_z: calc(var(--z-window) + var(--window-z, 0));
   --_cascade: calc(var(--window-cascade, 0) * var(--space-5));
 
-  position: relative;
   z-index: var(--_z);
-  flex: 1 0 auto;
-  min-block-size: min(var(--window-default-height), 100%);
-  margin-block-start: var(--space-2);
+}
+
+.screen[data-shell]:has(.icons:target) .window {
+  display: none;
 }
 
 .entering {
@@ -210,7 +193,7 @@
   white-space: nowrap;
 }
 
-@media (width >= 768px) {
+@media (width >= 768px) and (height >= 540px), (width >= 768px) and (pointer: fine) {
   .workspace {
     display: block;
     overflow: hidden;
@@ -223,7 +206,9 @@
   }
 
   .workspace .icons {
+    display: flex;
     flex-flow: column wrap;
+    align-content: flex-start;
   }
 
   .workspace .icons > * {
@@ -273,6 +258,83 @@
     block-size: auto;
     margin: var(--space-0);
     translate: none;
+  }
+}
+
+@media (width < 768px),
+  (height < 540px) and (pointer: coarse),
+  (height < 540px) and (pointer: none) {
+  .screen,
+  .startPopover {
+    --control-height: var(--control-height-touch);
+    --titlebar-height: var(--titlebar-height-touch);
+    --titlebar-button-width: var(--titlebar-button-touch);
+    --titlebar-button-height: var(--titlebar-button-touch);
+    --menu-item-height: var(--menu-item-height-touch);
+    --taskbar-height: var(--taskbar-height-touch);
+    --target-min: var(--touch-target-min);
+  }
+
+  .workspace {
+    overflow: hidden;
+    padding: var(--space-0);
+  }
+
+  .iconArea {
+    block-size: 100%;
+    overflow-y: auto;
+    padding-block-start: var(--space-safe-top);
+  }
+
+  .workspace .icons {
+    --desktop-icon-cell: 100%;
+    --desktop-icon-size: var(--icon-size-xl);
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: var(--space-4);
+    padding-inline: var(--space-gutter);
+  }
+
+  .workspace .icons > * {
+    min-block-size: var(--mobile-home-cell-height);
+  }
+
+  .workspace > .window {
+    position: absolute;
+    inset: var(--space-0);
+    padding-block-start: var(--space-safe-top-edge);
+    background: var(--color-surface);
+  }
+
+  .window:not([data-active="true"]),
+  .window [data-window-control="minimize"],
+  .window [data-window-control="maximize"],
+  .window [data-window-menu],
+  .taskbar [data-window-button] {
+    display: none;
+  }
+
+  .startPopover {
+    inline-size: calc(100vw - var(--popover-edge) * 2);
+  }
+}
+
+@media (width < 360px) {
+  .workspace .icons {
+    --desktop-icon-size: var(--icon-size-lg);
+
+    row-gap: var(--space-2);
+  }
+
+  .workspace .icons > * {
+    min-block-size: auto;
+  }
+}
+
+@media (width >= 768px) and (height >= 540px), (width >= 768px) and (pointer: fine) {
+  .mobileOnly,
+  .taskbar [data-mobile-only] {
+    display: none;
   }
 }
 

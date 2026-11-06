@@ -7,7 +7,7 @@ import type { AppId } from "../../../routes/routeMap";
 import { appDefinition } from "../apps";
 import { AppContent } from "../content/AppContent";
 import styles from "../Desktop.module.css";
-import { windowBodyId, windowTitleId } from "../ids";
+import { desktopIconsId, windowBodyId, windowTitleId } from "../ids";
 
 export function ShellWindow({ app }: { app: AppId }) {
   const t = useT();
@@ -20,21 +20,31 @@ export function ShellWindow({ app }: { app: AppId }) {
       data-variant={variant}
     >
       <header className={windowStyles.titlebar}>
-        <span className={windowMenuStyles.trigger} aria-hidden="true">
+        <span className={windowMenuStyles.trigger} aria-hidden="true" data-window-menu="">
           <Icon name={icon} size={16} />
         </span>
         <span id={windowTitleId(app)} className={windowStyles.title}>
           {t.apps[app]}
         </span>
-        <span className={windowStyles.controls} aria-hidden="true">
-          {(["minimize", "maximize", "close"] as const).map((control) => (
+        <span className={windowStyles.controls}>
+          {(["minimize", "maximize"] as const).map((control) => (
             <span
               key={control}
-              className={cx(windowStyles.control, control === "close" && windowStyles.close)}
+              className={windowStyles.control}
+              data-window-control={control}
+              aria-hidden="true"
             >
               <Glyph name={control} />
             </span>
           ))}
+          <a
+            href={`#${desktopIconsId}`}
+            aria-label={t.desktop.closeApp.replace("{app}", t.apps[app])}
+            className={cx(windowStyles.control, windowStyles.close)}
+            data-window-control="close"
+          >
+            <Glyph name="close" />
+          </a>
         </span>
       </header>
       <div

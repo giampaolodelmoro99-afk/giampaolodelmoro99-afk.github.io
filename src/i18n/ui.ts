@@ -17,6 +17,7 @@ const it = {
     maximize: "Ingrandisci",
     restore: "Ripristina",
     close: "Chiudi",
+    back: "Indietro",
   },
   windowMenu: {
     label: "Menu della finestra",
@@ -77,6 +78,7 @@ const en: UiStrings = {
     maximize: "Maximize",
     restore: "Restore",
     close: "Close",
+    back: "Back",
   },
   windowMenu: {
     label: "Window menu",

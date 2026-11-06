@@ -21,7 +21,9 @@ export function AppContent({ app, headingLevel }: AppContentProps) {
   if (app !== "about") {
     return (
       <>
-        <Heading className={styles.heading}>{t.apps[app]}</Heading>
+        <Heading className={styles.heading} tabIndex={-1}>
+          {t.apps[app]}
+        </Heading>
         <p className={styles.placeholder}>{t.desktop.placeholder}</p>
       </>
     );
@@ -35,7 +37,9 @@ export function AppContent({ app, headingLevel }: AppContentProps) {
 
   return (
     <>
-      <Heading className={styles.heading}>{personName}</Heading>
+      <Heading className={styles.heading} tabIndex={-1}>
+        {personName}
+      </Heading>
       <p>{t.person.jobTitle}</p>
       <p>{t.about.bio}</p>
       <Subheading className={styles.subheading}>{t.about.nextHeading}</Subheading>

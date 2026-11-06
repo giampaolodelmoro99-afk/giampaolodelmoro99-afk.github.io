@@ -110,9 +110,11 @@ for (const path of ["/", "/en/"]) {
         }).observe(eventTiming);
       });
       await openDesktop(page, path);
+      await page.getByRole("button", { name: /^(Chiudi|Close) About$/ }).tap();
+      await expect(page.locator("section[aria-labelledby]")).toHaveCount(0);
       await page.locator("[role=row]").nth(1).tap();
       await expect(page.locator("section[data-active=true]")).toHaveCount(1);
-      await expect(page.locator("section[aria-labelledby]")).toHaveCount(2);
+      await expect(page.locator("section[aria-labelledby]")).toHaveCount(1);
       const durations = await page.evaluate(() => window.interactions ?? []);
       const inp = Math.max(0, ...durations);
       testInfo.annotations.push({

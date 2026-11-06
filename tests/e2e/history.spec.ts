@@ -11,7 +11,7 @@ async function expectNoReload(page: Page) {
   expect(await page.evaluate(() => "__noReload" in window)).toBe(true);
 }
 
-test.describe("URL e history delle finestre", () => {
+test.describe("URL e history delle finestre", { tag: "@desktop" }, () => {
   test("aprire una finestra cambia URL, titolo e canonical; Indietro e Avanti la seguono", async ({
     page,
   }) => {
