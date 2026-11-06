@@ -6,6 +6,33 @@ Ogni fase si chiude con un tag `phase-NN` (che non fa partire il deploy). Le rel
 
 ## [Unreleased]
 
+## [phase-02b] - Fase 2B: routing, persistenza e modalità mobile
+
+### Aggiunto
+
+- Deep link per ogni finestra: route di layout che monta il desktop una volta sola; l'URL è quello della finestra attiva, con title, description e canonical che la seguono. Aprire o attivare una finestra aggiunge una voce alla history; chiudere o ridurre la assesta senza voci doppie. Indietro e Avanti portano in primo piano la finestra della voce senza chiudere le altre. Il cambio di lingua tiene le finestre (ADR-0021).
+- Persistenza del layout in `windows.v1` (finestre, posizione, dimensione, stato, ordine), ripristinata prima dello swap senza CLS: la finestra dell'URL resta davanti e nella posizione del prerender, le altre tornano dietro; sulla home About c'è sempre; Riaccendi ripristina, Riavvia azzera.
+- Modalità mobile (ADR-0007, ADR-0022): regola larghezza < 768 px, oppure altezza < 540 px con puntatore grossolano; home a griglia di 13 voci, app a schermo intero con barra del titolo da 48 px e focus sull'`h1`, pulsante e pannello «App aperte (n)» (compatto sotto i 360 px), Start a pannello; il passaggio tra le modalità non perde lo stato. «Indietro» nella barra è costruito ma non mostrato fino alla F3A.
+- Memoria del focus per finestra nel desktop; focus sul contenitore dei controlli durante Sposta e Ridimensiona da tastiera.
+- Componenti: varianti mobile di Window, TaskbarIconButton, DesktopIcons e StartButton; AppSwitcher e OpenApps (chunk su richiesta); token `--mobile-home-cell-height`, `--space-safe-top-edge`, `--popover-edge`, `--radius-round`.
+- ADR-0021 (URL, history e persistenza) e ADR-0022 (budget del chunk del desktop con la modalità mobile); sezione mobile in QA_CHECKLIST (§3.1 e §7).
+- Test: e2e di history, persistenza, storage ammesso, forced-colors e modalità mobile (tag `@desktop` e `@mobile` nei progetti di Playwright); test unitari di useUrlSync, persist, layoutMode, AppSwitcher, OpenApps e della modalità mobile di DesktopApp; regola dei test instabili in TESTING.md §10.
+
+### Modificato
+
+- React Router 8.5.1 senza alzare il budget del JS iniziale (120,56 kB su 124): `ScrollRestoration` tolta (nessuna chiave sessionStorage) e stub di build per il runtime della custom route discovery.
+- Budget del chunk del desktop da 77 a 82 kB (ADR-0022; misura 78,36 kB), con il job delle prestazioni verde (task 143 ms, INP 120 ms, CLS 0,00003).
+- L'`h1` sta nella finestra della route; i link di About sono link normali e cambiano l'URL.
+- La CI parte anche sui branch `chore/**` e `fix/**`.
+- Le pagine a 320 e 375 px passano alla modalità mobile (finisce il ripiego della 2A); riferimenti visivi rigenerati nel container.
+
+### Corretto
+
+- Test instabile `desktop.spec.ts:46`: la misura dell'area di lavoro aggiornava lo store dentro la callback del ResizeObserver («loop completed with undelivered notifications» in WebKit sotto carico); ora si misura al frame dopo, una volta sola.
+- La modalità di layout si rilegge anche su `resize`: con ridimensionamenti ravvicinati l'evento `change` della media query si perdeva (15 casi su 50 nel test di rotazione, 0 su 50 dopo).
+- Salvare il layout non sovrascrive più quello salvato aprendo un link diretto; con lo storage bloccato Riaccendi usa l'ultimo layout in memoria.
+- Rinvii di ADR-0016: Sposta e Ridimensiona senza menu in mobile, contorno e bordo in `forced-colors` per il selettore e il Radio, `touch-action` solo da 768 px.
+
 ## [phase-02a] - Fase 2A: window manager desktop
 
 ### Aggiunto

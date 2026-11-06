@@ -39,6 +39,7 @@ Le 28 pagine sono figlie di `routes/desktop-layout.tsx`, che monta il desktop un
 - **Nessuna navigazione** per Sposta, Ridimensiona, Ingrandisci e il ripristino del layout.
 - **Correzioni**: se un ritorno indietro arriva su una voce diversa da quella attesa (per esempio una voce sostituita nel frattempo), la voce si corregge con un replace. Le azioni chieste mentre il ritorno è in corso aspettano il suo arrivo.
 - **Ricarica**: dopo una ricarica la voce precedente, creata prima, resta nello stesso documento per Chrome, Firefox e WebKit; `navigate(-1)` non ricarica la pagina (`history.spec.ts`, «aprire, ricaricare e chiudere»).
+- **Ancora `#desktop-icons`**: nel guscio statico (mobile) «Chiudi» è un'ancora che nasconde la finestra con `:target`. Se l'idratazione arriva con quell'hash, il desktop parte senza la finestra della route e porta l'URL alla finestra attiva o alla home. Un cambio di solo hash (skip link, ancore) non è una navigazione: non riattiva finestre.
 - **Indietro e Avanti** (e i link): la finestra della voce va in primo piano, riaperta se era chiusa, senza chiudere le altre (D2).
   - Su `/` va in primo piano About se è aperta; altrimenti nessuna finestra è attiva e le finestre restano al loro posto.
   - Il focus va al corpo della finestra o alle icone; una finestra riaperta si annuncia.

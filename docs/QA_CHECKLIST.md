@@ -50,6 +50,9 @@ La modalità è mobile con larghezza < 768 px, oppure con altezza < 540 px e pun
 - [ ] **Indietro** (tasto o gesto del browser): torna alla schermata precedente senza chiudere l'app aperta; Avanti la riporta. Dopo una ricarica, chiudere un'app non ricarica la pagina.
 - [ ] **App aperte**: il pulsante mostra «App aperte (n)», sotto i 360 px icona e numero; con 0 app è disattivato. Il pannello elenca le app per ultimo uso, ogni riga si apre con un tocco e ha il suo Chiudi da 44 px; «Chiudi tutte» in fondo; Esc o Chiudi tornano al pulsante.
 - [ ] **Start a pannello**: occupa la larghezza meno 12 px sopra la taskbar, voci da 44 px; a 320×568 le app scorrono e il gruppo in basso (Pannello di controllo, Esegui…, Vista semplice, Spegni…) resta visibile.
+- [ ] **Testo al 200%** (impostazioni di Android o iOS) a 360, 375 e 450 px: Start e «App aperte (n)» entrano senza essere tagliati; sotto 22,5 em il pulsante mostra icona e numero.
+- [ ] **Notch in orizzontale** (iPhone o simulatore): titolo, Chiudi, «App aperte» e il testo non finiscono sotto il notch.
+- [ ] **Tastiera Bluetooth**: con un'app aperta, Shift+Tab dal titolo non va sulla home coperta; Canc nel pannello «App aperte» chiude la riga.
 - [ ] **Rotazione**: ruotare da verticale a orizzontale e ritorno non perde app, URL né scorrimento; allargando oltre 768 px (tablet, finestra del desktop) tornano le finestre sovrapposte nelle posizioni salvate.
 - [ ] **Senza JavaScript** (o prima dell'idratazione): le 13 voci sono link, «Chiudi» di About è un'ancora, la navigazione completa funziona.
 - [ ] Nessun menu contestuale con la pressione lunga; nessun errore in console.
