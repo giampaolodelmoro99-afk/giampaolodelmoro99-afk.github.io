@@ -19,7 +19,7 @@
 | React Router 8.5.1 senza alzare il budget                                        | fatto       | JS iniziale 120,56 kB su 124 con `ScrollRestoration` tolta e uno stub; terser non serve                 |
 | Regola dei test instabili (proprietario, in corso d'opera)                       | fatto       | TESTING.md §10 e skill `write-tests`                                                                    |
 | Budget del chunk del desktop                                                     | fatto       | divisione provata (0,06 kB), poi ADR-0022: 82 kB, con il job delle prestazioni verde                    |
-| QA su Android reale e NVDA                                                       | **da fare** | la fa Gianpaolo (QA_CHECKLIST §3.1 e §7)                                                                |
+| QA su Android reale                                                              | **da fare** | la fa Gianpaolo (QA_CHECKLIST §3.1 e §7); NVDA, VoiceOver e tastiera Bluetooth rinviati alla Fase 5     |
 
 ## 2. Cosa è andato bene
 
@@ -50,7 +50,7 @@
 - **Bloccante (a11y-auditor, ripreso dal code-reviewer)**: con un'app a schermo intero la griglia della home e, nel guscio, i 13 link restavano nell'ordine di Tab e nell'albero di accessibilità, coperti dalla finestra. Provato con due test che fallivano, poi corretto con `visibility: hidden` in mobile e con `:target` per l'ancora «Chiudi». La suite non lo vedeva perché nessun test controllava l'ordine di Tab con un'app aperta.
 - **Corretti**: nome accessibile del pulsante «App aperte» (WCAG 2.5.3: «App aperte: n» anche con 0; con «(n)» axe falliva a 320 px), safe-area orizzontale, soglia della versione compatta in `em` (22,5 em), annunci muti sotto il dialog modale (`data-live-announcer`), focus durante Sposta provato in un browser vero, memoria del focus dimenticata alla chiusura e controllo di focalizzabilità, focus sull'icona dell'app chiusa, chiusura del menu contestuale e annullamento del gesto del puntatore al cambio di modalità, ancora `#desktop-icons` all'avvio (con test), cambio di solo hash che riattivava About, chunk di «App aperte» non caricato (annuncio e focus, con e2e), bordo di riserva in `forced-colors` per le righe del pannello, viewport rimandato al passaggio a desktop, documentazione (CONTENT.md, ADR-0011, ADR-0021, ACCESSIBILITY.md).
 - **Non applicati**: suggerimenti sul testo (S1–S4 del content-reviewer: «la finestra {app}», uniformare «Sposta e ridimensiona»), da decidere in F3A con l'approvazione delle bozze; altezza dell'overlay su iPhone con home indicator, `line-clamp` delle etichette con testo ingrandito e feedback di pressione sulle icone al tocco (da vedere su un telefono: QA_CHECKLIST §3.1); animazione di entrata dopo una chiusura dal pannello; guard dello stub fail-open se `hydrated-router.js` si sposta (il test sugli export lo copre); test `@mobile` equivalenti per alcuni `@desktop`.
-- **Da confermare dal proprietario**: (1) i tag `@desktop` tolgono ai test di history, animazioni, CSP con Esegui e persistenza con link diretto i viewport sotto i 768 px e i progetti touch; in mobile restano i test `@mobile` (history Indietro/Avanti, persistenza, CSP con App aperte, rotazione), ma non un equivalente di ogni caso; (2) la regola dei test instabili (TESTING.md §10) è stata scritta su sua indicazione ma, essendo una regola sull'integrità dei test, CLAUDE.md prevede un ADR per le eccezioni: dire se serve un ADR breve.
+- **Decisioni del proprietario (06/11/2026)**: nessuna duplicazione dei test `@desktop` per il mobile, bastano i `@mobile` (ADR-0019); ADR breve per la regola dei test instabili (ADR-0023); testi alla F3A.
 
 ## 4. Metriche
 
@@ -89,11 +89,12 @@ Il TBT mobile raddoppia (da circa 35 a 70 ms) per il codice del layout e della p
 - ADR-0021: URL, history e persistenza del desktop (accettata).
 - ADR-0022: budget del chunk del desktop a 82 kB con la modalità mobile.
 - ADR-0003 e LEGAL.md §2: chiave `windows.v1`; nessuna chiave in sessionStorage.
-- TESTING.md §10: regola dei test instabili.
+- ADR-0023 e TESTING.md §10: regola dei test instabili.
+- ADR-0019: aggiornamento con i tag `@desktop` e `@mobile`.
 
 ## 7. Debito tecnico e rischi aperti
 
-- **QA su Android e con NVDA/VoiceOver**: a mano (vedi §5).
+- **QA su Android**: a mano (vedi §5). **NVDA, VoiceOver e tastiera Bluetooth**: rinviati alla fase di accessibilità (Fase 5), decisione del proprietario del 06/11/2026.
 - **Chunk del desktop**: 3,4 kB di margine dal budget di 82 kB; la F3A porta contenuti delle app in chunk loro.
 - **Più schede**: il layout salvato è l'ultimo che cambia (ADR-0021); accettato.
 - **«Indietro» nella barra mobile**: costruito e provato in story, non mostrato fino alle sottopagine dei progetti (F3A).
@@ -114,5 +115,5 @@ Il TBT mobile raddoppia (da circa 35 a 70 ms) per il codice del layout e della p
 ## 9. Azioni per la fase successiva
 
 - Push del branch e CI verde, poi merge e tag `phase-02b` (li fa Gianpaolo).
-- QA su Android reale (§3.1 e §7) e con NVDA sul focus durante Sposta.
+- QA su Android reale (§3.1 e §7). NVDA, VoiceOver e tastiera Bluetooth passano alla Fase 5.
 - F3A: contenuti delle app, testi da approvare, «Indietro» nelle sottopagine dei progetti, nuovo controllo del budget del desktop.

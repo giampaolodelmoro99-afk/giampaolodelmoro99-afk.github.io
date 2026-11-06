@@ -52,7 +52,7 @@ La modalità è mobile con larghezza < 768 px, oppure con altezza < 540 px e pun
 - [ ] **Start a pannello**: occupa la larghezza meno 12 px sopra la taskbar, voci da 44 px; a 320×568 le app scorrono e il gruppo in basso (Pannello di controllo, Esegui…, Vista semplice, Spegni…) resta visibile.
 - [ ] **Testo al 200%** (impostazioni di Android o iOS) a 360, 375 e 450 px: Start e «App aperte (n)» entrano senza essere tagliati; sotto 22,5 em il pulsante mostra icona e numero.
 - [ ] **Notch in orizzontale** (iPhone o simulatore): titolo, Chiudi, «App aperte» e il testo non finiscono sotto il notch.
-- [ ] **Tastiera Bluetooth**: con un'app aperta, Shift+Tab dal titolo non va sulla home coperta; Canc nel pannello «App aperte» chiude la riga.
+- [ ] **Tastiera Bluetooth** (rinviata alla fase di accessibilità, Fase 5, insieme a NVDA e VoiceOver; decisione del 06/11/2026): con un'app aperta, Shift+Tab dal titolo non va sulla home coperta; Canc nel pannello «App aperte» chiude la riga.
 - [ ] **Rotazione**: ruotare da verticale a orizzontale e ritorno non perde app, URL né scorrimento; allargando oltre 768 px (tablet, finestra del desktop) tornano le finestre sovrapposte nelle posizioni salvate.
 - [ ] **Senza JavaScript** (o prima dell'idratazione): le 13 voci sono link, «Chiudi» di About è un'ancora, la navigazione completa funziona.
 - [ ] Nessun menu contestuale con la pressione lunga; nessun errore in console.
@@ -61,7 +61,7 @@ La modalità è mobile con larghezza < 768 px, oppure con altezza < 540 px e pun
 
 - [ ] Tutto raggiungibile con Tab, Shift+Tab, frecce, Invio, Esc; focus sempre visibile.
 - [ ] Ordine del focus logico; nessuna trappola.
-- [ ] NVDA + Firefox (o VoiceOver + Safari): titoli, landmark, nomi dei controlli, annunci di finestre e form.
+- [ ] NVDA + Firefox (o VoiceOver + Safari): titoli, landmark, nomi dei controlli, annunci di finestre e form. **Rinviata alla fase di accessibilità (Fase 5)**, compresi il focus durante Sposta (`role="application"`) e il pannello «App aperte».
 - [ ] Dalla F2A: le finestre si leggono in modalità lettura (region con il nome del titolo); annunci di apertura, chiusura, riduzione e spostamento; il selettore legge la finestra scelta; Esegui legge suggerimenti ed errore.
 
 ## 5. Movimento e contrasto

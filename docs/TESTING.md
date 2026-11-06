@@ -133,7 +133,7 @@ npm run lhci:mobile:strict && npm run lhci:desktop:strict   # chiusura di fase e
 - Gli e2e aprono le pagine con `openPage()`, che attende `html[data-hydrated]`. Senza, un clic prima dell'idratazione diventa una navigazione completa.
 - Niente `waitForTimeout`: si usano asserzioni con attesa (`toHaveURL`, `toBeVisible`).
 - In CI c'è 1 retry: un test che passa solo al retry compare come «flaky» nel report e non fa fallire il job.
-- **Test instabili: ripetizioni locali al massimo 50** (`--repeat-each=50`, nel container, con `--retries=0`).
+- **Test instabili: ripetizioni locali al massimo 50** (ADR-0023) (`--repeat-each=50`, nel container, con `--retries=0`).
   - Se in 50 ripetizioni non fallisce, o fallisce senza una causa riproducibile, il caso si annota nella retrospettiva della fase con la traccia disponibile (`--trace=retain-on-failure`) e si va avanti: la CI con i retry lo segnala come flaky.
   - Si indaga oltre solo se fallisce più spesso di 1 volta su 50, o se il difetto è visibile anche per un utente reale (in quel caso si corregge il codice, non il test).
   - Mai `skip`, attese fisse o asserzioni indebolite per far passare un caso instabile (CLAUDE.md, «Integrità dei test»).

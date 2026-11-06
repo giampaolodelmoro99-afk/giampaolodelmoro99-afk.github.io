@@ -84,7 +84,7 @@ Piano: [phase-02b-plan.md](phases/phase-02b-plan.md).
 - [x] Rinvii di ADR-0016 e memoria del focus per finestra (ADR-0016 aggiornata)
 - [x] Test instabile `desktop.spec.ts:46`: causa nel codice (ResizeObserver), corretto; CI anche su `chore/**` e `fix/**`; React Router 8.5.1 nel budget senza alzarlo (stub della route discovery, `ScrollRestoration` tolta)
 - [x] Regola dei test instabili: al massimo 50 ripetizioni locali (TESTING.md §10)
-- [ ] QA su Android reale con `preview --host` (QA_CHECKLIST.md §3.1 e §7); verifica a mano con NVDA del focus durante Sposta
+- [ ] QA su Android reale con `preview --host` (QA_CHECKLIST.md §3.1 e §7). NVDA, VoiceOver e tastiera Bluetooth (focus durante Sposta, «App aperte») sono rinviati alla Fase 5 (audit di accessibilità)
 - [ ] CI verde su GitHub per `phase/02b-routing-mobile`, merge e tag `phase-02b`
 
 ## 3A. App di contenuto
@@ -131,7 +131,7 @@ Piano: [phase-02b-plan.md](phases/phase-02b-plan.md).
 
 ## 5. Qualità
 
-- [ ] Audit di accessibilità completo (a11y-auditor + manuale con screen reader)
+- [ ] Audit di accessibilità completo (a11y-auditor + manuale con screen reader). Include i rinvii della 2B: NVDA sul focus durante Sposta, VoiceOver e TalkBack su «App aperte», tastiera Bluetooth su telefono, testo al 200% e notch in orizzontale
 - [ ] SEO e crawler AI: sitemap con hreflang, robots.txt, llms.txt e llms-full.txt IT/EN, Open Graph generate in build
 - [ ] Lighthouse nelle soglie di ADR-0018 su tutte le route IT/EN
 - [ ] size-limit con budget per chunk di ogni app

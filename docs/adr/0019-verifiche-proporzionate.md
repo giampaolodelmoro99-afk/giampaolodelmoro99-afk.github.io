@@ -44,3 +44,9 @@ Restano invariati: test unitari, lint, typecheck, coverage 80%, axe, CSP, diviet
 - `tests/storybook/stories.ts`, `tests/storybook/components.visual.spec.ts`, `package.json` (`test:e2e:chromium`)
 - TESTING.md §4 e §6, PERFORMANCE_SEO.md §1, skill `close-phase`, `win95-component`, `write-tests`, `update-visual-snapshots`
 - ADR-0018
+
+## Aggiornamento della 2B (06/11/2026)
+
+- I test e2e che presuppongono le finestre sovrapposte hanno il tag `@desktop` e girano solo con il desktop largo (da 768 px, progetti non touch); quelli della modalità mobile hanno il tag `@mobile` (`playwright.config.ts`).
+- Decisione del proprietario: **nessuna duplicazione** dei test `@desktop` per la modalità mobile; bastano i test `@mobile` (history Indietro e Avanti, persistenza, CSP con App aperte, rotazione, App aperte, axe). Ogni nuovo comportamento mobile ha il suo test `@mobile`.
+- Test instabili: ADR-0023.
