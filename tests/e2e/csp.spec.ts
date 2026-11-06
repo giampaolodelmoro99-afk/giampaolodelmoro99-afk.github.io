@@ -80,7 +80,7 @@ test.describe("CSP del sito sulla home con il desktop interattivo (ADR-0015)", (
       const violations = await recordViolations(page);
       await page.goto("/");
       expect(await page.locator("[style]").count()).toBe(0);
-      await expect(page.locator("[role=grid]")).toBeVisible();
+      await expect(page.locator("[role=grid]")).toBeAttached();
 
       const cell = page.getByRole("gridcell", { name: "CV" });
       expect(await cell.evaluate((element) => getComputedStyle(element).display)).toBe("contents");
@@ -114,7 +114,7 @@ test.describe("CSP del sito sulla home con il desktop interattivo (ADR-0015)", (
     async ({ page }) => {
       const violations = await recordViolations(page);
       await page.goto("/");
-      await expect(page.locator("[role=grid]")).toBeVisible();
+      await expect(page.locator("[role=grid]")).toBeAttached();
 
       await page.getByRole("button", { name: "Start" }).click();
       await page.getByRole("menuitem", { name: "Esegui…" }).click();
@@ -151,7 +151,7 @@ test.describe("CSP del sito sulla home con il desktop interattivo (ADR-0015)", (
     async ({ page }) => {
       const violations = await recordViolations(page);
       await page.goto("/");
-      await expect(page.locator("[role=grid]")).toBeVisible();
+      await expect(page.locator("[role=grid]")).toBeAttached();
       await page.getByRole("button", { name: /^App aperte/ }).click();
       await expect(page.getByRole("dialog", { name: "App aperte (1)" })).toBeVisible();
       await page.keyboard.press("Escape");

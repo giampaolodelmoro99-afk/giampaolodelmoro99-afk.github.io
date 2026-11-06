@@ -51,6 +51,7 @@ export function useWindowGestures({
   const [resizing, setResizing] = useState<AppId | null>(null);
   const gesture = useRef<Gesture | null>(null);
   const frame = useRef(0);
+  const abort = useRef<(() => void) | null>(null);
 
   const show = useCallback((geometry: Geometry | null) => {
     cancelAnimationFrame(frame.current);
@@ -113,6 +114,7 @@ export function useWindowGestures({
         if (place && active?.moved) onPlace(active.id, active.current);
         end();
       };
+      abort.current = () => finish(false);
       const onUp = () => finish(true);
       const onCancel = () => finish(false);
       const onKey = (key: KeyboardEvent) => {
@@ -129,5 +131,7 @@ export function useWindowGestures({
     [workspace, viewport, isEnabled, onPlace, end, show],
   );
 
-  return { outline, resizing, start };
+  const cancel = useCallback(() => abort.current?.(), []);
+
+  return { outline, resizing, start, cancel };
 }

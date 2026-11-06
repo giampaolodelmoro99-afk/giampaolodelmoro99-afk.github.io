@@ -95,7 +95,7 @@
   text-shadow: var(--text-etch);
 }
 
-@media (width < 360px) {
+@media (width < 22.5em) {
   .labelled .label {
     display: none;
   }

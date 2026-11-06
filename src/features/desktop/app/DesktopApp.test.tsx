@@ -705,7 +705,7 @@ describe("DesktopApp in modalità mobile", () => {
     expect(screen.queryByRole("button", { name: "Menu della finestra" })).toBeNull();
     await userEvent.setup().click(within(about).getByRole("button", { name: "Chiudi About" }));
     expect(screen.getAllByRole("row")).toHaveLength(13);
-    expect(screen.getByRole("button", { name: "App aperte: nessuna" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "App aperte: 0" })).toHaveAttribute(
       "aria-disabled",
       "true",
     );
@@ -745,7 +745,7 @@ describe("DesktopApp in modalità mobile", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(screen.queryByRole("region")).toBeNull();
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "App aperte: nessuna" })).toHaveFocus(),
+      expect(screen.getByRole("button", { name: "App aperte: 0" })).toHaveFocus(),
     );
   });
 
@@ -772,5 +772,58 @@ describe("DesktopApp in modalità mobile", () => {
     expect(screen.getAllByRole("row")).toHaveLength(11);
     media.setDesktop(false);
     expect(await screen.findByRole("button", { name: "App aperte: 1" })).toBeInTheDocument();
+  });
+
+  it("la regione degli annunci resta leggibile mentre App aperte, un dialog modale, è aperto", async () => {
+    stubMobile();
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("button", { name: "App aperte: 2" }));
+    const panel = await screen.findByRole("dialog", { name: "App aperte (2)" });
+    await user.click(within(panel).getByRole("button", { name: "Chiudi CV" }));
+    const live = screen.getByText("CV: finestra chiusa");
+    const region = live.closest("[aria-live]");
+    expect(region).toHaveAttribute("data-live-announcer");
+    expect(region?.closest("[aria-hidden=true]")).toBeNull();
+  });
+
+  it("l'ancora #desktop-icons all'avvio parte senza la finestra della route e porta l'URL alla home", async () => {
+    const { pathname } = renderDesktop("/cv/#desktop-icons");
+    await waitFor(() => expect(pathname()).toBe("/"));
+    expect(screen.queryByRole("region")).toBeNull();
+  });
+
+  it("chiudendo l'ultima finestra il focus va all'icona di quell'app", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/cv/");
+    await user.click(screen.getByRole("button", { name: "Chiudi" }));
+    await waitFor(() => expect(screen.getByRole("row", { name: "CV" })).toHaveFocus());
+  });
+
+  it("riaprendo un'app chiusa il focus va al corpo, non all'elemento ricordato di prima", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    act(() => screen.getByRole("link", { name: "Leggere il CV" }).focus());
+    await user.click(screen.getByRole("button", { name: "Chiudi" }));
+    await user.click(await screen.findByRole("row", { name: "About" }));
+    await user.keyboard("{Enter}");
+    await waitFor(() => expect(document.getElementById("window-about-body")).toHaveFocus());
+  });
+
+  it("passando a mobile si chiude il menu contestuale del desktop", async () => {
+    const media = stubMobile();
+    media.setDesktop(true);
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: screen.getByRole("main"),
+      coords: { clientX: 400, clientY: 300 },
+    });
+    await screen.findByRole("menu", { name: "Desktop" });
+    media.setDesktop(false);
+    await waitFor(() => expect(screen.queryByRole("menu", { name: "Desktop" })).toBeNull());
   });
 });

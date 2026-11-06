@@ -2,6 +2,8 @@ import type { AppId } from "../../routes/routeMap";
 
 export const desktopIconsId = "desktop-icons";
 
+export const openAppsButtonId = "taskbar-open-apps";
+
 export function windowTitleId(app: AppId): string {
   return `window-${app}-title`;
 }
@@ -38,4 +40,3 @@ export function focusTarget(key: FocusKey): HTMLElement | null {
   }
   return document.querySelector<HTMLElement>(`[data-focus-key="${key}"]`);
 }
-export const openAppsButtonId = "taskbar-open-apps";

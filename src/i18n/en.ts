@@ -121,7 +121,6 @@ export const en: Dictionary = {
     windowsButtonEmpty: "Open windows: none",
     openApps: "Open apps ({count})",
     openAppsName: "Open apps: {count}",
-    openAppsEmpty: "Open apps: none",
     closeApp: "Close {app}",
     closeAllApps: "Close all",
     altKey: "Alt+",

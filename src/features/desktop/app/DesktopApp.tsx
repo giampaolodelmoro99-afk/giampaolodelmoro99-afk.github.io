@@ -314,7 +314,9 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
   const layoutMode = useSyncExternalStore(subscribeLayoutMode, currentLayoutMode, desktopMode);
   const isMobile = layoutMode === "mobile";
   usePrefetchMobile(isMobile);
+  const latestViewport = useRef<Viewport | null>(null);
   const [setDesktopViewport] = useState(() => (viewport: Viewport) => {
+    latestViewport.current = viewport;
     if (isDesktopLayout()) store.getState().setViewport(viewport);
   });
   const { workspaceRef, metricsRef } = useWorkspaceViewport(setDesktopViewport);
@@ -342,14 +344,14 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
     isEnabled: isDesktopLayout,
     onPlace: store.getState().place,
   });
-  const [focusRequest, setFocusRequest] = useState<{ target: string } | null>(null);
+  const [focusRequest, setFocusRequest] = useState<{ target: string; row?: AppId } | null>(null);
 
   const [whenIconsReady] = useState(() =>
     boot === "first" ? onReady : () => setFocusRequest({ target: bootFocus(store) }),
   );
   const iconsReady = useIconsReady(whenIconsReady);
 
-  const recallFocus = useFocusMemory();
+  const { recall: recallFocus, forget: forgetFocus } = useFocusMemory();
 
   const moveFocus = useEffectEvent((onlyIfLost: boolean) => {
     if (!focusRequest) return;
@@ -357,8 +359,13 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
     const element = document.getElementById(focusRequest.target);
     const heading = isDesktopLayout() ? null : element?.querySelector<HTMLElement>("h1, h2");
     const remembered = isDesktopLayout() ? recallFocus(focusRequest.target) : null;
+    const row = focusRequest.row
+      ? element?.querySelector<HTMLElement>(
+          `[role=row][data-key="${CSS.escape(focusRequest.row)}"]`,
+        )
+      : null;
     const focusable = element?.matches("[role=grid]")
-      ? element.querySelector<HTMLElement>("[role=row]")
+      ? (row ?? element.querySelector<HTMLElement>("[role=row]"))
       : (remembered ?? heading ?? element);
     focusable?.focus();
   });
@@ -427,7 +434,7 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
   });
 
   const settleAfterBoot = useEffectEvent(() => {
-    if (boot !== "first") settle(store.getState().activeId);
+    if (boot !== "first" || hash === `#${desktopIconsId}`) settle(store.getState().activeId);
   });
 
   useEffect(() => {
@@ -463,9 +470,10 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
     animateOut(id, "close", () => {
       close(id);
       announce(appName(id, t.desktop.announce.closed));
+      forgetFocus(windowBodyId(id));
       const next = store.getState().activeId;
       settle(next);
-      setFocusRequest({ target: next ? windowBodyId(next) : desktopIconsId });
+      setFocusRequest(next ? { target: windowBodyId(next) } : { target: desktopIconsId, row: id });
     });
   };
 
@@ -512,9 +520,14 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
 
   const followLayout = useEffectEvent((mode: typeof layoutMode) => {
     if (keyboard.gesture) keyboard.cancel();
+    gestures.cancel();
+    setContextMenu(null);
     setSwitcher(null);
     setMenuOpenFor(null);
-    if (mode === "desktop") setAppSwitcherOpen(false);
+    if (mode === "desktop") {
+      setAppSwitcherOpen(false);
+      if (latestViewport.current) store.getState().setViewport(latestViewport.current);
+    }
     const focused = document.activeElement;
     const isHidden =
       !(focused instanceof HTMLElement) ||
@@ -566,10 +579,10 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
     };
   });
 
-  const dialogFailed = (setOpen: (isOpen: boolean) => void) => {
+  const dialogFailed = (setOpen: (isOpen: boolean) => void, restoreFocus = focusStart) => {
     setOpen(false);
     announce(t.desktop.loadFailed);
-    focusStart();
+    restoreFocus();
   };
 
   const confirmShutdown = (choice: ShutdownChoice) => {
@@ -762,7 +775,7 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
           </ContextMenu>
         )}
         {isMobile && isAppSwitcherOpen && (
-          <ChunkBoundary onError={() => dialogFailed(setAppSwitcherOpen)}>
+          <ChunkBoundary onError={() => dialogFailed(setAppSwitcherOpen, focusOpenAppsButton)}>
             <Suspense fallback={null}>
               <OpenApps
                 store={store}
@@ -775,10 +788,14 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
                   focusOpenAppsButton();
                 }}
                 onClosed={(id) => {
+                  forgetFocus(windowBodyId(id));
                   announce(appName(id, t.desktop.announce.closed));
                   settle(store.getState().activeId);
                 }}
-                onAllClosed={() => settle(null)}
+                onAllClosed={() => {
+                  forgetFocus();
+                  settle(null);
+                }}
               />
             </Suspense>
           </ChunkBoundary>
@@ -845,11 +862,7 @@ function DesktopScreen({ onReady, boot, memory, onLayout, onPowerChange }: Deskt
           <TaskbarIconButton
             id={openAppsButtonId}
             icon="windows"
-            aria-label={
-              recent.length === 0
-                ? t.desktop.openAppsEmpty
-                : t.desktop.openAppsName.replace("{count}", String(recent.length))
-            }
+            aria-label={t.desktop.openAppsName.replace("{count}", String(recent.length))}
             label={t.desktop.openApps.replace("{count}", String(recent.length))}
             count={recent.length}
             isUnavailable={recent.length === 0}

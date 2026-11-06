@@ -7,7 +7,12 @@ export function useAnnouncer() {
     setMessage((current) => ({ text, count: current.count + 1 }));
   }, []);
   const region = (
-    <div aria-live="polite" aria-atomic="true" className={styles.visuallyHidden}>
+    <div
+      aria-live="polite"
+      aria-atomic="true"
+      data-live-announcer=""
+      className={styles.visuallyHidden}
+    >
       <span key={message.count}>{message.text}</span>
     </div>
   );

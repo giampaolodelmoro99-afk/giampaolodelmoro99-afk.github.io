@@ -24,7 +24,7 @@ for (const path of ["/", "/en/projects/"]) {
         }).observe({ type: "layout-shift", buffered: true });
       });
       await page.goto(path);
-      await expect(page.locator("[role=grid]")).toBeVisible();
+      await expect(page.locator("[role=grid]")).toBeAttached();
       await page.evaluate(() => document.fonts.ready);
       // Lo swap non sposta nulla. Resta il cambio di font delle etichette (Pixel
       // Operator regular non è in preload): da 0,00001 a 0,00015, contro un budget
@@ -60,7 +60,7 @@ for (const path of ["/", "/en/"]) {
       });
 
       await openPage(page, path);
-      await expect(page.locator("[role=grid]")).toBeVisible();
+      await expect(page.locator("[role=grid]")).toBeAttached();
       const swappedAt = await page.evaluate(() => Math.round(performance.now()));
       const timing: Timing = await page.evaluate((swapped) => {
         const [navigation] = performance.getEntriesByType("navigation");

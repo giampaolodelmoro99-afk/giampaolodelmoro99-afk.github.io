@@ -247,7 +247,9 @@
   --easing-standard: steps(4, end);
 
   --space-safe-top: max(var(--space-5), env(safe-area-inset-top));
-  --space-safe-top-edge: env(safe-area-inset-top, 0);
+  --space-safe-top-edge: env(safe-area-inset-top, 0px);
+  --space-safe-left-edge: env(safe-area-inset-left, 0px);
+  --space-safe-right-edge: env(safe-area-inset-right, 0px);
   --popover-edge: 12px;
   --space-safe-bottom: max(var(--space-5), env(safe-area-inset-bottom));
   --space-gutter: max(var(--space-4), env(safe-area-inset-left), env(safe-area-inset-right));

@@ -93,7 +93,7 @@ export async function openPage(page: Page, path: string): Promise<Response | nul
 
 export async function openDesktop(page: Page, path = "/"): Promise<Response | null> {
   const response = await openPage(page, path);
-  await expect(page.locator("[role=grid]")).toBeVisible();
+  await expect(page.locator("[role=grid]")).toBeAttached();
   return response;
 }
 

@@ -286,6 +286,10 @@
     padding-block-start: var(--space-safe-top);
   }
 
+  .workspace:has(> .window[data-active="true"]):not(:has(.icons:target)) > .iconArea {
+    visibility: hidden;
+  }
+
   .workspace .icons {
     --desktop-icon-cell: 100%;
     --desktop-icon-size: var(--icon-size-xl);
@@ -300,9 +304,17 @@
   }
 
   .workspace > .window {
+    --_inset-start: calc(
+      var(--bevel-width) + var(--border-width-hairline) + var(--space-safe-left-edge)
+    );
+    --_inset-end: calc(
+      var(--bevel-width) + var(--border-width-hairline) + var(--space-safe-right-edge)
+    );
+
     position: absolute;
     inset: var(--space-0);
     padding-block-start: var(--space-safe-top-edge);
+    padding-inline: var(--_inset-start) var(--_inset-end);
     background: var(--color-surface);
   }
 
@@ -315,11 +327,13 @@
   }
 
   .startPopover {
-    inline-size: calc(100vw - var(--popover-edge) * 2);
+    inline-size: calc(
+      100vw - var(--popover-edge) * 2 - var(--space-safe-left-edge) - var(--space-safe-right-edge)
+    );
   }
 }
 
-@media (width < 360px) {
+@media (width < 22.5em) {
   .workspace .icons {
     --desktop-icon-size: var(--icon-size-lg);
 

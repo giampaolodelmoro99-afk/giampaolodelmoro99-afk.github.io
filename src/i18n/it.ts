@@ -119,7 +119,6 @@ export const it = {
     windowsButtonEmpty: "Finestre aperte: nessuna",
     openApps: "App aperte ({count})",
     openAppsName: "App aperte: {count}",
-    openAppsEmpty: "App aperte: nessuna",
     closeApp: "Chiudi {app}",
     closeAllApps: "Chiudi tutte",
     altKey: "Alt+",

@@ -170,7 +170,7 @@ test.describe("desktop dopo l'idratazione", () => {
     await openDesktop(page);
     await page.getByRole("button", { name: "Start" }).click();
     await page.getByRole("menuitem", { name: "Esegui…" }).click();
-    await expect(page.locator("main [aria-live=polite]")).toHaveText(
+    await expect(page.locator("[aria-live=polite]")).toHaveText(
       "Non riesco ad aprire questa finestra: ricarica la pagina.",
     );
     await expect(page.getByRole("button", { name: "Start" })).toBeFocused();

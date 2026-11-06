@@ -9,6 +9,7 @@
   z-index: var(--z-overlay);
   display: flex;
   padding-block-start: var(--space-safe-top-edge);
+  padding-inline: var(--space-safe-left-edge) var(--space-safe-right-edge);
   background: var(--color-surface);
 }
 
@@ -94,4 +95,10 @@
 .closeAll {
   inline-size: 100%;
   min-block-size: var(--touch-target-min);
+}
+
+@media (forced-colors: active) {
+  .row {
+    border: var(--forced-border-width) solid var(--color-text);
+  }
 }

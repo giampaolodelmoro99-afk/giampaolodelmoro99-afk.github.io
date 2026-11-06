@@ -20,7 +20,7 @@ export function useUrlSync(onRoute: (routeKey: RouteKey) => void): UrlSync {
   const navigate = useNavigate();
   const location = useLocation();
   const routeKey = routeKeyFromPathname(location.pathname) ?? "desktop";
-  const lastEntry = useRef(location.key);
+  const last = useRef({ key: location.key, pathname: location.pathname, hash: location.hash });
   const pending = useRef<Pending | null>(null);
   const queued = useRef<(() => void) | null>(null);
   const latest = useRef<{ location: Location; routeKey: RouteKey }>({ location, routeKey });
@@ -30,8 +30,10 @@ export function useUrlSync(onRoute: (routeKey: RouteKey) => void): UrlSync {
   });
 
   const arrive = useEffectEvent((entry: string) => {
-    if (entry === lastEntry.current) return;
-    lastEntry.current = entry;
+    const before = last.current;
+    if (entry === before.key) return;
+    last.current = { key: entry, pathname: location.pathname, hash: location.hash };
+    if (location.pathname === before.pathname && location.hash !== before.hash) return;
     const current = location;
     const key = routeKey;
     const wanted = pending.current;

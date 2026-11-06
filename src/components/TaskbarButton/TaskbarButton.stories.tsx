@@ -77,7 +77,7 @@ export const AppAperte: Story = {
       />
       <TaskbarIconButton
         icon="windows"
-        aria-label="App aperte: nessuna"
+        aria-label="App aperte: 0"
         label="App aperte (0)"
         count={0}
         isUnavailable

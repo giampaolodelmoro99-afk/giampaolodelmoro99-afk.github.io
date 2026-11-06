@@ -39,7 +39,7 @@ test.describe("modalità mobile", { tag: "@mobile" }, () => {
       expect(cell?.height).toBeGreaterThanOrEqual(44);
     }
     await expect(openApps(page)).toHaveAttribute("aria-disabled", "true");
-    await expect(openApps(page)).toHaveAccessibleName("App aperte: nessuna");
+    await expect(openApps(page)).toHaveAccessibleName("App aperte: 0");
   });
 
   test("una voce apre l'app a schermo intero con il focus sull'h1, senza ricaricare", async ({
@@ -103,7 +103,7 @@ test.describe("modalità mobile", { tag: "@mobile" }, () => {
     await expect(page.getByRole("dialog")).toBeHidden();
     await expect(page).toHaveURL(/:\d+\/$/);
     await expect(openApps(page)).toBeFocused();
-    await expect(openApps(page)).toHaveAccessibleName("App aperte: nessuna");
+    await expect(openApps(page)).toHaveAccessibleName("App aperte: 0");
   });
 
   test("Alt+W apre App aperte, Esc lo chiude e riporta il focus; Alt+Spazio non apre menu", async ({
@@ -177,5 +177,55 @@ test.describe("modalità mobile", { tag: "@mobile" }, () => {
     await openDesktop(page, "/cv/");
     await expect(page.getByRole("region", { name: "CV" })).toBeVisible();
     await expect(openApps(page)).toHaveAccessibleName("App aperte: 3");
+  });
+
+  test("con un'app a schermo intero la home coperta non è raggiungibile con Tab né dal lettore", async ({
+    page,
+  }) => {
+    await openDesktop(page, "/");
+    const close = page.getByRole("button", { name: "Chiudi About" });
+    await close.focus();
+    await page.keyboard.press("Shift+Tab");
+    const focused = await page.evaluate(() => document.activeElement?.getAttribute("role"));
+    expect(focused).not.toBe("row");
+    await expect(page.getByRole("row")).toHaveCount(0);
+    await closeAbout(page);
+    await expect(page.getByRole("row")).toHaveCount(13);
+  });
+
+  test("se il chunk di App aperte non si carica l'app resta usabile, lo annuncia e il focus torna al pulsante", async ({
+    page,
+    consoleErrors,
+  }) => {
+    await page.route(/\/assets\/OpenApps-[^/]+\.js$/, (route) => route.abort());
+    await openDesktop(page, "/");
+    await openApps(page).click();
+    await expect(page.locator("[aria-live=polite]")).toHaveText(
+      "Non riesco ad aprire questa finestra: ricarica la pagina.",
+    );
+    await expect(openApps(page)).toBeFocused();
+    await expect(page.getByRole("region", { name: "About" })).toBeVisible();
+    const expected = /OpenApps|net::ERR_FAILED|Importing a module script failed|JSHandle@object/;
+    expect(consoleErrors.some((error) => expected.test(error))).toBe(true);
+    consoleErrors.splice(
+      0,
+      consoleErrors.length,
+      ...consoleErrors.filter((error) => !expected.test(error)),
+    );
+  });
+
+  test("home vuota, App aperte e app a schermo intero senza violazioni axe", async ({
+    page,
+    expectNoAxeViolations,
+  }) => {
+    await openDesktop(page, "/");
+    await expectNoAxeViolations();
+    await closeAbout(page);
+    await expectNoAxeViolations();
+    await page.getByRole("row", { name: "CV" }).click();
+    await expect(page.getByRole("heading", { level: 1, name: "CV" })).toBeFocused();
+    await openApps(page).click();
+    await expect(page.getByRole("dialog", { name: "App aperte (1)" })).toBeVisible();
+    await expectNoAxeViolations();
   });
 });

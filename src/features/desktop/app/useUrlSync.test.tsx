@@ -126,4 +126,13 @@ describe("useUrlSync", () => {
     expect(pathname()).toBe("/cv/");
     expect(router.state.location.state).toEqual({ back: "/" });
   });
+
+  it("un cambio di solo hash (skip link, ancore) non richiama onRoute", async () => {
+    const { router, onRoute } = setup("/");
+    await run(() => router.navigate("/#desktop-icons"));
+    await run(() => router.navigate("/#window-about-body"));
+    expect(onRoute).not.toHaveBeenCalled();
+    await run(() => router.navigate("/cv/"));
+    expect(onRoute).toHaveBeenLastCalledWith("cv");
+  });
 });

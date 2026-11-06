@@ -65,7 +65,7 @@ test.describe("URL e history delle finestre", { tag: "@desktop" }, () => {
     await projects.getByRole("button", { name: "Chiudi" }).click();
     await expect(page).toHaveURL(/\/$/);
     await expect(page).toHaveTitle("Gianpaolo Del Moro · Full Stack Developer");
-    await expect(page.getByRole("row", { name: "About" })).toBeFocused();
+    await expect(page.getByRole("row", { name: "Progetti", exact: true })).toBeFocused();
     await page.goBack();
     await expect(page).toHaveURL("about:blank");
   });
@@ -94,7 +94,7 @@ test.describe("URL e history delle finestre", { tag: "@desktop" }, () => {
     await page.getByRole("row", { name: "Progetti", exact: true }).dblclick();
     await expect(page).toHaveURL(/\/progetti\/$/);
     await page.reload();
-    await expect(page.locator("[role=grid]")).toBeVisible();
+    await expect(page.locator("[role=grid]")).toBeAttached();
     await markNoReload(page);
     let loads = 0;
     page.on("load", () => {

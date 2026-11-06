@@ -18,10 +18,18 @@ export function useFocusMemory() {
     return () => document.removeEventListener("focusin", remember);
   }, []);
 
-  return (bodyId: string): HTMLElement | null => {
+  const recall = (bodyId: string): HTMLElement | null => {
     const index = memory.current.get(bodyId);
     if (index === undefined) return null;
     const body = document.getElementById(bodyId);
-    return body?.querySelectorAll<HTMLElement>(focusable)[index] ?? null;
+    const element = body?.querySelectorAll<HTMLElement>(focusable)[index] ?? null;
+    return element?.matches(":disabled") ? null : element;
   };
+
+  const forget = (bodyId?: string) => {
+    if (bodyId === undefined) memory.current.clear();
+    else memory.current.delete(bodyId);
+  };
+
+  return { recall, forget };
 }

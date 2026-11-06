@@ -129,6 +129,9 @@ test.describe("finestre: trascinamento", () => {
     await page.keyboard.press("Enter");
     await expect(page.getByRole("menuitem", { name: "Sposta" })).toBeFocused();
     await page.keyboard.press("Enter");
+    await expect(
+      page.getByRole("application", { name: "Sposta o ridimensiona About" }),
+    ).toBeFocused();
     await page.keyboard.press("ArrowRight");
     await page.keyboard.press("Shift+ArrowDown");
     await expect(page.locator("[aria-hidden=true][style*='--outline-x']")).toBeVisible();
