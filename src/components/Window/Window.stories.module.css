@@ -8,3 +8,14 @@
 .small {
   max-inline-size: var(--dialog-width);
 }
+
+.mobile {
+  --titlebar-height: var(--titlebar-height-touch);
+  --titlebar-button-width: var(--titlebar-button-touch);
+  --titlebar-button-height: var(--titlebar-button-touch);
+  --target-min: var(--touch-target-min);
+
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: var(--bp-sm);
+}

@@ -5,7 +5,7 @@ import { WindowMenu, type WindowMenuAction } from "../../../components/WindowMen
 import { cx } from "../../../components/cx";
 import { useT } from "../../../i18n";
 import type { AppId } from "../../../routes/routeMap";
-import type { Edge, WindowState } from "../../../stores/desktop";
+import type { Edge, LayoutMode, WindowState } from "../../../stores/desktop";
 import { appDefinition } from "../apps";
 import { AppContent, type HeadingLevel } from "../content/AppContent";
 import styles from "../Desktop.module.css";
@@ -15,6 +15,7 @@ export type WindowExit = "close" | "minimize";
 
 export type DesktopWindowProps = {
   window: WindowState;
+  layoutMode: LayoutMode;
   animateIn: boolean;
   exit: WindowExit | null;
   onExited: () => void;
@@ -34,6 +35,7 @@ export type DesktopWindowProps = {
 
 export function DesktopWindow({
   window,
+  layoutMode,
   animateIn,
   exit,
   onExited,
@@ -56,6 +58,7 @@ export function DesktopWindow({
   const { icon, variant } = appDefinition(id);
   const [titleBar, setTitleBar] = useState<HTMLElement | null>(null);
   const [enters] = useState(animateIn);
+  const isMobile = layoutMode === "mobile";
 
   useEffect(() => {
     const element = frame.current;
@@ -81,7 +84,7 @@ export function DesktopWindow({
   }, [exit, onExited]);
 
   useEffect(() => {
-    if (!titleBar) return undefined;
+    if (!titleBar || isMobile) return undefined;
     const onButton = (event: Event) =>
       event.target instanceof Element && event.target.closest("button") !== null;
     const onPointerDown = (event: PointerEvent) => {
@@ -97,7 +100,7 @@ export function DesktopWindow({
       titleBar.removeEventListener("pointerdown", onPointerDown);
       titleBar.removeEventListener("dblclick", onDoubleClick);
     };
-  }, [titleBar, maximized, id, onGestureStart, onToggleMaximize]);
+  }, [titleBar, isMobile, maximized, id, onGestureStart, onToggleMaximize]);
 
   const placement = geometry
     ? {
@@ -112,37 +115,42 @@ export function DesktopWindow({
     <Window
       title={t.apps[id]}
       titleId={windowTitleId(id)}
-      icon={icon}
+      {...(isMobile ? {} : { icon })}
       variant={variant}
       isActive={isActive}
       isMaximized={maximized}
       isBodyInert={!isActive || exit !== null}
       onActivate={() => onActivate(id)}
-      onMinimize={() => onMinimize(id)}
-      onToggleMaximize={() => onToggleMaximize(id)}
       onClose={() => onClose(id)}
       titleBarRef={setTitleBar}
-      windowMenu={
-        <WindowMenu
-          icon={icon}
-          isMaximized={maximized}
-          isInTabOrder={isActive}
-          isOpen={isMenuOpen}
-          onOpenChange={(isOpen) => onMenuOpenChange(id, isOpen)}
-          onAction={(action) => onMenuAction(id, action, frame.current)}
-        />
-      }
-      overlay={
-        maximized ? null : (
-          <ResizeHandles
-            isResizing={isResizing}
-            className={styles.resizeHandles}
-            onResizeStart={(edge, event) => {
-              if (frame.current) onGestureStart(id, edge, event, frame.current);
-            }}
-          />
-        )
-      }
+      {...(isMobile
+        ? {
+            controls: ["close"],
+            closeLabel: t.desktop.closeApp.replace("{app}", t.apps[id]),
+          }
+        : {
+            onMinimize: () => onMinimize(id),
+            onToggleMaximize: () => onToggleMaximize(id),
+            windowMenu: (
+              <WindowMenu
+                icon={icon}
+                isMaximized={maximized}
+                isInTabOrder={isActive}
+                isOpen={isMenuOpen}
+                onOpenChange={(isOpen) => onMenuOpenChange(id, isOpen)}
+                onAction={(action) => onMenuAction(id, action, frame.current)}
+              />
+            ),
+            overlay: maximized ? null : (
+              <ResizeHandles
+                isResizing={isResizing}
+                className={styles.resizeHandles}
+                onResizeStart={(edge, event) => {
+                  if (frame.current) onGestureStart(id, edge, event, frame.current);
+                }}
+              />
+            ),
+          })}
       frameRef={(element) => {
         frame.current = element;
       }}

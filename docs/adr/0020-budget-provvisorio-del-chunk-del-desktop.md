@@ -1,6 +1,6 @@
 # ADR-0020: Budget del chunk del desktop e del CSS dei componenti nella 2A-2
 
-- **Stato**: Accettata
+- **Stato**: Accettata (il budget del chunk del desktop passa a 82 kB con ADR-0022)
 - **Data**: 2026-10-31
 - **Fase**: 2A
 

@@ -6,7 +6,7 @@ import { expectNoAxeViolations } from "../../../tests/setup/axe";
 import { renderAt } from "../../../tests/setup/render";
 import { getDictionary } from "../../i18n";
 import { locales, routeKeys, routeMap } from "../../routes/routeMap";
-import { desktopApps } from "./apps";
+import { desktopApps, mobileHomeApps } from "./apps";
 import { Desktop } from "./Desktop";
 
 describe("Desktop (guscio statico)", () => {
@@ -30,7 +30,10 @@ describe("Desktop (guscio statico)", () => {
     renderAt("/en/", Desktop);
     const icons = within(screen.getByRole("navigation", { name: "Desktop icons" }));
     const links = icons.getAllByRole("link");
-    expect(links).toHaveLength(desktopApps.length);
+    expect(links).toHaveLength(mobileHomeApps.length);
+    const mobileOnly = links.filter((link) => link.closest("li")?.className.includes("mobileOnly"));
+    expect(mobileOnly.map((link) => link.textContent)).toEqual(["Control Panel", "Privacy"]);
+    expect(links.length - mobileOnly.length).toBe(desktopApps.length);
     expect(icons.getByRole("link", { name: "Projects" })).toHaveAttribute("href", "/en/projects/");
     expect(icons.getByRole("link", { name: "Simple view" })).toHaveAttribute(
       "href",

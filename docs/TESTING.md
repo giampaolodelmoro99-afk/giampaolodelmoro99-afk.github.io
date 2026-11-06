@@ -20,18 +20,18 @@ L'immagine Docker `mcr.microsoft.com/playwright:v1.64.1-noble` deve avere **la s
 
 Questa tabella e PERFORMANCE_SEO.md §1–2 sono le uniche fonti delle soglie: gli altri documenti rimandano qui.
 
-| Controllo       | Soglia                                                                                                                                                                                                     | Dove                  |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
-| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                                                                 | `vitest.config.ts`    |
-| Lighthouse      | Accessibility, Best Practices, SEO 100; Performance ≥ 90 a ogni push; a fine fase e release desktop 100 e mobile ≥ 90; LCP ≤ 2,5 s, TBT ≤ 200 ms, CLS ≤ 0,1; 3 esecuzioni, mediana (ADR-0018)              | `lighthouserc.*.json` |
-| JS iniziale     | ≤ 124 kB gzip (F2A: 117,8 kB con il guscio statico del desktop, ADR-0014); chunk del desktop ≤ 77 kB, chunk di Esegui ≤ 5 kB, di Spegni ≤ 8 kB e del congedo ≤ 1 kB (ADR-0020), sprite delle icone ≤ 14 kB | `.size-limit.js`      |
-| Componenti      | JS ≤ 99 kB, CSS ≤ 6 kB (ADR-0020), guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)                                                                                                            | `.size-limit.js`      |
-| CSS iniziale    | ≤ 12 kB gzip                                                                                                                                                                                               | `.size-limit.js`      |
-| Font in preload | ≤ 25 kB (woff2)                                                                                                                                                                                            | `.size-limit.js`      |
-| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms                                                                                                              | `performance.spec.ts` |
-| axe             | 0 violazioni WCAG 2.2 AA                                                                                                                                                                                   | unit ed e2e           |
-| Console         | 0 errori e warning                                                                                                                                                                                         | fixture e2e           |
-| Terze parti     | 0 richieste verso altre origini                                                                                                                                                                            | fixture e2e           |
+| Controllo       | Soglia                                                                                                                                                                                                                | Dove                  |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Coverage        | ≥ 80% su righe, rami, funzioni e statement                                                                                                                                                                            | `vitest.config.ts`    |
+| Lighthouse      | Accessibility, Best Practices, SEO 100; Performance ≥ 90 a ogni push; a fine fase e release desktop 100 e mobile ≥ 90; LCP ≤ 2,5 s, TBT ≤ 200 ms, CLS ≤ 0,1; 3 esecuzioni, mediana (ADR-0018)                         | `lighthouserc.*.json` |
+| JS iniziale     | ≤ 124 kB gzip (F2A: 117,8 kB con il guscio statico del desktop, ADR-0014); chunk del desktop ≤ 82 kB (ADR-0022), chunk di Esegui ≤ 5 kB, di Spegni ≤ 8 kB e del congedo ≤ 1 kB (ADR-0020), sprite delle icone ≤ 14 kB | `.size-limit.js`      |
+| Componenti      | JS ≤ 99 kB, CSS ≤ 6 kB (ADR-0020), guscio del desktop F2A ≤ 75 kB (gzip, fuori dalla home; F1B)                                                                                                                       | `.size-limit.js`      |
+| CSS iniziale    | ≤ 12 kB gzip                                                                                                                                                                                                          | `.size-limit.js`      |
+| Font in preload | ≤ 25 kB (woff2)                                                                                                                                                                                                       | `.size-limit.js`      |
+| Idratazione     | ≤ 1 s dopo `load`, long task < 200 ms (CPU 4×): budget bloccanti, misura F1A ≈ 260 ms e 60 ms                                                                                                                         | `performance.spec.ts` |
+| axe             | 0 violazioni WCAG 2.2 AA                                                                                                                                                                                              | unit ed e2e           |
+| Console         | 0 errori e warning                                                                                                                                                                                                    | fixture e2e           |
+| Terze parti     | 0 richieste verso altre origini                                                                                                                                                                                       | fixture e2e           |
 
 **Le soglie non si abbassano.** Un'eccezione richiede un ADR.
 
@@ -132,4 +132,8 @@ npm run lhci:mobile:strict && npm run lhci:desktop:strict   # chiusura di fase e
 
 - Gli e2e aprono le pagine con `openPage()`, che attende `html[data-hydrated]`. Senza, un clic prima dell'idratazione diventa una navigazione completa.
 - Niente `waitForTimeout`: si usano asserzioni con attesa (`toHaveURL`, `toBeVisible`).
-- In CI c'è 1 retry. Un test che passa solo al retry va corretto, non ignorato.
+- In CI c'è 1 retry: un test che passa solo al retry compare come «flaky» nel report e non fa fallire il job.
+- **Test instabili: ripetizioni locali al massimo 50** (ADR-0023) (`--repeat-each=50`, nel container, con `--retries=0`).
+  - Se in 50 ripetizioni non fallisce, o fallisce senza una causa riproducibile, il caso si annota nella retrospettiva della fase con la traccia disponibile (`--trace=retain-on-failure`) e si va avanti: la CI con i retry lo segnala come flaky.
+  - Si indaga oltre solo se fallisce più spesso di 1 volta su 50, o se il difetto è visibile anche per un utente reale (in quel caso si corregge il codice, non il test).
+  - Mai `skip`, attese fisse o asserzioni indebolite per far passare un caso instabile (CLAUDE.md, «Integrità dei test»).

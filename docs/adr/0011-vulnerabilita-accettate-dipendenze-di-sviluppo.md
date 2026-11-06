@@ -44,3 +44,5 @@ Le dipendenze aggiunte in Fase 1A (Storybook 10.6.2, subset-font, fontkit, rollu
 ## Riferimenti
 
 ADR-0009, `SECURITY.md`, `.github/dependabot.yml`, `docs/TESTING.md` §1.
+
+- **2B (06/11/2026)**: `npm audit --omit=dev` a 0; `react-router`, `@react-router/node` e `@react-router/dev` passano a 8.5.1 e non aggiungono vulnerabilità né dipendenze di produzione. `npm audit` completo: 20 vulnerabilità di sviluppo (2 low, 5 moderate, 13 high), nelle catene già accettate sotto `@lhci/cli`, `lighthouse` e Storybook (`glob`, `minimatch`), che si correggono solo con versioni maggiori (anche in senso inverso per Storybook). Valgono le stesse ragioni della decisione.

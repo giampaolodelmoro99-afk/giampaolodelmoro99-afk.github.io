@@ -35,9 +35,22 @@ test("senza JavaScript le icone del desktop sono link che aprono la finestra del
 }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Gianpaolo Del Moro");
+  await page.getByRole("link", { name: "Chiudi About" }).click();
+  await expect(page.getByRole("region", { name: "About" })).toBeHidden();
   const icon = page.getByRole("link", { name: "Progetti", exact: true });
   await expect(icon).toHaveAttribute("href", "/progetti/");
   await Promise.all([page.waitForURL("/progetti/", { waitUntil: "load" }), icon.click()]);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Progetti");
   await expect(page.getByRole("region", { name: "Progetti" })).toBeVisible();
 });
+
+test(
+  "senza JavaScript, con l'app a schermo intero in mobile, le icone coperte non sono raggiungibili",
+  { tag: "@mobile" },
+  async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("link", { name: "Progetti", exact: true })).toHaveCount(0);
+    await page.getByRole("link", { name: "Chiudi About" }).click();
+    await expect(page.getByRole("link", { name: "Progetti", exact: true })).toBeVisible();
+  },
+);

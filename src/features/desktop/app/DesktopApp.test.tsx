@@ -1,14 +1,12 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { expectNoAxeViolations } from "../../../../tests/setup/axe";
-import { renderAt } from "../../../../tests/setup/render";
-import { routeKeyFromPathname } from "../../../routes/routeMap";
+import { renderWithHistory } from "../../../../tests/setup/render";
 import { DesktopApp } from "./DesktopApp";
 
 function renderDesktop(path: string, onReady?: () => void) {
-  const key = routeKeyFromPathname(path) ?? "desktop";
-  return renderAt(path, () => <DesktopApp routeKey={key} {...(onReady ? { onReady } : {})} />);
+  return renderWithHistory(path, () => <DesktopApp {...(onReady ? { onReady } : {})} />);
 }
 
 describe("DesktopApp", () => {
@@ -39,7 +37,11 @@ describe("DesktopApp", () => {
     expect(projects).toHaveAttribute("data-active", "true");
     expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "false");
     expect(document.getElementById("window-projects-body")).toHaveFocus();
-    expect(within(projects).getByRole("heading", { level: 2 })).toHaveTextContent("Progetti");
+    expect(within(projects).getByRole("heading", { level: 1 })).toHaveTextContent("Progetti");
+    expect(
+      within(screen.getByRole("region", { name: "About" })).getByRole("heading", { level: 2 }),
+    ).toHaveTextContent("Gianpaolo Del Moro");
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   });
 
   it("apre un'app dal menu Start", async () => {
@@ -65,15 +67,17 @@ describe("DesktopApp", () => {
     await waitFor(() => expect(document.getElementById("window-about-body")).toHaveFocus());
   });
 
-  it("i link di About aprono la finestra dell'app senza cambiare pagina", async () => {
+  it("i link di About portano all'URL dell'app e la aprono in una finestra, accanto ad About", async () => {
     const user = userEvent.setup();
-    renderDesktop("/");
+    const { pathname } = renderDesktop("/");
     const link = screen.getByRole("link", { name: "Vedere i progetti" });
     expect(link).toHaveAttribute("href", "/progetti/");
     await user.click(link);
+    expect(pathname()).toBe("/progetti/");
     expect(screen.getByRole("region", { name: "Progetti" })).toHaveAttribute("data-active", "true");
     expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
     await waitFor(() => expect(document.getElementById("window-projects-body")).toHaveFocus());
+    expect(screen.getByText("Progetti: finestra aperta")).toBeInTheDocument();
   });
 
   it("i pulsanti della barra delle finestre inattive escono dall'ordine di Tab", async () => {
@@ -180,6 +184,7 @@ describe("DesktopApp", () => {
     expect(
       screen.getByRole("group", { name: "Spostamento e ridimensionamento" }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("application", { name: "Sposta o ridimensiona About" })).toHaveFocus();
     await user.keyboard("{ArrowRight}{ArrowRight}{Shift>}{ArrowDown}{/Shift}{Enter}");
     expect(about.style.getPropertyValue("--window-x")).toBe("16px");
     expect(about.style.getPropertyValue("--window-y")).toBe("32px");
@@ -329,10 +334,12 @@ describe("DesktopApp", () => {
     await waitFor(() => expect(start).toHaveFocus());
   });
 
-  it("Spegni porta al congedo con il titolo della scheda; Riaccendi riporta un desktop vuoto", async () => {
+  it("Spegni porta al congedo con il titolo della scheda; Riaccendi riporta le finestre di prima", async () => {
     const user = userEvent.setup();
     const title = document.title;
-    renderDesktop("/");
+    const { pathname } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
     await user.click(screen.getByRole("button", { name: /Start/ }));
     await user.click(screen.getByRole("menuitem", { name: "Spegni…" }));
     await screen.findByRole("dialog", { name: "Spegni" });
@@ -347,8 +354,10 @@ describe("DesktopApp", () => {
     await user.click(restart);
     expect(document.title).toBe(title);
     expect(await screen.findByRole("grid", { name: "Icone del desktop" })).toBeInTheDocument();
-    expect(screen.queryByRole("region")).toBeNull();
-    await waitFor(() => expect(screen.getByRole("row", { name: "About" })).toHaveFocus());
+    expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+    await waitFor(() => expect(document.getElementById("window-cv-body")).toHaveFocus());
+    expect(pathname()).toBe("/cv/");
   });
 
   it("Riavvia riporta un desktop vuoto senza passare dal congedo", async () => {
@@ -361,6 +370,11 @@ describe("DesktopApp", () => {
     expect(await screen.findByRole("grid", { name: "Icone del desktop" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Riaccendi" })).toBeNull();
     expect(screen.queryByRole("region")).toBeNull();
+    await waitFor(() => expect(screen.getByRole("row", { name: "About" })).toHaveFocus());
+    expect(JSON.parse(localStorage.getItem("windows.v1") ?? "null")).toMatchObject({
+      windows: [],
+      stack: [],
+    });
   });
 
   it("Annulla in Spegni… lascia il desktop com'era e riporta il focus su Start", async () => {
@@ -390,5 +404,426 @@ describe("DesktopApp", () => {
   it("non ha violazioni axe", async () => {
     const { container } = renderDesktop("/");
     await expectNoAxeViolations(container);
+  });
+});
+
+async function go(router: ReturnType<typeof renderDesktop>["router"], delta: number) {
+  await act(async () => {
+    await router.navigate(delta);
+  });
+}
+
+describe("DesktopApp e URL", () => {
+  it("aprire una finestra cambia l'URL; chiuderla torna alla voce della home", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.dblClick(screen.getByRole("row", { name: "Progetti" }));
+    expect(pathname()).toBe("/progetti/");
+    const projects = screen.getByRole("region", { name: "Progetti" });
+    await user.click(within(projects).getByRole("button", { name: "Chiudi" }));
+    await waitFor(() => expect(pathname()).toBe("/"));
+    expect(router.state.historyAction).toBe("POP");
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+  });
+
+  it("Indietro torna alla finestra precedente senza chiudere, Avanti la riporta in primo piano", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    expect(pathname()).toBe("/cv/");
+    await go(router, -1);
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "false");
+    await waitFor(() => expect(document.getElementById("window-about-body")).toHaveFocus());
+    await go(router, 1);
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+    await waitFor(() => expect(document.getElementById("window-cv-body")).toHaveFocus());
+  });
+
+  it("Avanti verso una finestra chiusa la riapre e lo annuncia", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "CV" })).getByRole("button", { name: "Chiudi" }),
+    );
+    await waitFor(() => expect(pathname()).toBe("/"));
+    await go(router, 1);
+    expect(pathname()).toBe("/cv/");
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+    expect(screen.getByText("CV: finestra aperta")).toBeInTheDocument();
+  });
+
+  it("la home senza About lascia le finestre al loro posto, nessuna attiva, con il focus sulle icone", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "Chiudi" }));
+    expect(pathname()).toBe("/");
+    await user.dblClick(screen.getByRole("row", { name: "CV" }));
+    expect(pathname()).toBe("/cv/");
+    await go(router, -1);
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "false");
+    await waitFor(() => expect(screen.getByRole("row", { name: "About" })).toHaveFocus());
+    expect(screen.queryByRole("button", { pressed: true })).toBeNull();
+  });
+
+  it("ridurre l'unica finestra porta l'URL sulla home, sostituendo la voce", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/cv/");
+    await user.click(screen.getByRole("button", { name: "Riduci a icona" }));
+    expect(pathname()).toBe("/");
+    expect(router.state.historyAction).toBe("REPLACE");
+  });
+
+  it("attivare una finestra con il clic aggiunge la sua voce", async () => {
+    const user = userEvent.setup();
+    const { pathname } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("region", { name: "About" }));
+    expect(pathname()).toBe("/profilo/");
+  });
+
+  it("cambiare lingua tiene aperte le finestre", async () => {
+    const user = userEvent.setup();
+    const { pathname } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("link", { name: "EN, English version" }));
+    expect(pathname()).toBe("/en/cv/");
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "true");
+    expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "IT, Versione italiana" })).toHaveAttribute(
+      "href",
+      "/cv/",
+    );
+  });
+
+  it("Riavvia riporta l'URL sulla home", async () => {
+    const user = userEvent.setup();
+    const { pathname } = renderDesktop("/progetti/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "Spegni…" }));
+    await user.click(await screen.findByRole("radio", { name: "Riavvia" }));
+    await user.click(screen.getByRole("button", { name: "OK" }));
+    await screen.findByRole("grid", { name: "Icone del desktop" });
+    await waitFor(() => expect(pathname()).toBe("/"));
+    expect(screen.queryByRole("region")).toBeNull();
+  });
+
+  it("salva il layout e lo ripristina dietro la finestra dell'URL, che resta nella sua posizione", async () => {
+    const user = userEvent.setup();
+    const first = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "CV" })).getByRole("button", {
+        name: "Ingrandisci",
+      }),
+    );
+    first.unmount();
+    const saved = JSON.parse(localStorage.getItem("windows.v1") ?? "null");
+    expect(saved).toMatchObject({ version: 1, stack: ["about", "cv"], recent: ["cv", "about"] });
+    renderDesktop("/progetti/");
+    const projects = screen.getByRole("region", { name: "Progetti" });
+    expect(projects).toHaveAttribute("data-active", "true");
+    expect(screen.getByRole("region", { name: "CV" })).toHaveAttribute("data-active", "false");
+    expect(screen.getByRole("region", { name: "About" })).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("region", { name: "CV" })).getByRole("button", {
+        name: "Ripristina",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /^(About|CV|Progetti)$/ })).toHaveLength(3);
+  });
+
+  it("sulla home About c'è sempre, anche se era stata chiusa", async () => {
+    const user = userEvent.setup();
+    const first = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "About" })).getByRole("button", { name: "Chiudi" }),
+    );
+    first.unmount();
+    renderDesktop("/");
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+    expect(screen.getByRole("region", { name: "CV" })).toBeInTheDocument();
+  });
+
+  it("ignora e cancella un layout salvato con un'altra versione", () => {
+    localStorage.setItem("windows.v1", JSON.stringify({ version: 2, windows: [] }));
+    renderDesktop("/");
+    expect(screen.getAllByRole("region")).toHaveLength(1);
+    expect(localStorage.getItem("windows.v1")).toBeNull();
+  });
+
+  it("dopo una voce sostituita, Avanti e la chiusura lasciano l'URL allineato alla finestra attiva", async () => {
+    const user = userEvent.setup();
+    const { pathname, router } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await go(router, -1);
+    await user.click(
+      within(screen.getByRole("region", { name: "About" })).getByRole("button", { name: "Chiudi" }),
+    );
+    await waitFor(() => expect(pathname()).toBe("/cv/"));
+    await go(router, 1);
+    expect(pathname()).toBe("/cv/");
+    await user.click(
+      within(screen.getByRole("region", { name: "CV" })).getByRole("button", { name: "Chiudi" }),
+    );
+    await waitFor(() => expect(screen.queryByRole("region")).toBeNull());
+    await waitFor(() => expect(pathname()).toBe("/"));
+  });
+
+  it("un link diretto non sovrascrive il layout salvato finché non cambia qualcosa", () => {
+    const saved = JSON.stringify({
+      version: 1,
+      windows: [
+        {
+          id: "projects",
+          maximized: false,
+          minimized: false,
+          geometry: { x: 40, y: 30, width: 420, height: 300 },
+          cascade: 0,
+        },
+      ],
+      stack: ["projects"],
+      recent: ["projects"],
+    });
+    localStorage.setItem("windows.v1", saved);
+    const view = renderDesktop("/progetti/");
+    view.unmount();
+    expect(localStorage.getItem("windows.v1")).toBe(saved);
+  });
+
+  it("con lo storage bloccato Riaccendi riporta comunque le finestre di prima", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("storage bloccato");
+    });
+    try {
+      renderDesktop("/");
+      await user.click(screen.getByRole("button", { name: /Start/ }));
+      await user.click(screen.getByRole("menuitem", { name: "CV" }));
+      await user.click(screen.getByRole("button", { name: /Start/ }));
+      await user.click(screen.getByRole("menuitem", { name: "Spegni…" }));
+      await screen.findByRole("dialog", { name: "Spegni" });
+      await user.click(screen.getByRole("button", { name: "OK" }));
+      await user.click(await screen.findByRole("button", { name: "Riaccendi" }));
+      expect(await screen.findByRole("region", { name: "CV" })).toHaveAttribute(
+        "data-active",
+        "true",
+      );
+      expect(localStorage.getItem("windows.v1")).toBeNull();
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  it("con il focus sui pulsanti a schermo le frecce spostano e Invio preme il pulsante, non conferma", async () => {
+    const user = userEvent.setup();
+    const { container } = renderDesktop("/");
+    const about = screen.getByRole("region", { name: "About" });
+    await user.click(within(about).getByRole("button", { name: "Menu della finestra" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Sposta" }));
+    const group = screen.getByRole("group", { name: "Spostamento e ridimensionamento" });
+    await user.click(within(group).getByRole("button", { name: "Destra" }));
+    expect(
+      screen.getByRole("application", { name: "Sposta o ridimensiona About" }),
+    ).toBeInTheDocument();
+    within(group).getByRole("button", { name: "Destra" }).focus();
+    await user.keyboard("{ArrowDown}{Enter}");
+    expect(
+      screen.getByRole("application", { name: "Sposta o ridimensiona About" }),
+    ).toBeInTheDocument();
+    await expectNoAxeViolations(container);
+    await user.click(within(group).getByRole("button", { name: "OK" }));
+    expect(screen.queryByRole("group", { name: "Spostamento e ridimensionamento" })).toBeNull();
+    expect(about.style.getPropertyValue("--window-x")).toBe("16px");
+    expect(about.style.getPropertyValue("--window-y")).toBe("8px");
+  });
+
+  it("riattivando una finestra il focus torna all'ultimo elemento che lo aveva, se esiste ancora", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    const link = screen.getByRole("link", { name: "Leggere il CV" });
+    act(() => link.focus());
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "Contatti" }));
+    await waitFor(() => expect(document.getElementById("window-contacts-body")).toHaveFocus());
+    await user.click(screen.getByRole("button", { name: "About" }));
+    await waitFor(() => expect(screen.getByRole("link", { name: "Leggere il CV" })).toHaveFocus());
+    await user.click(screen.getByRole("button", { name: "Contatti" }));
+    await waitFor(() => expect(document.getElementById("window-contacts-body")).toHaveFocus());
+  });
+});
+
+function stubMobile() {
+  const listeners = new Set<() => void>();
+  const state = { matches: false };
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn<() => unknown>(() => ({
+      get matches() {
+        return state.matches;
+      },
+      addEventListener: (_type: string, listener: () => void) => listeners.add(listener),
+      removeEventListener: (_type: string, listener: () => void) => listeners.delete(listener),
+    })),
+  );
+  return {
+    setDesktop: (isDesktop: boolean) => {
+      state.matches = isDesktop;
+      act(() => {
+        for (const listener of listeners) listener();
+      });
+    },
+  };
+}
+
+describe("DesktopApp in modalità mobile", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("mostra solo Chiudi nella barra del titolo, con il nome esteso, e la griglia di 13 voci", async () => {
+    stubMobile();
+    renderDesktop("/");
+    const about = screen.getByRole("region", { name: "About" });
+    expect(
+      within(about)
+        .getAllByRole("button")
+        .map((button) => button.getAttribute("aria-label")),
+    ).toEqual(["Chiudi About"]);
+    expect(screen.getByRole("button", { name: "App aperte: 1" })).toHaveTextContent(
+      "App aperte (1)",
+    );
+    expect(screen.queryByRole("button", { name: "Menu della finestra" })).toBeNull();
+    await userEvent.setup().click(within(about).getByRole("button", { name: "Chiudi About" }));
+    expect(screen.getAllByRole("row")).toHaveLength(13);
+    expect(screen.getByRole("button", { name: "App aperte: 0" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await waitFor(() => expect(screen.getByRole("row", { name: "About" })).toHaveFocus());
+  });
+
+  it("un solo tocco su una voce apre l'app e il focus va all'h1", async () => {
+    stubMobile();
+    const user = userEvent.setup();
+    const { pathname } = renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "Chiudi About" }));
+    await user.click(screen.getByRole("row", { name: "CV" }));
+    expect(pathname()).toBe("/cv/");
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { level: 1, name: "CV" })).toHaveFocus(),
+    );
+  });
+
+  it("App aperte elenca le app, apre una riga, chiude con il pulsante e riporta il focus", async () => {
+    stubMobile();
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("button", { name: "App aperte: 2" }));
+    const panel = await screen.findByRole("dialog", { name: "App aperte (2)" });
+    expect(
+      within(panel)
+        .getAllByRole("row")
+        .map((row) => row.textContent),
+    ).toEqual(["CV", "About"]);
+    await user.click(within(panel).getByRole("row", { name: "About" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("data-active", "true");
+    await user.click(screen.getByRole("button", { name: "App aperte: 2" }));
+    await user.click(await screen.findByRole("button", { name: "Chiudi tutte" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.queryByRole("region")).toBeNull();
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "App aperte: 0" })).toHaveFocus(),
+    );
+  });
+
+  it("Alt+W apre App aperte e Alt+Spazio non apre il menu della finestra", async () => {
+    stubMobile();
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.keyboard("{Alt>} {/Alt}");
+    expect(screen.queryByRole("menu")).toBeNull();
+    await user.keyboard("{Alt>}w{/Alt}");
+    expect(await screen.findByRole("dialog", { name: "App aperte (1)" })).toBeInTheDocument();
+  });
+
+  it("passando al desktop tornano finestre, taskbar e menu; il pannello si chiude", async () => {
+    const media = stubMobile();
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: "App aperte: 1" }));
+    await screen.findByRole("dialog", { name: "App aperte (1)" });
+    media.setDesktop(true);
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: /App aperte/ })).toBeNull());
+    expect(screen.getByRole("button", { name: "Menu della finestra" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "About", pressed: true })).toBeInTheDocument();
+    expect(screen.getAllByRole("row")).toHaveLength(11);
+    media.setDesktop(false);
+    expect(await screen.findByRole("button", { name: "App aperte: 1" })).toBeInTheDocument();
+  });
+
+  it("la regione degli annunci resta leggibile mentre App aperte, un dialog modale, è aperto", async () => {
+    stubMobile();
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.click(screen.getByRole("button", { name: /Start/ }));
+    await user.click(screen.getByRole("menuitem", { name: "CV" }));
+    await user.click(screen.getByRole("button", { name: "App aperte: 2" }));
+    const panel = await screen.findByRole("dialog", { name: "App aperte (2)" });
+    await user.click(within(panel).getByRole("button", { name: "Chiudi CV" }));
+    const live = screen.getByText("CV: finestra chiusa");
+    const region = live.closest("[aria-live]");
+    expect(region).toHaveAttribute("data-live-announcer");
+    expect(region?.closest("[aria-hidden=true]")).toBeNull();
+  });
+
+  it("l'ancora #desktop-icons all'avvio parte senza la finestra della route e porta l'URL alla home", async () => {
+    const { pathname } = renderDesktop("/cv/#desktop-icons");
+    await waitFor(() => expect(pathname()).toBe("/"));
+    expect(screen.queryByRole("region")).toBeNull();
+  });
+
+  it("chiudendo l'ultima finestra il focus va all'icona di quell'app", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/cv/");
+    await user.click(screen.getByRole("button", { name: "Chiudi" }));
+    await waitFor(() => expect(screen.getByRole("row", { name: "CV" })).toHaveFocus());
+  });
+
+  it("riaprendo un'app chiusa il focus va al corpo, non all'elemento ricordato di prima", async () => {
+    const user = userEvent.setup();
+    renderDesktop("/");
+    act(() => screen.getByRole("link", { name: "Leggere il CV" }).focus());
+    await user.click(screen.getByRole("button", { name: "Chiudi" }));
+    await user.click(await screen.findByRole("row", { name: "About" }));
+    await user.keyboard("{Enter}");
+    await waitFor(() => expect(document.getElementById("window-about-body")).toHaveFocus());
+  });
+
+  it("passando a mobile si chiude il menu contestuale del desktop", async () => {
+    const media = stubMobile();
+    media.setDesktop(true);
+    const user = userEvent.setup();
+    renderDesktop("/");
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: screen.getByRole("main"),
+      coords: { clientX: 400, clientY: 300 },
+    });
+    await screen.findByRole("menu", { name: "Desktop" });
+    media.setDesktop(false);
+    await waitFor(() => expect(screen.queryByRole("menu", { name: "Desktop" })).toBeNull());
   });
 });

@@ -113,6 +113,12 @@
 
 @media (forced-colors: active) {
   .mark {
+    border: var(--forced-border-width) solid var(--color-text);
+    border-radius: var(--radius-round);
     forced-color-adjust: none;
+  }
+
+  .root[data-selected] .mark {
+    border-color: var(--color-selection);
   }
 }

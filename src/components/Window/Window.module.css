@@ -74,6 +74,13 @@
   margin-inline-start: var(--space-bevel);
 }
 
+.control.back {
+  gap: var(--space-1);
+  inline-size: auto;
+  margin-inline-end: var(--space-1);
+  padding-inline: var(--space-2);
+}
+
 .body {
   flex: 1;
   min-block-size: 0;

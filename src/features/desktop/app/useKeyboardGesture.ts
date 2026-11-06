@@ -55,17 +55,11 @@ export function stepGeometry(
 
 export type KeyboardGestureOptions = {
   viewport: () => Viewport | null;
-  isOutside: (target: Node) => boolean;
   onConfirm: (gesture: KeyboardGesture) => void;
   onCancel: (gesture: KeyboardGesture) => void;
 };
 
-export function useKeyboardGesture({
-  viewport,
-  isOutside,
-  onConfirm,
-  onCancel,
-}: KeyboardGestureOptions) {
+export function useKeyboardGesture({ viewport, onConfirm, onCancel }: KeyboardGestureOptions) {
   const [gesture, setGesture] = useState<KeyboardGesture | null>(null);
 
   const step = useCallback(
@@ -92,10 +86,10 @@ export function useKeyboardGesture({
   useEffect(() => {
     if (!gesture) return undefined;
     const onKey = (event: KeyboardEvent) => {
-      if (event.target instanceof Node && !isOutside(event.target)) return;
+      const isOnButton = event.target instanceof Element && event.target.closest("button") !== null;
       const direction = keys[event.key];
       if (direction) step(direction, event.shiftKey ? largeStep : smallStep);
-      else if (event.key === "Enter") confirm();
+      else if (event.key === "Enter" && !isOnButton) confirm();
       else if (event.key === "Escape") cancel();
       else return;
       event.preventDefault();
@@ -103,7 +97,7 @@ export function useKeyboardGesture({
     };
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
-  }, [gesture, step, confirm, cancel, isOutside]);
+  }, [gesture, step, confirm, cancel]);
 
   const start = useCallback((id: AppId, kind: KeyboardGesture["kind"], origin: Geometry) => {
     setGesture({ id, kind, origin, current: origin });

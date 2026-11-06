@@ -81,6 +81,30 @@
   opacity: var(--opacity-unavailable);
 }
 
+.iconButton.labelled {
+  padding-inline: var(--space-1) var(--space-2);
+}
+
+.count {
+  display: none;
+}
+
+.root[data-unavailable] .label,
+.root[data-unavailable] .count {
+  color: var(--color-text-disabled);
+  text-shadow: var(--text-etch);
+}
+
+@media (width < 22.5em) {
+  .labelled .label {
+    display: none;
+  }
+
+  .labelled .count {
+    display: inline;
+  }
+}
+
 .root[data-disabled] .icon {
   opacity: var(--opacity-disabled);
 }

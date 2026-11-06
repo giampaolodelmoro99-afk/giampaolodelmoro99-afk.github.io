@@ -12,6 +12,7 @@ storybook-static
 coverage
 playwright-report
 test-results
+test-results-*/
 blob-report
 .lighthouseci
 

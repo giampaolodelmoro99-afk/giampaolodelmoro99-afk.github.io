@@ -24,6 +24,7 @@ description: Indica e scrive i test necessari per un file o una modifica (compon
 - In e2e apri le pagine con `openPage(page, path)` da `tests/e2e/fixtures.ts`: attende l'idratazione. Le fixture fanno già fallire il test per errori in console e richieste a terze parti.
 - Test per un solo tipo di input in `keyboard.spec.ts` o `touch.spec.ts`. Mai `if` sul progetto, mai `test.skip` o `test.fail` condizionali.
 - Niente `waitForTimeout`: usa asserzioni con attesa.
+- Test instabile: al massimo 50 ripetizioni locali (`--repeat-each=50 --retries=0`). Se in 50 non fallisce, o fallisce senza causa riproducibile, annotalo nella retrospettiva con la traccia disponibile e vai avanti (la CI con i retry lo segnala come flaky). Indaga oltre solo se fallisce più spesso di 1 volta su 50 o se il difetto lo vedrebbe anche un utente reale (TESTING.md §10, ADR-0023).
 - Servizi esterni sempre simulati con `page.route` (TESTING.md §8).
 - Coverage nella soglia di TESTING.md §3, con test che verificano comportamento, non righe. Niente test senza `expect` (Oxlint `expect-expect`).
 - **Vietato**: `skip`, `only`, `todo`, test commentati, soglie abbassate, asserzioni indebolite per far passare un test. Un test che fallisce indica un bug da correggere, oppure un requisito cambiato da discutere.

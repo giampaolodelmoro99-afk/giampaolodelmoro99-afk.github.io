@@ -65,8 +65,8 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 - [ ] Note dell'a11y-auditor (1B) da risolvere quando i componenti entrano nelle pagine:
   - ~~livello del titolo della Window, insieme alla scelta `region`/`dialog`~~: risolto in 2A (ADR-0016: region, titolo non heading, contenuto da `h1` o `h2`)
   - corpo `document` della Window scorrevole da tastiera anche in Safari (riusare `ScrollArea`): **parziale** in 2A (focus programmatico e skip link; da verificare su Safari)
-  - ~~pulsante attivo della taskbar in alto contrasto distinto non solo dal grassetto~~: risolto in 2A (giallo e bordo di 3 px); cerchio del Radio in `forced-colors`: aperto, ora che il Radio è nella home (Spegni), rinviato alla 2B (ADR-0016)
-  - testi troncati (StatusBar, titoli, taskbar, voci di menu larghe a 320 px) leggibili per intero; taskbar con molte finestre a 320 px (ADR-0007, F2B): in 2A i pulsanti scorrono senza coprire lingua e orologio
+  - ~~pulsante attivo della taskbar in alto contrasto distinto non solo dal grassetto~~: risolto in 2A (giallo e bordo di 3 px); ~~cerchio del Radio in `forced-colors`~~: risolto in 2B (bordo e e2e, ADR-0016)
+  - testi troncati (StatusBar, titoli, taskbar, voci di menu larghe a 320 px) leggibili per intero; ~~taskbar con molte finestre a 320 px~~: risolto in 2B con «App aperte (n)» (ADR-0007)
   - focus iniziale sul pulsante meno distruttivo nei dialog di conferma (in Spegni resta su «Spegni», rinvio motivato in ADR-0016); pulsanti della barra del titolo senza callback non mostrati
   - tooltip uguale all'`aria-label` letto due volte; `ScrollArea` focalizzabile solo quando scorre; segnaposto distinguibile dal testo
   - progetto Storybook a 320 px con controllo dell'overflow; verifiche manuali con NVDA, VoiceOver, zoom 200/400% e `forced-colors`
@@ -75,10 +75,17 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 
 ## 2B. Routing, persistenza e mobile
 
-- [ ] Deep link per ogni finestra con React Router, sincronizzati con Zustand
-- [ ] Persistenza del layout in localStorage senza CLS
-- [ ] Modalità mobile: finestre a schermo intero, navigazione touch (ADR-0007 aggiornata)
-- [ ] e2e su touch e su tutti i viewport
+Piano: [phase-02b-plan.md](phases/phase-02b-plan.md).
+
+- [x] Deep link per ogni finestra con React Router, sincronizzati con Zustand: route di layout, URL della finestra attiva, push e assestamento della history, Indietro e Avanti senza chiudere (ADR-0021)
+- [x] Persistenza del layout in localStorage (`windows.v1`) senza CLS: ripristino prima dello swap, finestra dell'URL davanti, About sempre sulla home (ADR-0021)
+- [x] Modalità mobile: regola larghezza/altezza con puntatore, home a griglia, app a schermo intero, App aperte, Start a pannello, versione compatta sotto i 360 px (ADR-0007 aggiornata, ADR-0022)
+- [x] e2e su touch e su tutti i viewport, con i tag `@desktop` e `@mobile`
+- [x] Rinvii di ADR-0016 e memoria del focus per finestra (ADR-0016 aggiornata)
+- [x] Test instabile `desktop.spec.ts:46`: causa nel codice (ResizeObserver), corretto; CI anche su `chore/**` e `fix/**`; React Router 8.5.1 nel budget senza alzarlo (stub della route discovery, `ScrollRestoration` tolta)
+- [x] Regola dei test instabili: al massimo 50 ripetizioni locali (TESTING.md §10)
+- [ ] QA su Android reale con `preview --host` (QA_CHECKLIST.md §3.1 e §7). NVDA, VoiceOver e tastiera Bluetooth (focus durante Sposta, «App aperte») sono rinviati alla Fase 5 (audit di accessibilità)
+- [ ] CI verde su GitHub per `phase/02b-routing-mobile`, merge e tag `phase-02b`
 
 ## 3A. App di contenuto
 
@@ -105,7 +112,7 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 - [ ] Pagina /privacy IT/EN (incluso l'eventuale antispam di terzi), link nel footer e vicino al pulsante del form
 - [ ] Disclaimer di non affiliazione a Microsoft
 - [ ] Vista semplice; Making of (da AI_WORKFLOW.md)
-- [ ] LEGAL.md §2 e ADR-0003: citare le chiavi `sessionStorage` tecniche di React Router (`react-router-scroll-positions`, `remix-router-transitions`, `react-router-manifest-version`) nell'informativa (security-auditor, 1B)
+- [ ] LEGAL.md §2 e ADR-0003: citare le chiavi `sessionStorage` tecniche di React Router nell'informativa (security-auditor, 1B). Dalla 2B il sito non ne scrive nessuna (`ScrollRestoration` tolta, e2e `storage.spec.ts`): l'informativa dirà solo `windows.v1` e le chiavi delle fasi successive
 
 ## 4A. Esperienza di sistema
 
@@ -124,7 +131,7 @@ Piano in [phase-01-plan.md](phases/phase-01-plan.md), appendice B (approvato il 
 
 ## 5. Qualità
 
-- [ ] Audit di accessibilità completo (a11y-auditor + manuale con screen reader)
+- [ ] Audit di accessibilità completo (a11y-auditor + manuale con screen reader). Include i rinvii della 2B: NVDA sul focus durante Sposta, VoiceOver e TalkBack su «App aperte», tastiera Bluetooth su telefono, testo al 200% e notch in orizzontale
 - [ ] SEO e crawler AI: sitemap con hreflang, robots.txt, llms.txt e llms-full.txt IT/EN, Open Graph generate in build
 - [ ] Lighthouse nelle soglie di ADR-0018 su tutte le route IT/EN
 - [ ] size-limit con budget per chunk di ogni app

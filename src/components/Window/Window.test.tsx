@@ -103,6 +103,33 @@ describe("Window", () => {
     expect(screen.getByText("stato")).toBeInTheDocument();
   });
 
+  it("Indietro, se richiesto, sta prima del titolo al posto dell'icona; Chiudi può avere un nome esteso", async () => {
+    const onBack = vi.fn<() => void>();
+    const user = userEvent.setup();
+    render(
+      <I18nProvider locale="en-US">
+        <Window
+          title="Progetti"
+          icon="projects"
+          controls={["close"]}
+          closeLabel="Chiudi Progetti"
+          onBack={onBack}
+        >
+          <p>Contenuto</p>
+        </Window>
+      </I18nProvider>,
+    );
+    const back = screen.getByRole("button", { name: "Back" });
+    expect(back).toHaveTextContent("Back");
+    expect(
+      screen
+        .getAllByRole("button")
+        .map((button) => button.getAttribute("aria-label") ?? button.textContent),
+    ).toEqual(["Back", "Chiudi Progetti"]);
+    await user.click(back);
+    expect(onBack).toHaveBeenCalledTimes(1);
+  });
+
   it("non ha violazioni axe", async () => {
     const { container } = render(
       <Window title="Progetti">

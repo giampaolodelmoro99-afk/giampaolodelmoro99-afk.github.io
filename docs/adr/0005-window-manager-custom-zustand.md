@@ -33,4 +33,4 @@ Il desktop deve gestire più finestre con drag, resize, focus, z-index, minimizz
 
 ## Riferimenti
 
-ARCHITECTURE.md §4-5, ADR-0007.
+ARCHITECTURE.md §4-5, ADR-0007, ADR-0021 (regole di URL, history e persistenza, Fase 2B).

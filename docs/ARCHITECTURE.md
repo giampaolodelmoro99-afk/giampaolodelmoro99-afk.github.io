@@ -93,21 +93,20 @@ Scritto da zero (ADR-0005), in `src/features/desktop/` con lo store in `src/stor
 ## 5. Stato e sincronizzazione con l'URL (Fase 2B)
 
 - **Zustand** per lo stato del desktop: finestre aperte, ordine, geometria, minimizzate e massimizzate.
-- **L'URL è la fonte di verità della finestra attiva.** Aprire una finestra naviga verso la sua route; la route attiva porta in primo piano la finestra. Il back del browser chiude o torna alla finestra precedente.
+- **Route di layout**: tutte le pagine sono figlie di `routes/desktop-layout.tsx`, che monta il desktop una volta sola; le figlie danno solo i meta.
+- **L'URL è la fonte di verità della finestra attiva** (ADR-0021). Aprire o portare in primo piano una finestra aggiunge una voce; chiudere o ridurre assesta la voce (indietro se la precedente rappresenta già la nuova finestra attiva, altrimenti sostituzione). Indietro e Avanti portano in primo piano la finestra della voce, senza chiudere le altre. Title, canonical e meta seguono la route.
 - **Determinismo**: il primo render dipende solo dall'URL, uguale al prerender, per evitare mismatch di idratazione.
-- **Persistenza**: geometria e preferenze si leggono da localStorage dopo l'idratazione, senza spostamenti visibili (CLS 0). Le chiavi ammesse sono in `LEGAL.md`.
+- **Persistenza**: chiave `windows.v1` letta prima dello swap del desktop interattivo, che compare già ripristinato (CLS 0). La finestra dell'URL resta in primo piano nella posizione del prerender, le altre tornano dietro; sulla home About c'è sempre. Le chiavi ammesse sono in `LEGAL.md`.
 
 ## 6. Modalità mobile (Fase 2B)
 
-Su schermi piccoli o con puntatore grossolano (soglia e criteri definiti in F2, ADR-0007):
+Regola e presentazione sono in ADR-0007 («Decisione della 2B»). In breve:
 
-- finestre a schermo intero
-- navigazione adatta al touch
-- target ≥ 44×44 px
-- nessuna funzione solo con hover o tasto destro
-- rispetto di safe-area e zoom
-
-Le route e l'HTML prerenderizzato sono gli stessi della modalità desktop: cambia solo la presentazione.
+- la modalità si calcola in `features/desktop/layoutMode.ts` (larghezza < 768 px, oppure altezza < 540 px con puntatore grossolano) e si legge con `useSyncExternalStore` da `matchMedia` e `resize`; le stesse media query sono nel CSS, per il primo disegno senza CLS;
+- in mobile `DesktopWindow` mostra solo il pulsante Chiudi, la finestra attiva occupa tutta l'area, la home è una griglia di 13 voci e «App aperte» sostituisce la taskbar delle finestre;
+- il codice dedicato (`mobile/AppSwitcher`, `mobile/OpenApps`) è un chunk su richiesta, precaricato nel tempo libero solo in mobile; il resto è condiviso con il desktop (ADR-0022);
+- le route e l'HTML prerenderizzato sono gli stessi: cambia solo la presentazione, nessun contenuto diverso;
+- target ≥ 44×44 px, nessuna funzione solo con hover o tasto destro, safe-area e zoom rispettati.
 
 ## 7. i18n
 

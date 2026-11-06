@@ -4,18 +4,18 @@
 
 Le soglie di prestazioni e di Lighthouse si scrivono **solo** qui e in TESTING.md §3: gli altri documenti (README, SPECS, CLAUDE.md, PLAN, skill) rimandano a queste due fonti, così un cambio di regola si fa in un posto solo. Gli ADR restano come registro delle decisioni, con i valori del momento.
 
-| Metrica                | Budget                       | Ultima misura                       | Come si verifica |
-| ---------------------- | ---------------------------- | ----------------------------------- | ---------------- |
-| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014)          | 117,8 kB (F2A, guscio statico)      | `npm run size`   |
-| Chunk del desktop      | ≤ 77 kB (ADR-0014, ADR-0020) | 73,14 kB (F2A, dopo l'idratazione)  | `npm run size`   |
-| Sprite delle icone     | ≤ 14 kB (ADR-0014)           | 12,64 kB (F2A, SVG)                 | `npm run size`   |
-| CSS iniziale (gzip)    | ≤ 12 kB                      | 1,3 kB                              | `npm run size`   |
-| Font in preload        | ≤ 25 kB (dalla F1)           | 24,1 kB (F1A)                       | `npm run size`   |
-| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B)          | 98,1 kB (F1B, fuori dalla home)     | `npm run size`   |
-| Guscio del desktop F2A | ≤ 75 kB (dalla F1B)          | 74,9 kB (F1B)                       | `npm run size`   |
-| LCP                    | ≤ 2,5 s (ADR-0018)           | mobile 1,20 s, desktop 0,32 s (F2A) | Lighthouse CI    |
-| TBT                    | ≤ 200 ms (ADR-0018)          | mobile 30–35 ms, desktop 0 (F2A)    | Lighthouse CI    |
-| CLS                    | ≤ 0,1 (ADR-0018)             | 0,0001 (F2A)                        | Lighthouse CI    |
+| Metrica                | Budget              | Ultima misura                                    | Come si verifica |
+| ---------------------- | ------------------- | ------------------------------------------------ | ---------------- |
+| JS iniziale (gzip)     | ≤ 124 kB (ADR-0014) | 120,56 kB (F2B, chiusura)                        | `npm run size`   |
+| Chunk del desktop      | ≤ 82 kB (ADR-0022)  | 78,36 kB (F2B, chiusura)                         | `npm run size`   |
+| Sprite delle icone     | ≤ 14 kB (ADR-0014)  | 12,64 kB (F2A, SVG)                              | `npm run size`   |
+| CSS iniziale (gzip)    | ≤ 12 kB             | 3,89 kB (F2B)                                    | `npm run size`   |
+| Font in preload        | ≤ 25 kB (dalla F1)  | 24,1 kB (F1A)                                    | `npm run size`   |
+| Componenti, JS (gzip)  | ≤ 99 kB (dalla F1B) | 91,77 kB (F2B, con i componenti della F2A e F2B) | `npm run size`   |
+| Guscio del desktop F2A | ≤ 75 kB (dalla F1B) | 63,23 kB (F2B)                                   | `npm run size`   |
+| LCP                    | ≤ 2,5 s (ADR-0018)  | mobile 1,35 s, desktop 0,41 s (F2B)              | Lighthouse CI    |
+| TBT                    | ≤ 200 ms (ADR-0018) | mobile 68–75 ms, desktop 0 (F2B)                 | Lighthouse CI    |
+| CLS                    | ≤ 0,1 (ADR-0018)    | mobile 0, desktop 0,0001 (F2B)                   | Lighthouse CI    |
 
 **Nota sulla Fase 0.** Il piano prevedeva 90 kB di JS iniziale. La misura reale con React 19 + React Router 8 è 112 kB gzip (React DOM da solo ≈ 66 kB), quindi il budget è fissato a 115 kB, la misura più un margine minimo. Ogni app successiva va in lazy loading e non deve far crescere il chunk iniziale.
 
@@ -49,6 +49,18 @@ Con il `Link` di React Aria nella 404, Rolldown divideva React DOM e React Route
 
 Gli import da React Aria vanno sempre per sottopercorso (`react-aria-components/Button`): Oxlint vieta l'import dalla radice, con un'unica eccezione per `RouterProvider` (ADR-0012).
 
+### React Router 8.5.1 (Fase 2B)
+
+React Router 8.5.1 aggiungeva 3,54 kB gzip al JS iniziale della home (120,77 → 124,31 kB, oltre il budget di 124). Dal confronto delle treemap di `npm run analyze`, la parte più grande è il modulo nuovo `lib/dom/ssr/route-discovery.js` (runtime di `future.unstable_customRouteDiscovery`), che `HydratedRouter` importa sempre perché decide a runtime se usarlo. Il resto è sparso tra router, componenti e idratazione. Due interventi, misurati uno alla volta:
+
+| Intervento                                                                                                                                                        | JS iniziale (gzip) |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| React Router 8.5.1 senza interventi                                                                                                                               | 124,31 kB          |
+| Tolto `<ScrollRestoration/>` dal root: il documento non scorre (scorrono finestre e app), e sparisce la chiave `react-router-scroll-positions`                    | 123,34 kB          |
+| Nella build del client `route-discovery.js` diventa uno stub (`scripts/lib/route-discovery-stub.mjs`), che fallisce in modo esplicito se il flag venisse attivato | **121,39 kB**      |
+
+Il plugin controlla gli export del modulo originale: se una versione futura li cambia, la build si ferma. Un test verifica anche che `react-router.config.ts` non attivi il flag. La minificazione con terser (leva prevista dal piano) non è servita.
+
 ### Guscio statico e chunk del desktop (Fase 2A)
 
 Dal 28/10/2026 la home prerenderizza un guscio statico del desktop in solo HTML e CSS, e il desktop interattivo arriva in un chunk separato dopo l'idratazione (ADR-0014). Le icone si disegnano da uno sprite SVG generato da `npm run icons`, non più da dati nel JavaScript.
@@ -67,6 +79,24 @@ Dal 28/10/2026 la home prerenderizza un guscio statico del desktop in solo HTML 
 Misure di chiusura della F2A (01/11/2026). Esegui, Spegni e il congedo sono in chunk caricati all'apertura e non entrano nel chunk del desktop.
 
 La ripartizione del JS iniziale e il motivo dei kB oltre i vecchi 115 sono in ADR-0014.
+
+### Modalità mobile (Fase 2B)
+
+Misure di chiusura del 06/11/2026 (`npm run size`, `npm run size:components`, Lighthouse strict una volta, `performance.spec.ts` con Pixel 7 e CPU 4×).
+
+| Misura (gzip)                         | Valore                          | Budget                             |
+| ------------------------------------- | ------------------------------- | ---------------------------------- |
+| JS iniziale della home                | 120,56 kB                       | 124 kB (con React Router 8.5.1)    |
+| Chunk del desktop dopo l'idratazione  | 78,36 kB                        | 82 kB (ADR-0022; era 77, ADR-0020) |
+| Chunk di App aperte (mobile)          | su richiesta, fuori dal desktop | –                                  |
+| Componenti, totale JS / CSS           | 91,77 / 5,82 kB                 | 99 / 6 kB                          |
+| Guscio del desktop F2A                | 63,23 kB                        | 75 kB                              |
+| Task più lunga dopo `load` (CPU 4×)   | 143 ms                          | 200 ms                             |
+| INP dei tocchi (Chiudi About e icona) | 120 ms                          | 200 ms                             |
+
+Lighthouse (mediana di 3 esecuzioni per route, `/`, `/en/`, `/profilo/`, `/en/projects/`): Performance, Accessibilità, Best practices e SEO a **100** su mobile e desktop; LCP 1,35 s mobile e 0,41 s desktop; TBT 68–75 ms mobile e 0 desktop; CLS 0 mobile e 0,0001 desktop.
+
+Il TBT mobile è circa il doppio di quello della 2A (30–35 ms) per il codice del layout e della persistenza eseguito allo swap; resta a un terzo della soglia. Un CLS di 0,004 trovato in mobile (padding della finestra in `Desktop.module.css` contro `Window.module.css`, ordine dei fogli) è stato corretto rendendo la regola più specifica (ADR-0022).
 
 ### Peso dei componenti (Fase 1B)
 
@@ -112,15 +142,15 @@ In esbuild `optimize-locales` 2.1.0 (con unplugin 2.3) risolve le traduzioni esc
 
 | Componente        | Da solo (JS) | Note                         |
 | ----------------- | ------------ | ---------------------------- |
-| TaskbarIconButton | 14,84        | `Button` con `render`        |
-| WindowMenu        | 51,85        | menu con popover             |
-| MoveControls      | 16,98        |                              |
+| TaskbarIconButton | 14,96        | `Button` con `render`        |
+| WindowMenu        | 51,92        | menu con popover             |
+| MoveControls      | 17,00        |                              |
 | DragOutline       | 0,36         | solo HTML                    |
 | ResizeHandles     | 0,80         | solo HTML e pointer events   |
-| WindowSwitcher    | 44,59        | dialog modale e ListBox      |
+| WindowSwitcher    | 44,63        | dialog modale e ListBox      |
 | ContextMenu       | 39,02        | menu con ancora a un punto   |
-| RunDialog         | 53,96        | in un chunk a parte nel sito |
-| ShutdownDialog    | 34,32        | in un chunk a parte nel sito |
+| RunDialog         | 54,06        | in un chunk a parte nel sito |
+| ShutdownDialog    | 34,46        | in un chunk a parte nel sito |
 | FarewellScreen    | 14,79        | in un chunk a parte nel sito |
 
 Valori in kB gzip. Il guscio F2A scende da 75,03 a 74,92 kB con l'AlertDialog, che non ne fa parte, perché i testi dei componenti sono passati da `it.ts`/`en.ts` a `src/i18n/ui.ts` (commit c97ce15).

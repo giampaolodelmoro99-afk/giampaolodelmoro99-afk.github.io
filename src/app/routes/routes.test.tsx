@@ -1,8 +1,11 @@
 import { renderToString } from "react-dom/server";
 import { createRoutesStub } from "react-router";
 import { describe, expect, it } from "vitest";
+import { prerenderPaths } from "../../routes/routeMap";
 import App, { Layout } from "../root";
-import DesktopRoute, { meta as desktopMeta } from "./desktop";
+import routes from "../routes";
+import AppRoute, { meta as appMeta } from "./app";
+import DesktopLayout from "./desktop-layout";
 import NotFoundRoute, { meta as notFoundMeta } from "./not-found";
 
 function renderDocument(path: string) {
@@ -16,8 +19,14 @@ function renderDocument(path: string) {
         </Layout>
       ),
       children: [
-        { id: "desktop-it", index: true, Component: DesktopRoute, meta: desktopMeta },
-        { id: "desktop-en", path: "en", Component: DesktopRoute, meta: desktopMeta },
+        {
+          id: "desktop",
+          Component: DesktopLayout,
+          children: [
+            { id: "desktop-it", index: true, Component: AppRoute, meta: appMeta },
+            { id: "desktop-en", path: "en", Component: AppRoute, meta: appMeta },
+          ],
+        },
         { id: "not-found", path: "*", Component: NotFoundRoute, meta: notFoundMeta },
       ],
     },
@@ -39,5 +48,23 @@ describe("route not-found", () => {
     const html = renderDocument("/inesistente");
     expect(html).toContain('<meta name="robots" content="noindex"/>');
     expect(html).toContain("Pagina non trovata");
+  });
+});
+
+describe("configurazione delle route", () => {
+  it("tutte le pagine del sito stanno sotto la route di layout del desktop, che resta montata tra una pagina e l'altra", () => {
+    const [desktop, notFound] = routes;
+    expect(routes).toHaveLength(2);
+    expect(desktop).toMatchObject({ id: "desktop", file: "routes/desktop-layout.tsx" });
+    const children = desktop?.children ?? [];
+    expect(children.every((child) => child.file === "routes/app.tsx")).toBe(true);
+    expect(
+      children.map((child) => `/${child.path ?? ""}`.replace(/^\/\//, "/")).toSorted(),
+    ).toEqual(
+      prerenderPaths()
+        .filter((path) => path !== "/404")
+        .toSorted(),
+    );
+    expect(notFound).toMatchObject({ id: "not-found", path: "*" });
   });
 });

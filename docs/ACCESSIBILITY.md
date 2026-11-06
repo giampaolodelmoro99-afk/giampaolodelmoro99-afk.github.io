@@ -17,6 +17,10 @@
   - `Esc` chiude menu e dialog, mai le finestre; frecce nei menu e nelle icone; `Invio` apre l'elemento selezionato;
   - niente scorciatoie con AltGr, nei campi di testo o dentro `[data-shortcuts="off"]`; su Mac le etichette usano ⌥.
 - Focus dopo le azioni sulle finestre: apertura e riattivazione sul corpo della finestra, chiusura sulla finestra successiva o sulle icone, riduzione sul pulsante della taskbar (ADR-0016 §4).
+- Indietro e Avanti del browser (F2B, ADR-0021): il focus va al corpo della finestra della voce, o alle icone se nessuna è attiva; una finestra riaperta si annuncia. Il cambio di lingua lascia il focus sul suo link. Nessuna voce nasce senza un gesto, e chiudere una finestra non lascia voci doppie.
+- Memoria del focus (F2B): riattivando una finestra nel desktop il focus torna all'ultimo elemento che lo aveva, se esiste ancora, altrimenti al corpo. In mobile ogni app si apre sull'`h1`.
+- Sposta e Ridimensiona da tastiera (F2B): al via il focus va sul contenitore dei controlli a schermo (`role="application"`, solo qui), con nome «Sposta o ridimensiona {app}». Frecce e `Maiusc`+frecce spostano, `Invio` conferma, `Esc` annulla; con il focus su un pulsante, `Invio` preme il pulsante. L'annuncio iniziale cita anche i pulsanti a schermo. **Da verificare a mano con NVDA** (frecce non catturate dalla modalità lettura).
+- `Maiusc+Alt+W`: su Windows `Maiusc+Alt` cambia la lingua di input e può arrivare alla pagina in ritardo. A selettore aperto ← e → fanno lo stesso e il pulsante Finestre resta l'alternativa.
 - Nessuna trappola del focus, salvo dialog modali (React Aria gestisce cattura e ripristino).
 
 ## 3. Screen reader
@@ -50,6 +54,12 @@
 - Gesti di trascinamento sempre con un'alternativa a puntatore singolo (WCAG 2.5.7): Sposta e Ridimensiona dal menu della finestra, con le frecce `MoveControls` da 44 px al tocco; Ingrandisci e Ripristina sempre disponibili. Le maniglie di ridimensionamento hanno una zona di presa di 44 px al tocco.
 - Reflow a 320 px senza scroll orizzontale; zoom del browser fino al 400% senza perdita di contenuto; `viewport` senza `maximum-scale`.
 - Safe-area rispettata con `env(safe-area-inset-*)`.
+- Con un'app a schermo intero in mobile la griglia della home e i link del guscio sono `visibility: hidden` (regola `:has()` in `Desktop.module.css`): non sono nell'ordine di Tab né nell'albero di accessibilità mentre sono coperti. Nel guscio statico l'ancora «Chiudi» (`#desktop-icons`) li rimostra con `:target`. Test `@mobile` con e senza JavaScript.
+- «App aperte» (pannello modale): `Canc` chiude la riga con il focus, le frecce ↑/↓ scorrono le righe, Invio apre; il pulsante Chiudi di ogni riga resta l'alternativa. Gli annunci passano da una regione `data-live-announcer`, che React Aria lascia leggibile sotto i dialog modali.
+- Il nome del pulsante «App aperte» è «App aperte: n», anche con 0 (WCAG 2.5.3: la stessa parola e lo stesso numero del testo visibile «App aperte (n)», o del solo numero sotto 22,5 em); `aria-disabled` dice che non è disponibile. La versione compatta sotto 22,5 em (360 px a testo normale) mostra icona e numero.
+- Safe-area orizzontale (notch di un telefono in orizzontale) su finestre e pannello «App aperte» con `--space-safe-left-edge` e `--space-safe-right-edge`.
+- Modalità mobile (F2B, ADR-0007): finestre a schermo intero, nessun gesto sulla barra del titolo (`touch-action` normale, quindi il pinch-zoom funziona anche da lì); sul tablet in modalità desktop (da 768 px) la barra del titolo ha `touch-action: none` e lo zoom si fa dal resto della pagina.
+- Nessuna differenza di contenuto tra le modalità: cambia solo la presentazione (stesso HTML prerenderizzato). `Esc` non chiude le app; Alt+W apre «App aperte»; Canc chiude la riga con il focus.
 
 ## 7. Contenuti
 

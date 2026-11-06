@@ -156,12 +156,13 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 >
 > - "Rifacimento del sito qbitsoft.it in WordPress". Permesso dell'azienda a mostrarlo nel portfolio: **confermato** (01/11/2026). Da confermare: ruolo svolto. Link e dettagli arrivano prima della F3A. Non è un repository GitHub: la scheda non avrà i metadati scaricati a build time e userà il link al sito.
 
-> **BOZZA – da rivedere.** Testi del desktop della F2A (in `src/i18n/it.ts`, `en.ts` e `ui.ts`, chiavi `desktop` e `ui`), scritti da Claude durante la fase. Sono testi d'interfaccia (menu, dialog, annunci per i lettori di schermo, scorciatoie, skip link): si approvano insieme prima di `v1.0.0`.
+> **BOZZA – da rivedere.** Testi del desktop della F2A e della F2B (in `src/i18n/it.ts`, `en.ts` e `ui.ts`, chiavi `desktop` e `ui`), scritti da Claude durante la fase. Sono testi d'interfaccia (menu, dialog, annunci per i lettori di schermo, scorciatoie, skip link): si approvano insieme prima di `v1.0.0`.
 >
 > - Congedo di Spegni: **approvato il 01/11/2026**, vedi §2.
 > - Esegui: «Scrivi il nome di un'app e si aprirà in una finestra.»; errore «Non trovo "{command}". Prova con progetti, cv o contatti.»; errore di caricamento «Non riesco ad aprire questa finestra: ricarica la pagina.»
 > - Spegni: «Cosa vuoi fare?» con Spegni, Riavvia, Passa alla Vista semplice.
 > - Menu della finestra, selettore («Finestre aperte»), menu contestuale (Disponi icone, Aggiorna, Proprietà), annunci («{app}: finestra aperta», «… spostata»…), skip link «Salta al contenuto», collegamento della lingua «EN, English version» / «IT, Versione italiana».
+> - **F2B** (modalità mobile, 06/11/2026), da approvare insieme agli altri in F3A: «App aperte ({count})» / «Open apps ({count})» (etichetta visibile e nome del pulsante), «Chiudi {app}» / «Close {app}», «Chiudi tutte» / «Close all», «Indietro» / «Back» (costruito, non mostrato fino alla F3A), «Sposta o ridimensiona {app}» / «Move or resize {app}» (nome del contenitore dei controlli durante Sposta da tastiera) e la frase aggiunta agli annunci di Sposta e Ridimensiona («Sono disponibili anche i pulsanti a schermo.» / «On-screen buttons are also available.»). Nell'annuncio di chiusura dal pannello «App aperte» resta «{app}: finestra chiusa»: in mobile l'interfaccia dice «app», ma «finestra» è usato anche negli altri annunci; scelta da confermare.
 > - Suggerimenti del content-reviewer da valutare in F3A: «Resize» al posto di «Size» nel menu della finestra in inglese, «Canceled» o «Cancelled» come grafia unica, «Allinea icone» al posto di «Allinea alla griglia», virgolette « » nell'errore di Esegui, separatore «·» nel title della 404, nomi delle app «Profilo» e «Competenze» al posto di About e Skills.
 
 ## 6. Mancante per l'inglese
@@ -173,7 +174,7 @@ OG description: "Portfolio in stile Windows 95: progetti in Node.js, Laravel, Re
 - [ ] Testo della 404 (BSOD)
 - [ ] CV in inglese (confermato), generato dagli stessi dati del CV italiano
 - [ ] Informativa privacy
-- [x] Etichette, annunci e titoli delle finestre del desktop (F2A), in bozza (§5)
+- [x] Etichette, annunci e titoli delle finestre del desktop (F2A e F2B), in bozza (§5)
 - [ ] Alt delle immagini e messaggi del form (F3)
 
 ## 7. Template: scheda progetto GitHub

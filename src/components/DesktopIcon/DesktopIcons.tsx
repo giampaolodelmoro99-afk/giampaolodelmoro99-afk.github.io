@@ -18,10 +18,18 @@ export type DesktopIconsProps = Omit<
   label: string;
   items: DesktopItem[];
   onAction?: (id: Key) => void;
+  opensOnPress?: boolean;
   className?: string | undefined;
 };
 
-export function DesktopIcons({ label, items, onAction, className, ...props }: DesktopIconsProps) {
+export function DesktopIcons({
+  label,
+  items,
+  onAction,
+  opensOnPress = false,
+  className,
+  ...props
+}: DesktopIconsProps) {
   const disabledKeys = items.filter((item) => item.isDisabled).map((item) => item.id);
   return (
     <GridList
@@ -29,7 +37,7 @@ export function DesktopIcons({ label, items, onAction, className, ...props }: De
       aria-label={label}
       items={items}
       layout="grid"
-      selectionMode="single"
+      selectionMode={opensOnPress ? "none" : "single"}
       selectionBehavior="replace"
       disabledKeys={disabledKeys}
       {...(onAction ? { onAction } : {})}

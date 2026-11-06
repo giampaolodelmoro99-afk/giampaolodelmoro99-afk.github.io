@@ -2,6 +2,8 @@ import type { AppId } from "../../routes/routeMap";
 
 export const desktopIconsId = "desktop-icons";
 
+export const openAppsButtonId = "taskbar-open-apps";
+
 export function windowTitleId(app: AppId): string {
   return `window-${app}-title`;
 }

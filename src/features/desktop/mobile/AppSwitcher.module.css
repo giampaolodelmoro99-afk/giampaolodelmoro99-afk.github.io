@@ -1,0 +1,104 @@
+.overlay {
+  --titlebar-height: var(--titlebar-height-touch);
+  --titlebar-button-width: var(--titlebar-button-touch);
+  --titlebar-button-height: var(--titlebar-button-touch);
+  --target-min: var(--touch-target-min);
+
+  position: fixed;
+  inset: var(--space-0) var(--space-0) var(--taskbar-height-touch);
+  z-index: var(--z-overlay);
+  display: flex;
+  padding-block-start: var(--space-safe-top-edge);
+  padding-inline: var(--space-safe-left-edge) var(--space-safe-right-edge);
+  background: var(--color-surface);
+}
+
+.modal,
+.dialog {
+  display: flex;
+  flex: 1;
+  min-inline-size: 0;
+  outline: none;
+}
+
+.window {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--color-surface);
+}
+
+.listArea {
+  flex: 1;
+  min-block-size: 0;
+  overflow-y: auto;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-2);
+  outline: none;
+}
+
+.row {
+  --_shadow: var(--bevel-raised);
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--switcher-cell);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-2);
+  background: var(--color-surface);
+  box-shadow: var(--_shadow);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-md);
+  outline: none;
+}
+
+.row[data-focus-visible] {
+  --_shadow: var(--bevel-raised), var(--focus-halo-inset);
+
+  outline: var(--focus-width) var(--focus-style) var(--color-focus);
+  outline-offset: var(--focus-offset-inset);
+}
+
+.app {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.label {
+  overflow: hidden;
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.close {
+  composes: root from "../../../components/Button/Button.module.css";
+  flex: none;
+  min-inline-size: var(--space-0);
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+  padding: var(--space-0);
+}
+
+.closeAll {
+  inline-size: 100%;
+  min-block-size: var(--touch-target-min);
+}
+
+@media (forced-colors: active) {
+  .row {
+    border: var(--forced-border-width) solid var(--color-text);
+  }
+}

@@ -41,11 +41,27 @@ npm run build:site && npm run preview   # http://localhost:4173 (npm run build s
 - [ ] Safe-area (simulazione iPhone con notch) e tastiera virtuale sui campi.
 - [ ] Zoom del browser al 200% e al 400% (reflow) senza perdita di contenuto.
 
+### 3.1 Modalità mobile del desktop (dalla F2B, ADR-0007 e ADR-0022)
+
+La modalità è mobile con larghezza < 768 px, oppure con altezza < 540 px e puntatore grossolano (telefono in orizzontale). Prova a 320, 375 e 667×375.
+
+- [ ] **Home**: su `/` si apre About a schermo intero. Chiusa About, compare la griglia di 13 voci su 3 colonne (icone da 64 px da 360 px in su, da 32 px sotto), tutte le celle ≥ 44 px, un tocco apre l'app.
+- [ ] **App a schermo intero**: barra del titolo da 48 px con titolo e «Chiudi {app}» da 44×44; nessun Riduci, Ingrandisci, menu della finestra, maniglie né trascinamento; il contenuto scorre dentro la finestra, barra e taskbar restano fisse; all'apertura il focus è sull'`h1`.
+- [ ] **Indietro** (tasto o gesto del browser): torna alla schermata precedente senza chiudere l'app aperta; Avanti la riporta. Dopo una ricarica, chiudere un'app non ricarica la pagina.
+- [ ] **App aperte**: il pulsante mostra «App aperte (n)», sotto i 360 px icona e numero; con 0 app è disattivato. Il pannello elenca le app per ultimo uso, ogni riga si apre con un tocco e ha il suo Chiudi da 44 px; «Chiudi tutte» in fondo; Esc o Chiudi tornano al pulsante.
+- [ ] **Start a pannello**: occupa la larghezza meno 12 px sopra la taskbar, voci da 44 px; a 320×568 le app scorrono e il gruppo in basso (Pannello di controllo, Esegui…, Vista semplice, Spegni…) resta visibile.
+- [ ] **Testo al 200%** (impostazioni di Android o iOS) a 360, 375 e 450 px: Start e «App aperte (n)» entrano senza essere tagliati; sotto 22,5 em il pulsante mostra icona e numero.
+- [ ] **Notch in orizzontale** (iPhone o simulatore): titolo, Chiudi, «App aperte» e il testo non finiscono sotto il notch.
+- [ ] **Tastiera Bluetooth** (rinviata alla fase di accessibilità, Fase 5, insieme a NVDA e VoiceOver; decisione del 06/11/2026): con un'app aperta, Shift+Tab dal titolo non va sulla home coperta; Canc nel pannello «App aperte» chiude la riga.
+- [ ] **Rotazione**: ruotare da verticale a orizzontale e ritorno non perde app, URL né scorrimento; allargando oltre 768 px (tablet, finestra del desktop) tornano le finestre sovrapposte nelle posizioni salvate.
+- [ ] **Senza JavaScript** (o prima dell'idratazione): le 13 voci sono link, «Chiudi» di About è un'ancora, la navigazione completa funziona.
+- [ ] Nessun menu contestuale con la pressione lunga; nessun errore in console.
+
 ## 4. Tastiera e screen reader
 
 - [ ] Tutto raggiungibile con Tab, Shift+Tab, frecce, Invio, Esc; focus sempre visibile.
 - [ ] Ordine del focus logico; nessuna trappola.
-- [ ] NVDA + Firefox (o VoiceOver + Safari): titoli, landmark, nomi dei controlli, annunci di finestre e form.
+- [ ] NVDA + Firefox (o VoiceOver + Safari): titoli, landmark, nomi dei controlli, annunci di finestre e form. **Rinviata alla fase di accessibilità (Fase 5)**, compresi il focus durante Sposta (`role="application"`) e il pannello «App aperte».
 - [ ] Dalla F2A: le finestre si leggono in modalità lettura (region con il nome del titolo); annunci di apertura, chiusura, riduzione e spostamento; il selettore legge la finestra scelta; Esegui legge suggerimenti ed errore.
 
 ## 5. Movimento e contrasto
@@ -75,6 +91,8 @@ Il terminale stampa l'indirizzo in rete locale (`http://192.168.x.x:4173`): apri
 - [ ] **Focus**: con una tastiera Bluetooth (Tab) o con la navigazione di TalkBack, il focus è visibile come doppio anello (tratteggio nero su alone bianco).
 - [ ] **Layout**: nessuno scroll orizzontale, sia con il telefono in verticale sia in orizzontale; testi non tagliati.
 - [ ] **Storybook** (`/storybook/`): si naviga al tocco (barra laterale, story, pannelli), la toolbar cambia tema e input, l'anteprima segue.
+- [ ] **Modalità mobile** (da `npm run build:site && npm run preview -- --host`): ripeti §3.1 sul telefono: home, app a schermo intero, Indietro (gesto di sistema e tasto), App aperte, Start a pannello e rotazione.
+- [ ] **Indietro con il gesto di Android**: dopo aver aperto tre app, il gesto torna alla schermata precedente a ogni passo, senza uscire dal sito finché c'è history; da una ricarica, chiudere l'app porta alla home.
 - [ ] Annota modello del telefono, versione di Android e di Chrome nella retrospettiva.
 
 ### 7.1 Componenti in Storybook (dalla Fase 1B)

@@ -117,6 +117,10 @@ export const it = {
     placeholder: "Il contenuto di questa finestra è in arrivo.",
     windowsButton: "Finestre aperte ({shortcut})",
     windowsButtonEmpty: "Finestre aperte: nessuna",
+    openApps: "App aperte ({count})",
+    openAppsName: "App aperte: {count}",
+    closeApp: "Chiudi {app}",
+    closeAllApps: "Chiudi tutte",
     altKey: "Alt+",
     optionKey: "Option+",
     switcherHint: "{alt}W avanza · Maiusc+{alt}W torna indietro · Invio attiva · Esc annulla",
@@ -141,6 +145,7 @@ export const it = {
       refresh: "Aggiorna",
       properties: "Proprietà",
     },
+    gestureRegion: "Sposta o ridimensiona {app}",
     clockLabel: "Ora",
     minimizedLabel: "{app}, finestra ridotta a icona",
     announce: {
@@ -148,9 +153,9 @@ export const it = {
       closed: "{app}: finestra chiusa",
       minimized: "{app}: finestra ridotta a icona",
       moveStart:
-        "Spostamento di {app}: usa le frecce, Maiusc per passi più lunghi, Invio per confermare, Esc per annullare.",
+        "Spostamento di {app}: usa le frecce, Maiusc per passi più lunghi, Invio per confermare, Esc per annullare. Sono disponibili anche i pulsanti a schermo.",
       resizeStart:
-        "Ridimensionamento di {app}: usa le frecce, Maiusc per passi più lunghi, Invio per confermare, Esc per annullare.",
+        "Ridimensionamento di {app}: usa le frecce, Maiusc per passi più lunghi, Invio per confermare, Esc per annullare. Sono disponibili anche i pulsanti a schermo.",
       moved: "{app}: finestra spostata",
       resized: "{app}: finestra ridimensionata",
       cancelled: "Annullato",

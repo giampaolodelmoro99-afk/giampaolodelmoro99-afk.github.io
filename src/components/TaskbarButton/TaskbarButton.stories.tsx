@@ -63,3 +63,25 @@ export const PulsanteFinestre: Story = {
     </Taskbar>
   ),
 };
+
+export const AppAperte: Story = {
+  tags: ["visual"],
+  render: () => (
+    <Taskbar label="Pulsante App aperte" tray={<span>14:32</span>}>
+      <TaskbarIconButton
+        icon="windows"
+        aria-label="App aperte: 2"
+        label="App aperte (2)"
+        count={2}
+        onPress={() => {}}
+      />
+      <TaskbarIconButton
+        icon="windows"
+        aria-label="App aperte: 0"
+        label="App aperte (0)"
+        count={0}
+        isUnavailable
+      />
+    </Taskbar>
+  ),
+};

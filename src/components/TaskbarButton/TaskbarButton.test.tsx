@@ -93,4 +93,19 @@ describe("TaskbarIconButton", () => {
     );
     expect(button).toHaveAttribute("aria-expanded", "true");
   });
+
+  it("con un'etichetta la mostra accanto all'icona; il numero compatto è solo visivo", () => {
+    render(
+      <TaskbarIconButton
+        icon="windows"
+        aria-label="App aperte: 3"
+        label="App aperte (3)"
+        count={3}
+        onPress={() => undefined}
+      />,
+    );
+    const button = screen.getByRole("button", { name: "App aperte: 3" });
+    expect(button).toHaveTextContent("App aperte (3)");
+    expect(button.querySelector("[aria-hidden=true]:not(svg)")).toHaveTextContent("3");
+  });
 });

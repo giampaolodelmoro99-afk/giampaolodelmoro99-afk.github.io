@@ -5,6 +5,7 @@ import { githubFilterToRegExp, tagFilters } from "./workflows.mjs";
 
 const workflows = resolve(import.meta.dirname, "../../.github/workflows");
 const deploy = readFileSync(resolve(workflows, "deploy.yml"), "utf8");
+const ci = readFileSync(resolve(workflows, "ci.yml"), "utf8");
 
 const releases = ["v1.0.0", "v1.2.3", "v10.20.30"];
 const notReleases = [
@@ -42,6 +43,19 @@ describe("deploy.yml", () => {
     expect(releases.every((tag) => regex.test(tag))).toBe(true);
     expect(notReleases.some((tag) => regex.test(tag))).toBe(false);
     expect(deploy).toMatch(/ci:\n\s+name: CI completa\n\s+needs: tag/);
+  });
+});
+
+describe("ci.yml", () => {
+  it("parte con i push su main e sui branch di fase, manutenzione e correzione", () => {
+    const list = /push:\n\s+branches: \[([^\]]+)\]/.exec(ci)?.[1] ?? "";
+    const filters = list
+      .split(",")
+      .map((filter) => githubFilterToRegExp(filter.trim().replaceAll('"', "")));
+    const matches = (/** @type {string} */ branch) => filters.some((filter) => filter.test(branch));
+    const branches = ["main", "phase/02b-routing-mobile", "chore/deps-2026-11", "fix/ci"];
+    expect(branches.filter((branch) => !matches(branch))).toEqual([]);
+    expect(["feature/x", "mainx", "chores/x"].filter(matches)).toEqual([]);
   });
 });
 

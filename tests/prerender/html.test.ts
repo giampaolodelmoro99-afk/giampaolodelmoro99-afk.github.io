@@ -8,7 +8,7 @@ import { bootId } from "../../scripts/lib/hydration.mjs";
 import { githubUrl, siteUrl } from "../../src/config/site";
 import { pressableStyleId } from "../../src/styles/reactAriaPressable";
 import { getDictionary } from "../../src/i18n";
-import { type Locale, locales, routeKeys, routeMap } from "../../src/routes/routeMap";
+import { type Locale, appIds, locales, routeKeys, routeMap } from "../../src/routes/routeMap";
 
 const client = join(import.meta.dirname, "../../build/client");
 
@@ -104,8 +104,12 @@ describe.each(pages)("HTML prerenderizzato di %s", (href, locale, key) => {
   it("ha le icone del desktop come link normali e lo skip link come primo elemento", async () => {
     const { document } = await load(fileFor(href));
     const icons = [...document.querySelectorAll("main nav a")];
-    expect(icons.map((icon) => icon.getAttribute("href"))).toContain(routeMap.projects[locale]);
-    expect(icons).toHaveLength(11);
+    expect(icons.map((icon) => icon.getAttribute("href"))).toEqual(
+      appIds.map((id) => routeMap[id][locale]),
+    );
+    const close = document.querySelector("main section a[data-window-control=close]");
+    expect(close?.getAttribute("href")).toBe("#desktop-icons");
+    expect(document.getElementById("desktop-icons")).not.toBeNull();
     const skip = document.querySelector("body a");
     expect(skip?.textContent).toBe(t.desktop.skipLink);
     expect(document.querySelector(skip?.getAttribute("href") ?? "#niente")).not.toBeNull();

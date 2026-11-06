@@ -54,10 +54,11 @@ Con `npm run preview` e Claude in Chrome, esegui `docs/QA_CHECKLIST.md`: desktop
 - PERFORMANCE_SEO.md: tabella del peso dei componenti con le misure di chiusura (durante la fase size-limit gira solo in CI, ADR-0019).
 - `CHANGELOG.md`: sezione `[phase-NN]`.
 - `docs/PLAN.md`: checkbox della fase.
+- **`docs/HANDOFF.md`**: aggiorna lo stato del progetto (fase corrente, cosa è fatto con i numeri di chiusura, decisioni prese, prossimi passi, problemi aperti) e la data in testa. Breve, in italiano.
 - Lezioni sul lavoro con l'AI solo nella retrospettiva (§8): AI_WORKFLOW.md §5 rimanda lì, non si aggiorna.
 - Altri docs toccati dalla fase.
 
-Commit: `docs: chiude la fase NN con retrospettiva e changelog`.
+Commit: `docs: chiude la fase NN con retrospettiva, changelog e handoff`.
 
 ## 6. CI su GitHub (cancello finale)
 

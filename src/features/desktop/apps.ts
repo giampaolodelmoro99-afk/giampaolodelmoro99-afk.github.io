@@ -19,12 +19,14 @@ export const apps: readonly AppDefinition[] = [
   { id: "makingOf", icon: "makingof", onDesktop: true, variant: "document" },
   { id: "terminal", icon: "terminal", onDesktop: true, variant: "app" },
   { id: "minefield", icon: "minefield", onDesktop: true, variant: "app" },
-  { id: "trash", icon: "trash", onDesktop: true, variant: "app" },
   { id: "controlPanel", icon: "controlpanel", onDesktop: false, variant: "app" },
   { id: "privacy", icon: "privacy", onDesktop: false, variant: "document" },
+  { id: "trash", icon: "trash", onDesktop: true, variant: "app" },
 ];
 
 export const desktopApps = apps.filter((app) => app.onDesktop);
+
+export const mobileHomeApps = apps;
 
 export function appDefinition(id: AppId): AppDefinition {
   const app = apps.find((candidate) => candidate.id === id);

@@ -24,7 +24,7 @@ for (const path of ["/", "/en/projects/"]) {
         }).observe({ type: "layout-shift", buffered: true });
       });
       await page.goto(path);
-      await expect(page.locator("[role=grid]")).toBeVisible();
+      await expect(page.locator("[role=grid]")).toBeAttached();
       await page.evaluate(() => document.fonts.ready);
       // Lo swap non sposta nulla. Resta il cambio di font delle etichette (Pixel
       // Operator regular non è in preload): da 0,00001 a 0,00015, contro un budget
@@ -60,7 +60,7 @@ for (const path of ["/", "/en/"]) {
       });
 
       await openPage(page, path);
-      await expect(page.locator("[role=grid]")).toBeVisible();
+      await expect(page.locator("[role=grid]")).toBeAttached();
       const swappedAt = await page.evaluate(() => Math.round(performance.now()));
       const timing: Timing = await page.evaluate((swapped) => {
         const [navigation] = performance.getEntriesByType("navigation");
@@ -110,9 +110,11 @@ for (const path of ["/", "/en/"]) {
         }).observe(eventTiming);
       });
       await openDesktop(page, path);
+      await page.getByRole("button", { name: /^(Chiudi|Close) About$/ }).tap();
+      await expect(page.locator("section[aria-labelledby]")).toHaveCount(0);
       await page.locator("[role=row]").nth(1).tap();
       await expect(page.locator("section[data-active=true]")).toHaveCount(1);
-      await expect(page.locator("section[aria-labelledby]")).toHaveCount(2);
+      await expect(page.locator("section[aria-labelledby]")).toHaveCount(1);
       const durations = await page.evaluate(() => window.interactions ?? []);
       const inp = Math.max(0, ...durations);
       testInfo.annotations.push({
